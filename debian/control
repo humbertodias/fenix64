@@ -1,0 +1,30 @@
+Source: fenix0.92
+Section: devel
+Priority: extra
+Maintainer: Miriam Ruiz <little_miry@yahoo.es>
+Build-Depends: dpkg-dev (>= 1.13.19), debhelper (>= 5), autotools-dev, libsdl1.2-dev, libsdl-mixer1.2-dev, zlib1g-dev, libungif4-dev, libpng12-dev, libsmpeg-dev
+Standards-Version: 3.7.2
+
+Package: fenix0.92-runtime
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: runtime environment for executing 2D games made with fenix
+ Fenix is an interpreted script programming language, especially designed to
+ developing and running 2D games. It has a full graphic library, sound engine
+ and full featured 2D game engine, making game development extremely easy.
+ .
+ This package contains the interpreter needed to run games developed in fenix.
+ .
+  Homepage: http://fenix.divsite.net/
+
+Package: fenix0.92
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, fenix0.92-runtime (= ${binary:Version})
+Description: development environment for making 2D games
+ Fenix is an interpreted script programming language, especially designed to
+ developing and running 2D games. It has a full graphic library, sound engine
+ and full featured 2D game engine, making game development extremely easy.
+ .
+ This package contains the programs needed to develop games in fenix.
+ .
+  Homepage: http://fenix.divsite.net/
