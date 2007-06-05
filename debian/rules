@@ -89,5 +89,15 @@ binary-arch: build install
 	dh_md5sums
 	dh_builddeb
 
+get-orig-source:
+	dh_testdir
+	dh_testroot
+	wget http://switch.dl.sourceforge.net/sourceforge/fenix/fenix092a-src-release.tgz
+	rm -f ../fenix0.92_0.92a.orig.tar.gz
+	tar xvfz fenix092a-src-release.tgz
+	cd Fenix && rm -f `grep -i microsoft * -r | awk -F: '{print $$1}' | sort --unique`
+	tar cvfz ../fenix0.92_0.92a.orig.tar.gz Fenix/*
+	rm -rf Fenix fenix092a-src-release.tgz
+
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 
+.PHONY: build clean binary-indep binary-arch binary install get-orig-source
