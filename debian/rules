@@ -20,6 +20,7 @@ endif
 
 config.status: configure
 	dh_testdir
+	$(MAKE) -f /usr/share/quilt/quilt.make patch
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config.sub
 endif
@@ -52,6 +53,7 @@ clean:
 	rm -f build-stamp 
 	-$(MAKE) distclean
 	rm -f config.{sub,guess}
+	$(MAKE) -f /usr/share/quilt/quilt.make unpatch
 	dh_clean 
 
 install: build
