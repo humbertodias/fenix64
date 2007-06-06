@@ -1,3 +1,9 @@
+fenix0.92 (0.92a.dfsg1-2) UNRELEASED; urgency=low
+
+  * Modified man pages.
+
+ -- Miriam Ruiz <little_miry@yahoo.es>  Wed,  6 Jun 2007 07:48:29 +0200
+
 fenix0.92 (0.92a.dfsg1-1) unstable; urgency=low
 
   * Initial release (Closes: #427558)
