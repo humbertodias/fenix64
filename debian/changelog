@@ -1,6 +1,7 @@
-fenix0.92 (0.92a.dfsg1-2) UNRELEASED; urgency=low
+fenix0.92 (0.92a.dfsg1-2) unstable; urgency=low
 
   * Modified man pages.
+  * Added Build-Depends: zlib1g-dev
 
  -- Miriam Ruiz <little_miry@yahoo.es>  Wed,  6 Jun 2007 07:48:29 +0200
 
