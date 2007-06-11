@@ -1,2 +1,3 @@
 configure.patch
 fxi_binname.patch
+fxc_nosdlinit.patch

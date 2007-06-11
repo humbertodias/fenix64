@@ -1,0 +1,17 @@
+--- fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c
++++ fenix0.92-0.92a.dfsg1/fxc/src/main.c
+@@ -134,14 +134,6 @@
+ 
+ 	srand (time(NULL)) ;
+ 
+-	/* Init SDL */
+-
+-	if ( SDL_Init (SDL_INIT_VIDEO) < 0 )
+-	{
+-		printf ("SDL Init Error: %s\n", SDL_GetError()) ;
+-		exit(1) ;
+-	}
+-
+ 	/* Get command line parameters */
+ 
+ 	for (i = 1 ; i < argc ; i++)
