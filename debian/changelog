@@ -1,3 +1,15 @@
+fenix0.92 (0.92a.dfsg1-4) unstable; urgency=low
+
+  * Added support for i18n with gettext.
+
+ -- Miriam Ruiz <little_miry@yahoo.es>  Wed, 13 Jun 2007 00:48:43 +0000
+
+fenix0.92 (0.92a.dfsg1-3) unstable; urgency=low
+
+  * Removed initialisation of the SDL system in the compiler.
+
+ -- Miriam Ruiz <little_miry@yahoo.es>  Mon, 11 Jun 2007 11:08:08 +0000
+
 fenix0.92 (0.92a.dfsg1-2) unstable; urgency=low
 
   * Modified man pages.

@@ -44,6 +44,7 @@ build: build-stamp
 build-stamp:  config.status
 	dh_testdir
 	$(MAKE)
+	$(MAKE) -C debian/i18n
 	#docbook-to-man debian/fenix$(FENIX_VERSION).sgml > fenix$(FENIX_VERSION).1
 	touch $@
 
@@ -52,6 +53,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp 
 	-$(MAKE) distclean
+	-$(MAKE) -C debian/i18n clean
 	rm -f config.{sub,guess}
 	$(MAKE) -f /usr/share/quilt/quilt.make unpatch
 	dh_clean 

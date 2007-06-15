@@ -1,6 +1,6 @@
 --- fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c
 +++ fenix0.92-0.92a.dfsg1/fxc/src/main.c
-@@ -134,14 +134,6 @@
+@@ -134,14 +154,6 @@
  
  	srand (time(NULL)) ;
  
