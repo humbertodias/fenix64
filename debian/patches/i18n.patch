@@ -319,7 +319,7 @@
  
  void help ()
  {
--	printf ("FPG Utility - Copyright (C) 1999 Jose Luis Cebrian Pague\n"
+-	printf ("FPG Utility - Copyright (C) 1999 José Luis Cebrián Pagüe\n"
 -		"This utility comes with ABSOLUTELY NO WARRANTY; fpg -h for details\n\n") ;
 +	printf (_("FPG Utility - Copyright (C) 1999 Jose Luis Cebrian Pague\n"
 +		"This utility comes with ABSOLUTELY NO WARRANTY; fpg -h for details\n\n")) ;
@@ -647,7 +647,7 @@
  	char stubname[256] = "";
  	int i, j ;
  
--	printf (FXC_VERSION " - Copyright (C) 1999 Jose Luis Cebrian Pague\n") ;
+-	printf (FXC_VERSION " - Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e\n") ;
 -	printf ("Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n") ;
 +#ifdef USE_GETTEXT
 +	setlocale (LC_MESSAGES, "");
@@ -3442,7 +3442,7 @@
  
  void help ()
  {
--	printf ("MAP Utility v0.75\nCopyright (C) 1999 Jose Luis Cebrian Pague\nCopyright (C) 2002 Fenix Team\n"
+-	printf ("MAP Utility v0.75\nCopyright (C) 1999 José Luis Cebrián Pagüe\nCopyright (C) 2002 Fenix Team\n"
 -		"This utility comes with ABSOLUTELY NO WARRANTY; map -h for details\n\n") ;
 +	printf (_("MAP Utility v0.75\nCopyright (C) 1999 Jose Luis Cebrian Pague\n"
 +		"Copyright (C) 2002 Fenix Team\n"
