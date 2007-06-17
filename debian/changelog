@@ -1,6 +1,7 @@
 fenix0.92 (0.92a.dfsg1-4) unstable; urgency=low
 
-  * Added support for i18n with gettext.
+  * All the messages translated to proper English.
+  * Added support for gettext.
 
  -- Miriam Ruiz <little_miry@yahoo.es>  Wed, 13 Jun 2007 00:48:43 +0000
 

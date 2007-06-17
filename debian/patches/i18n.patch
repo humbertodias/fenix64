@@ -319,9 +319,9 @@
  
  void help ()
  {
--	printf ("FPG Utility - Copyright (C) 1999 José Luis Cebrián Pagüe\n"
+-	printf ("FPG Utility - Copyright (C) 1999 Jose Luis Cebrian Pague\n"
 -		"This utility comes with ABSOLUTELY NO WARRANTY; fpg -h for details\n\n") ;
-+	printf (_("FPG Utility - Copyright (C) 1999 José Luis Cebrián Pagüe\n"
++	printf (_("FPG Utility - Copyright (C) 1999 Jose Luis Cebrian Pague\n"
 +		"This utility comes with ABSOLUTELY NO WARRANTY; fpg -h for details\n\n")) ;
  
 -	printf ("Uso: fpg [opcion] fichero [gráfico ...]\n"
@@ -647,7 +647,7 @@
  	char stubname[256] = "";
  	int i, j ;
  
--	printf (FXC_VERSION " - Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e\n") ;
+-	printf (FXC_VERSION " - Copyright (C) 1999 Jose Luis Cebrian Pague\n") ;
 -	printf ("Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n") ;
 +#ifdef USE_GETTEXT
 +	setlocale (LC_MESSAGES, "");
@@ -657,7 +657,7 @@
 +	bindtextdomain ("fenix0.92-fxc", NULL);
 +#endif
 +
-+	printf (_("Fenix 0.92 FXC - Copyright (C) 1999 José Luis Cebrián Pagüe\n")) ;
++	printf (_("Fenix 0.92 FXC - Copyright (C) 1999 Jose Luis Cebrian Pague\n")) ;
 +	printf (_("Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n")) ;
  
  	// Default lang to EN
@@ -793,7 +793,7 @@
      if (map->depth != 8)
      {
 -        gr_error ("Intento de usar convert_palette con un gráfico de 16 bits") ;
-+        gr_error (_("Intento de usar convert_palette con un gráfico de 16 bits")) ;
++        gr_error (_("Trying to use convert_palette with a 16 bit graphic")) ;
          return 0;
      }
  
@@ -802,7 +802,7 @@
  
      if (!map) {
 -        gr_con_printf ("Mapa %d no disponible en el fichero %d", params[1], params[0]) ;
-+        gr_con_printf (_("Mapa %d no disponible en el fichero %d"), params[1], params[0]) ;
++        gr_con_printf (_("Map %d is not available in file %d"), params[1], params[0]) ;
          return 0;
      }
  
@@ -953,7 +953,7 @@
      if (graph == NULL)
      {
 -        gr_error("Intento de grabar un gráfico inexistente\n(Libraría %d, gráfico %d)", params[0], params[1]);
-+        gr_error(_("Intento de grabar un gráfico inexistente\n(Libraría %d, gráfico %d)"), params[0], params[1]);
++        gr_error(_("Trying to save an unexistant graphic (library %d, graphic %d)"), params[0], params[1]);
      }
      else
      {
@@ -1084,7 +1084,7 @@
  		memcmp (header, "fnx\x1a\x0d\x0a", 7) != 0)
  	{
 -		gr_error ("gr_font_load: formato desconocido");
-+		gr_error (_("gr_font_load: formato desconocido"));
++		gr_error (_("gr_font_load: unknown format"));
  		return -1;
  	}
  
@@ -1102,7 +1102,7 @@
  	if (!file)
  	{
 -		gr_error ("gr_font_save: no se pudo crear el fichero %s", fullname);
-+		gr_error (_("gr_font_save: no se pudo crear el fichero %s"), fullname);
++		gr_error (_("gr_font_save: file '%s' could not be created"), fullname);
  		return 0;
  	}
  
@@ -1292,11 +1292,11 @@
  
      png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0) ;
 -    if (!png_ptr) gr_error ("Error al cargar PNG") ;
-+    if (!png_ptr) gr_error (_("Error al cargar PNG")) ;
++    if (!png_ptr) gr_error (_("Error loading PNG file")) ;
      info_ptr = png_create_info_struct (png_ptr) ;
      end_info = png_create_info_struct (png_ptr) ;
 -    if (!info_ptr || !end_info) gr_error ("Error al cargar PNG") ;
-+    if (!info_ptr || !end_info) gr_error (_("Error al cargar PNG")) ;
++    if (!info_ptr || !end_info) gr_error (_("Error loading PNG file")) ;
  
      /* Rutina de error */
  
@@ -1305,7 +1305,7 @@
      rowbytes = png_get_rowbytes (png_ptr, info_ptr) ;
      bitmap = bitmap_new (0, width, height, color == PNG_COLOR_TYPE_PALETTE ? 8 : 16, 1) ;
 -    if (!bitmap) gr_error ("Error al cargar PNG") ;
-+    if (!bitmap) gr_error (_("Error al cargar PNG")) ;
++    if (!bitmap) gr_error (_("Error loading PNG file")) ;
      if (color == PNG_COLOR_TYPE_PALETTE)
      {
          /* Read the color palette */
@@ -1348,7 +1348,7 @@
              case MN_SYSCALL:
                  p = sysproc_get (ptr[1]) ;
 -                if (!p) gr_error ("Error: Función del sistema desconocida\n") ;
-+                if (!p) gr_error (_("Error: Función del sistema desconocida\n")) ;
++                if (!p) gr_error (_("Error: unknown system function\n")) ;
                  stack_ptr -= p->params ;
                  *stack_ptr = (*p->func) (r, stack_ptr) ;
                  stack_ptr++ ;
@@ -1357,7 +1357,7 @@
              case MN_SYSPROC:
                  p = sysproc_get (ptr[1]) ;
 -                if (!p) gr_error ("Error: Procedimiento del sistema desconocido\n") ;
-+                if (!p) gr_error (_("Error: Procedimiento del sistema desconocido\n")) ;
++                if (!p) gr_error (_("Error: unknown system procedure\n")) ;
                  stack_ptr -= p->params ;
                  (*p->func) (r, stack_ptr) ;
                  ptr += 2 ;
@@ -1366,7 +1366,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = (int) &LOCDWORD(i, ptr[1]) ;
                  ptr += 2 ;
@@ -1375,7 +1375,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = (int) &PUBDWORD(i, ptr[1]) ;
                  ptr += 2 ;
@@ -1384,7 +1384,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = LOCDWORD(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1393,7 +1393,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = PUBDWORD(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1402,7 +1402,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = LOCDWORD(i,ptr[1]) ;
                  string_use     ( stack_ptr[-1] ) ;
@@ -1411,7 +1411,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = PUBDWORD(i,ptr[1]) ;
                  string_use     ( stack_ptr[-1] ) ;
@@ -1420,7 +1420,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = LOCWORD(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1429,7 +1429,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = PUBWORD(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1438,7 +1438,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = (signed char) LOCBYTE(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1447,7 +1447,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = LOCBYTE(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1456,7 +1456,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = (signed char) PUBBYTE(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1465,7 +1465,7 @@
                  i = instance_get (stack_ptr[-1]) ;
                  if (i == 0)
 -                    gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
-+                    gr_error (_("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
++                    gr_error (_("Error executing process %s (%d): Inactive procedure %d\n"), proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                  else
                      stack_ptr[-1] = PUBBYTE(i,ptr[1]) ;
                  ptr += 2 ;
@@ -1474,7 +1474,7 @@
              case MN_FLOAT | MN_DIV:
                  if (*((float *)&stack_ptr[-1]) == 0.0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(float *)&stack_ptr[-2] /= *((float *)&stack_ptr[-1]) ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1483,7 +1483,7 @@
              case MN_DIV:
                  if (stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  stack_ptr[-2] /= stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1492,7 +1492,7 @@
              case MN_DIV | MN_UNSIGNED:
                  if (stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  stack_ptr[-2] = (Uint32)stack_ptr[-2] / (Uint32)stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1501,7 +1501,7 @@
              case MN_MOD:
                  if (stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  stack_ptr[-2] %= stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1510,7 +1510,7 @@
              case MN_MOD | MN_UNSIGNED:
                  if (stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  stack_ptr[-2] = (Uint32)stack_ptr[-2] % (Uint32)stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1519,7 +1519,7 @@
              case MN_VARDIV | MN_UNSIGNED:
                  if (stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(Sint32 *)(stack_ptr[-2]) /= stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1528,7 +1528,7 @@
              case MN_VARMOD | MN_UNSIGNED:
                  if (stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(Sint32 *)(stack_ptr[-2]) %= stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1537,7 +1537,7 @@
              case MN_WORD | MN_VARDIV | MN_UNSIGNED:
                  if ((Sint16)stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(Sint16 *)(stack_ptr[-2]) /= (Sint16)stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1546,7 +1546,7 @@
              case MN_WORD | MN_VARMOD | MN_UNSIGNED:
                  if ((Sint16)stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(Sint16 *)(stack_ptr[-2]) %= (Sint16)stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1555,7 +1555,7 @@
              case MN_BYTE | MN_VARDIV | MN_UNSIGNED:
                  if ((Uint8)stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(Uint8 *)(stack_ptr[-2]) /= (Uint8)stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1564,7 +1564,7 @@
              case MN_BYTE | MN_VARMOD | MN_UNSIGNED:
                  if ((Uint8)stack_ptr[-1] == 0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(Uint8 *)(stack_ptr[-2]) %= (Uint8)stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1573,7 +1573,7 @@
              case MN_FLOAT | MN_VARDIV:
                  if (*(float *)&stack_ptr[-1] == 0.0)
 -                    gr_error ("Error: Division por cero\n") ;
-+                    gr_error (_("Error: Division por cero\n")) ;
++                    gr_error (_("Error: division by zero\n")) ;
                  *(float *)(stack_ptr[-2]) /= *(float *)&stack_ptr[-1] ;
                  stack_ptr-- ;
                  ptr++ ;
@@ -1582,7 +1582,7 @@
                  PROCDEF * proct = procdef_get (ptr[1]) ;
                  if (!proct)
 -                    gr_error ("Error: Procedimiento desconocido\n") ;
-+                    gr_error (_("Error: Procedimiento desconocido\n")) ;
++                    gr_error (_("Error: unknown procedure\n")) ;
                  *stack_ptr++ = proct->type ;
                  ptr += 2 ;
                  break ;
@@ -1591,7 +1591,7 @@
  
              default:
 -                gr_error ("Error: Mnemonico 0x%02X no implementado en %s\n", *ptr, proc->name) ;
-+                gr_error (_("Error: Mnemonico 0x%02X no implementado en %s\n"), *ptr, proc->name) ;
++                gr_error (_("Error: unimplemented mnemonic 0x%02X in %s\n"), *ptr, proc->name) ;
  
          }
  
@@ -1616,7 +1616,7 @@
  				break;
  			default:
 -				gr_error ("No es posible grabar esta estructura");
-+				gr_error (_("No es posible grabar esta estructura"));
++				gr_error (_("Cannot save this structure"));
  				break;
  		}
  		break;
@@ -1634,7 +1634,7 @@
  				break;
  			default:
 -				gr_error ("No es posible recuperar esta estructura");
-+				gr_error (_("No es posible recuperar esta estructura"));
++				gr_error (_("Cannot recover this structure"));
  				break;
  		}
  		break;
@@ -1715,7 +1715,7 @@
      {
          if (report_string) {
 -            gr_con_printf ("[STRING] string_discard: String %d released but already discarted\n", code) ;
-+            gr_con_printf (_("[STRING] string_discard: String %d released but already discarted\n"), code) ;
++            gr_con_printf (_("[STRING] string_discard: String %d released but already discarded\n"), code) ;
          }
          return ;
      }
@@ -1731,7 +1731,7 @@
      {
          if (report_string) {
 -            gr_con_printf ("[STRING] string_discard: String %d released and discarted\n", code) ;
-+            gr_con_printf (_("[STRING] string_discard: String %d released and discarted\n"), code) ;
++            gr_con_printf (_("[STRING] string_discard: String %d released and discarded\n"), code) ;
          }
  
          if (!string_dontfree[code]) {
@@ -1740,10 +1740,10 @@
          if (report_string ) {
              if ( string_dontfree[code]) {
 -                gr_con_printf ("[STRING] string_discard: (Memory don't freed - %d is special string, count: %d)\n", code, string_uct[code]) ;
-+                gr_con_printf (_("[STRING] string_discard: (Memory don't freed - %d is special string, count: %d)\n"), code, string_uct[code]) ;
++                gr_con_printf (_("[STRING] string_discard: (Memory could not be freed - %d is special string, count: %d)\n"), code, string_uct[code]) ;
              } else {
 -                gr_con_printf ("[STRING] string_discard: String %d released and discarted (count: %d)\n", code, string_uct[code]) ;
-+                gr_con_printf (_("[STRING] string_discard: String %d released and discarted (count: %d)\n"), code, string_uct[code]) ;
++                gr_con_printf (_("[STRING] string_discard: String %d released and discarded (count: %d)\n"), code, string_uct[code]) ;
              }
          }
      }
@@ -1770,7 +1770,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (newa) String %d created: \"%s\"\n", id, str) ;
-+        gr_con_printf (_("[STRING] (newa) String %d created: \"%s\"\n"), id, str) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "newa", id, str) ;
      }
  
      return id ;
@@ -1779,7 +1779,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (add) String %d created: \"%s\"\n", id, str3) ;
-+        gr_con_printf (_("[STRING] (add) String %d created: \"%s\"\n"), id, str3) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "add", id, str3) ;
      }
  
      return id ;
@@ -1788,7 +1788,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (ptoa) String %d created: \"%s\"\n", id, str) ;
-+        gr_con_printf (_("[STRING] (ptoa) String %d created: \"%s\"\n"), id, str) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "ptoa", id, str) ;
      }
  
      return id ;
@@ -1797,7 +1797,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (ftoa) String %d created: \"%s\"\n", id, str) ;
-+        gr_con_printf (_("[STRING] (ftoa) String %d created: \"%s\"\n"), id, str) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "ftoa", id, str) ;
      }
  
      return id ;
@@ -1806,7 +1806,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (itoa) String %d created: \"%s\"\n", id, str) ;
-+        gr_con_printf (_("[STRING] (itoa) String %d created: \"%s\"\n"), id, str) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "itoa", id, str) ;
      }
  
      return id ;
@@ -1815,7 +1815,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (uitoa) String %d created: \"%s\"\n", id, str) ;
-+        gr_con_printf (_("[STRING] (uitoa) String %d created: \"%s\"\n"), id, str) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "uitoa", id, str) ;
      }
  
      return id ;
@@ -1824,7 +1824,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (substr) String %d created: \"%s\"\n", n, ptr) ;
-+        gr_con_printf (_("[STRING] (substr) String %d created: \"%s\"\n"), n, ptr) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "substr", n, ptr) ;
      }
  
      return n ;
@@ -1833,7 +1833,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (ucase) String %d created: \"%s\"\n", id, bptr) ;
-+        gr_con_printf (_("[STRING] (ucase) String %d created: \"%s\"\n"), id, bptr) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "ucase", id, bptr) ;
      }
  
      return id ;
@@ -1842,7 +1842,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (lcase) String %d created: \"%s\"\n", id, bptr) ;
-+        gr_con_printf (_("[STRING] (lcase) String %d created: \"%s\"\n"), id, bptr) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "lcase", id, bptr) ;
      }
  
      return id ;
@@ -1851,7 +1851,7 @@
  
      if (report_string){
 -        gr_con_printf ("[STRING] (pad) String %d created: \"%s\"\n", id, str) ;
-+        gr_con_printf (_("[STRING] (pad) String %d created: \"%s\"\n"), id, str) ;
++        gr_con_printf (_("[STRING] (%s) String %d created: \"%s\"\n"), "pad", id, str) ;
      }
  
      return id ;
@@ -1876,7 +1876,7 @@
              return (((Uint8 *)dest->data)[x/8 + dest->pitch*y] & (0x80 >> (x & 7))) ? 1:0;
          default:
 -            gr_error ("gr_get_pixel: Profundidad de color no soportada");
-+            gr_error (_("gr_get_pixel: Profundidad de color no soportada"));
++            gr_error (_("gr_get_pixel: Unsupported colour depth"));
              return 0;
      }
  }
@@ -1885,7 +1885,7 @@
              break;
          default:
 -            gr_error ("gr_put_pixel: Profundidad de color no soportada");
-+            gr_error (_("gr_put_pixel: Profundidad de color no soportada"));
++            gr_error (_("gr_put_pixel: Unsupported colour depth"));
      }
  }
  
@@ -1894,7 +1894,7 @@
              break;
          default:
 -            gr_error ("gr_clear_as: Profundidad de color no soportada");
-+            gr_error (_("gr_clear_as: Profundidad de color no soportada"));
++            gr_error (_("gr_clear_as: Unsupported colour depth"));
      }
  
      if (dest == background && !color)
@@ -2233,7 +2233,7 @@
  		{
 -			gr_error ( FXI_VERSION "\nCopyright(C) 2002 Fenix Team\nCopyright (C)1999 Jose Luis Cebrian\n"
 +			gr_error ( _("Fenix 0.92 FXI\nCopyright (C) 2002 Fenix Team\n"
-+				"Copyright (C) 1999 José Luis Cebrián Pagüe\n"
++				"Copyright (C) 1999 Jose Luis Cebrian Pague\n"
  				"Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n"
  				"Usage: %s [options] file.dcb\n\n"
  				"   -d       Activate DEBUG mode\n"
@@ -2276,7 +2276,7 @@
  
  	if (file_read (fp, &header, sizeof(FPL_HEADER)) != sizeof(FPL_HEADER)) {
 -		fpl_error = "Error de lectura" ;
-+		fpl_error = _("Error de lectura") ;
++		fpl_error = _("Read error") ;
  		return 0 ;
  	}
  
@@ -2459,7 +2459,7 @@
      	/* Open the audio device */
      	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
 -    		gr_con_printf ("[SOUND] No se pudo inicializar el audio: %s\n",SDL_GetError()) ;
-+    		gr_con_printf (_("[SOUND] No se pudo inicializar el audio: %s\n"),SDL_GetError()) ;
++    		gr_con_printf (_("[SOUND] Audio could not be initialized: %s\n"),SDL_GetError()) ;
      		sound_active=0;
      		return;
      	} else {
@@ -2482,7 +2482,7 @@
  	if ( music == NULL ) {
  	    file_close(fp);
 -		gr_con_printf("Couldn't load %s: %s\n",filename, SDL_GetError());
-+		gr_con_printf(_("Couldn't load %s: %s\n"),filename, SDL_GetError());
++		gr_con_printf(_("Could not load '%s': %s\n"),filename, SDL_GetError());
  		return(-1);
  	} else {
  		return ((int)music);
@@ -2688,7 +2688,7 @@
  		}
  	} else {
 -		gr_error ("%s: Non supported color depth\n", filename) ;
-+		gr_error (_("%s: Non supported color depth\n"), filename) ;
++		gr_error (_("%s: unsupported color depth\n"), filename) ;
  	}
  
  	bitmap->modified = 1 ;
@@ -2799,7 +2799,7 @@
  	if (file_write(fp, &header, sizeof(FGC_HEADER)) != sizeof(FGC_HEADER))
  	{
 -		fgc_error = "Error escribiendo en fichero FGC";
-+		fgc_error = _("Error escribiendo en fichero FGC");
++		fgc_error = _("Error writing FGC file");
  		file_close (fp);
  		return 0;
  	} 
@@ -3442,9 +3442,9 @@
  
  void help ()
  {
--	printf ("MAP Utility v0.75\nCopyright (C) 1999 José Luis Cebrián Pagüe\nCopyright (C) 2002 Fenix Team\n"
+-	printf ("MAP Utility v0.75\nCopyright (C) 1999 Jose Luis Cebrian Pague\nCopyright (C) 2002 Fenix Team\n"
 -		"This utility comes with ABSOLUTELY NO WARRANTY; map -h for details\n\n") ;
-+	printf (_("MAP Utility v0.75\nCopyright (C) 1999 José Luis Cebrián Pagüe\n"
++	printf (_("MAP Utility v0.75\nCopyright (C) 1999 Jose Luis Cebrian Pague\n"
 +		"Copyright (C) 2002 Fenix Team\n"
 +		"This utility comes with ABSOLUTELY NO WARRANTY; map -h for details\n\n")) ;
  
