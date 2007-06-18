@@ -68,6 +68,7 @@ install: build
 		for f in *; do \
 			mv "$$f" "fenix$(FENIX_VERSION)-$$f" ; \
 		done
+	$(MAKE) -C debian/i18n install INSTALLPREFIX=$(CURDIR)/debian/tmp/usr/share/locale/
 
 # Build architecture-independent files here.
 binary-indep: build install

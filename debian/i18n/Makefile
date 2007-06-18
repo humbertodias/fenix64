@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-LOCALEDIR=./
+INSTALLPREFIX=./
 
 all: fenix0.92-fxc.pot fenix0.92-fxi.pot build
 
@@ -55,7 +55,7 @@ install: build-stamp
 		lang=`echo $$i | awk -F_ '{print $$2}'` ; \
 		file=`echo $$i | awk -F_ '{print $$1}'` ; \
 		echo Installing Language \"$$lang\" for \"$$file\" ; \
-		install -d $(LOCALEDIR)$$lang ; \
-		install -p -d -m 755 $(LOCALEDIR)$$lang/LC_MESSAGES ; \
-		install -m 644 $$f $(LOCALEDIR)$$lang/LC_MESSAGES/$$file.mo; \
+		install -d $(INSTALLPREFIX)$$lang ; \
+		install -p -d -m 755 $(INSTALLPREFIX)$$lang/LC_MESSAGES ; \
+		install -m 644 $$f $(INSTALLPREFIX)$$lang/LC_MESSAGES/$$file.mo; \
 	done
