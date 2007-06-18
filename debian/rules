@@ -18,6 +18,8 @@ else
 	CFLAGS += -O2
 endif
 
+CFLAGS += -DUSE_GETTEXT
+
 config.status: configure
 	dh_testdir
 	$(MAKE) -f /usr/share/quilt/quilt.make patch
@@ -37,13 +39,14 @@ endif
 		--enable-fpg \
 		--enable-dependency-tracking \
 		--prefix=/usr --mandir=\$${prefix}/share/man \
-		--infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" \
+		--infodir=\$${prefix}/share/info \
+		CFLAGS="$(CFLAGS)" \
 		LDFLAGS="-Wl,-z,defs"
 
 build: build-stamp
 build-stamp:  config.status
 	dh_testdir
-	$(MAKE)
+	$(MAKE) CFLAGS="$(CFLAGS)"
 	$(MAKE) -C debian/i18n
 	#docbook-to-man debian/fenix$(FENIX_VERSION).sgml > fenix$(FENIX_VERSION).1
 	touch $@
