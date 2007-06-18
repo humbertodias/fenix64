@@ -17,7 +17,7 @@
 
 LOCALEDIR=./
 
-all: fenix0.92-fxc.pot fenix0.92-fxi.pot
+all: fenix0.92-fxc.pot fenix0.92-fxi.pot build
 
 fenix0.92-fxc.pot:
 	cd ../.. && \
@@ -39,8 +39,8 @@ build: build-stamp
 build-stamp:
 	for f in *.po; do \
 		i=`basename $$f .po` ; \
-		echo Building Language \"$$i\"; \
-		msgfmt $$f -o $$i.mo; \
+		echo Building Language File \"$$i.mo\" ; \
+		msgfmt -v $$f -o $$i.mo || exit 1 ;\
 	done
 	touch build-stamp
 
@@ -51,12 +51,11 @@ clean:
 	rm -f build-stamp
 
 install: build-stamp
-	for f in *.mo; do i=`basename $$f .mo`; \
-		echo Installing Language \"$$i\"; \
-		install -d $(LOCALEDIR)$$i; \
-		install -p -d -m 755 $(LOCALEDIR)$$i/LC_MESSAGES ; \
-		install -m 644 $$f $(LOCALEDIR)$$i/LC_MESSAGES/fenix.mo; \
+	for f in *.mo; do i=`basename $$f .mo` ; \
+		lang=`echo $$i | awk -F. '{print $$2}'` ; \
+		file=`echo $$i | awk -F. '{print $$1}'` ; \
+		echo Installing Language \"$$lang\" for \"$file$\" ; \
+		install -d $(LOCALEDIR)$$lang ; \
+		install -p -d -m 755 $(LOCALEDIR)$$lang/LC_MESSAGES ; \
+		install -m 644 $$f $(LOCALEDIR)$$lang/LC_MESSAGES/$$file.mo; \
 	done
-
-uninstall:
-

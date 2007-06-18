@@ -152,7 +152,7 @@
  					map_8to16 (maps[n_maps]) ;
  				if (!is_16bits && maps[n_maps]->depth == 16)
 -					fatal_error ("Error: intento de añadir un gráfico de 16 bits a un FPG de 8\n") ;
-+					fatal_error (_("Error: a 16 bit graphics cannot be added to an 8 bit FPG file\n")) ;
++					fatal_error (_("Error: trying to add a 16 bit graphic to an 8 bit FPG file\n")) ;
  				n_maps++ ;
  			}
  		}
@@ -177,7 +177,7 @@
  	{
  		if (is_16bits)
 -			fatal_error ("Error: intento de extraer la paleta a un FPG de 16 bits\n") ;
-+			fatal_error (_("Error: a colour palette cannot be extracted from a 16 bit FPG file\n")) ;
++			fatal_error (_("Error: trying to extract the palette from a 16 bit FPG file\n")) ;
  
  		set_extension (filename, ".pal", fname2) ;
  		ofile2 = fopen (fname2, "wb") ;
@@ -412,7 +412,7 @@
  				break ;
  			default:
 -				fatal_error ("Error: Acción no disponible\n") ;
-+				fatal_error (_("Error: Action not available\n")) ;
++				fatal_error (_("Error: action not available\n")) ;
  		}
  	}
  
@@ -439,10 +439,10 @@
 +#define _(String) String
 +#endif
 +
-+#define MSG_FILE_NOT_FOUND      _("%s: file not found")
-+#define MSG_FILE_TOO_BIG        _("%s: file too big")
-+#define MSG_FILE_EMPTY          _("%s: file is empty")
-+#define MSG_READ_ERROR          _("%s: file reading error")
++#define MSG_FILE_NOT_FOUND      _("'%s': file not found")
++#define MSG_FILE_TOO_BIG        _("'%s': file too big")
++#define MSG_FILE_EMPTY          _("'%s': file is empty")
++#define MSG_READ_ERROR          _("'%s': file reading error")
 +#define MSG_DIRECTORY_MISSING   _("You must specify a directory")
 +#define MSG_TOO_MANY_FILES      _("Too many files specified")
 +#define MSG_USING               _("Usage: %s [options] filename\n\n")
@@ -518,10 +518,10 @@
 -#define MSG_VARIABLE_ERROR      "Variable already defined as process, expected type or variable name"
 -#define MSG_PROTO_ERROR         "Conflict with previous declaration"
 +                                "Read the file COPYING for details\n\n")
-+#define MSG_COMPILE_ERROR       _("Error in file %s at line %d: %s ")
++#define MSG_COMPILE_ERROR       _("Error in file '%s' at line %d: %s ")
 +#define MSG_CONSTANT_NAME_EXP   _("Constant name expected")
 +#define MSG_INVALID_IDENTIFIER  _("Invalid identifier")
-+#define MSG_EXPECTED            _("\"%s\" expected")
++#define MSG_EXPECTED            _("'%s' expected")
 +#define MSG_PROCNAME_EXP        _("Procedure name expected")
 +#define MSG_INVALID_PARAM       _("Parameter name invalid")
 +#define MSG_INVALID_PARAMT      _("Parameter type invalid")
@@ -1989,7 +1989,7 @@
  				break;
  			default:
 -				gr_error ("No es posible copiar esta estructura");
-+				gr_error (_("Cannot not copy this structure"));
++				gr_error (_("Cannot copy this structure"));
  				break;
  		}
  		break;
@@ -3165,7 +3165,7 @@
          } else if (show_public) {
              if (!i) {
 -                gr_con_printf ("Use: PUBLICS process");
-+                gr_con_printf (_("Use: PUBLICS process"));
++                gr_con_printf (_("Usage: PUBLICS process"));
                  return;
              }
              for (var = 0 ; var < dcb.proc[i->proc->type].data.NPubVars ; var++)
@@ -3174,7 +3174,7 @@
          } else {
              if (!i) {
 -                gr_con_printf ("Use: PRIVATES process");
-+                gr_con_printf (_("Use: PRIVATES process"));
++                gr_con_printf (_("Usage: PRIVATES process"));
                  return;
              }
              for (var = 0 ; var < dcb.proc[i->proc->type].data.NPriVars ; var++)
@@ -3524,7 +3524,7 @@
  	Uint16		* orig ;
  
 -	if (!file) fatal_error ("%s: error al crear", filename) ;
-+	if (!file) fatal_error (_("%s: error al crear"), filename) ;
++	if (!file) fatal_error (_("'%s': error creating file"), filename) ;
  
      rowpointers = malloc( sizeof(png_bytep) * map->header.height );
      if ( !rowpointers ) {
@@ -3635,7 +3635,7 @@
  	    strcmp (header, FNT_MAGIC) != 0 &&
  	    strcmp (header, PAL_MAGIC) != 0)
 -		fatal_error ("%s: no es un fichero de paleta válido", filename) ;
-+		fatal_error (_("%s: not a valid colour palette file"), filename) ;
++		fatal_error (_("'%s': not a valid colour palette file"), filename) ;
  
  	gzread (file, here, PALETTE_SIZE) ;
  	gzclose (file) ;
