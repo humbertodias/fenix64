@@ -52,9 +52,9 @@ clean:
 
 install: build-stamp
 	for f in *.mo; do i=`basename $$f .mo` ; \
-		lang=`echo $$i | awk -F. '{print $$2}'` ; \
-		file=`echo $$i | awk -F. '{print $$1}'` ; \
-		echo Installing Language \"$$lang\" for \"$file$\" ; \
+		lang=`echo $$i | awk -F_ '{print $$2}'` ; \
+		file=`echo $$i | awk -F_ '{print $$1}'` ; \
+		echo Installing Language \"$$lang\" for \"$$file\" ; \
 		install -d $(LOCALEDIR)$$lang ; \
 		install -p -d -m 755 $(LOCALEDIR)$$lang/LC_MESSAGES ; \
 		install -m 644 $$f $(LOCALEDIR)$$lang/LC_MESSAGES/$$file.mo; \
