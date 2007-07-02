@@ -4,4 +4,4 @@ i18n_fxi.patch
 i18n_fpg.patch
 i18n_map.patch
 #fxi_binname.patch
-#fxc_nosdlinit.patch
+fxc_nosdlinit.patch

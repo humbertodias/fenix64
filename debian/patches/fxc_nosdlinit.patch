@@ -1,6 +1,6 @@
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c
-+++ fenix0.92-0.92a.dfsg1/fxc/src/main.c
-@@ -134,14 +154,6 @@
+--- fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c	2007-07-02 18:29:53.000000000 +0000
++++ fenix0.92-0.92a.dfsg1/fxc/src/main.c	2007-07-02 18:26:59.000000000 +0000
+@@ -154,14 +154,6 @@
  
  	srand (time(NULL)) ;
  
@@ -8,7 +8,7 @@
 -
 -	if ( SDL_Init (SDL_INIT_VIDEO) < 0 )
 -	{
--		printf ("SDL Init Error: %s\n", SDL_GetError()) ;
+-		fprintf (stderr, _("SDL Init Error: %s\n"), SDL_GetError()) ;
 -		exit(1) ;
 -	}
 -
