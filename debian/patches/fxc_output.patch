@@ -1,0 +1,85 @@
+--- fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c
++++ fenix0.92-0.92a.dfsg1/fxc/src/main.c
+@@ -114,6 +114,7 @@
+ {
+     char * filename = 0 ;
+ 	char dcbname[256] ;
++	char outname[256] = "";
+ 	char stubname[256] = "";
+ 	int i, j ;
+ 
+@@ -226,6 +227,17 @@
+ 					break ;
+ 				}
+ 
++				if (argv[i][j] == 'o')
++				{
++					// -o "output": Write to a certain file
++
++					if (argv[i][j+1])
++						strncpy (outname, argv[i]+j+1, 256);
++					else if (argv[i+1] && (argv[i+1][0] != '-' || argv[i+1][1] == '\0'))
++						strncpy (outname, argv[++i], 256);
++					break;
++				}
++
+ 				j++ ;
+ 			}
+ 		}
+@@ -246,10 +258,17 @@
+ 		return 0 ;
+ 	}
+ 
+-	strcpy (dcbname, filename) ;
+-	if (strrchr(dcbname, '.'))
+-		*strrchr(dcbname, '.') = 0 ;
+-	strcat (dcbname, ".dcb") ;
++	if (*outname)
++	{
++		strcpy (dcbname, outname) ;
++	}
++	else
++	{
++		strcpy (dcbname, filename) ;
++		if (strrchr(dcbname, '.'))
++			*strrchr(dcbname, '.') = 0 ;
++		strcat (dcbname, ".dcb") ;
++	}
+ 
+ 	memset (&dcb, 0, sizeof(dcb));
+ 
+--- fenix0.92-0.92a.dfsg1.orig/common/files.c
++++ fenix0.92-0.92a.dfsg1/common/files.c
+@@ -460,6 +460,22 @@
+ 	memset (f, 0, sizeof(file)) ;
+ 	strncpy (f->name, filename, MAX_PATH);
+ 
++	if (strcmp(filename, "-") == 0 && strchr(mode,'w'))
++	{
++		f->type = F_STDFILE;
++		f->fp = stdout;
++		opened_files++;
++		return f ;
++	}
++
++	if (strcmp(filename, "-") == 0 && strchr(mode,'r'))
++	{
++		f->type = F_STDFILE;
++		f->fp = stdin;
++		opened_files++;
++		return f ;
++	}
++
+ 	c = filename ;
+ 	for (n = c+strlen(c) ; n >= c ; n--)
+ 	{
+--- fenix0.92-0.92a.dfsg1.orig/include/files_st.h
++++ fenix0.92-0.92a.dfsg1/include/files_st.h
+@@ -39,6 +39,7 @@
+ #define F_XFILE  1
+ #define F_FILE   2
+ #define F_GZFILE 3
++#define F_STDFILE 4
+ 
+ #include <zlib.h>
+ 
