@@ -1,3 +1,11 @@
+fenix0.92 (0.92a.dfsg1-5) UNRELEASED; urgency=low
+
+  * Divided i18n patches into smaller ones.
+  * Fixed some messages missing from the gettextization.
+  * Added icons.
+
+ -- Miriam Ruiz <little_miry@yahoo.es>  Mon, 02 Jul 2007 18:23:10 +0000
+
 fenix0.92 (0.92a.dfsg1-4) unstable; urgency=low
 
   * All the messages translated to proper English.
