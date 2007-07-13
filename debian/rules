@@ -52,8 +52,8 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
-	-$(MAKE) distclean
-	-$(MAKE) -C debian/i18n clean
+	[ ! -f Makefile ] || $(MAKE) distclean
+	$(MAKE) -C debian/i18n clean
 	rm -f config.{sub,guess}
 	$(MAKE) -f /usr/share/quilt/quilt.make unpatch
 	dh_clean 

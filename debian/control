@@ -22,7 +22,7 @@ Description: runtime environment for executing 2D games made with fenix
 
 Package: fenix
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, fenix0.92-runtime (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, fenix-runtime (= ${binary:Version})
 Description: development environment for making 2D games
  Fenix is an interpreted script programming language, especially designed to
  developing and running 2D games. It has a full graphic library, sound engine
