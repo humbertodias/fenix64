@@ -17,9 +17,9 @@
 
 INSTALLPREFIX=./
 
-all: fenix0.92-fxc.pot fenix0.92-fxi.pot build
+all: fenix-fxc.pot fenix-fxi.pot build
 
-fenix0.92-fxc.pot:
+fenix-fxc.pot:
 	cd ../.. && \
 		xgettext \
 			-k_ \
@@ -27,7 +27,7 @@ fenix0.92-fxc.pot:
 			--from-code=iso-8859-1 \
 			`grep -r libintl.h fxc fpg map | awk -F: '{print $$1}' | grep -E .*[cChH]$$ | sort --unique`
 
-fenix0.92-fxi.pot:
+fenix-fxi.pot:
 	cd ../.. && \
 		xgettext \
 			-k_ \

@@ -274,8 +274,8 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/map/map.c fenix0.92-0.92a.dfsg1/map/map.c
 +	setlocale (LC_MESSAGES, "");
 +	setlocale (LC_CTYPE, "");
 +	setlocale (LC_COLLATE, "");
-+	textdomain ("fenix0.92-fxc");
-+	bindtextdomain ("fenix0.92-fxc", NULL);
++	textdomain ("fenix-fxc");
++	bindtextdomain ("fenix-fxc", NULL);
 +#endif
 +
  	for (i = 1 ; i < argc ; i++)

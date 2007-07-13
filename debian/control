@@ -1,12 +1,14 @@
-Source: fenix0.92
+Source: fenix
 Section: devel
 Priority: extra
 Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org> 
 Uploaders: Miriam Ruiz <little_miry@yahoo.es>
-Build-Depends: dpkg-dev (>= 1.13.19), debhelper (>= 5), quilt, autotools-dev, libsdl1.2-dev, libsdl-mixer1.2-dev, zlib1g-dev, libungif4-dev, libpng12-dev, libsmpeg-dev, libmikmod2-dev, libvorbis-dev
+Build-Depends: dpkg-dev (>= 1.13.19), debhelper (>= 5), quilt, autotools-dev,
+ libsdl1.2-dev, libsdl-mixer1.2-dev, zlib1g-dev, libungif4-dev, libpng12-dev,
+ libsmpeg-dev, libmikmod2-dev, libvorbis-dev
 Standards-Version: 3.7.2
 
-Package: fenix0.92-runtime
+Package: fenix-runtime
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: runtime environment for executing 2D games made with fenix
@@ -18,7 +20,7 @@ Description: runtime environment for executing 2D games made with fenix
  .
   Homepage: http://fenix.divsite.net/
 
-Package: fenix0.92
+Package: fenix
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, fenix0.92-runtime (= ${binary:Version})
 Description: development environment for making 2D games

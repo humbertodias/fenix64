@@ -428,8 +428,8 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c fenix0.92-0.92a.dfsg1/fxc/sr
 +	setlocale (LC_MESSAGES, "");
 +	setlocale (LC_CTYPE, "");
 +	setlocale (LC_COLLATE, "");
-+	textdomain ("fenix0.92-fxc");
-+	bindtextdomain ("fenix0.92-fxc", NULL);
++	textdomain ("fenix-fxc");
++	bindtextdomain ("fenix-fxc", NULL);
 +#endif
 +
 +	fprintf (stderr, _("Fenix 0.92 FXC - Copyright (C) 1999 Jose Luis Cebrian Pague\n")) ;

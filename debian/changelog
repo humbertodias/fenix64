@@ -1,4 +1,11 @@
-fenix0.92 (0.92a.dfsg1-5) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-1) UNRELEASED; urgency=low
+
+  * Renamed package to simply fenix
+  * Added patch to synchronize code against the latest CVS version
+
+ -- Miriam Ruiz <little_miry@yahoo.es>  Fri, 13 Jul 2007 21:30:27 +0000
+
+fenix0.92 (0.92a.dfsg1-5) unstable; urgency=low
 
   * Divided i18n patches into smaller ones.
   * Fixed some messages missing from the gettextization.

@@ -2369,8 +2369,8 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxi/src/main.c fenix0.92-0.92a.dfsg1/fxi/sr
 +	setlocale (LC_MESSAGES, "");
 +	setlocale (LC_CTYPE, "");
 +	setlocale (LC_COLLATE, "");
-+	textdomain ("fenix0.92-fxi");
-+	bindtextdomain ("fenix0.92-fxi", NULL);
++	textdomain ("fenix-fxi");
++	bindtextdomain ("fenix-fxi", NULL);
 +#endif
 +
  	/* Find out if we are calling fxi.exe or whatever.exe */

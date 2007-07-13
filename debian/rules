@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-FENIX_VERSION=0.92
-
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
@@ -48,7 +46,6 @@ build-stamp:  config.status
 	dh_testdir
 	$(MAKE) CFLAGS="$(CFLAGS)"
 	$(MAKE) -C debian/i18n
-	#docbook-to-man debian/fenix$(FENIX_VERSION).sgml > fenix$(FENIX_VERSION).1
 	touch $@
 
 clean:
@@ -69,7 +66,7 @@ install: build
 	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
 	cd $(CURDIR)/debian/tmp/usr/bin/ && \
 		for f in *; do \
-			mv "$$f" "fenix$(FENIX_VERSION)-$$f" ; \
+			mv "$$f" "fenix-$$f" ; \
 		done
 	$(MAKE) -C debian/i18n install INSTALLPREFIX=$(CURDIR)/debian/tmp/usr/share/locale/
 
@@ -99,10 +96,10 @@ get-orig-source:
 	dh_testdir
 	dh_testroot
 	wget http://switch.dl.sourceforge.net/sourceforge/fenix/fenix092a-src-release.tgz
-	rm -f ../fenix0.92_0.92a.dfsg1.orig.tar.gz
+	rm -f ../fenix_0.92a.dfsg1.orig.tar.gz
 	tar xvfz fenix092a-src-release.tgz
 	cd Fenix && rm -f `grep -i microsoft * -r | awk -F: '{print $$1}' | sort --unique`
-	tar cvfz ../fenix0.92_0.92a.dfsg1.orig.tar.gz Fenix/*
+	tar cvfz ../fenix_0.92a.dfsg1.orig.tar.gz Fenix/*
 	rm -rf Fenix fenix092a-src-release.tgz
 
 binary: binary-indep binary-arch
