@@ -48,38 +48,3 @@
  
  	memset (&dcb, 0, sizeof(dcb));
  
---- fenix0.92-0.92a.dfsg1.orig/common/files.c
-+++ fenix0.92-0.92a.dfsg1/common/files.c
-@@ -460,6 +460,22 @@
- 	memset (f, 0, sizeof(file)) ;
- 	strncpy (f->name, filename, MAX_PATH);
- 
-+	if (strcmp(filename, "-") == 0 && strchr(mode,'w'))
-+	{
-+		f->type = F_STDFILE;
-+		f->fp = stdout;
-+		opened_files++;
-+		return f ;
-+	}
-+
-+	if (strcmp(filename, "-") == 0 && strchr(mode,'r'))
-+	{
-+		f->type = F_STDFILE;
-+		f->fp = stdin;
-+		opened_files++;
-+		return f ;
-+	}
-+
- 	c = filename ;
- 	for (n = c+strlen(c) ; n >= c ; n--)
- 	{
---- fenix0.92-0.92a.dfsg1.orig/include/files_st.h
-+++ fenix0.92-0.92a.dfsg1/include/files_st.h
-@@ -39,6 +39,7 @@
- #define F_XFILE  1
- #define F_FILE   2
- #define F_GZFILE 3
-+#define F_STDFILE 4
- 
- #include <zlib.h>
- 

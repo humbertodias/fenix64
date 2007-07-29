@@ -2,6 +2,7 @@ fenix (0.92a.dfsg1-1) UNRELEASED; urgency=low
 
   * Renamed package to simply fenix
   * Added patch to synchronize code against the latest CVS version
+  * Added support for reading programs from stdin in the interpreter.
 
  -- Miriam Ruiz <little_miry@yahoo.es>  Fri, 13 Jul 2007 21:30:27 +0000
 
