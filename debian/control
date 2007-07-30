@@ -7,6 +7,8 @@ Build-Depends: dpkg-dev (>= 1.13.19), debhelper (>= 5), quilt, autotools-dev,
  libsdl1.2-dev, libsdl-mixer1.2-dev, zlib1g-dev, libungif4-dev, libpng12-dev,
  libsmpeg-dev, libmikmod2-dev, libvorbis-dev
 Standards-Version: 3.7.2
+XS-Vcs-Svn: svn://svn.debian.org/svn/pkg-games/packages/trunk/fenix/
+XS-Vcs-Browser: http://svn.debian.org/wsvn/pkg-games/packages/trunk/fenix/?op=log
 
 Package: fenix-runtime
 Architecture: any
