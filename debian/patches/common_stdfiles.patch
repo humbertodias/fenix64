@@ -1,3 +1,13 @@
+--- fenix-0.92a.dfsg1/include/files_st.h.orig	2007-07-31 14:31:07.000000000 +0000
++++ fenix-0.92a.dfsg1/include/files_st.h	2007-07-31 14:31:24.000000000 +0000
+@@ -39,6 +39,7 @@
+ #define F_XFILE  1
+ #define F_FILE   2
+ #define F_GZFILE 3
++#define F_STDFILE 4
+ 
+ #include <zlib.h>
+ 
 diff -ruN Fenix/common/files.c fenix-0.92a.dfsg1/common/files.c
 --- Fenix/common/files.c	2007-04-12 22:07:56.000000000 +0000
 +++ fenix-0.92a.dfsg1/common/files.c	2007-07-29 17:55:07.531111567 +0000
