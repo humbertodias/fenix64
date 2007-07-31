@@ -1,0 +1,21 @@
+diff -ruN fenix-0.92a.dfsg1.orig/fxi/src/main.c fenix-0.92a.dfsg1/fxi/src/main.c
+--- fenix-0.92a.dfsg1.orig/fxi/src/main.c	2007-07-31 13:59:25.000000000 +0000
++++ fenix-0.92a.dfsg1/fxi/src/main.c	2007-07-31 14:03:36.000000000 +0000
+@@ -302,7 +302,7 @@
+ 				"agreement (GNU GPL version 2 or later).\n"
+ 				"See COPYING for license details.\n"),
+ 				argv[0]) ;
+-			return 0 ;
++			return -1 ;
+ 		}
+ 	}
+ 
+@@ -340,7 +340,7 @@
+ 				if (!dcb_load(dcbname))
+ 				{
+ 					gr_error (_("'%s': file does not exist or it's not a DCB version %d file or compatible"), filename, DCB_VERSION >> 8) ;
+-					return -1 ;
++					return -2 ;
+ 				}
+ 			}
+ 		}

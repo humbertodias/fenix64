@@ -6,6 +6,7 @@ fenix (0.92a.dfsg1-1) UNRELEASED; urgency=low
   * Added support for reading programs from stdin in the interpreter.
   * Added fenix binary to compile and execute a game on the fly.
   * Put everything in a single package.
+  * Make fxc and fxi return proper values to signal errors in Linux.
 
   [ Cyril Brulebois ]
   * Added XS-Vcs-Svn and XS-Vcs-Browser fields in the control file.
