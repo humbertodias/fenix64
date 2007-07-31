@@ -4,7 +4,9 @@ fenix (0.92a.dfsg1-1) UNRELEASED; urgency=low
   * Renamed package to simply fenix
   * Added patch to synchronize code against the latest CVS version
   * Added support for reading programs from stdin in the interpreter.
-  
+  * Added fenix binary to compile and execute a game on the fly.
+  * Put everything in a single package.
+
   [ Cyril Brulebois ]
   * Added XS-Vcs-Svn and XS-Vcs-Browser fields in the control file.
 

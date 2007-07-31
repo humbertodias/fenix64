@@ -1,4 +1,7 @@
 usr/bin/*fpg
 usr/bin/*fxc
 usr/bin/*map
+usr/bin/*fxi
+usr/bin/fenix
+usr/share/locale/*/LC_MESSAGES/fenix-fxi.mo
 usr/share/locale/*/LC_MESSAGES/fenix-fxc.mo

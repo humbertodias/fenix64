@@ -10,26 +10,12 @@ Standards-Version: 3.7.2
 XS-Vcs-Svn: svn://svn.debian.org/svn/pkg-games/packages/trunk/fenix/
 XS-Vcs-Browser: http://svn.debian.org/wsvn/pkg-games/packages/trunk/fenix/?op=log
 
-Package: fenix-runtime
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: runtime environment for executing 2D games made with fenix
- Fenix is an interpreted script programming language, especially designed to
- developing and running 2D games. It has a full graphic library, sound engine
- and full featured 2D game engine, making game development extremely easy.
- .
- This package contains the interpreter needed to run games developed in fenix.
- .
-  Homepage: http://fenix.divsite.net/
-
 Package: fenix
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, fenix-runtime (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: development environment for making 2D games
  Fenix is an interpreted script programming language, especially designed to
  developing and running 2D games. It has a full graphic library, sound engine
  and full featured 2D game engine, making game development extremely easy.
- .
- This package contains the programs needed to develop games in fenix.
  .
   Homepage: http://fenix.divsite.net/
