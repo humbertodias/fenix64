@@ -86,12 +86,15 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
-	dh_installdocs
+	dh_installdocs --exclude=license.txt --exclude=authors.txt
 	dh_installexamples
-	dh_install --sourcedir=$(CURDIR)/debian/tmp
+	dh_install -pfenix --sourcedir=$(CURDIR)/debian/tmp
+	dh_install -pfenix-dev
+	cd $(CURDIR)/debian/fenix-dev && patch -p1 < $(CURDIR)/debian/patches/headers.patch
 	dh_installman
 	dh_link
 	dh_strip
+	for i in debian/fenix/usr/share/doc/fenix/*.txt; do gzip $$i; done
 	dh_compress
 	dh_fixperms
 	dh_installdeb

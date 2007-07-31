@@ -1,0 +1,233 @@
+Especificación del formato FBM (Fenix BitMap)
+
+Esta sección describe el contenido de un fichero FBM. No es necesario conocer
+estos detalles simplemente para programar juegos, pero serán de utilidad a
+quien quiera realizar utilidades en lenguajes externos que lean o escriban
+ficheros FBM.
+
+Un fichero FBM no incluye compresión. Fenix soporta de forma transparente el
+uso de compresión GZIP en los ficheros, sin necesidad de marcarlos
+especialmente con extensión .gz. Normalmente un fichero FBM se guarda en disco
+comprimido de esta manera, pero en el resto del fichero asumiremos que el
+fichero FBM no está comprimido.
+
+En la descripción siguiente, DWORD identifica un número entero de 4 bytes sin
+signo mientras INT indica entero de 4 bytes con signo. Estos valores se guardan
+siguiendo la codificación Intel de bytes en memoria, así que hay que darles
+la vuelta al leer o escribir el fichero en otras plataformas.
+
+Cabecera
+
+Un fichero FBM comienza con la siguiente cabecera:
+ ____________________________________________________________________________
+|Nombre_____|Tamaño__|Descripción____________________________________________|
+|           |        |Cadena de caracteres de identificación del fichero.    |
+|           |        |Debe contener exactamente "FenixBitmap" seguido de un  |
+|           |        |espacio y, a continuación, los cuatro bytes 1Ah, 0Dh,  |
+|MAGIC      |16 bytes|0Ah y 00h. Esta terminación indica, en un fichero MS-  |
+|           |        |DOS, final de fichero. Gracias a ella un comando TYPE  |
+|           |        |en MS-DOS no mostraría los datos binarios del fichero. |
+|           |        |En este formato se conserva por razones puramente      |
+|___________|________|nostálgicas.___________________________________________|
+|           |        |Código de versión. Se compone de un número mayor de    |
+|           |        |16 bits y un número menor de 16 bits. Actualmente es   |
+|           |        |0x0100. Si el formato se modificase en el futuro pero  |
+|VERSION    |DWORD   |de manera que los ficheros fuesen compatibles con el   |
+|           |        |formato actual, se incrementaría el número menor. Las  |
+|           |        |rutinas de carga deben rechazar un fichero FBM sólo si |
+|___________|________|el_número_mayor_no_es_01.______________________________|
+|           |        |Bits por pixel de la imagen. Actualmente sólo son      |
+|           |        |válidos 1, 8 ó 16. Este valor modifica en cierta       |
+|           |        |manera las secciones que aparecen a continuación (por  |
+|PROFUNDIDAD|DWORD   |ejemplo, un FBM de 8 bits siempre cuenta con una paleta|
+|           |        |de colores). Nota: Todavía no existe soporte completo  |
+|           |        |para gráficos de 1BPP desde fenix y por tanto no se    |
+|___________|________|debería_usar_este_modo_por_ahora_______________________|
+
+Descriptor
+
+Inmediatamente después de la cabecera aparece un bloque descriptor de 100
+bytes de contenido fijo. Se puede interpretar como una extensión de la
+cabecera:
+ ____________________________________________________________________________
+|Nombre______|Tamaño__|Descripción___________________________________________|
+|            |        |Cadena ASCIIZ con el nombre del gráfico (opcional). El|
+|NOMBRE      |64 bytes|nombre puede ocupar exactamente 64 caracteres, con lo |
+|____________|________|que_sólo_en_ese_caso_no_se_guardará_el_0_terminal.____|
+|            |        |Ancho en pixels del gráfico. A partir de este ancho se|
+|            |        |puede calcular la cantidad de memoria en bytes que    |
+|            |        |ocupa una fila del gráfico en disco, y que depende de |
+|            |        |la PROFUNDIDAD de la cabecera:                        |
+|            |        |    * Profundidad 1: (ancho+7) / 8, redondeado hacia  |
+|ANCHO       |DWORD   |      abajo. Las filas, al guardarse en disco, se     |
+|            |        |      incrementan con bits a cero hasta ocupar un     |
+|            |        |      número exacto de bytes, pero sólo si el ancho   |
+|            |        |      original no es ya múltiplo de 8.                |
+|            |        |    * Profundidad 8: ancho                            |
+|____________|________|____*_Profundidad_16:_ancho_*_2_______________________|
+|ALTO________|DWORD___|Alto_en_pixels_del_pixels_del_gráfico_________________|
+|            |        |Esta posición se reserva para flags informativos sobre|
+|            |        |el contenido del gráfico. Por ahora sólo se reconoce  |
+|            |        |el bit 0 de los flags:                                |
+|            |        |    * Bit 0: sirve para marcar gráficos sin pixels    |
+|            |        |      transparentes. Si en todo el contenido del      |
+|FLAGS       |DWORD   |      gráfico no hay ningún pixel completamente a     |
+|            |        |      cero, este bit debe grabarse activado. Esto es  |
+|            |        |      independiente del uso que le quiera dar el      |
+|            |        |      programador (un gráfico con varios pixels a cero|
+|            |        |      que se muestre usando el flag NO_COLOR_KEY para |
+|            |        |      hacerlos visibles, seguiría teniendo a cero este|
+|____________|________|______bit).___________________________________________|
+|            |        |Identificador del gráfico, de 0 a 999. Cuando el      |
+|            |        |gráfico forma parte de una librería FGC, indica su    |
+|            |        |número de índice. El hecho de que se guarde en el     |
+|ID          |DWORD   |fichero FBM permite extraer un gráfico del fichero    |
+|            |        |FGC, grabarlo como FBM, y que ocupe la misma posición |
+|            |        |si se importa de nuevo o se copia en otro FGC         |
+|____________|________|diferente.____________________________________________|
+|            |        |Número máximo de frame admitido en este gráfico. Si   |
+|            |        |el gráfico no contiene animación, este valor es 0. En |
+|            |        |caso contrario, contiene el número de "versiones"     |
+|MAX FRAME   |DWORD   |diferentes del gráfico que se guardan en el fichero,  |
+|            |        |menos uno (0 para una sola versión, 1 para dos, etc). |
+|            |        |Un "frame" se refiere simplemente a "gráfico distinto,|
+|____________|________|del_mismo_tamaño".____________________________________|
+|            |        |Número máximo de secuencia de animación contenido en  |
+|MAX SEQUENCE|DWORD   |este fichero. Este número equivale al número de       |
+|____________|________|animaciones_que_contiene_el_FBM,_menos_uno.___________|
+|            |        |Número máximo keyframe de animación contenido en      |
+|            |        |este fichero. Aunque cada secuencia de animación está |
+|            |        |compuesta de una serie de keyframes de forma          |
+|MAX KEYFRAME|DWORD   |idependiente de las demás secuencias, en el fichero   |
+|            |        |FBM se guardan todos los keyframes de todas las       |
+|            |        |animaciones en un array común. Este valor contendrá   |
+|            |        |el número total de keyframes que contiene el FBM,     |
+|____________|________|menos_uno.____________________________________________|
+|MAX POINT   |DWORD   |Máximo valor de índice para un punto de control que   |
+|____________|________|contenga_el_gráfico.__________________________________|
+|            |        |Número de puntos de control que hay guardados en este |
+|            |        |fichero. Un FBM puede tener un sólo punto de control  |
+|POINTS      |DWORD   |aunque éste tuviese el índice 90, por ejemplo. Este   |
+|            |        |valor se refiere exactamente al número de estructuras |
+|            |        |de punto de control guardadas más adelante en el FBM. |
+|____________|________|Puede_ser_cero._______________________________________|
+
+Paleta de colores
+
+A continuación, si el gráfico es de 8 bits (tal como indica la cabecera del
+fichero) y sólo en ese caso, aparecen 768 bytes con la paleta de colores. Cada
+color ocupa tres bytes en orden RGB (rojo, verde y azul) y con un rango para
+cada componente de color de 0 a 255.
+
+Secuencias
+
+A continuación, inmediatamente después de la paleta, si corresponde, o del
+descriptor en formatos no paletizados, se guardan las secuencias de animación
+del FBM. Puede haber más de una, pero siempre habrá al menos una. El valor
+"MAX SEQUENCE" del descriptor indica el número total de secuencias presentes
+en el fichero, menos una.
+
+Cada secuencia de animación ocupa 44 bytes en el fichero, y su estructura es
+la siguiente:
+ ____________________________________________________________________________
+|Nombre_____________|Tamaño__|Descripción____________________________________|
+|                   |        |Nombre de la animación, en ASCIIZ. Si ocupa    |
+|NOMBRE             |32 bytes|exactamente 32 bytes, el cero terminal no se   |
+|___________________|________|guarda_en_el_fichero.__________________________|
+|                   |        |Índice del primer keyframe, en el array global |
+|PRIMER KEYFRAME    |DWORD   |que se guarda en el fichero, de los que        |
+|___________________|________|componen_la_animación._________________________|
+|                   |        |Índice del último keyframe. Este valor debe    |
+|                   |        |ser siempre mayor o igual al anterior (una     |
+|                   |        |animación debe contener al menos un keyframe). |
+|ÚLTIMO KEYFRAME    |DWORD   |Además, dos secuencias de animación no pueden  |
+|                   |        |compartir un mismo keyframe, ni se permite que |
+|                   |        |hayan keyframes guardados en el fichero que no |
+|___________________|________|correspondan_a_nada.___________________________|
+|                   |        |Índice de la secuencia siguiente a esta, o -1  |
+|                   |        |si la secuencia no está enlazada con otra.     |
+|                   |        |Una secuencia de animación puede terminar de   |
+|                   |        |tres maneras:                                  |
+|                   |        |    * Looping: el número de siguiente secuencia|
+|                   |        |      es su propio índice dentro del array de  |
+|                   |        |      secuencias.                              |
+|SIGUIENTE SECUENCIA|INT     |    * Stop: este número es -1. Al acabar la    |
+|                   |        |      animación, ésta se detiene. Esta         |
+|                   |        |      condición puede comprobarse desde el     |
+|                   |        |      lenguaje en Fenix, y actuar en           |
+|                   |        |      consecuencia.                            |
+|                   |        |    * Link: al acabar la animación, se inicia  |
+|                   |        |      automáticamente otra dentro del FBM, cuyo|
+|___________________|________|______índice_aparece_en_este_campo.____________|
+
+Keyframes
+
+Un keyframe es uno de los "momentos" de los que se compone una animación.
+Contiene un número de frame y opciones adicionales que pueden emplearse para
+automatizar tareas comunes enlazadas con la animación, como asignar un ángulo
+o flags al proceso.
+
+Cada keyframe ocupa 16 bytes en el fichero y contiene la siguiente
+información:
+ ____________________________________________________________________________
+|Nombre|Tamaño|Descripción___________________________________________________|
+|FRAME_|DWORD__|Índice_de_frame_del_gráfico_FBM_que_debe_mostrarse.__________|
+|      |       |Ángulo con el cual se mostrará el gráfico. Este ángulo se    |
+|ANGLE |INT    |sumará al indicado en el proceso para obtener el ángulo      |
+|______|_______|final_de_visualización.______________________________________|
+|      |       |Flags de visualización. Estas flags se complementan (con un  |
+|      |       |XOR) con del proceso, por lo que un proceso que dibuje con   |
+|FLAGS |DWORD  |espejo horizontal un gráfico en cuya animación aparezca un   |
+|      |       |keyframe invertido horizontalmente, se verá correctamente    |
+|      |       |(este keyframe en concreto se verá normal, al anularse       |
+|______|_______|mutuamente_los_dos_flags).___________________________________|
+|      |       |Pausa en milisegundos antes del siguiente keyframe. Si este  |
+|PAUSA |DWORD  |keyframe es el último de la animación, indica el tiempo en   |
+|      |       |milisegundos que deben transcurrir hasta que la animación    |
+|______|_______|termine._____________________________________________________|
+
+Puntos de control
+
+A continuación en el fichero se almacenan los puntos de control, tantos como
+indique el valor PUNTOS en el descriptor. Es posible que esta sección no esté
+presente si ese valor es cero. En todo caso, cada punto de control es una
+estructura de 12 bytes que contiene:
+ ____________________________________________________________________________
+|Nombre_|Tamaño|Descripción__________________________________________________|
+|       |       |Índice del punto de control, de 0 a 999. El 0 indica centro |
+|ÍNDICE |DWORD  |del gráfico, y si no lo incluye, se considerará su centro   |
+|_______|_______|geométrico_para_tal_fin.____________________________________|
+|       |       |Coordenada X del punto de control. Puede ser negativa o más |
+|X      |INT    |grande que el gráfico, pero actualmente el rango soportado  |
+|_______|_______|es_estrictamente_entre_-32766_y_32766_inclusives.___________|
+|Y______|INT____|Coordenada_Y,_con_las_mismas_condiciones_que_X._____________|
+
+Datos del gráfico
+
+Por último, aparecen los datos del gráfico propiamente dichos, de arriba a
+abajo. En primer lugar se guardan todas las filas del primer frame, a
+continuación todas las filas del segundo, y así hasta almacenar todos los
+frames del gráfico, hasta el número de índice indicado en el descriptor.
+
+En un gráfico de 1 bit por pixel, cada fila incluye padding (bits a 0) hasta
+ocupar un ancho múltiplo de un byte.
+
+En un gráfico de 8 bits el valor 0 está reservado para los pixels
+transparentes.
+
+En un gráfico de 16 bits, cada pixel se guarda en formato RGB565 con el valor
+0 reservado para los pixels transparentes (lo cual significa que el color negro
+puro no puede usarse, siendo necesario sustituirlo por un valor aproximado).
+
+En todo caso, cualquier información adicional que aparezca en el fichero
+después de los datos del gráfico es ignorada. Esto permite realizar
+extensiones futuras del formato sin perder la compatibilidad hacia atrás.
+
+NOTAS
+
+Esta es una versión temporal de este formato de fichero. Los gráficos con
+profundidad de color de 24 bits se soportarán próximamente en los ficheros
+FBM.
+
+Obtenido de http://fenixworld.se32.com/fenixwiki/
+Disponible bajo los términos de la GNU Free Documentation License 1.2

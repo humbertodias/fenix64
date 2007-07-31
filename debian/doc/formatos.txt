@@ -1,0 +1,27 @@
+* Formatos de fichero de colección
+	* FGC - Fenix Graphics Collection
+		Librería con múltiples gráficos FBM e informacion de color de una paleta gráfica FPL.
+	* FPG - Fichero para Gráficos
+		Librería con múltiples gráficos MAP e informacion de color de una paleta gráfica PAL.
+* Formatos de fichero de fuente
+	* BDF - Bitmap Distribution Format
+		Este tipo de letra de Adobe no incluye información de color: cada pixel puede ser transparente u opaco. Por defecto, los pixels opacos se dibujarán con el color blanco al utilizar esta fuente. Sin embargo, es posible escoger cualquier otro color empleando la función TEXT_COLOR
+		http://partners.adobe.com/public/developer/en/font/5005.BDF_Spec.pdf
+	* FNT - Fuente
+		Un fichero FNT contiene un máximo de 256 mapas de bits, los cuales se corresponden con los 256 caracteres ASCII. El hecho de que sea una fuente de bitmap impide transformaciones como el escalado, rotado, etc., sin que esto suponga un deterioro en la caladidad gráfica. Es compatible con DIV.
+* Formatos de fichero de mapa
+	* FBM - Fenix Bitmap
+		Un fichero FBM contiene un gráfico sencillo, rectangular, opcionalmente animado, con transparencia por color key (cada pixel de la imagen puede contener un color, o bien ser totalmente transparente, pero no se soporta un color con transparencia parcial).
+	* MAP -Mapa
+		Un fichero MAP contiene un gráfico sencillo, rectangular, con transparencia por color key (cada pixel de la imagen puede contener un color, o bien ser totalmente transparente, pero no se soporta un color con transparencia parcial).
+	* PNG -Portable Network Graphics
+		Formato gráfico basado en un algoritmo de compresión sin pérdida para bitmaps no sujeto a patentes. Este formato fue desarrollado en buena parte para solventar las deficiencias del formato GIF y permite almacenar imágenes con una mayor profundidad de color y otros importantes datos. Al contrario que el formato GIF, PNG no soporta animaciones.
+		http://www.libpng.org/pub/png/spec/iso/
+* Formatos de fichero de paleta
+	* FPL - Fenix Palette
+		Un fichero FPL contiene toda la informacion de color de una paleta gráfica. Actualmente solo se soportan paletas gráficas de 8 bits, pero es posible que en un futuro se añada soporte para paletas indexadas de mayor profundidad de color.
+	* PAL - Paleta
+		Un fichero PAL contiene toda la informacion de color de una paleta gráfica. Actualmente solo se soportan paletas gráficas de 8 bits. Ademas incluye información sobre gammas de color cuya utilidad era hacer mas facil el manejo de color en el editor de mapas de DIV y DIV2.
+
+Obtenido de http://fenixworld.se32.com/fenixwiki/
+Disponible bajo los términos de la GNU Free Documentation License 1.2

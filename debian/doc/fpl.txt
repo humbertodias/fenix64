@@ -1,0 +1,49 @@
+Especificación del formato FPL (Fenix Palette)
+
+Esta sección describe el contenido de un fichero FPL. No es necesario conocer
+estos detalles simplemente para programar juegos, pero serán de utilidad a
+quien quiera realizar utilidades en lenguajes externos que lean o escriban
+ficheros FPL.
+
+Un fichero FPL no incluye compresión. Fenix soporta de forma transparente el
+uso de compresión GZIP en los ficheros, sin necesidad de marcarlos
+especialmente con extensión .gz. Normalmente un fichero FPL se guarda en disco
+comprimido de esta manera, pero en el resto del fichero asumiremos que el
+fichero FPL no está comprimido.
+
+En la descripción siguiente, DWORD identifica un número entero de 4 bytes sin
+signo mientras INT indica entero de 4 bytes con signo. Estos valores se guardan
+siguiendo la codificación Intel de bytes en memoria, así que hay que darles
+la vuelta al leer o escribir el fichero en otras plataformas.
+
+Cabecera
+
+Un fichero FPL comienza con la siguiente cabecera:
+ ____________________________________________________________________________
+|Nombre_____|Tamaño__|Descripción____________________________________________|
+|           |        |Cadena de caracteres de identificación del fichero.    |
+|           |        |Debe contener exactamente "FenixPalette" y, a          |
+|           |        |continuación, los cuatro bytes 1Ah, 0Dh, 0Ah y 00h.    |
+|MAGIC      |16 bytes|Esta terminación indica, en un fichero MS-DOS, final de|
+|           |        |fichero. Gracias a ella un comando TYPE en MS-DOS no   |
+|           |        |mostraría los datos binarios del fichero. En este      |
+|___________|________|formato_se_conserva_por_razones_puramente_nostálgicas._|
+|           |        |Código de versión. Se compone de un número mayor de    |
+|           |        |16 bits y un número menor de 16 bits. Actualmente es   |
+|           |        |0x0100. Si el formato se modificase en el futuro pero  |
+|VERSION    |DWORD   |de manera que los ficheros fuesen compatibles con el   |
+|           |        |formato actual, se incrementaría el número menor. Las  |
+|           |        |rutinas de carga deben rechazar un fichero FPL sólo si |
+|___________|________|el_número_mayor_no_es_01.______________________________|
+|PROFUNDIDAD|DWORD   |Bits por pixel de las información de color. Actualmente|
+|___________|________|sólo_es_válida_la_de_8_bits_por_pixel_(bpp).___________|
+
+Paleta de colores
+
+A continuación, si el FPL es de 8 bits (tal como indica la cabecera del
+fichero) habrán 768 bytes con la paleta de colores. Cada color ocupa tres
+bytes en orden RGB (rojo, verde y azul) y con un rango para cada componente de
+color de 0 a 255.
+
+Obtenido de http://fenixworld.se32.com/fenixwiki/
+Disponible bajo los términos de la GNU Free Documentation License 1.2

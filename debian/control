@@ -19,3 +19,16 @@ Description: development environment for making 2D games
  and full featured 2D game engine, making game development extremely easy.
  .
   Homepage: http://fenix.divsite.net/
+
+Package: fenix-dev
+Architecture: all
+Depends: zlib1g-dev, libsdl1.2-dev, ${misc:Depends}
+Description: development environment for making 2D games
+ Fenix is an interpreted script programming language, especially designed to
+ developing and running 2D games. It has a full graphic library, sound engine
+ and full featured 2D game engine, making game development extremely easy.
+ .
+ This package includes the development headers needed for compiling plugins
+ for the fenix system.
+ .
+  Homepage: http://fenix.divsite.net/
