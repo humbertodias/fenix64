@@ -1,0 +1,151 @@
+--- fenix-0.92a.dfsg1.orig/fxc/src/c_main.c
++++ fenix-0.92a.dfsg1/fxc/src/c_main.c
+@@ -49,10 +49,19 @@
+ #define _(String) String
+ #endif
+ 
++#if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_BSD )
++#include <limits.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#ifndef PLUGINS_DIR
++#define PLUGINS_DIR "/usr/lib/fenix/plugins"
++#endif
++#endif
++
+ #include "fxc.h"
+ #include "messages.c"
+ 
+-
+ /* ---------------------------------------------------------------------- */
+ /* Módulo principal del compilador. Contiene código que inicializa los    */
+ /* identificadores conocidos, así como las funciones de compilado de      */
+@@ -351,8 +360,16 @@
+     unsigned int  * PluginVersion ;
+ #endif
+ 
++#if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_BSD )
++    struct stat stat_buf;
++#endif
++
+ #if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_MAC ) || defined ( TARGET_BSD )
++#ifdef PATH_MAX
++    char        soname[PATH_MAX];
++#else
+     char        soname[1024];
++#endif
+     char        * ptr;
+ #endif
+     token_next() ;
+@@ -368,7 +385,7 @@
+     #define DLLEXT      ".so"
+     #define SIZEDLLEXT  3
+ 
+-    snprintf (soname, 1024, "./%s" DLLEXT, filename);
++    snprintf (soname, sizeof(soname), "./%s" DLLEXT, filename);
+ #endif
+ 
+ #ifdef TARGET_MAC
+@@ -398,7 +415,7 @@
+     #define DLLEXT      ".dylib"
+     #define SIZEDLLEXT  6
+ 
+-    snprintf (soname, 1024, "%s/%s" DLLEXT, files[path_file], filename);
++    snprintf (soname, sizeof(soname), "%s/%s" DLLEXT, files[path_file], filename);
+ #endif
+ 
+ #ifndef TARGET_Win32
+@@ -411,6 +428,18 @@
+         strcpy (ptr-(4+SIZEDLLEXT), DLLEXT);
+     }
+ 
++#if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_BSD )
++    if (stat(soname, &stat_buf) == -1)
++    {
++        snprintf (soname, sizeof(soname), PLUGINS_DIR "/%s.so", filename);
++        for (ptr = soname ; *ptr ; ptr++) *ptr = TOLOWER(*ptr);
++        if (strlen(soname) > 7 && strcmp(ptr-7, ".dll.so") == 0)
++            strcpy (ptr-7, ".so");
++        if (strlen(soname) > 6 && strcmp(ptr-6, ".so.so") == 0)
++            strcpy (ptr-6, ".so");
++    }
++#endif
++
+     filename = soname;
+ #endif
+ 
+--- fenix-0.92a.dfsg1.orig/fxi/src/i_func.c
++++ fenix-0.92a.dfsg1/fxi/src/i_func.c
+@@ -137,6 +137,16 @@
+ #define _(String) String
+ #endif
+ 
++#if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_BSD )
++#include <limits.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#ifndef PLUGINS_DIR
++#define PLUGINS_DIR "/usr/lib/fenix/plugins"
++#endif
++#endif
++
+ #include "dcb.h"
+ 
+ fixed cos_table[90001] ;
+@@ -5038,8 +5048,16 @@
+     const char    * filename;
+     unsigned int    n ;
+ 
++#if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_BSD )
++    struct stat stat_buf;
++#endif
++
+ #ifndef TARGET_Win32
++#ifdef PATH_MAX
++    char soname[PATH_MAX];
++#else
+     char soname[1024];
++#endif
+     char * ptr;
+ #endif
+ 
+@@ -5073,7 +5091,7 @@
+         }
+         pathMac[contmac]='\0';
+ 
+-        snprintf (soname, 1024, "%s/%s.dylib",pathMac ,filename);
++        snprintf (soname, sizeof(soname), "%s/%s.dylib",pathMac ,filename);
+ 
+         /* Clean the name (strip .DLL, and use lowercase) */
+ 
+@@ -5085,7 +5103,7 @@
+ 
+         library  = dlopen (soname, RTLD_NOW | RTLD_GLOBAL) ;
+ #else
+-        snprintf (soname, 1024, "./%s.so",filename);
++        snprintf (soname, sizeof(soname), "./%s.so",filename);
+ 
+         /* Clean the name (strip .DLL, and use lowercase) */
+ 
+@@ -5093,8 +5111,18 @@
+             *ptr = TOLOWER(*ptr);
+         if (strlen(soname) > 7 && strcmp(ptr-7, ".dll.so") == 0)
+             strcpy (ptr-7, ".so");
+-        if (strlen(soname) > 7 && strcmp(ptr-7, ".so.so") == 0)
++        if (strlen(soname) > 6 && strcmp(ptr-6, ".so.so") == 0)
++                strcpy (ptr-6, ".so");
++
++        if (stat(soname, &stat_buf) == -1)
++        {
++            snprintf (soname, sizeof(soname), PLUGINS_DIR "/%s.so",filename);
++            for (ptr = soname ; *ptr ; ptr++) *ptr = TOLOWER(*ptr);
++            if (strlen(soname) > 7 && strcmp(ptr-7, ".dll.so") == 0)
+                 strcpy (ptr-7, ".so");
++            if (strlen(soname) > 6 && strcmp(ptr-6, ".so.so") == 0)
++                strcpy (ptr-6, ".so");
++        }
+ 
+         library  = dlopen (soname, RTLD_NOW | RTLD_GLOBAL) ;
+ #endif

@@ -10,4 +10,6 @@ fxc_output.patch
 fxi_input.patch
 fxc_return_values.patch
 fxi_return_values.patch
+plugins_dir.patch
+fxdll_version.patch
 0.92a_to_cvs-20070713.1513.patch
