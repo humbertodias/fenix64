@@ -67,4 +67,4 @@ if [ -z "$GAME_FILE" ] || [ ! -e "$GAME_FILE" ]; then
 fi
 
 echo "Game File: \"$GAME_FILE\"" >&2
-fenix-fxc "$GAME_FILE" -o - | fenix-fxi -
+fenix-fxc "$GAME_FILE" -o - | fenix-fxi -t "$GAME_FILE" -
