@@ -1,0 +1,37 @@
+--- fenix-0.92a.dfsg1/fxi/src/main.c.orig	2007-08-02 10:27:57.000000000 +0000
++++ fenix-0.92a.dfsg1/fxi/src/main.c	2007-08-02 10:35:37.000000000 +0000
+@@ -258,6 +258,19 @@
+ 					//if (argv[i][j] == 'b') double_buffer = 1 ;
+ 					if (argv[i][j] == 'f') enable_filtering = 1 ;
+ 
++					if (argv[i][j] == 't')
++					{
++						if (argv[i][j+1] == 0)
++						{
++							if (i == argc-1)
++								gr_error (_("You must provide a title")) ;
++							if (apptitle) free(apptitle);
++							apptitle = strdup(argv[i+1]);
++							i++ ;
++							break ;
++						}
++					}
++
+ 					if (argv[i][j] == 'i')
+ 					{
+ 						if (argv[i][j+1] == 0)
+@@ -315,7 +328,13 @@
+ 	/* Init application title for windowed modes */
+ 
+ 	strcpy (dcbname, filename) ;
+-	apptitle = strdup(filename) ;
++	if (!apptitle)
++	{
++		if (strcmp(filename, "-") != 0)
++			apptitle = strdup(filename) ;
++		else
++			apptitle = strdup("Fenix") ;
++	}
+ 
+ #ifdef TARGET_MAC
+         strcpy (files[current_file], filename);
