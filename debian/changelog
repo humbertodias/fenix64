@@ -10,6 +10,8 @@ fenix (0.92a.dfsg1-1) UNRELEASED; urgency=low
   * Added debian/doc documentation files and updated debian/copyright
   * Added development package with the headers for creating plugins.
   * Added headers.patch to patch the development headers before installing.
+  * Added fxdll_version.patch for knowing the API version of the plugins.
+  * Added plugins_dir.patch so that plugins can be put in a common directory.
 
   [ Cyril Brulebois ]
   * Added XS-Vcs-Svn and XS-Vcs-Browser fields in the control file.

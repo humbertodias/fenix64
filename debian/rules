@@ -19,9 +19,11 @@ endif
 CFLAGS += -DUSE_GETTEXT
 
 patch:
+	dh_testdir
 	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
 
 unpatch:
+	dh_testdir
 	QUILT_PATCHES=debian/patches quilt pop -a -f || test $$? = 2
 
 config.status: configure
