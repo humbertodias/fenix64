@@ -22,8 +22,7 @@ GAME_FILE=""
 if [ -z "$GAME_FILE" ] && [ -z "$ARG" ]; then
 	FILE_NUM=`ls *.prg 2>/dev/null | wc -l`
 	if [ "$FILE_NUM" -eq 1 ] ; then
-		GAME_FILE="ls *.prg 2>/dev/null"
-		echo "Game File: \"$GAME_FILE\"" >&2
+		GAME_FILE=`ls *.prg 2>/dev/null`
 	else
 		GAME_FILE=""
 	fi
@@ -32,8 +31,7 @@ fi
 if [ -z "$GAME_FILE" ] && [ -d "$ARG" ]; then
 	FILE_NUM=`ls "$ARG"/*.prg 2>/dev/null | wc -l`
 	if [ "$FILE_NUM" -eq 1 ] ; then
-		GAME_FILE="`ls "$ARG"/*.prg` 2>/dev/null"
-		echo "Game File: \"$GAME_FILE\"" >&2
+		GAME_FILE=`ls "$ARG"/*.prg` 2>/dev/null
 	else
 		GAME_FILE=""
 		echo "Cannot choose a game file in the directory \"$ARG\"" >&2
@@ -41,13 +39,12 @@ if [ -z "$GAME_FILE" ] && [ -d "$ARG" ]; then
 	fi
 fi
 
-if [ -e "$ARG" ]; then
-	FILE_NUM=`ls \"$ARG\" 2>/dev/null | wc -l`
+if [ -z "$GAME_FILE" ] && [ -e "$ARG" ]; then
+	FILE_NUM=`ls "$ARG" 2>/dev/null | wc -l`
 	if [ "$FILE_NUM" -eq 1 ] ; then
-		GAME_FILE=""
-		echo "Game File: \"$GAME_FILE\"" >&2
-	else
 		GAME_FILE="$ARG"
+	else
+		GAME_FILE=""
 		echo "Cannot choose a game file" >&2
 	fi
 fi
@@ -64,9 +61,10 @@ if [ -z "$GAME_FILE" ] || [ ! -z "$2" ]; then
 	exit 1
 fi
 
-if [ -z "$GAME_FILE" ] || [ ! -e "$GAME_FILE" ]
+if [ -z "$GAME_FILE" ] || [ ! -e "$GAME_FILE" ]; then
 	echo "File \"$GAME_FILE\" does not exist" >&2
 	exit 1
 fi
 
-fenix-fxc "$@" -o - | fenix-fxi -
+echo "Game File: \"$GAME_FILE\"" >&2
+fenix-fxc "$GAME_FILE" -o - | fenix-fxi -
