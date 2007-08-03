@@ -1,0 +1,7 @@
+El archivo common/regex.c corresponde al código de la Extended regular expression matching and search library, version 0.12 ( ftp://aeneas.mit.edu/pub/gnu/regex/regex-0.12.tar.gz )
+
+http://forum.divsite.net/viewthread.php?tid=5193
+
+TODO: Modificar el código para que se use la glibc actual.
+
+
