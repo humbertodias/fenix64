@@ -1,5 +1,5 @@
---- fenix0.92-0.92a/fxi/src/main.c.orig	2007-06-05 16:35:10.000000000 +0000
-+++ fenix0.92-0.92a/fxi/src/main.c	2007-06-05 16:37:24.000000000 +0000
+--- fenix-inniyah-0.93.20070803/fxi/src/main.c.orig	2007-08-03 18:27:25.000000000 +0200
++++ fenix-inniyah-0.93.20070803/fxi/src/main.c	2007-08-03 18:29:46.000000000 +0200
 @@ -158,7 +158,8 @@
   	ptr = argv[0] + strlen(argv[0]) ;
   	while (ptr > argv[0] && ptr[-1] != '\\' && ptr[-1] != '/')
@@ -10,14 +10,14 @@
  
  	/* Init RAND generator */
  
-@@ -220,8 +222,8 @@
+@@ -236,8 +241,10 @@
  			/* No embedded DCB; search for a DCB with similar name */
  
  			filename = ptr ;
--	 		while (*ptr && *ptr != '.') ptr++ ;
--	 		*ptr = 0 ;
-+	 		/*while (*ptr && *ptr != '.') ptr++ ;*/
-+	 		/**ptr = 0 ;*/
++#ifdef WIN32
+ 	 		while (*ptr && *ptr != '.') ptr++ ;
+ 	 		*ptr = 0 ;
++#endif
  		}
  	}
  
