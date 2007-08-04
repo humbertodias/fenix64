@@ -1,4 +1,4 @@
-include/fxdll.h usr/include/fenix/
+include/fxdll*.h usr/include/fenix/
 fxi/inc/instance_st.h usr/include/fenix/
 fxi/inc/grlib_st.h usr/include/fenix/
 include/files_st.h usr/include/fenix/
