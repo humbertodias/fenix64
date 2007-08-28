@@ -1,3 +1,6 @@
+# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
+# Licensed under the GPL, see /usr/share/common-licenses/GPL
+
 Index: fenix-0.92a.dfsg1/map/map.c
 ===================================================================
 --- fenix-0.92a.dfsg1.orig/map/map.c	2007-08-28 14:38:38.000000000 +0200

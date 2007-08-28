@@ -2,6 +2,7 @@ fenix (0.92a.dfsg1-2) UNRELEASED; urgency=low
 
   [ Miriam Ruiz ]
   * Added new patch to correct FTBFS problem. Closes: #438607
+  * Added copyright and license to patches.
 
  -- Miriam Ruiz <little_miry@yahoo.es>  Tue, 28 Aug 2007 15:09:20 +0200
 

@@ -1,3 +1,6 @@
+# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
+# Licensed under the GPL, see /usr/share/common-licenses/GPL
+
 diff -ruN fenix-dev.orig/usr/include/fenix/flic_st.h fenix-dev/usr/include/fenix/flic_st.h
 --- fenix-dev.orig/usr/include/fenix/flic_st.h	2007-04-12 22:08:26.000000000 +0000
 +++ fenix-dev/usr/include/fenix/flic_st.h	2007-07-31 21:43:44.411918795 +0000

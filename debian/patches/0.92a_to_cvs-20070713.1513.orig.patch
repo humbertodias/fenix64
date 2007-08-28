@@ -1,3 +1,6 @@
+# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
+# Licensed under the GPL, see /usr/share/common-licenses/GPL
+
 diff -ruN fenix-0.92a/common/files.c fenix-cvs-20070713.1513/common/files.c
 --- fenix-0.92a/common/files.c	2007-04-12 22:07:56.000000000 +0000
 +++ fenix-cvs-20070713.1513/common/files.c	2007-05-27 23:29:18.000000000 +0000

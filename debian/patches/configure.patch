@@ -1,3 +1,6 @@
+# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
+# Licensed under the GPL, see /usr/share/common-licenses/GPL
+
 Index: fenix-0.92a.dfsg1/configure
 ===================================================================
 --- fenix-0.92a.dfsg1.orig/configure	2007-08-28 14:38:55.000000000 +0200

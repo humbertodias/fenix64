@@ -1,3 +1,6 @@
+# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
+# Licensed under the GPL, see /usr/share/common-licenses/GPL
+
 Index: fenix-0.92a.dfsg1/include/files_st.h
 ===================================================================
 --- fenix-0.92a.dfsg1.orig/include/files_st.h	2007-08-28 14:38:36.000000000 +0200
