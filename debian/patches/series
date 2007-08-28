@@ -16,3 +16,4 @@ fxi_apptitle.patch
 0.92a_to_cvs-20070713.1513.patch
 endianess.patch
 fxi_pal.patch
+fxi_sdl_mixer_use_rwops.patch

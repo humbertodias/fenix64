@@ -2,7 +2,9 @@ fenix (0.92a.dfsg1-2) UNRELEASED; urgency=low
 
   [ Miriam Ruiz ]
   * Added new patch to correct FTBFS problem. Closes: #438607
-  * Added patch for missing function prototype definition in fxi/src/i_func.c
+  * Added patch fxi_pal.pathc for missing function prototype definition
+    in fxi/src/i_func.c and fxi_sdl_mixer_use_rwops.patch to use the
+    Mix_LoadMUS_RW() function.
     Thanks to Dann Frazier <dannf@debian.org>. Closes: #437735
   * Added copyright and license to patches.
 
