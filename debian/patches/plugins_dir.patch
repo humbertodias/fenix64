@@ -1,6 +1,8 @@
---- fenix-0.92a.dfsg1.orig/fxc/src/c_main.c
-+++ fenix-0.92a.dfsg1/fxc/src/c_main.c
-@@ -49,10 +49,19 @@
+Index: fenix-0.92a.dfsg1/fxc/src/c_main.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/c_main.c	2007-08-28 14:39:51.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/c_main.c	2007-08-28 14:45:39.000000000 +0200
+@@ -44,10 +44,19 @@
  #define _(String) String
  #endif
  
@@ -21,9 +23,9 @@
  /* ---------------------------------------------------------------------- */
  /* Módulo principal del compilador. Contiene código que inicializa los    */
  /* identificadores conocidos, así como las funciones de compilado de      */
-@@ -351,8 +360,16 @@
-     unsigned int  * PluginVersion ;
- #endif
+@@ -343,8 +352,16 @@
+     void        * library = NULL;
+     dlfunc      RegisterFunctions ;
  
 +#if defined( TARGET_Linux ) || defined ( TARGET_BEOS ) || defined ( TARGET_BSD )
 +    struct stat stat_buf;
@@ -38,7 +40,7 @@
      char        * ptr;
  #endif
      token_next() ;
-@@ -368,7 +385,7 @@
+@@ -360,7 +377,7 @@
      #define DLLEXT      ".so"
      #define SIZEDLLEXT  3
  
@@ -47,7 +49,7 @@
  #endif
  
  #ifdef TARGET_MAC
-@@ -398,7 +415,7 @@
+@@ -390,7 +407,7 @@
      #define DLLEXT      ".dylib"
      #define SIZEDLLEXT  6
  
@@ -56,7 +58,7 @@
  #endif
  
  #ifndef TARGET_Win32
-@@ -411,6 +428,18 @@
+@@ -403,6 +420,18 @@
          strcpy (ptr-(4+SIZEDLLEXT), DLLEXT);
      }
  
@@ -75,9 +77,11 @@
      filename = soname;
  #endif
  
---- fenix-0.92a.dfsg1.orig/fxi/src/i_func.c
-+++ fenix-0.92a.dfsg1/fxi/src/i_func.c
-@@ -137,6 +137,16 @@
+Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxi/src/i_func.c	2007-08-28 14:39:58.000000000 +0200
++++ fenix-0.92a.dfsg1/fxi/src/i_func.c	2007-08-28 14:45:40.000000000 +0200
+@@ -132,6 +132,16 @@
  #define _(String) String
  #endif
  
@@ -94,7 +98,7 @@
  #include "dcb.h"
  
  fixed cos_table[90001] ;
-@@ -5038,8 +5048,16 @@
+@@ -5030,8 +5040,16 @@
      const char    * filename;
      unsigned int    n ;
  
@@ -111,7 +115,7 @@
      char * ptr;
  #endif
  
-@@ -5073,7 +5091,7 @@
+@@ -5065,7 +5083,7 @@
          }
          pathMac[contmac]='\0';
  
@@ -120,7 +124,7 @@
  
          /* Clean the name (strip .DLL, and use lowercase) */
  
-@@ -5085,7 +5103,7 @@
+@@ -5077,7 +5095,7 @@
  
          library  = dlopen (soname, RTLD_NOW | RTLD_GLOBAL) ;
  #else
@@ -129,7 +133,7 @@
  
          /* Clean the name (strip .DLL, and use lowercase) */
  
-@@ -5093,8 +5111,18 @@
+@@ -5085,8 +5103,18 @@
              *ptr = TOLOWER(*ptr);
          if (strlen(soname) > 7 && strcmp(ptr-7, ".dll.so") == 0)
              strcpy (ptr-7, ".so");

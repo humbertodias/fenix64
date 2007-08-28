@@ -1,6 +1,7 @@
-diff -ruN fenix-0.92a.raw/fxi/src/dcbr.c fenix-0.92a/fxi/src/dcbr.c
---- fenix-0.92a.raw/fxi/src/dcbr.c	2007-07-28 11:07:02.566318000 +0000
-+++ fenix-0.92a/fxi/src/dcbr.c	2007-07-29 17:40:47.485362067 +0000
+Index: fenix-0.92a.dfsg1/fxi/src/dcbr.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxi/src/dcbr.c	2007-08-28 14:39:54.000000000 +0200
++++ fenix-0.92a.dfsg1/fxi/src/dcbr.c	2007-08-28 14:44:30.000000000 +0200
 @@ -144,7 +144,7 @@
  	file * fp ;
  
@@ -10,10 +11,11 @@ diff -ruN fenix-0.92a.raw/fxi/src/dcbr.c fenix-0.92a/fxi/src/dcbr.c
  
  	fp = file_open (filename, "rb0") ;
  	if (!fp)
-diff -ruN fenix-0.92a.raw/fxi/src/main.c fenix-0.92a/fxi/src/main.c
---- fenix-0.92a.raw/fxi/src/main.c	2007-07-28 11:06:34.620571000 +0000
-+++ fenix-0.92a/fxi/src/main.c	2007-07-28 11:10:59.733140328 +0000
-@@ -248,7 +248,7 @@
+Index: fenix-0.92a.dfsg1/fxi/src/main.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxi/src/main.c	2007-08-28 14:40:05.000000000 +0200
++++ fenix-0.92a.dfsg1/fxi/src/main.c	2007-08-28 14:45:52.000000000 +0200
+@@ -250,7 +250,7 @@
  
  		for (i = 1 ; i < argc ; i++)
  		{

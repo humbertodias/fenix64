@@ -1,6 +1,7 @@
-diff -ruN fenix0.92-0.92a.dfsg1.orig/map/map.c fenix0.92-0.92a.dfsg1/map/map.c
---- fenix0.92-0.92a.dfsg1.orig/map/map.c	2007-04-12 22:09:10.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/map/map.c	2007-07-02 17:28:09.000000000 +0000
+Index: fenix-0.92a.dfsg1/map/map.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/map/map.c	2007-08-28 14:38:38.000000000 +0200
++++ fenix-0.92a.dfsg1/map/map.c	2007-08-28 14:40:03.000000000 +0200
 @@ -43,6 +43,14 @@
  #include <png.h>
  #include <gif_lib.h>

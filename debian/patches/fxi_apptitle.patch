@@ -1,6 +1,8 @@
---- fenix-0.92a.dfsg1/fxi/src/main.c.orig	2007-08-02 10:27:57.000000000 +0000
-+++ fenix-0.92a.dfsg1/fxi/src/main.c	2007-08-02 10:35:37.000000000 +0000
-@@ -258,6 +258,19 @@
+Index: fenix-0.92a.dfsg1/fxi/src/main.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxi/src/main.c	2007-08-28 14:41:00.000000000 +0200
++++ fenix-0.92a.dfsg1/fxi/src/main.c	2007-08-28 14:41:06.000000000 +0200
+@@ -260,6 +260,19 @@
  					//if (argv[i][j] == 'b') double_buffer = 1 ;
  					if (argv[i][j] == 'f') enable_filtering = 1 ;
  
@@ -20,7 +22,7 @@
  					if (argv[i][j] == 'i')
  					{
  						if (argv[i][j+1] == 0)
-@@ -315,7 +328,13 @@
+@@ -317,7 +330,13 @@
  	/* Init application title for windowed modes */
  
  	strcpy (dcbname, filename) ;

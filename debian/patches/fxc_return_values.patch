@@ -1,6 +1,7 @@
-diff -ruN fenix-0.92a.dfsg1.orig/fxc/src/main.c fenix-0.92a.dfsg1/fxc/src/main.c
---- fenix-0.92a.dfsg1.orig/fxc/src/main.c	2007-07-31 13:59:25.000000000 +0000
-+++ fenix-0.92a.dfsg1/fxc/src/main.c	2007-07-31 14:02:05.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/main.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/main.c	2007-08-28 14:40:55.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/main.c	2007-08-28 14:40:58.000000000 +0200
 @@ -260,7 +260,7 @@
  			{
  				fprintf (stderr, MSG_TOO_MANY_FILES) ;

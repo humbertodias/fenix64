@@ -1,5 +1,7 @@
---- fenix-0.92a.dfsg1/include/files_st.h.orig	2007-07-31 14:31:07.000000000 +0000
-+++ fenix-0.92a.dfsg1/include/files_st.h	2007-07-31 14:31:24.000000000 +0000
+Index: fenix-0.92a.dfsg1/include/files_st.h
+===================================================================
+--- fenix-0.92a.dfsg1.orig/include/files_st.h	2007-08-28 14:38:36.000000000 +0200
++++ fenix-0.92a.dfsg1/include/files_st.h	2007-08-28 14:40:08.000000000 +0200
 @@ -39,6 +39,7 @@
  #define F_XFILE  1
  #define F_FILE   2
@@ -8,9 +10,10 @@
  
  #include <zlib.h>
  
-diff -ruN Fenix/common/files.c fenix-0.92a.dfsg1/common/files.c
---- Fenix/common/files.c	2007-04-12 22:07:56.000000000 +0000
-+++ fenix-0.92a.dfsg1/common/files.c	2007-07-29 17:55:07.531111567 +0000
+Index: fenix-0.92a.dfsg1/common/files.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/common/files.c	2007-08-28 14:38:36.000000000 +0200
++++ fenix-0.92a.dfsg1/common/files.c	2007-08-28 14:44:28.000000000 +0200
 @@ -460,6 +460,31 @@
  	memset (f, 0, sizeof(file)) ;
  	strncpy (f->name, filename, MAX_PATH);

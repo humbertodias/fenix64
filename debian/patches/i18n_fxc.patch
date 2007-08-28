@@ -1,6 +1,7 @@
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/c_data.c fenix0.92-0.92a.dfsg1/fxc/src/c_data.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/c_data.c	2007-04-12 22:08:14.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/c_data.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/c_data.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/c_data.c	2007-08-28 14:38:52.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/c_data.c	2007-08-28 14:39:50.000000000 +0200
 @@ -33,6 +33,14 @@
  #include <string.h>
  #include <stdlib.h>
@@ -25,9 +26,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/c_data.c fenix0.92-0.92a.dfsg1/fxc/
                  exit(1) ;
              }
              varspace_init (members) ;
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/c_main.c fenix0.92-0.92a.dfsg1/fxc/src/c_main.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/c_main.c	2007-04-12 22:08:18.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/c_main.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/c_main.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/c_main.c	2007-08-28 14:38:52.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/c_main.c	2007-08-28 14:45:44.000000000 +0200
 @@ -36,6 +36,14 @@
  
  #include <fnx_loadlib.h>
@@ -105,9 +107,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/c_main.c fenix0.92-0.92a.dfsg1/fxc/
          varspace_dump (&local, 0) ;
          //segment_dump (localdata) ;
      }
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/codeblock.c fenix0.92-0.92a.dfsg1/fxc/src/codeblock.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/codeblock.c	2007-04-12 22:08:18.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/codeblock.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/codeblock.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/codeblock.c	2007-08-28 14:38:52.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/codeblock.c	2007-08-28 14:39:51.000000000 +0200
 @@ -32,6 +32,14 @@
  #include <assert.h>
  #endif
@@ -168,9 +171,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/codeblock.c fenix0.92-0.92a.dfsg1/f
  	}
  
  	if (c->current > 0)
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/constants.c fenix0.92-0.92a.dfsg1/fxc/src/constants.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/constants.c	2007-04-12 22:08:18.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/constants.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/constants.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/constants.c	2007-08-28 14:38:52.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/constants.c	2007-08-28 14:39:51.000000000 +0200
 @@ -26,6 +26,14 @@
  #include <stdio.h>
  #include <stdlib.h>
@@ -206,9 +210,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/constants.c fenix0.92-0.92a.dfsg1/f
 +		fprintf (stderr, "%4d: %-16s= %d\n", i, 
  			identifier_name(constants[i].code), constants[i].value) ;
  }
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/dcbw.c fenix0.92-0.92a.dfsg1/fxc/src/dcbw.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/dcbw.c	2007-04-12 22:08:18.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/dcbw.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/dcbw.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/dcbw.c	2007-08-28 14:38:52.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/dcbw.c	2007-08-28 14:44:29.000000000 +0200
 @@ -33,6 +33,14 @@
  #include <stdio.h>
  #include <string.h>
@@ -311,9 +316,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/dcbw.c fenix0.92-0.92a.dfsg1/fxc/sr
  
  	return 1 ;
  }
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/identifier.c fenix0.92-0.92a.dfsg1/fxc/src/identifier.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/identifier.c	2007-04-12 22:08:20.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/identifier.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/identifier.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/identifier.c	2007-08-28 14:38:52.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/identifier.c	2007-08-28 14:39:51.000000000 +0200
 @@ -32,6 +32,15 @@
  #else
  #include <assert.h>
@@ -365,9 +371,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/identifier.c fenix0.92-0.92a.dfsg1/
  		exit(1);
  	}
  	w->line = line_count ; // Save First appearance
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c fenix0.92-0.92a.dfsg1/fxc/src/main.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c	2007-04-12 22:08:20.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/main.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/main.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/main.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/main.c	2007-08-28 14:46:13.000000000 +0200
 @@ -38,6 +38,14 @@
  	#include "Shlwapi.h"
  #endif
@@ -486,9 +493,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/main.c fenix0.92-0.92a.dfsg1/fxc/sr
  					return -1;
  				}
  			}
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/messages.c fenix0.92-0.92a.dfsg1/fxc/src/messages.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/messages.c	2007-04-12 22:08:20.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/messages.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/messages.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/messages.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/messages.c	2007-08-28 14:39:52.000000000 +0200
 @@ -24,16 +24,22 @@
   *
   */
@@ -662,9 +670,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/messages.c fenix0.92-0.92a.dfsg1/fx
  
 -#endif
 +*/
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/procedure.c fenix0.92-0.92a.dfsg1/fxc/src/procedure.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/procedure.c	2007-04-12 22:08:20.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/procedure.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/procedure.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/procedure.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/procedure.c	2007-08-28 14:39:52.000000000 +0200
 @@ -33,6 +33,14 @@
  #include <assert.h>
  #endif
@@ -698,9 +707,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/procedure.c fenix0.92-0.92a.dfsg1/f
              exit (1) ;
          }
      }
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/segment.c fenix0.92-0.92a.dfsg1/fxc/src/segment.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/segment.c	2007-04-12 22:08:22.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/segment.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/segment.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/segment.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/segment.c	2007-08-28 14:39:52.000000000 +0200
 @@ -28,6 +28,14 @@
  #include <stdlib.h>
  #include <string.h>
@@ -727,9 +737,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/segment.c fenix0.92-0.92a.dfsg1/fxc
  }
  
  void segment_copy(segment *s, int base_offset, int total_length) 
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/strings.c fenix0.92-0.92a.dfsg1/fxc/src/strings.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/strings.c	2007-04-12 22:08:22.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/strings.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/strings.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/strings.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/strings.c	2007-08-28 14:39:52.000000000 +0200
 @@ -33,6 +33,14 @@
  #include <assert.h>
  #endif
@@ -784,9 +795,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/strings.c fenix0.92-0.92a.dfsg1/fxc
  			exit(1) ;
  		}
  	}
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/token.c fenix0.92-0.92a.dfsg1/fxc/src/token.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/token.c	2007-04-12 22:08:22.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/token.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/token.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/token.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/token.c	2007-08-28 14:39:52.000000000 +0200
 @@ -29,6 +29,14 @@
  #include <string.h>
  #include <stdlib.h>
@@ -843,9 +855,10 @@ diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/token.c fenix0.92-0.92a.dfsg1/fxc/s
  		exit(1) ;
  	}
  
-diff -ruN fenix0.92-0.92a.dfsg1.orig/fxc/src/varspace.c fenix0.92-0.92a.dfsg1/fxc/src/varspace.c
---- fenix0.92-0.92a.dfsg1.orig/fxc/src/varspace.c	2007-04-12 22:08:22.000000000 +0000
-+++ fenix0.92-0.92a.dfsg1/fxc/src/varspace.c	2007-07-02 18:19:48.000000000 +0000
+Index: fenix-0.92a.dfsg1/fxc/src/varspace.c
+===================================================================
+--- fenix-0.92a.dfsg1.orig/fxc/src/varspace.c	2007-08-28 14:38:53.000000000 +0200
++++ fenix-0.92a.dfsg1/fxc/src/varspace.c	2007-08-28 14:39:52.000000000 +0200
 @@ -28,6 +28,14 @@
  #include <stdlib.h>
  #include <string.h>
