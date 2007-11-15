@@ -1,4 +1,4 @@
-fenix (0.92a.dfsg1-2) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-2) unstable; urgency=low
 
   [ Miriam Ruiz ]
   * Added new patch to correct FTBFS problem. Closes: #438607
@@ -7,8 +7,6 @@ fenix (0.92a.dfsg1-2) UNRELEASED; urgency=low
     Mix_LoadMUS_RW() function.
     Thanks to Dann Frazier <dannf@debian.org>. Closes: #437735
   * Added copyright and license to patches.
-  * Replaced GFDL full text by a link to /usr/share/common-licenses/GFDL-1.2
-    in debian/copyright.
 
  -- Miriam Ruiz <little_miry@yahoo.es>  Tue, 28 Aug 2007 15:09:20 +0200
 
