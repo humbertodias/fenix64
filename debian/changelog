@@ -1,8 +1,17 @@
+fenix (0.92a.dfsg1-3) unstable; urgency=low
+
+  * Replaced GFDL full text by a link to /usr/share/common-licenses/GFDL-1.2
+    in debian/copyright.
+  * Added patch fxi_pal_get.patch.
+    Thanks to Dann Frazier <dannf@debian.org>. Hopefully, Closes: #437735
+
+ -- Miriam Ruiz <miriam@xana.digi.com>  Thu, 15 Nov 2007 19:51:00 +0000
+
 fenix (0.92a.dfsg1-2) unstable; urgency=low
 
   [ Miriam Ruiz ]
   * Added new patch to correct FTBFS problem. Closes: #438607
-  * Added patch fxi_pal.pathc for missing function prototype definition
+  * Added patch fxi_pal.patch for missing function prototype definition
     in fxi/src/i_func.c and fxi_sdl_mixer_use_rwops.patch to use the
     Mix_LoadMUS_RW() function.
     Thanks to Dann Frazier <dannf@debian.org>. Closes: #437735
