@@ -5,7 +5,7 @@ fenix (0.92a.dfsg1-3) unstable; urgency=low
   * Added patch fxi_pal_get.patch.
     Thanks to Dann Frazier <dannf@debian.org>. Hopefully, Closes: #437735
 
- -- Miriam Ruiz <miriam@xana.digi.com>  Thu, 15 Nov 2007 19:51:00 +0000
+ -- Miriam Ruiz <little_miry@yahoo.es>  Thu, 15 Nov 2007 19:51:00 +0000
 
 fenix (0.92a.dfsg1-2) unstable; urgency=low
 
