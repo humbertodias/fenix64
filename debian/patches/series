@@ -17,3 +17,4 @@ fxi_apptitle.patch
 endianess.patch
 fxi_pal.patch
 fxi_sdl_mixer_use_rwops.patch
+fxi_pal_get.patch
