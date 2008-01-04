@@ -1,15 +1,22 @@
+fenix (0.92a.dfsg1-4) UNRELEASED; urgency=low
+
+  [ Miriam Ruiz ]     
+  * Fixed bashism: Replaced "{build,configure}-stamp" 
+    by "build-stamp configure-stamp" in debian/rules. 
+
+  [ Jon Dowland ]
+  * Added Homepage: control field to source stanza
+
+ -- Miriam Ruiz <little_miry@yahoo.es>  Fri, 04 Jan 2008 17:25:04 +0000
+
 fenix (0.92a.dfsg1-3) unstable; urgency=low
 
-  [ Miriam Ruiz ]
   * Replaced GFDL full text by a link to /usr/share/common-licenses/GFDL-1.2
     in debian/copyright.
   * Added patch fxi_pal_get.patch.
     Thanks to Dann Frazier <dannf@debian.org>. Hopefully, Closes: #437735
 
-  [ Jon Dowland ]
-  * add Homepage: control field to source stanza
-
- -- Jon Dowland <jon@alcopop.org>  Mon, 03 Dec 2007 17:48:08 +0000
+ -- Miriam Ruiz <little_miry@yahoo.es>  Thu, 15 Nov 2007 19:51:00 +0000
 
 fenix (0.92a.dfsg1-2) unstable; urgency=low
 

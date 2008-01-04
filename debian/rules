@@ -62,7 +62,7 @@ clean:
 	rm -f build-stamp 
 	[ ! -f Makefile ] || $(MAKE) distclean
 	$(MAKE) -C debian/i18n clean
-	rm -f config.{sub,guess}
+	rm -f config.sub config.guess
 	$(MAKE) -f /usr/share/quilt/quilt.make unpatch
 	dh_clean 
 
