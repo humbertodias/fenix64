@@ -1,13 +1,16 @@
 fenix (0.92a.dfsg1-4) UNRELEASED; urgency=low
 
-  [ Miriam Ruiz ]     
-  * Fixed bashism: Replaced "{build,configure}-stamp" 
-    by "build-stamp configure-stamp" in debian/rules. 
+  [ Miriam Ruiz ]
+  * Fixed bashism: Replaced "{build,configure}-stamp"
+    by "build-stamp configure-stamp" in debian/rules.
 
   [ Jon Dowland ]
   * Added Homepage: control field to source stanza
 
- -- Miriam Ruiz <little_miry@yahoo.es>  Fri, 04 Jan 2008 17:25:04 +0000
+  [ Ansgar Burchardt ]
+  * debian/control: Change XS-Vcs-* to Vcs-*
+
+ -- Ansgar Burchardt <ansgar@43-1.org>  Fri, 29 Feb 2008 03:08:29 +0100
 
 fenix (0.92a.dfsg1-3) unstable; urgency=low
 
