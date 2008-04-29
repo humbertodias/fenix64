@@ -2,7 +2,7 @@ fenix (0.92a.dfsg1-4) UNRELEASED; urgency=low
 
   [ Miriam Ruiz ]
   * Fixed bashism: Replaced "{build,configure}-stamp"
-    by "build-stamp configure-stamp" in debian/rules.
+    by "build-stamp configure-stamp" in debian/rules. (Closes: #478372)
 
   [ Jon Dowland ]
   * Added Homepage: control field to source stanza
