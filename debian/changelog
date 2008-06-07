@@ -1,9 +1,10 @@
-fenix (0.92a.dfsg1-4) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-4) unstable; urgency=low
 
   [ Miriam Ruiz ]
   * Fixed bashism: Replaced "{build,configure}-stamp"
     by "build-stamp configure-stamp" in debian/rules. (Closes: #478372)
   * Fixed build system for armel port. (Closes: #481928)
+  * Upgraded Standards-Version from 2.7.2 to 3.7.3
 
   [ Jon Dowland ]
   * Added Homepage: control field to source stanza
