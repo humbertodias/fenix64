@@ -19,3 +19,6 @@ fxi_pal.patch
 fxi_sdl_mixer_use_rwops.patch
 fxi_pal_get.patch
 build_portability.patch
+include_fixes.patch
+warning_fixes.patch
+string_alloc_crash.patch
