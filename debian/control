@@ -12,7 +12,8 @@ Vcs-Browser: http://svn.debian.org/wsvn/pkg-games/packages/trunk/fenix/?op=log
 Homepage: http://fenix.divsite.net/
 
 Package: fenix
-Architecture: any
+Architecture: arm armel hppa i386 kfreebsd-i386 hurd-i386 m68k mips mipsel
+ powerpc s390 sparc
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: development environment for making 2D games
  Fenix is an interpreted script programming language, especially designed to
