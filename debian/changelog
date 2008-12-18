@@ -1,11 +1,15 @@
-fenix (0.92a.dfsg1-4.2) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-5) unstable; urgency=low
 
   [ Peter De Wachter ]
   * Compile with -fno-strict-aliasing. (Closes: #456034)
   * Drop 64 bit architectures, until #456037 is solved.
   * Added watch file.
+  [ Barry deFreese ]
+  * Acknowledge NMUs.
+  * Add myself to uploaders.
+  * Bump Standards Version to 3.8.0. (No changes needed).
 
- -- Vincent Fourmond <fourmond@debian.org>  Sun, 20 Jul 2008 16:09:32 +0200
+ -- Barry deFreese <bdefreese@debian.org>  Thu, 18 Dec 2008 16:11:59 -0500
 
 fenix (0.92a.dfsg1-4.1) unstable; urgency=high
 
