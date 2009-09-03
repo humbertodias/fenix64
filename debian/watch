@@ -5,5 +5,5 @@ version=3
 # 0902     -> 0.90.2
 # 092a     -> 0.92a
 
-opts=dversionmangle=s/.dfsg.?[0-9]//,uversionmangle=s/^(\d)(\d\d)(\d)?/"$1.$2".($3&&".$3")/e \
+opts=dversionmangle=s/.dfsg.?[0-9]//,uversionmangle=s/^(\d)(\d\d)(\d)/$1.$2.$3/;s/^(\d)(\d\d)/$1.$2/ \
 http://sf.net/fenix/fenix([0-9.]+[a-z]?)-src-release.tgz

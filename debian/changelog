@@ -1,3 +1,9 @@
+fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
+
+  * Fixed watch file. (Closes: #544789)
+
+ -- Peter De Wachter <pdewacht@gmail.com>  Thu, 03 Sep 2009 07:26:43 +0200
+
 fenix (0.92a.dfsg1-5) unstable; urgency=low
 
   [ Peter De Wachter ]
