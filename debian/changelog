@@ -16,7 +16,7 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
   * Bump Standards-Version to 3.9.1 with no changes.
   * Fix some spelling mistakes in both the upstream source and some of
     the Debian packaging files.
-  * Bump the debhelper compatibility level to 7:
+  * Bump the debhelper compatibility level to 8:
     - shorten the rules file using the dh(1) helper
     - use "dh --with autotools_dev" to handle config.guess and config.sub
     - use debhelper override rules
