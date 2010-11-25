@@ -18,6 +18,7 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
     the Debian packaging files.
   * Bump the debhelper compatibility level to 7:
     - shorten the rules file using the dh(1) helper
+    - use "dh --with autotools_dev" to handle config.guess and config.sub
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 25 Nov 2010 13:25:18 +0200
 

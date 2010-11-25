@@ -18,13 +18,7 @@ CFLAGS += -DUSE_GETTEXT
 
 build: build-stamp
 build-stamp:  configure
-	dh build --before auto_configure
-ifneq "$(wildcard /usr/share/misc/config.sub)" ""
-	cp -f /usr/share/misc/config.sub config.sub
-endif
-ifneq "$(wildcard /usr/share/misc/config.guess)" ""
-	cp -f /usr/share/misc/config.guess config.guess
-endif
+	dh build --before auto_configure --with autotools_dev
 	chmod +x configure
 	dh_auto_configure -- \
 		--enable-fxc \
@@ -44,8 +38,7 @@ clean:
 	dh clean --before auto_clean
 	dh_auto_clean
 	$(MAKE) -C debian/i18n clean
-	rm -f config.sub config.guess
-	dh clean --remaining
+	dh clean --remaining --with autotools_dev
 
 install: build
 	dh $@ --before auto_install
