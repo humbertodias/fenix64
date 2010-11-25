@@ -22,3 +22,4 @@ build_portability.patch
 include_fixes.patch
 warning_fixes.patch
 string_alloc_crash.patch
+spelling.patch

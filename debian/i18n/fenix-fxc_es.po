@@ -268,7 +268,7 @@ msgstr "   -d       Modo de debug\n"
 #: fxc/src/messages.c:42
 msgid ""
 "   -i dir   Adds the directory to the PATH\n"
-"   -a       Automaticaly adds all files to the DCB\n"
+"   -a       Automatically adds all files to the DCB\n"
 "   -f file  Adds a single file to the DCB\n"
 "   -l lang  Specify locale settings\n"
 "   -s stub  Generate a stubbed executable from the given stub\n"
@@ -388,7 +388,7 @@ msgid "Identifier expected"
 msgstr "Se espera un identificador"
 
 #: fxc/src/messages.c:80
-msgid "Can't get the address of an inmediate value"
+msgid "Can't get the address of an immediate value"
 msgstr "No se puede obtener la dirección de un valor inmediato"
 
 #: fxc/src/messages.c:81
