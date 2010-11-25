@@ -5,8 +5,6 @@
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 CFLAGS = -Wall -g -fno-strict-aliasing
 
@@ -18,8 +16,9 @@ endif
 
 CFLAGS += -DUSE_GETTEXT
 
-config.status: configure
-	dh_testdir
+build: build-stamp
+build-stamp:  configure
+	dh build --before auto_configure
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config.sub
 endif
@@ -27,41 +26,30 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
 	chmod +x configure
-	./configure \
-		--host=$(DEB_HOST_GNU_TYPE) \
-		--build=$(DEB_BUILD_GNU_TYPE) \
+	dh_auto_configure -- \
 		--enable-fxc \
 		--enable-fxi \
 		--enable-map \
 		--enable-fpg \
 		--enable-dependency-tracking \
-		--prefix=/usr --mandir=\$${prefix}/share/man \
-		--infodir=\$${prefix}/share/info \
 		CFLAGS="$(CFLAGS)" \
 		LDFLAGS="-Wl,-z,defs"
-
-build: build-stamp
-build-stamp:  config.status
-	dh_testdir
-	$(MAKE) CFLAGS="$(CFLAGS)"
+	dh build --before auto_build
+	dh_auto_build -- CFLAGS="$(CFLAGS)"
 	$(MAKE) -C debian/i18n
+	dh build --remaining
 	touch $@
 
 clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp 
-	[ ! -f Makefile ] || $(MAKE) distclean
+	dh clean --before auto_clean
+	dh_auto_clean
 	$(MAKE) -C debian/i18n clean
 	rm -f config.sub config.guess
-	dh_clean 
+	dh clean --remaining
 
 install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+	dh $@ --before auto_install
+	dh_auto_install
 	cd $(CURDIR)/debian/tmp/usr/bin/ && \
 		for f in *; do \
 			mv "$$f" "fenix-$$f" ; \
@@ -69,31 +57,22 @@ install: build
 	$(MAKE) -C debian/i18n install INSTALLPREFIX=$(CURDIR)/debian/tmp/usr/share/locale/
 	cp debian/fenix.sh $(CURDIR)/debian/tmp/usr/bin/fenix
 	chmod +x $(CURDIR)/debian/tmp/usr/bin/fenix
+	dh_install
+	cd $(CURDIR)/debian/fenix-dev && patch -p1 < $(CURDIR)/debian/patches/headers.patch
+	dh_installdocs --exclude=license.txt --exclude=authors.txt
+	dh_installchangelogs NEWS
+	dh $@ --before compress
+	for i in debian/fenix/usr/share/doc/fenix/*.txt; do gzip $$i; done
+	dh_compress
+	dh $@ --remaining
 
 # Build architecture-independent files here.
 binary-indep: build install
+	dh $@
 
 # Build architecture-dependent files here.
 binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs NEWS
-	dh_installdocs --exclude=license.txt --exclude=authors.txt
-	dh_installexamples
-	dh_install -pfenix --sourcedir=$(CURDIR)/debian/tmp
-	dh_install -pfenix-dev
-	cd $(CURDIR)/debian/fenix-dev && patch -p1 < $(CURDIR)/debian/patches/headers.patch
-	dh_installman
-	dh_link
-	dh_strip
-	for i in debian/fenix/usr/share/doc/fenix/*.txt; do gzip $$i; done
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh $@
 
 get-orig-source:
 	dh_testdir
