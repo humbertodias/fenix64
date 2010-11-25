@@ -9,7 +9,7 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
   [ Peter Pentchev ]
   * Added ARM Hard Float (armhf) to the list of supported architectures and
     override the Lintian "unknown architecture" warning.  Closes: #604658
-  * Convert to the 3.0 (quilt) source format.
+  * Convert to the 3.0 (quilt) source format with bzip2 compression.
   * Refer to the GPL-2 license file in the copyright blurb.
   * Complete the short description of the fenix-dev package.
   * Install the NEWS file as an upstream changelog.
