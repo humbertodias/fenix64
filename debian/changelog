@@ -20,6 +20,7 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
     - shorten the rules file using the dh(1) helper
     - use "dh --with autotools_dev" to handle config.guess and config.sub
     - use debhelper override rules
+  * Use dpkg-buildflags from dpkg-dev 1.15.7 to obtain CFLAGS and LDFLAGS.
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 25 Nov 2010 13:25:18 +0200
 
