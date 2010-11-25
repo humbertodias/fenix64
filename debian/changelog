@@ -7,8 +7,8 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
   * Added Renesas SH(sh4) CPU to support architecture list. Closes: #551144
 
   [ Peter Pentchev ]
-  * Added ARM Hard Float (armhf) to the list of supported architectures.
-    Closes: #604658
+  * Added ARM Hard Float (armhf) to the list of supported architectures and
+    override the Lintian "unknown architecture" warning.  Closes: #604658
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 25 Nov 2010 13:25:18 +0200
 
