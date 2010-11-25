@@ -16,6 +16,8 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
   * Bump Standards-Version to 3.9.1 with no changes.
   * Fix some spelling mistakes in both the upstream source and some of
     the Debian packaging files.
+  * Bump the debhelper compatibility level to 7:
+    - use dh_prep instead of dh_clean -k
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 25 Nov 2010 13:25:18 +0200
 
