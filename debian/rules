@@ -16,9 +16,7 @@ endif
 
 CFLAGS += -DUSE_GETTEXT
 
-build: build-stamp
-build-stamp:  configure
-	dh build --before auto_configure --with autotools_dev
+override_dh_auto_configure:
 	chmod +x configure
 	dh_auto_configure -- \
 		--enable-fxc \
@@ -28,20 +26,16 @@ build-stamp:  configure
 		--enable-dependency-tracking \
 		CFLAGS="$(CFLAGS)" \
 		LDFLAGS="-Wl,-z,defs"
-	dh build --before auto_build
+
+override_dh_auto_build:
 	dh_auto_build -- CFLAGS="$(CFLAGS)"
 	$(MAKE) -C debian/i18n
-	dh build --remaining
-	touch $@
 
-clean:
-	dh clean --before auto_clean
+override_dh_auto_clean:
 	dh_auto_clean
 	$(MAKE) -C debian/i18n clean
-	dh clean --remaining --with autotools_dev
 
-install: build
-	dh $@ --before auto_install
+override_dh_auto_install:
 	dh_auto_install
 	cd $(CURDIR)/debian/tmp/usr/bin/ && \
 		for f in *; do \
@@ -50,22 +44,20 @@ install: build
 	$(MAKE) -C debian/i18n install INSTALLPREFIX=$(CURDIR)/debian/tmp/usr/share/locale/
 	cp debian/fenix.sh $(CURDIR)/debian/tmp/usr/bin/fenix
 	chmod +x $(CURDIR)/debian/tmp/usr/bin/fenix
+
+override_dh_install:
 	dh_install
 	cd $(CURDIR)/debian/fenix-dev && patch -p1 < $(CURDIR)/debian/patches/headers.patch
+
+override_dh_installdocs:
 	dh_installdocs --exclude=license.txt --exclude=authors.txt
+
+override_dh_installchangelogs:
 	dh_installchangelogs NEWS
-	dh $@ --before compress
+
+override_dh_compress:
 	for i in debian/fenix/usr/share/doc/fenix/*.txt; do gzip $$i; done
 	dh_compress
-	dh $@ --remaining
-
-# Build architecture-independent files here.
-binary-indep: build install
-	dh $@
-
-# Build architecture-dependent files here.
-binary-arch: build install
-	dh $@
 
 get-orig-source:
 	dh_testdir
@@ -77,5 +69,5 @@ get-orig-source:
 	tar cvfz ../fenix_0.92a.dfsg1.orig.tar.gz Fenix/*
 	rm -rf Fenix fenix092a-src-release.tgz
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install get-orig-source
+%:
+	dh $@ --with autotools_dev
