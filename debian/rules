@@ -18,17 +18,8 @@ endif
 
 CFLAGS += -DUSE_GETTEXT
 
-patch:
-	dh_testdir
-	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
-
-unpatch:
-	dh_testdir
-	QUILT_PATCHES=debian/patches quilt pop -a -f || test $$? = 2
-
 config.status: configure
 	dh_testdir
-	$(MAKE) -f /usr/share/quilt/quilt.make patch
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config.sub
 endif
@@ -63,7 +54,6 @@ clean:
 	[ ! -f Makefile ] || $(MAKE) distclean
 	$(MAKE) -C debian/i18n clean
 	rm -f config.sub config.guess
-	$(MAKE) -f /usr/share/quilt/quilt.make unpatch
 	dh_clean 
 
 install: build
