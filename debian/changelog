@@ -1,4 +1,4 @@
-fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-6) experimental; urgency=low
 
   [ Peter De Wachter ]
   * Fixed watch file. (Closes: #544789)
@@ -25,7 +25,7 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
   * With this dpkg-dev dependency, this upload by itself Closes: #604964.
   * Add myself to the list of uploaders.
 
- -- Peter Pentchev <roam@ringlet.net>  Thu, 25 Nov 2010 13:25:18 +0200
+ -- Peter Pentchev <roam@ringlet.net>  Fri, 26 Nov 2010 16:28:08 +0200
 
 fenix (0.92a.dfsg1-5) unstable; urgency=low
 
