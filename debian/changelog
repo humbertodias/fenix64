@@ -1,4 +1,6 @@
-fenix (0.92a.dfsg1-6) experimental; urgency=low
+fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
+
+  TODO: fix the arch-dependent-only build (pointed out by ansgar)
 
   [ Peter De Wachter ]
   * Fixed watch file. (Closes: #544789)
