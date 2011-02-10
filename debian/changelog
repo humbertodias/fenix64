@@ -26,6 +26,9 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
     and LDFLAGS.
   * With this dpkg-dev dependency, this upload by itself Closes: #604964.
   * Add myself to the list of uploaders.
+  * Remove the dh_compress override - dh_compress(1) already will compress
+    all the text files in /usr/share/doc/fenix.  This change also fixes
+    the arch-indep only build.
 
  -- Peter Pentchev <roam@ringlet.net>  Fri, 26 Nov 2010 16:28:08 +0200
 
