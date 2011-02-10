@@ -42,10 +42,6 @@ override_dh_auto_install:
 	cp debian/fenix.sh $(CURDIR)/debian/tmp/usr/bin/fenix
 	chmod +x $(CURDIR)/debian/tmp/usr/bin/fenix
 
-override_dh_install:
-	dh_install
-	cd $(CURDIR)/debian/fenix-dev && patch -p1 < $(CURDIR)/debian/patches/headers.patch
-
 override_dh_installdocs:
 	dh_installdocs --exclude=license.txt --exclude=authors.txt
 

@@ -1,7 +1,5 @@
 fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
 
-  TODO: fix the arch-dependent-only build (pointed out by ansgar)
-
   [ Peter De Wachter ]
   * Fixed watch file. (Closes: #544789)
 
@@ -29,6 +27,10 @@ fenix (0.92a.dfsg1-6) UNRELEASED; urgency=low
   * Remove the dh_compress override - dh_compress(1) already will compress
     all the text files in /usr/share/doc/fenix.  This change also fixes
     the arch-indep only build.
+  * Drop the headers patch to unbreak the arch-dep only build; seems safe,
+    because well-behaved Fenix-using packages would add -I/usr/include/Fenix
+    if they need to use its headers and would invoke sdl-config to add
+    the SDL headers directory anyway.
 
  -- Peter Pentchev <roam@ringlet.net>  Fri, 26 Nov 2010 16:28:08 +0200
 
