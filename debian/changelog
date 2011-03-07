@@ -29,8 +29,9 @@ fenix (0.92a.dfsg1-6) unstable; urgency=low
     the arch-indep only build.
   * Drop part of the headers patch and always apply the rest to unbreak
     the arch-dep only build.
+  * Also link to libdl and libm to fix the FTBFS with binutils-gold.
 
- -- Peter Pentchev <roam@ringlet.net>  Thu, 10 Feb 2011 16:47:16 +0200
+ -- Peter Pentchev <roam@ringlet.net>  Mon, 07 Mar 2011 15:27:14 +0200
 
 fenix (0.92a.dfsg1-5) unstable; urgency=low
 

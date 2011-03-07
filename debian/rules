@@ -22,7 +22,8 @@ override_dh_auto_configure:
 		--enable-dependency-tracking \
 		CFLAGS="$(CFLAGS)" \
 		CPPFLAGS="$(CPPFLAGS)" \
-		LDFLAGS="$(LDFLAGS)"
+		LDFLAGS="$(LDFLAGS)" \
+		LIBS="-lm -ldl"
 
 override_dh_auto_build:
 	dh_auto_build -- CFLAGS="$(CFLAGS)"
