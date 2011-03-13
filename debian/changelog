@@ -1,3 +1,10 @@
+fenix (0.92a.dfsg1-7) unstable; urgency=low
+
+  * Team upload.
+  * debian/control: Do not wrap Architecture field.
+
+ -- Ansgar Burchardt <ansgar@debian.org>  Sun, 13 Mar 2011 13:39:42 +0100
+
 fenix (0.92a.dfsg1-6) unstable; urgency=low
 
   [ Peter De Wachter ]
