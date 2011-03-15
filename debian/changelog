@@ -1,3 +1,9 @@
+fenix (0.92a.dfsg1-8) UNRELEASED; urgency=low
+
+  * Add the kfreebsd patch to fix the FTBFS on GNU/kFreeBSD.
+
+ -- Peter Pentchev <roam@ringlet.net>  Mon, 14 Mar 2011 12:44:14 +0200
+
 fenix (0.92a.dfsg1-7) unstable; urgency=low
 
   * Team upload.

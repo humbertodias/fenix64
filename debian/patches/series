@@ -24,3 +24,4 @@ warning_fixes.patch
 string_alloc_crash.patch
 spelling.patch
 headers.patch
+kfreebsd.patch
