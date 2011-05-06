@@ -25,3 +25,4 @@ string_alloc_crash.patch
 spelling.patch
 headers.patch
 kfreebsd.patch
+no_--as-needed_in_fxi-src-Makefile.patch

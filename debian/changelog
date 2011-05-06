@@ -1,3 +1,11 @@
+fenix (0.92a.dfsg1-9) unstable; urgency=low
+
+  * Team upload.
+  * Don't pass --as-needed in fxi/src/Makefile
+    --as-needed was passed to gcc and produced a FTBFS with gcc 4.6.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sat, 07 May 2011 01:34:18 +0200
+
 fenix (0.92a.dfsg1-8) unstable; urgency=low
 
   * Add the kfreebsd patch to fix the FTBFS on GNU/kFreeBSD.
