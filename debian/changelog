@@ -1,4 +1,4 @@
-fenix (0.92a.dfsg1-9) unstable; urgency=low
+fenix (0.92a.dfsg1-9) UNRELEASED; urgency=low
 
   * Team upload.
   * Don't pass --as-needed in fxi/src/Makefile
