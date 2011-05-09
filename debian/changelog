@@ -1,4 +1,4 @@
-fenix (0.92a.dfsg1-9) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-9) unstable; urgency=low
 
   * Team upload.
   * Don't pass --as-needed in fxi/src/Makefile
@@ -6,7 +6,7 @@ fenix (0.92a.dfsg1-9) UNRELEASED; urgency=low
   * Drop unused override unknown-architecture armhf, thanks lintian.
   * Standards-Version: 3.9.2
 
- -- Evgeni Golov <evgeni@debian.org>  Mon, 09 May 2011 10:37:07 +0200
+ -- Evgeni Golov <evgeni@debian.org>  Mon, 09 May 2011 10:46:53 +0200
 
 fenix (0.92a.dfsg1-8) unstable; urgency=low
 
