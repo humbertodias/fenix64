@@ -1,3 +1,9 @@
+fenix (0.92a.dfsg1-10) UNRELEASED; urgency=low
+
+  * Correct Vcs-* URLs to point to anonscm.debian.org
+
+ -- Evgeni Golov <evgeni@debian.org>  Mon, 15 Jul 2013 22:21:22 +0200
+
 fenix (0.92a.dfsg1-9) unstable; urgency=low
 
   * Team upload.
