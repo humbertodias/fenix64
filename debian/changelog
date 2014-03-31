@@ -1,8 +1,14 @@
-fenix (0.92a.dfsg1-10) UNRELEASED; urgency=low
+fenix (0.92a.dfsg1-10) unstable; urgency=low
 
+  * Team upload.
+
+  [ Evgeni Golov ]
   * Correct Vcs-* URLs to point to anonscm.debian.org
 
- -- Evgeni Golov <evgeni@debian.org>  Mon, 15 Jul 2013 22:21:22 +0200
+  [ Vincent Cheng ]
+  * Fix FTBFS by linking against libgif. (Closes: #732787, #738073)
+
+ -- Vincent Cheng <vcheng@debian.org>  Sun, 30 Mar 2014 23:49:50 -0700
 
 fenix (0.92a.dfsg1-9) unstable; urgency=low
 
