@@ -70,7 +70,7 @@
 +		png_free(png_ptr, palette);
 +		palette = NULL;
 +#else
-+		freee(info_ptr->palette) ;
++		free(info_ptr->palette) ;
  		info_ptr->palette = NULL ;
 +#endif
  	}
