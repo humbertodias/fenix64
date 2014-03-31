@@ -9,6 +9,8 @@ fenix (0.92a.dfsg1-10) unstable; urgency=low
   * Fix FTBFS by linking against libgif. (Closes: #732787, #738073)
     (LP: #1277593)
   * Build-depend on libpng-dev instead of libpng12-dev. (Closes: #662322)
+  * Add debian/patches/fix_ftbfs_libpng1.5.patch to fix FTBFS against
+    libpng 1.5. (Closes: #649548)
 
  -- Vincent Cheng <vcheng@debian.org>  Sun, 30 Mar 2014 23:49:50 -0700
 
