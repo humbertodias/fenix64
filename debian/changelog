@@ -1,3 +1,11 @@
+fenix (0.92a.dfsg1-11) unstable; urgency=medium
+
+  * Team upload.
+  * Fix locale-specific FTBFS by exporting LC_ALL=C in debian/rules.
+    (Closes: #795731)
+
+ -- Vincent Cheng <vcheng@debian.org>  Thu, 20 Aug 2015 02:32:45 -0700
+
 fenix (0.92a.dfsg1-10) unstable; urgency=low
 
   * Team upload.
