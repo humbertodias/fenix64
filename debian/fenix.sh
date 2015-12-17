@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # (c) 2007 Miriam Ruiz <little_miry@yahoo.es>
+# (c) 2015 Peter Pentchev <roam@ringlet.net>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,52 +20,56 @@
 ARG="$1"
 GAME_FILE=""
 
-if [ -z "$GAME_FILE" ] && [ -z "$ARG" ]; then
-	FILE_NUM=`ls *.prg 2>/dev/null | wc -l`
-	if [ "$FILE_NUM" -eq 1 ] ; then
-		GAME_FILE=`ls *.prg 2>/dev/null`
-	else
-		GAME_FILE=""
+tempf=`mktemp -t fenix.XXXXXX`
+trap "rm -f -- '$tempf'" EXIT HUP INT QUIT TERM
+
+single_file() {
+	local dir="$1"
+
+	local count=0
+	if [ -d "$dir" ] && [ -r "$dir" ]; then
+		find -- "$dir" -mindepth 1 -maxdepth 1 -type f -name '*.prg' > "$tempf"
+		count=`wc -l < "$tempf"`
 	fi
+	if [ "$count" -eq 1 ]; then
+		cat -- "$tempf"
+	fi
+}
+
+if [ -z "$GAME_FILE" ] && [ -z "$ARG" ]; then
+	GAME_FILE=`single_file '.'`
 fi
 
 if [ -z "$GAME_FILE" ] && [ -d "$ARG" ]; then
-	FILE_NUM=`ls "$ARG"/*.prg 2>/dev/null | wc -l`
-	if [ "$FILE_NUM" -eq 1 ] ; then
-		GAME_FILE=`ls "$ARG"/*.prg` 2>/dev/null
-	else
-		GAME_FILE=""
+	GAME_FILE=`single_file "$ARG"`
+	if [ -z "$GAME_FILE" ]; then
 		echo "Cannot choose a game file in the directory \"$ARG\"" >&2
 		exit 1
 	fi
 fi
 
-if [ -z "$GAME_FILE" ] && [ -e "$ARG" ]; then
-	FILE_NUM=`ls "$ARG" 2>/dev/null | wc -l`
-	if [ "$FILE_NUM" -eq 1 ] ; then
-		GAME_FILE="$ARG"
+if [ -z "$GAME_FILE" ] && [ -f "$ARG" ]; then
+	GAME_FILE="$ARG"
+fi
+
+if [ -z "$GAME_FILE" ]; then
+	if [ "$#" -eq 1 ]; then
+		echo "Game program does not exist in \"$ARG\"" >&2
 	else
-		GAME_FILE=""
-		echo "Cannot choose a game file" >&2
+		echo "Usage: $0" >&2
+		echo "Usage: $0 <file.prg>" >&2
+		echo "Usage: $0 <directory>" >&2
 	fi
-fi
-
-if [ -z "$GAME_FILE" ] && [ ! -z "$ARG" ] && [ -z "$2" ]; then
-	echo "Game program does not exist in \"$ARG\"" >&2
 	exit 1
 fi
 
-if [ -z "$GAME_FILE" ] || [ ! -z "$2" ]; then
-	echo "Usage: $0" >&2
-	echo "Usage: $0 <file.prg>" >&2
-	echo "Usage: $0 <directory>" >&2
-	exit 1
-fi
-
-if [ -z "$GAME_FILE" ] || [ ! -e "$GAME_FILE" ]; then
+if [ ! -f "$GAME_FILE" ]; then
 	echo "File \"$GAME_FILE\" does not exist" >&2
 	exit 1
 fi
+
+rm -f -- "$tempf"
+trap '' EXIT HUP INT QUIT TERM
 
 echo "Game File: \"$GAME_FILE\"" >&2
 fenix-fxc "$GAME_FILE" -o - | fenix-fxi -t "$GAME_FILE" -
