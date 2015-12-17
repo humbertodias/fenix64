@@ -1,0 +1,97 @@
+FENIX PROJECT 1.0
+=================
+
+Instrucciones para poder compilar el proyecto.
+
+WIN32 (MinGW) (base para cualquier UNIX)
+========================================
+
+El proyecto compila como cualquier versión UNIX.
+
+Se necesita los siguientes paquetes (que pueden ser instalados
+en cualquier directorio del sistema MinGW, solo Win32):
+
+MinGW-5.1.0 (mingw-runtime-3.11.tar.gz
+            w32api-3.8.tar.gz
+            binutils-2.15.91-20040904-1.tar.gz
+            gcc-core-3.4.2-20040916-1.tar.gz
+            gcc-g++-3.4.2-20040916-1.tar.gz
+            mingw32-make-3.80.0-3.tar.gz)
+
+MSYS-1.0.10.exe
+
+(Libs validas tambien para sistemas UNIX)
+
+libpng-1.2.12.tar.gz
+SDL-1.2.11.tar.gz
+SDL_mixer-1.2.7.tar.gz
+smpeg-0.4.3.tar.gz
+zlib-1.2.3.tar.gz
+
+NOTAS:
+    Si bien estas son las versiones utilizadas en esta compilación,
+cualquier versión de estos paquetes debería funcionar correctamente.
+    Si tenemos instalado MSVC, en la consola MSYS aseguranos de eliminar
+el seteo de las variables de compilación del MSVC (INCLUDE, LIB, etc.).
+
+Solo en windows: copiar la SDL.dll en el directorio raiz del fenix antes de correr configure.
+
+Pasos a seguir para compilar:
+
+    ./configure --enable-fpg --enable-map
+    make
+
+WIN32 (MSVC) (no actualizado a partir de la versión 0.85)
+=========================================================
+
+El proyecto esta preparado para compilar a partir de una estructura como la siguiente:
+
+/<FENIXROOT>
+  |
+  |- FENIX (contenido de este módulo de CVS)
+  |- SDL (ficheros necesarios de la SDL DEVEL)
+  |  |- INCLUDE
+  |  |- LIB
+  |- SDL_MIXER (ficheros necesarios de la SDL_MIXER)
+  |  |- INCLUDE
+  |  |- LIB
+  |- ZLIB (ficheros necesarios de la ZLIB)
+  |  |- INCLUDE
+  |  |- LIB
+  |- LIBPNG (ficheros necesarios de libpng)
+  |- LIBUNGIF (si quieres compilar MAP.EXE necesitas la LIBUNGIF)
+
+
+Versiones con que se compila actualmente el CVS:
+
+SDL 1.2.8 (www.libsdl.org)
+SDL_MIXER 1.2.6 (www.libsdl.org)
+ZLIB 1.2.3 (www.zlib.net)
+LIBPNG 1.2.8 (www.libpng.org)
+LIBUNGIF 4.0 (http://sourceforge.net/projects/libungif)
+
+Se incluyen los ficheros DSW y DSP necesarios para poder compilar en Visual Studio 6
+que es el compilador "oficial" de la version win32.  Estos ficheros pueden recuperarse
+desde versiones posteriores de Visual Studio sin problemas.
+
+LINUX
+=====
+
+Ver WIN32 (MinGW), excepto paquetes MinGW y MSYS
+
+BEOS
+====
+
+Ver WIN32 (MinGW), excepto paquetes MinGW y MSYS
+
+MACOS
+=====
+
+Ver WIN32 (MinGW), excepto paquetes MinGW y MSYS
+
+DREAMCAST
+=========
+
+GP32
+====
+

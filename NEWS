@@ -1,0 +1,447 @@
+0.92a
+- Fix para evitar reentradas dentro de la funcion bitmap_16bits_conversion, llamada por gr_init (set_mode)
+- Correccion substr, por incorrecto calculo con negativos.
+
+0.92
+- Fix en prototipo de funciones que devuelve punteros.
+- Se optimiza funcion unload_map.
+- Se agrega chequeo de NULL en funcion bitmap_get.
+- Se corrige soporte de archivos fli/flc.
+- Los ejecutables vuelven a tener iconos.
+- Se corrige caidas provocadas por descarga de fuentes, ahora si se descarga
+  un fuente en uso, el texto que lo usa es eliminado limpiamente.
+- Se corrige comportamiento de funcion SUBSTR.
+- Se agregan las siguientes funciones:
+    CD_NUMTRACKS(cdnumber)  - Devuelve la cantidad de tracks disponibles
+                              en el CD especificado.
+    CD_CURRTRACK(cdnumber)  - Nro de la pista actual.
+- Se agrega control de parametros invalidos en las funciones de CD,
+  esto provocaba cuelgues.
+- Se corrige operacionesn de rotacion de bits, para darle soporte
+  a los distintos tipos de datos SIGNED/UNSIGNED.
+- Se reeimplementa operaciones con fixed (punto flotante),
+  se mejora performance y precision. Afecta a comandos tipo ADVANCE y de modo7.
+- Se corrige funciones ADVANCE, donde en ocaciones si la distancia era 1,
+  no avanzaba. (Esta relacionado con el punto de "operaciones con fixed")
+- Se corrige y completa soporte de mapas animados.
+- Se corrige refresco de pantalla en operaciones que actualizan los blendop.
+- Se corrige refresco de pantalla al actualizar, cargar
+  o cualquier otra operacion sobre las paletas.
+- Correcciones varias en refresco de pantalla.
+- Se corrige operaciones asociadas con fade. (Paleta)
+- Se quitaron varios errores criticos y ahora algunas funciones
+  que antes hacian abortar el programa, ahora hacen uso del retorno de error.
+- Se corrige valores retornados por la funcion GET_REAL_POINT
+  cuando el punto de control en cuestion no esta definido.
+- Se corrige falta de refresco cuando se modifica el tamano de una region.
+- PUT_SCREEN no aborta la ejecucion si se quiere usar un mapa inexistente.
+- Se reescribe y corrige funcion FILTER.
+- Se reescribe y corrige funcion BLUR.
+- GRAYSCALE no aborta la ejecucion si se quiere usar un mapa
+  diferente a 16 bits de profundidad de color.
+- Se agrega funcion MEMCMP(pointer addr1, pointer addr2, int size),
+  para comparar areas de memoria,
+  y retorna 0 si son iguales o distinto de 0 si son diferentes.
+- Se trimean lineas de debug (trace de ejecucion o debug a archivo)
+- Se corrige inicializaciones en funcion instance_new y se corrige logica de instance_duplicate,
+  esto afectaba al comando CLONE, y provocaba cuelgues aleatorios
+- Se agregan a la consola de debug los comandos KILLALL, WEAKUPALL, SLEEPALL, FREEZEALL.
+- Se corrige creacion, borrado y movimientos de primitivas draw, causado en un mal manejo de asignacion y borrado.
+  Provocaba que aparezcan draws eliminados o que se eliminen draws que no se deseaba.
+
+0.91
+- Anuncia error de compilacion ante uso de operacion de modulo con datos flotantes
+- Agregado de mnomicos para operaciones de modulo con unsigned word, unsigned byte y unsigned.
+- Fix a problema que requeria especificar tipo de dato en inicializacion de array. (Generico)
+- Correccion y optimizacion de funciones QUICKSORT, KSORT, SORT (en todas sus formas)
+- Se corrige copy de estructuras, se cambia el prototipo de la funcion #COPY#, se le agrega un parametro que define la cantidad de ocurrencias (array) de la structura
+- Se corrige inicializacion de segmentos float en structura o array de structura, antes no eran tomados dichos valores.
+- Se corrige inicializacion arrays de structs sin dimension (dimensionado automatico)
+- Se agregan constantes SEEK_SET, SEEK_CUR y SEEK_END
+- Correccion en problema de dibujado de procesos, al no detectar bien el estado del mismo
+- Correcciones varias en el manejo de estructuras
+- Nuevos comandos en la consola de debug:
+    DOFRAME             Continua la ejecucion de todos los procesos,
+                        hasta el siguiente frame y retorna a la consola de debug
+
+    RUN proc [args]     Ejecuta un proceso
+    KILL proc           Elimina un proceso
+    WEAKUP proc         Despierta un proceso
+    SLEEP proc          Duerme un proceso
+    FREEZE proc         Congela un proceso
+
+0.90.2
+- Evento ONEXIT, permite especificar codigo que se ejecuta cuando un proceso muere o termina
+- Se reescribio y mejoro forma de ejecucion de funciones/procesos.
+El funcionamiento es el siguiente:
+1) Los procesos y las funciones congelan al padre o proceso/funcion llamador.
+2) FRAME despierta al padre solo en los casos de procesos.
+3) FRAME en las funciones no despierta al padre. (Atencion a esto, porque cambia el funcionamiento actual)
+4) END, RETURN o fin de proceso/funcion, liberan al padre, tanto en procesos como funciones.
+5) Al morir un proceso se ejecuta el evento ONEXIT, el proceso queda en estatus DEAD,
+si este ejecuta otro proceso o funcion pasa a WAITING_DEAD.
+6) No se permite cambiar el estatus (enviar signal) a procesos en estado DEAD.
+- Se agrego funciones de depurado. En la consola de comandos se agregan:
+TRACE           Ejecuta 1 instruccion y retorna a la consola de comandos.
+BREAK proc      Agrega un breakpoint sobre ejecucion de proc
+                (se pueden especificar instancias o tipos de funcion)
+BREAK           Lista breakpoints definidos
+DELETE proc     Elimina un breakpoint
+                (los breakpoints sobre una instancia determinada se eliminan cuando esta muere)
+CONTINUE        Continua la ejecucion (Simil a ALT+C)
+- Ahora se puede deslizar el contenido de la ventana de debug a los costados,
+con CTRL+<Flechas de direccion>
+- Bugs varios en linux, que producia caidas cuando se actualizaba
+la paleta despues de un segundo set_mode, y entraba en la funcion gr_blit_rotate.
+- Operadores logicos AND y OR, ahora tienen funcionalidad logica completa,
+esto significa que si la primera expresion (izquierda) define el resultado
+de la expresion completa, las evaluaciones terminan ahi. (compilador)
+- Se corrigio tratamiento de punteros en expresiones logicas y binarias (compilador)
+- Soporte de mnomico JTRUE (compilador)
+- Agregado de mnomicos JTFALSE y JTTRUE (compilador+interprete)
+  (Jmp Test..., no haces descarga del stack del valor testeado)
+- Solucionado el problema donde era necesario especificar STRING en inicializacion
+de array no tipificado conteniendo STRINGS.
+- WAITING es un bitflag, sobre cualquier estado y significa que el proceso
+esta esperando retorno de otro proceso.
+
+0.90
+- Soporte de BLEND en graficos rotados
+- Fix de primitivo (0.84b) bug en rotado y escalado que hacia caer el proceso
+  en ciertos casos
+- Fix de bug en compilador donde si se usa 0ffffffffh,
+  el compilador lo interpretaba como 08000000h.
+- Algunos chequeos extra en funciones de font.
+- Soporte de blend, alpha, stipple, etc. en funcion draw_circle
+- Distincion entre operadores logicos y bitwise, ahora los operadores son:
+
+    * Logicos:
+        and     &&
+        or      ||
+        xor     ^^
+        not     !
+
+    * Bitwise
+        band    &
+        bor     |
+        bxor    ^
+        bnot    ~
+
+- Ahora las condiciones true son valores distinto de 0, y false igual a 0 (como Dios manda)
+- Bug fix en capa de reproduccion de cd, que tras inicializacion
+  de la libereria de sonido (ejecucion de cualquier funcion de sonido, no cd)
+  el sistema de cd dejaba de funcionar...
+- Signals instantaneos sobre el padre, si son efectuados desde un hijo
+- Bug fix en declare de variables para referenciar publicas
+- Correccion en primitivas draw_circle y draw_fcircle donde sobredibujaban algunas lineas y puntos.
+- Fix funcion glob, para corregir error de duplicacion de primera entrada e informacion del path del archivo
+- Correccion en asignacion de valores en la declaracion de variables sin tipo (INT)
+- Correcciones minimas en compilador
+- Correccion de bug en funciones que contienen frame y el valor de retorno es descartado.
+  Error "Stack Overflow!"
+- Correccion en set_glyph, donde no setea valores default de avance si el bitmap adicionado
+  no tenia puntos de control
+- Fix en funciones de informacion de memoria disponible y total, se les cambio el prototipo, ahora devuelven INT
+- Correccion en funcion file_gets
+- Se quitaron muchos warnings de compilacion que en algunos casos podrian ser errores graves en momento de ejecucion
+- Se agrego variable SHOW_COLOR en consola de debug, el valor permitido es un color RGB
+- Se agrego expresiones mas complejas tanto en asignacion de valores a variables de consola,
+  como a expresiones en la misma.
+- Ahora es posible escribir en la consola valores (segun la terminacion del numero)
+  en hexadecimal(h), decimal, binario(b) u octal(o).
+- Correccion en ventana de informacion de profile, que faltaba 1 dato de los 4 que se esperaba.
+
+0.89d
+- Correccion formula de blend subtractivo
+- Correccion en funciones MKDIR, CD
+- Correccion en alt+w en modo debug cuando la pantalla se inicia en fullscreen
+  por medio de la variable full_screen
+- Correccion en el rotado y escalado de mapas
+- Ahora alt+x en debug, sale inmediatamente
+
+0.89c
+- Algunos chequeos extra en funciones con sonido, para evitar caidas ante paso de valores invalidos.
+- Se corrige problema con carga de musicas formatos mod.
+- Se agrega funcion GETENV()
+- EXIT() sale inmediatamente.
+- Se corrige funcion graphic_set, en el centrado de coordenadas (punto de control 0).
+- Se corrige problema con blend (subtractive), se restaban al revez.
+- Se incluyen constantes, para usar como flags en map_xput y afines:
+    B_HMIRROR           1
+    B_VMIRROR           2
+    B_TRANSLUCENT       4
+    B_ALPHA             8
+    B_ABLEND            16
+    B_SBLEND            32
+    B_NOCOLORKEY        128
+
+0.89b
+- Correccion en prototipado de procesos/funciones
+- Correcciones varias en mecanismo de scroll
+- Habilitado funcion "move_scroll()"
+- Correccion de apertura de archivos en Windows Vista
+
+0.89a
+- Correccion en compilacion con punteros a structuras
+- Correccion en consola de debug al querer mostar idproce.variable[indice]
+- Algunos aspectos esteticos en la consola de debug (colores en help y otras cosas)
+  que habia quitado por error.
+
+0.89
+- Se corrije y se deja funcional todo el esquema de stub.
+- Se agrega inicializacion de la SDL en el compilador, antes no lo hacia,
+  entonces no se guardaban los datos segun byteorder.
+- Correccion en visualizacion de arrays en consola de debug.
+- Fix general al modulo files, para carga de archivos.
+- Modificacion del sound.c para dar soporte a carga desde un archivo stub
+  de los sonidos SDL. (Tambien usada ahora para archivos comunes)
+- Se corrigen byteorder en algunos cuantos datos.
+- Se quita limite de tamano en carga y grabacion de png.
+- Se corrige bug en grabacion de strings a archivos.
+- Se agrega variable de consola de debug "FILES" que muestra
+  la cantidad de archivos en uso (abiertos).
+- Correccion de bug en acceso/operacion con variables locales, publicas y privadas,
+  lo que provocaba extranos comportamientos con datos tipo BYTE y WORD (y variantes)
+- Se agrega identificador "DECLARE" que nos permite declarar prototipos de funciones/procesos,
+  con sus variables, antes de su uso.
+  Esto es el punto pendiente que quedaba para completar el sistema de variables publicas.
+  Por ejemplo:
+
+  /* Declaracion del prototipo */
+  declare process localvar()
+     public
+         priv1; // Variable Local
+         glob1; // Variable Local
+     private
+         int text1, text2, text3, text4, text5;
+     end
+  end
+
+  /* Funcion */
+  process localvar();
+  /* Si ya se hizo previamente un DECLARE de este proceso no se permiten
+     declarar variables en este punto */
+  begin
+    loc1=0;
+    glob1=0;
+    while(1); frame();end
+  end
+
+- POINTER deja de ser basetype, que hacia que expresiones del tipo
+  "string pointer pointer a, pointer b;" transmitan incrementalmente
+  la cantidad de "pointers" entre cada una de las variables declaradas,
+  el verdadero basetype de la linea ejemplo es "string".
+
+0.88d
+- Fix assert en compilacion donde las funciones no coinciden en la cantidad de parametros
+- Si bien no eran necesarias, se agregan las siguientes funciones por cuestion de claridad:
+    LOAD_FPL
+    UNLOAD_FGC
+    UNLOAD_FBM
+- Posibilidad de cambiar tamaño de la consola de debug
+  (Variables de debug: CONSOLE_LINES, CONSOLE_COLUMNS)
+- Correccion en actualizacion menores de pantalla en 8bits de profundidad
+- Ahora la consola debug congela toda actualizacion y procesamiento fenix
+- Ahora la instruccion "DEBUG;" congela inmediatamente la ejecucion,
+  ya no espera al proximo frame.
+- Se elimino mensaje de aviso "Failed to open message file: msg/en.msg",
+  puesto que no es un error y confunde.
+
+0.88c
+- Fix en funcion gr_calculate_corners, que hacia que no se actualicen los rects
+  cuando la coordenada dentro del area de dibujo correspondia a 0
+  para alguno de los ejes x o y.
+
+0.88b
+- Fix en mnemonicos tipo strings, al acceder a datos de variables de procesos
+- Fix en informacion de trace de debug
+- Cambio de logica de apertura de joysticks
+- Inclusion de tipos de datos incorporados en la version 0.84b que no estaban soportados
+  en algunas funciones
+- Fix varios en funcion glob()
+
+0.88a
+- Se corrige problema de rotado y resize con ciertos valores que hacia que en ciertos
+  casos el grafico dibujado sea un triangulo
+- Se agrega RESOLUTION con valores negativos, que hace que en vez de dividir
+  las coordenadas, las multiplica por el valor indicado
+- Se agrega a la consola de debug el soporte de asignacion de variables
+  a los tipos de datos faltantes. Ahora el soporte de cambiar valores
+  de variables desde la consola de debug es mas completo.
+  Quedan exentos los tipos de datos POINTER, STRUCT, ARRAY.
+- Se corrije representacion visual de algunos tipos de datos en consola de debug
+- Las strings en la consola de debug se pueden especificar tanto
+  con comillas dobles, como con comillas simples.
+- Se cambia constantes que definen el modo de escalado "SCALE_MODE", ahora:
+    SCALE_NONE                          desactiva escalado
+    SCALE_SCALE2X                       actual filtro de escalado 2x
+                                        (tambien se puede activar usando
+                                        el flag como hasta ahora en la variable
+                                        "graph_mode" y la variable SCALE_MODE=SCALE_NONE)
+    SCALE_HQ2X                          escalado 2x, con filtro hq2x
+                                        (mayor calidad, menor performance)
+    SCALE_SCANLINE2X                    escalado 2x, con filtro scanline
+    SCALE_NORMAL2X o SCALE_NOFILTER     escalado 2x, sin filtro
+
+0.88
+- Se corrige problema de parpadeo graficos causado por problemas en el cambio
+  de las Z en la version 0.87e
+- Se elimina uso de MessageBox para errores criticos en el interprete (fxi) en windows,
+  por problemas con la SDL, la salida se hace sobre stderr.txt
+- Se agregan los siguientes filtros de escalado: scale2x, hq2x, scanline2x, normal2x
+  Para esto se agrega una nueva variable global denominada "scale_mode",
+  el simple seteo de esta variable hace que se realice el escalado,
+  los valores posibles de la misma son:
+    SCALE_NOFILTER          desactiva escalado
+    SCALE_SCALE2X           actual filtro de escalado 2x
+                            (tambien se puede activar usando el flag
+                            como hasta ahora en la variable "graph_mode")
+    SCALE_HQ2X              escalado 2x, con filtro hq2x
+                            (mayor calidad, menor performance)
+    SCALE_SCANLINE2X        escalado 2x, con filtro scanline
+    SCALE_NORMAL2X          escalado 2x, sin filtro
+
+    NOTA: Si escalado se encuentra activado, ya sea por setear la nueva variable
+          o por usar el flag en "graph_mode", se permite intercambiar de filtros
+          cambiando la variable sin tener que usar set_mode.
+
+- Soporte de hasta 32 joysticks (segun plataforma), a las ya conocidas funciones
+  se agregan las siguientes:
+    GET_JOY_BUTTON(joystick, boton)
+    GET_JOY_POSITION(joystick, axis)
+	JOY_BUTTONS(joystick)
+	JOY_AXES(joystick)
+
+0.87e
+- Se corrige error de interpretacion de orden de las prioridades introducido en la 0.84b,
+  cuando mayor es el valor de la variable "priority" primero se ejecuta el proceso
+- Ahora si Z cambia, el proceso es considerado en el proximo redibujado (frame)
+- Normalizacion de funcionalidad BLEND
+- Se habilita scale2x en MAC y LINUX-PPC
+- Mode7, se corrige inicializacion de m[...] en start_mode7, lo que provocaba
+  que al volver a usar un mismo mode7 levantaba con los datos anteriores
+- Se arreglo configure.in para que incluya la lib X11 si esta esta disponible
+- Se agrego soporte MMX, pero se deshabilito por dar un rendimiento menor al standard
+  sin mmx, y debido a caidas del proceso sin motivo aparente.
+- Fix fpg_add, no actualizaba contador de puntos de control,
+  con lo que parecia que el nuevo grafico no tenia puntos de control.
+
+0.87d
+- Se agrega funcion
+    RESERVE_CHANNELS(NChannels)
+        donde NChannels son la cantidad de canales a reservar (desde el 0)
+    devuelve cantidad de canales reservados, -1 si error.
+- Fix en destroy_instances que hacia que al matar un proceso hijo menor con hijos
+  los hijos no se relacionen bien con sus "nuevo" hermano mayor.
+- Fix varios de mensajes de debug, y errores graves
+- Se cambiaron algunas cosas de lugar y se ubicaron en el lugar correcto
+- Ahora la consola de debug puede ser invocada en el siguiente FRAME
+  usando la sentencia "DEBUG;" en el codigo.
+- Ahora la consola bloquea la ejecucion de cualquier proceso.
+- Se agregan nuevos comandos de debug.
+- Se agrega variable de consola DEBUG la que permite habilitar/deshabilitar el log de debug.
+
+0.87c
+- Se reescribe todo el sistema de eliminacion de instancias,
+  puestos que no reconstruian bien las estructuras.
+  Algunos bugs mas en el modulo de instancias.
+- Las signals vuelven a efectivizarse en el mismo frame
+- Se agregan las siguientes constantes:
+    OS_BSD
+    STATUS_DEAD
+    STATUS_KILLED
+    STATUS_RUNNING
+    STATUS_SLEEPING
+    STATUS_FROZEN
+    STATUS_WAITING
+- Se corrigio bug en descarga de map/fpg
+- Se modificaron y emprolijaron opciones de debugging
+
+0.87b
+- Se agregan 2 nuevas funciones
+    PLAY_WAV(wav pointer, number of loops (-1 infinite loops)[, channel (-1 any channel)])
+    GET_TIMER(), devuelve un contador timer con precision en milisegundos.
+- Se corrije funcion move_window
+
+0.87a
+- Se corrije validaciones para controlar previa declaracion de variables.
+  Ahora se permite declarar variables locales/publicas/privadas dentro
+  de un proceso o funcion con el mismo nombre que las globales.
+- Se corrije error que impedia inicializar punteros a 0.
+
+0.87
+- Se cambia version a 0.87 que deberia haber sido asi a partir
+  de los cambios de variables locales
+- Vuelve a tener sentido la compilacion con debug
+- Se agrega ";" como finalizador de expresion IF, debido a que ahora no se usa mas ":"
+  como separador de instrucciones, solo se permite en IF y en WHILE
+  (quizas deberia ser eliminado)
+
+0.86h+
+- Se corrije declaraciones de elementos array dentro de una misma linea
+  (separador por comma), puesto que se transformaban en arrays de mas dimensiones...
+- Fix por caidas en el tiempo al usar delete_text... por falta de chequeo en cadenas nulas...
+
+0.86h
+
+0.86g
+- Reescritura de la solucion de liberacion de strings en el retorno de una llamada
+  a una funcion.
+- Se deshizo el cambio de la estructura dcb, pero como ahora se graba cierta
+  info que era opcional, se cambio numero de version del DCB
+- Ahora la liberacion soporta correctamente, strings, array de strings
+  y STRUCTS con strings
+
+0.86f
+- Fix en liberacion de strings al usar funciones locales (no instancias)
+- Nueva version de dcb con almacenado de informacion de tipo de variables privadas
+ (incluidos los argumentos)
+- Se elimino codigo imnecesario de variables publicas en funciones locales
+- Ahora las strings staticas se cargan del dcb con contador de uso en 0
+  y con flag de reservada, para no ser descartadas... (algo muy interno)
+
+0.86e
+
+0.86d
+
+0.86c
+
+0.86b
+
+0.86a
+
+0.86
+- Fix de orden de codigos de instrucciones (sysprocs.h, cambio temporal).
+  Caídas si se cargaban dlls con muchas funciones.
+- Compile_varspace, se eliminó parámetros collision1 y collision2,
+  se agregó collision como array, para de esta forma poder incluir X spaces de colisión.
+- Concepto de variables "públicas" (locales) por proceso.
+  Esto hace que se puedan definir variables locales para un solo proceso determinado
+  y no para todos los procesos.
+- Declaracion LOCAL, PUBLIC y PRIVATE, en cualquier orden dentro de un Process
+  y dentro del cuerpo del programa.
+- Se incorpora nombre de proceso como tipo de dato.
+  Esto sirve para referenciar variables públicas (y locales), dentro de un proceso
+  de tipo específico. Es necesario para poder usar la nueva funcionalidad
+  de variables públicas. El tipo de dato finalmente termina siendo un "int"
+  para mantener compatibilidad.
+- Se mantiene compatibilidad con LOCAL global. Se pueden definir variables locales
+  comunes a todos los procesos y otras locales por proceso.
+- Redefinición de prototipos de funciones en pathfind.c por conflicto con funciones en C
+- Enable funciones MMX en GNUC
+- Nuevo formato dcb, se hacen uso de sizeof de las estructuras utilizadas
+  (antes se usaba tamaño sumado a mano, muy problemático)
+  y se agrega las secciones de datos públicas.
+- Algunos free de memoria ante ciertos errores en funciones de runtime
+- Se normaliza el configure, se corrije y se le da soporte para windows
+- Limpieza en compilación, se agrego carpetas "obj", donde se compilan los .o
+  y los binarios se dejan en la carpeta "bin"
+- Más información de debug
+- Se agrega claúsula PUBLICS en la consola de debug
+- Mejoras varias en el código
+- Otros bugs menores, que actualmente no recuerdo... :P
+
+Limitaciones:
+  Ya que actualmente no se encuentra posibilidad de declarar previamente funciones
+  y sus datos, las variables locales por proceso, solo son visibles a los procesos
+  que se escriben luego del proceso a referenciar.

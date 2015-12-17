@@ -1,0 +1,153 @@
+AC_INIT(fenix,0.92a)
+
+AC_CANONICAL_SYSTEM
+AC_ARG_PROGRAM
+
+AM_MAINTAINER_MODE
+
+echo "Your machine: ${target_cpu} ${target_os}"
+
+AC_ARG_ENABLE(debug,
+[  --enable-debug       enable use of Debug (default: no)],
+        enable_debug=$enableval, enable_debug=no)
+
+AC_ARG_ENABLE(mmx,
+[  --disable-mmx           disable MMX assembly routines],
+        mmx=$enableval, mmx=yes)
+
+AC_ARG_ENABLE(fxc,
+[  --disable-fxc         build fxc (compilador) (default: yes)],
+        fxc=$enableval, fxc=yes)
+
+AC_ARG_ENABLE(fxi,
+[  --disable-fxi         build fxi (interprete) (default: yes)],
+        fxi=$enableval, fxi=yes)
+
+AC_ARG_ENABLE(map,
+[  --enable-map         build map 			   (default: no)],
+        map=$enableval, map=yes)
+
+AC_ARG_ENABLE(fpg,
+[  --enable-fpg         build fpg 			   (default: no)],
+        fpg=$enableval, fpg=yes)
+
+AM_CONDITIONAL(DO_FXC, test "x$fxc" = "xyes")
+AM_CONDITIONAL(DO_FXI, test "x$fxi" = "xyes")
+AM_CONDITIONAL(DO_MAP, test "x$map" = "xyes")
+AM_CONDITIONAL(DO_FPG, test "x$fpg" = "xyes")
+AC_CHECK_TOOL(WINDRES, windres, )
+AM_CONDITIONAL(HAVE_WINDRES, test "$WINDRES" != "")
+
+dnl Aqui es donde se chequeara el SO, pero solo hay una opcion xD
+case "$target_os" in
+    linux-gnu)
+        case "$target_cpu" in
+            powerpc*)
+	            COMMON_CFLAGS="-Wall -DTARGET_LinuxPPC -DTARGET_Linux"
+                ;;
+
+            *)
+	            COMMON_CFLAGS="-Wall -DTARGET_Linux"
+	            COMMON_LIBS="$COMMON_LIBS -Wl,-Bdynamic -lc -Wl,--dynamic-linker /lib/ld-linux.so.2"
+                ;;
+        esac
+	    ;;
+
+    mingw32)
+        INCLUDES="-I/usr/local/include"
+	    LIBS="-L/usr/local/lib"
+	    COMMON_CFLAGS="$INCLUDES -DTARGET_Win32 -DWIN32 -D_WIN32"
+	    COMMON_LIBS="$LIBS -lz -lshlwapi"
+	    ;;
+
+    dragonfly*)
+        INCLUDES="-I/usr/local/include"
+	    LIBS="-pthread -L/usr/local/lib"
+        COMMON_CFLAGS="-Wall -DTARGET_BSD"
+	    ;;
+
+    darwin*)
+            INCLUDES="-I/usr/local/include"
+	    LIBS="-L/usr/local/lib"
+            COMMON_CFLAGS="-Wall -DTARGET_MAC"
+	    ;;
+
+esac
+
+AM_INIT_AUTOMAKE(1.6)
+#AM_INIT_AUTOMAKE(no-dependencies)
+
+AC_PROG_INSTALL
+
+dnl Check for compilers
+AC_PROG_CC
+
+AC_CHECK_LIB(m,fabs,LIBS="$LIBS",AC_MSG_RESULT(math library not found))
+
+if test "x$enable_debug" = "xyes"; then
+	CFLAGS="-g $INCLUDES"
+else
+	CFLAGS="-O3 -finline-functions -ffast-math $INCLUDES"
+fi
+
+dnl librerias para todos
+
+AC_CHECK_LIB(png, png_read_info,[AC_CHECK_HEADER(png.h,LIBS="$LIBS",)], AC_MSG_ERROR(*** PNG library not found ***), -lz -lm)
+
+AC_CHECK_LIB(z, gzsetparams, [AC_CHECK_HEADER(zlib.h,LIBS="$LIBS",)], [AC_MSG_ERROR(zlib library not found)])
+
+dnl fxc o fxi (las SDL)
+if test "$fxc" = yes || test "$fxi" = yes; then
+
+	dnl Check for SDL library
+	SDL_VERSION=1.2.0
+	AM_PATH_SDL($SDL_VERSION,
+    	     :,
+	 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+	)
+
+fi
+
+if test "$fxi" = yes; then
+    AC_CHECK_LIB(SDL_mixer, main, LIBS="$LIBS", AC_MSG_ERROR([*** SDL_mixer library not found!]))
+    AC_CHECK_LIB(X11, [XQueryTree,XMoveWindow],,)
+fi
+
+dnl para map
+if test "$map" = yes; then
+	AC_CHECK_LIB(ungif,DGifOpenFileName,LIBS="$LIBS",AC_MSG_ERROR(lungif library not found))
+fi
+
+dnl make these visible to all Makefiles
+AC_SUBST(DO_FXC)
+AC_SUBST(DO_FXI)
+AC_SUBST(DO_MAP)
+AC_SUBST(DO_FPG)
+
+AC_SUBST(COMMON_LIBS)
+AC_SUBST(COMMON_CFLAGS)
+
+
+AC_OUTPUT([
+Makefile
+fxc/Makefile
+fxc/src/Makefile
+fxi/Makefile
+fxi/src/Makefile
+map/Makefile
+fpg/Makefile
+])
+
+echo
+echo Fenix $VERSION
+echo
+echo Debug Mode .... : $enable_debug
+echo Building fxc .... : $fxc
+echo Building fxi .... : $fxi
+echo Building map .... : $map
+echo Building fpg .... : $fpg
+echo
+echo The binary will be installed in $prefix/bin
+echo
+echo configure complete, now type \'make\' and pray.
+echo
