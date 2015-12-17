@@ -9,6 +9,8 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
       the environment
   * Declare compliance with Debian Policy 3.9.6 with no changes.
   * Add a DEP-3 header to the fix_ftbfs_libpng1.5 patch.
+  * Convert the copyright file to the 1.0 machine-readable format and
+    add my debian/* copyright notice.
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 
