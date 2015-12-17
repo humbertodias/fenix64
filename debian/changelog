@@ -7,6 +7,7 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
     - thus, drop the explicit versioned dependency on dpkg-dev
     - add the cflags-env patch to actually honor CFLAGS passed via
       the environment
+  * Declare compliance with Debian Policy 3.9.6 with no changes.
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 

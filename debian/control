@@ -17,7 +17,7 @@ Build-Depends:
  libsmpeg-dev,
  libvorbis-dev,
  zlib1g-dev
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Vcs-Svn: svn://anonscm.debian.org/pkg-games/packages/trunk/fenix/
 Vcs-Browser: http://anonscm.debian.org/viewvc/pkg-games/packages/trunk/fenix/
 Homepage: http://fenix.divsite.net/
