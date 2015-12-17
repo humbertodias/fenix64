@@ -1,4 +1,4 @@
-# translation of fenix0.92-fxi.es.po to Español
+# translation of fenix0.92-fxi.es.po to EspaÃ±ol
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -10,7 +10,7 @@ msgstr ""
 "POT-Creation-Date: 2007-06-17 18:27+0000\n"
 "PO-Revision-Date: 2007-06-17 20:54+0200\n"
 "Last-Translator: Miriam Ruiz <little_miry@yahoo.es>\n"
-"Language-Team: Español <es@li.org>\n"
+"Language-Team: EspaÃ±ol <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

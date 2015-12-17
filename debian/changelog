@@ -15,6 +15,9 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
   * Add the declare-load-file patch to fix the conflicting declarations
     of load_file() in the fxc source.  Closes: #749635.
     Reported by: Michael Tautschnig <mt@debian.org>
+  * Fix the encoding of the Spanish translation.  Closes: #684279.
+    Reported by: Jakub Wilk <jwilk@debian.org>
+    Submitted by: Christian PERRIER <bubulle@debian.org>
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 
