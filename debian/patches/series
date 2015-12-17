@@ -30,3 +30,4 @@ libgif.patch
 fix_ftbfs_libpng1.5.patch
 giflib5.diff
 cflags-env.patch
+declare-load-file.patch

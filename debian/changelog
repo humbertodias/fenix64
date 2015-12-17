@@ -12,6 +12,9 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
   * Convert the copyright file to the 1.0 machine-readable format and
     add my debian/* copyright notice.
   * Enable Large File Support.
+  * Add the declare-load-file patch to fix the conflicting declarations
+    of load_file() in the fxc source.  Closes: #749635.
+    Reported by: Michael Tautschnig <mt@debian.org>
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 
