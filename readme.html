@@ -1,0 +1,146 @@
+<html>
+<link rel=stylesheet href=fenix.css>
+
+<body bgcolor=white>
+
+<p class=title> README
+
+<h2> What is Fenix? </h2>
+
+<p>
+Fenix is an interpreted script programming language, specially designed to
+develop and execute 2D games.  Fenix has a full graphic library, sound engine 
+and full featured 2D game engine, making game developement extremely easy.  Fenix 
+major features include:
+
+<ul>
+<li> Fast sprite blitting with rotation, scaling, animation and transparency
+<li> Pixel perfect collision check
+<li> Native PNG grahpic support
+<li> Parallax (2 planes) automated scroll routines
+<li> Multiple clipping regions with or without scroll support
+<li> MOD/XM/S3M/IT support through MIKMod
+<li> Keyboard, mouse and joystick controller support
+<li> 8 and 16 bits per pixel color depths
+<li> Win32 (all flavours), Linux, BeOS & MacOS X support, experimental support for DC and GP32
+<li> Basic Pathfind routines
+<li> Blendops in 16 bit color depth
+<li> OGG sound support
+<li> DLL interface for custom extensions
+<li> Easy to learn language
+</ul>
+
+<p>
+Fenix language is specially designed for game developement.  A PROCESS (or function)
+can be created as a graphical object on screen.  A single change in it's LOCAL variables
+and a call to FRAME command will almost be enought to have it stay resident in cooperative
+multitasking mode, moving and interoperating with other PROCESSES as it's variables are 
+changed and the FRAME command is called inside a loop.  There's also a set of functions
+designed to kill, stop, frezze and search for active PROCESSES, also multiple instances of 
+a process can be run at the same time allowing multiple objects with the same behaviour 
+on screen at the same time.
+
+<p>
+Even experienced coders will find in Fenix a practical tool.  The language is
+powerful enough to match most other script procedural langauge (datatypes, pointers, 
+multidimensional arrays, structs, loop and flow control statements...).
+
+<p>
+Fenix is distributed under GNU General Public License, so it's source code is available
+to anyone who wants to get it, extend it or change it in any way fitting his/her own 
+purpose.
+
+<h2> Is Fenix a DIV compiler? </h2>
+
+<p>
+DIV Games Studio is a commercial product including an IDE, debugger, profiler, 
+graphic editor and installer.  Fenix is only a compiler and an interpreter.  Anyway 
+Fenix has many similitudes to DIV and most DIV code will be easy to port thought
+this is not the main target for Fenix.  Remember, Fenix is NOT DIV.
+
+<p>
+Many similitudes exists betwen DIV and Fenix, but also many incompatibilities 
+exist as well.  DIV borrows features to C, Pascal and other languages, as 
+well as Fenix borrows many to DIV.  Some old simple DIV games compile almost without 
+a single change in Fenix due to Fenix supporting most of DIV syntax, but keep in 
+mind many functions and internal management in Fenix is not working like it's 
+DIV counterpart, specially Mode 7, string manipulation and DIV 2 MODE8 features (wich 
+Fenix does not implement)
+
+<h2> What is the current state for Fenix developement? </h2>
+
+<p>
+Fenix is still under heavy developement.  Many bugs are waiting for fix, 
+features come and go and many features are at a very early stage.  Current
+official release is 0.84a.
+
+<p>
+Even thought not finished, Fenix is stable and powerful enough to allow you 
+a big brand range of developement experience.  Give it a try and help us polish 
+and fix the bugs.
+
+<p>
+It is a good idea to have a look into the bugtrack section in the official website 
+for a list of known bugs and keep an eye in the devel status for new releases (the 
+webiste can be found @ http://fenix.divsite.net)
+
+<h2> Where can I get Fenix? </h2>
+
+<p>
+	The current official site for Fenix is located @ http://fenix.divsite.net.
+	A CVS and a CVS-documentation site can be found @ http://cvs.jlceb.com and http://fenix.jlceb.com respectively.
+	
+	Fenix has also a sourceforge project, though current state for this project is a bit outdated
+
+	<a href=http://fenix.sourceforge.net/>
+	http://fenix.sourceforge.net/ </a>
+
+<h2> Who created Fenix? </h2>
+
+<p>
+Fenix is the initial effort of Jose Luis Cebrian, and is currently maintained
+by the so called Fenix-Team.  You can contact the team in the official website.
+
+<h2> How to use Fenix? </h2>
+
+<p>
+Fenix is a command line utility.  The base package includes a test program... to 
+execute it just type in a console (dos-box, linux console, etc) the following commands
+
+<pre>
+FXC TEST.PRG
+FXI TEST.DCB
+</pre>
+
+<p>
+The first sentence invokes the compiler, the second one invokes the interpreter.
+If everything goes well the compiler will create the DCB file for the interpreter
+from the PRG source code.  Check the documentation included with the package and 
+in the site for further reference.  It is also a good idea to have a look to the 
+FAQs in the site.
+
+<h2> Is there any sample game developed with Fenix? </h2>
+
+<p>
+The site has several demo games for you to check and test.  Also Fenix has a big
+user community with a big load of game projects (complete or under developement) that
+you might find interesting.
+
+<h2> So, I am a coder... might I help develop Fenix in any way? </h2>
+
+<p>
+Sure... take your time and have a look into Fenix code.  It is a quite not well
+commented ANSI C and not so ANSI C (sometimes... ) big code.
+
+<p>
+If you're still in the mood, contact us, get the last CVS and you'll be on the run!
+
+<h2> License </h2>
+
+<p>
+		This program is only distributable under GNU General Public Licens, version 
+		2.0 or higher.
+<p>
+		A License text should have been distributed along this program. If not contact
+us @ http://fenix.divsite.net.
+</body>

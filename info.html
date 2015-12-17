@@ -1,0 +1,179 @@
+<html>
+<link rel=stylesheet href=fenix.css>
+
+<body bgcolor=white>
+
+<p class=title> LEEME
+
+<h2> ¿Qué es Fenix? </h2>
+
+<p>
+Fenix es un lenguaje de programación interpretado tipo script diseñado para
+crear y ejecutar juegos 2D. Incluye una extensa librería gráfica y de 
+sonido y un motor 2D que convierte la programación de juegos en una
+tarea fácil. Sus características principales son:
+
+<ul>
+<li> Dibujo rápido de sprites con rotado, escalado, animación y transparencia
+<li> Detección de colisiones a nivel de pixel
+<li> Soporta el formato gráfico PNG
+<li> Rutinas de scroll tipo "parallax"
+<li> Múltiples regiones en pantalla con o sin scroll
+<li> Librería de sonido basada en MikMod
+<li> Entrada por teclado, ratón y joystick
+<li> Modos de 256 y 65536 colores
+<li> Compatible con Linux y Windows/DirectX
+</ul>
+
+<p>
+El lenguaje en sí está orientado a juegos. Un proceso (o función) puede
+crearse como un objeto gráfico en pantalla. Sólo con cambiar ciertas variables
+locales predefinidas y usando la sentencia FRAME, el proceso quedará
+residente ejecutándose en multitarea cooperativa, animándose y moviéndose
+en pantalla simplemente con cambiar las variables locales y ejecutando
+la sentencia FRAME en un bucle. Se proporcionan funciones para detener,
+matar, alterar o buscar procesos en ejecución, y puedes ejecutar un mismo
+proceso múltiples veces para obtener en pantalla varios objetos con el
+mismo comportamiento. Habrá una introducción más completa en el futuro
+Manual de Introducción y tutoriales.
+
+<p>
+Incluso programadores experimentados encontrarán en Fenix una herramienta
+útil. El lenguaje en sí soporta muchas de las características comunmente
+encontradas en los lenguajes procedurales, tales como múltiples tipos de
+dato (INT, WORD, BYTE, STRING, FLOAT), punteros, tablas multidimensionales,
+estructuras, y las sentencias habituales de control de flujo.
+
+<p>
+Fenix se distribuye bajo los términos de la GNU General Public License,
+con lo que las fuentes están disponibles y eres libre de extenderlas o
+hacer tu propia versión.
+
+<h2> ¿Es Fenix un compilador de DIV? </h2>
+
+<p>
+DIV Games Studio es un entorno comercial de desarrollo de juegos que
+incorpora entorno, depurador, profiler, editor gráfico e instalador.
+Fenix sólo proporciona un compilador y un intérprete. Sin embargo, las
+grandes similitudes entre el lenguaje de DIV y Fenix a menudo
+sugieren la pregunta.
+
+<p>
+Mientras Fenix está inspirado por DIV, no son compatibles. El lenguaje de DIV
+toma prestadas varias características de C, Pascal y otros lenguajes comunes,
+de la misma forma que Fenix toma prestadas características de DIV. Varios
+juegos antiguos de DIV funcionan en Fenix con pocos cambios, intencionadamente:
+Fenix soporta programas escritos con una sintaxis similar al DIV en lugar
+de la propia. Sin embargo muchas funciones de librería de DIV no están
+presentes en Fenix o lo están en forma diferente. Notablemente las
+funciones de Modo 7, las de cadena, y las de Modo 8 (inexistentes en Fenix).
+
+<p>
+Escribiré un documento comparando las equivalencias entre DIV y Fenix
+cuando se aproxime la versión 1.0.
+
+<h2> ¿Cuál es el estado de desarrollo? </h2>
+
+<p>
+Actualmente, Fenix no está acabado. Hay bugs por encontrar, algunas
+características no acaban de funcionar, y hay desarrollo por hacer en
+áreas como control de errores y optimización. Cosas como documentación,
+chequeo y escribir programas por ejemplo necesitan bastante trabajo.
+La última versión es la 0.7 *beta*.
+
+<p>
+Sin embargo, Fenix ha avanzado desde su concepción inicial, y creo que ya
+es bastante utilizable, aunque no tan estable como lo será en el futuro.
+No hay características nuevas por añadir antes de la versión 1.0, y Fenix
+está ahora en fase de depurado.
+
+<p>
+Mira la página de <a href=bugs.php3>bugs conocidos</a> para obtener una
+lista actualizada de los bugs más importantes.
+
+<h2> ¿Dónde puedo obtenerlo? </h2>
+
+<p>
+La página web de Fenix ha cambiado de localización varias veces.
+Hay un redirector en
+
+	<a href=http://pagina.de/fenixc> 
+	http://pagina.de/fenixc </a>
+
+Además, Fenix está hospedado por SourceForge. La página puede
+actualmente encontrarse en:
+
+	<a href=http://fenix.sourceforge.net/>
+	http://fenix.sourceforge.net/ </a>
+
+<h2> ¿Quién lo ha escrito? </h2>
+
+<p>
+En realidad Fenix ha sido programado inicialmente por una sóla persona.
+Puedes escribirme a <a href=mailto:jlceb@cir.es>jlceb@cir.es</a>. 
+Un número de personas está contribuyendo en áreas como documentación,
+pruebas, y programas auxiliares. Eventualmente habrá una lista
+actualizada en el fichero CREDITS, a acompañar a la distribución.
+
+<h2> ¿Cómo se usa? </h2>
+
+<p>
+En el paquete incluído tienes un programa de ejemplo, de nombre test.prg.
+Simplemente ejecuta:
+
+<pre>
+FXC TEST.PRG
+FXI TEST.DCB
+</pre>
+
+<p>
+Estas dos sentencias deberían compilar el programa y ejecutarlo seguidamente.
+Si todo funciona correctamente, examina el manual de referencia en el
+fichero fenix-ref.pdf. Este manual contiene información sobre cómo utilizar
+las utilidades incluídas, así como el compilador y el intérprete.
+También documenta el lenguaje y la librería. En este sentido, su
+propósito es únicamente servir de referencia y no de introducción o tutorial.
+Es la referencia más actualizada (y en muchos casos la única) disponible.
+Úsala como fuente principal de información.
+
+<p>
+Habrá un Manual de Introducción en el futuro. Su escritura aún no ha sido
+comenzada, y no vendría mal una ayuda en este tema.
+
+<h2> ¿Hay algún juego hecho con él? </h2>
+
+<p>
+Hay algunos juegos simples escritos con el propósito de ilustrar y probar
+el lenguaje. Puedes bajártelos, con código fuente completo y comentado,
+en la web de Fenix.
+
+<h2> Soy un programador. ¿Cómo puedo ayudar? </h2>
+
+<p>
+En primer lugar, ten en cuenta que el código de Fenix es complejo,
+mal escrito, indocumentado, y está en C.
+
+<p>
+Si aún quieres unirte al desarrollo, bájate las fuentes. Puedes hacerlo
+vía CVS (sencillo en Linux, pesadillesco en Windows). Ve a 
+
+	<a href=http://www.sourceforge.net> 
+	http://www.sourceforge.net </a>
+
+y lee las guías de CVS. Puedes obtener un paquete actualizado diariamente
+de todo el árbol CVS en
+
+	<a href=http://cvs.sourceforge.net/cvstarballs/fenix-cvsroot.tar.gz>
+	http://cvs.sourceforge.net/cvstarballs/fenix-cvsroot.tar.gz</a>.
+
+<h2> Licencia </h2>
+
+<p>
+    Este programa sólo puede distribuirse según los términos de la 
+GNU General Public License, en su versión 2.0 o en cualquier versión 
+posterior, a tu elección.
+<p>
+    Debes haber recibido una copia de dicha licencia junto con este
+programa. Si no es así, ponte en contacto conmigo en jlceb@cir.es
+lo más urgentemente posible.
+</body>

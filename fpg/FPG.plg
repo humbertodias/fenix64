@@ -1,0 +1,89 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: FPG - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0xc0a /fo"Debug/fpg.res" /d "_DEBUG" "C:\Fenix\Fenix\fpg\fpg.rc"" 
+Creating temporary file "C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP17.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /I "..\..\zlib\include" /I "..\..\libpng" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Fenix\Fenix\fpg\fpg.c"
+"C:\Fenix\libpng\pngwutil.c"
+"C:\Fenix\libpng\png.c"
+"C:\Fenix\libpng\pngerror.c"
+"C:\Fenix\libpng\pnggccrd.c"
+"C:\Fenix\libpng\pngget.c"
+"C:\Fenix\libpng\pngmem.c"
+"C:\Fenix\libpng\pngpread.c"
+"C:\Fenix\libpng\pngread.c"
+"C:\Fenix\libpng\pngrio.c"
+"C:\Fenix\libpng\pngrtran.c"
+"C:\Fenix\libpng\pngrutil.c"
+"C:\Fenix\libpng\pngset.c"
+"C:\Fenix\libpng\pngtrans.c"
+"C:\Fenix\libpng\pngvcrd.c"
+"C:\Fenix\libpng\pngwio.c"
+"C:\Fenix\libpng\pngwrite.c"
+"C:\Fenix\libpng\pngwtran.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP17.tmp" 
+Creating temporary file "C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP18.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"..\bin\Debug/FPG.pdb" /debug /machine:I386 /out:"..\bin\Debug/FPG.exe" /pdbtype:sept 
+.\Debug\fpg.obj
+.\Debug\fpg.res
+.\Debug\pngwutil.obj
+.\Debug\png.obj
+.\Debug\pngerror.obj
+.\Debug\pnggccrd.obj
+.\Debug\pngget.obj
+.\Debug\pngmem.obj
+.\Debug\pngpread.obj
+.\Debug\pngread.obj
+.\Debug\pngrio.obj
+.\Debug\pngrtran.obj
+.\Debug\pngrutil.obj
+.\Debug\pngset.obj
+.\Debug\pngtrans.obj
+.\Debug\pngvcrd.obj
+.\Debug\pngwio.obj
+.\Debug\pngwrite.obj
+.\Debug\pngwtran.obj
+..\..\zlib\lib\zdll.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP18.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+fpg.c
+c:\fenix\fenix\fpg\fpg.c(242) : warning C4018: '<' : signed/unsigned mismatch
+pngwutil.c
+png.c
+pngerror.c
+pnggccrd.c
+pngget.c
+pngmem.c
+pngpread.c
+pngread.c
+pngrio.c
+pngrtran.c
+pngrutil.c
+pngset.c
+pngtrans.c
+pngvcrd.c
+pngwio.c
+pngwrite.c
+pngwtran.c
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+FPG.exe - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>

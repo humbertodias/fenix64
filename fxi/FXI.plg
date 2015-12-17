@@ -1,0 +1,89 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: FXI - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP10.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"..\bin\Debug/FXI.pdb" /debug /machine:I386 /out:"..\bin\Debug/FXI.exe" /pdbtype:sept 
+.\Debug\fbm.obj
+.\Debug\fgc.obj
+.\Debug\fpl.obj
+.\Debug\g_blendop.obj
+.\Debug\g_blit.obj
+.\Debug\g_console.obj
+.\Debug\g_conversion.obj
+.\Debug\g_draw.obj
+.\Debug\g_flic.obj
+.\Debug\g_font.obj
+.\Debug\g_fpg.obj
+.\Debug\g_main.obj
+.\Debug\g_maps.obj
+.\Debug\g_mode7.obj
+.\Debug\g_pal.obj
+.\Debug\g_profiler.obj
+.\Debug\g_scroll.obj
+.\Debug\g_systexts.obj
+.\Debug\g_texts.obj
+.\Debug\img_pcx.obj
+.\Debug\img_png.obj
+.\Debug\mmx_hspan.obj
+.\Debug\mmx_main.obj
+.\Debug\mmx_scale2x.obj
+.\Debug\f_bgload.obj
+.\Debug\f_cd.obj
+.\Debug\f_joystick.obj
+.\Debug\f_sort.obj
+.\Debug\i_copy.obj
+.\Debug\i_debug.obj
+.\Debug\i_func.obj
+.\Debug\i_main.obj
+.\Debug\i_saveload.obj
+.\Debug\instance.obj
+.\Debug\pathfind.obj
+.\Debug\sound.obj
+.\Debug\png.obj
+.\Debug\pngerror.obj
+.\Debug\pnggccrd.obj
+.\Debug\pngget.obj
+.\Debug\pngmem.obj
+.\Debug\pngpread.obj
+.\Debug\pngread.obj
+.\Debug\pngrio.obj
+.\Debug\pngrtran.obj
+.\Debug\pngrutil.obj
+.\Debug\pngset.obj
+.\Debug\pngtrans.obj
+.\Debug\pngvcrd.obj
+.\Debug\pngwio.obj
+.\Debug\pngwrite.obj
+.\Debug\pngwtran.obj
+.\Debug\pngwutil.obj
+.\Debug\dcbr.obj
+.\Debug\dirs.obj
+.\Debug\files.obj
+.\Debug\fnc_exports.obj
+.\Debug\main.obj
+.\Debug\regex.obj
+.\Debug\strings.obj
+.\Debug\xctype.obj
+.\Debug\fxi.res
+..\..\SDL_mixer\lib\SDL_mixer.lib
+..\..\SDL\lib\SDLmain.lib
+..\..\SDL\lib\SDL.lib
+..\..\zlib\lib\zdll.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP10.tmp"
+<h3>Output Window</h3>
+Linking...
+
+
+
+<h3>Results</h3>
+FXI.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

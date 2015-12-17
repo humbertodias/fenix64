@@ -1,0 +1,134 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: MAP - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP14.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /I "..\..\libpng" /I "..\..\zlib\include" /I "..\..\libungif\lib" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Fenix\Fenix\map\map.c"
+"C:\Fenix\libpng\pngwutil.c"
+"C:\Fenix\libpng\png.c"
+"C:\Fenix\libpng\pngerror.c"
+"C:\Fenix\libpng\pnggccrd.c"
+"C:\Fenix\libpng\pngget.c"
+"C:\Fenix\libpng\pngmem.c"
+"C:\Fenix\libpng\pngpread.c"
+"C:\Fenix\libpng\pngread.c"
+"C:\Fenix\libpng\pngrio.c"
+"C:\Fenix\libpng\pngrtran.c"
+"C:\Fenix\libpng\pngrutil.c"
+"C:\Fenix\libpng\pngset.c"
+"C:\Fenix\libpng\pngtrans.c"
+"C:\Fenix\libpng\pngvcrd.c"
+"C:\Fenix\libpng\pngwio.c"
+"C:\Fenix\libpng\pngwrite.c"
+"C:\Fenix\libpng\pngwtran.c"
+"C:\Fenix\libungif\lib\quantize.c"
+"C:\Fenix\libungif\lib\dev2gif.c"
+"C:\Fenix\libungif\lib\dgif_lib.c"
+"C:\Fenix\libungif\lib\egif_lib.c"
+"C:\Fenix\libungif\lib\getarg.c"
+"C:\Fenix\libungif\lib\gif_err.c"
+"C:\Fenix\libungif\lib\gif_font.c"
+"C:\Fenix\libungif\lib\gifalloc.c"
+"C:\Fenix\libungif\lib\qprintf.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP14.tmp" 
+Creating temporary file "C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP15.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"..\bin\Debug/MAP.pdb" /debug /machine:I386 /out:"..\bin\Debug/MAP.exe" /pdbtype:sept 
+.\Debug\map.obj
+.\Debug\map.res
+.\Debug\pngwutil.obj
+.\Debug\png.obj
+.\Debug\pngerror.obj
+.\Debug\pnggccrd.obj
+.\Debug\pngget.obj
+.\Debug\pngmem.obj
+.\Debug\pngpread.obj
+.\Debug\pngread.obj
+.\Debug\pngrio.obj
+.\Debug\pngrtran.obj
+.\Debug\pngrutil.obj
+.\Debug\pngset.obj
+.\Debug\pngtrans.obj
+.\Debug\pngvcrd.obj
+.\Debug\pngwio.obj
+.\Debug\pngwrite.obj
+.\Debug\pngwtran.obj
+.\Debug\quantize.obj
+.\Debug\dev2gif.obj
+.\Debug\dgif_lib.obj
+.\Debug\egif_lib.obj
+.\Debug\getarg.obj
+.\Debug\gif_err.obj
+.\Debug\gif_font.obj
+.\Debug\gifalloc.obj
+.\Debug\qprintf.obj
+..\..\zlib\lib\zdll.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\CARLOS~1\CONFIG~1\Temp\RSP15.tmp"
+<h3>Output Window</h3>
+Compiling...
+map.c
+pngwutil.c
+png.c
+pngerror.c
+pnggccrd.c
+pngget.c
+pngmem.c
+pngpread.c
+pngread.c
+pngrio.c
+pngrtran.c
+pngrutil.c
+pngset.c
+pngtrans.c
+pngvcrd.c
+pngwio.c
+pngwrite.c
+pngwtran.c
+quantize.c
+dev2gif.c
+c:\fenix\libungif\lib\dev2gif.c(98) : warning C4101: 'j' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(98) : warning C4101: 'k' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(411) : warning C4101: 'ScreenByte' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(413) : warning C4101: 'BufferOffset' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(412) : warning C4101: 'i' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(412) : warning C4101: 'j' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(412) : warning C4101: 'k' : unreferenced local variable
+c:\fenix\libungif\lib\dev2gif.c(413) : warning C4101: 'Bit' : unreferenced local variable
+Generating Code...
+Compiling...
+dgif_lib.c
+c:\fenix\libungif\lib\dgif_lib.c(63) : warning C4013: 'open' undefined; assuming extern returning int
+c:\fenix\libungif\lib\dgif_lib.c(74) : warning C4013: 'close' undefined; assuming extern returning int
+c:\fenix\libungif\lib\dgif_lib.c(921) : warning C4101: 'Error' : unreferenced local variable
+c:\fenix\libungif\lib\dgif_lib.c(921) : warning C4101: 'i' : unreferenced local variable
+c:\fenix\libungif\lib\dgif_lib.c(921) : warning C4101: 'j' : unreferenced local variable
+egif_lib.c
+c:\fenix\libungif\lib\egif_lib.c(69) : warning C4013: 'open' undefined; assuming extern returning int
+c:\fenix\libungif\lib\egif_lib.c(91) : warning C4013: 'close' undefined; assuming extern returning int
+c:\fenix\libungif\lib\egif_lib.c(196) : warning C4101: 'Size' : unreferenced local variable
+c:\fenix\libungif\lib\egif_lib.c(270) : warning C4101: 'Size' : unreferenced local variable
+c:\fenix\libungif\lib\egif_lib.c(607) : warning C4101: 'NewKey' : unreferenced local variable
+c:\fenix\libungif\lib\egif_lib.c(606) : warning C4101: 'NewCode' : unreferenced local variable
+getarg.c
+gif_err.c
+gif_font.c
+gifalloc.c
+qprintf.c
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+MAP.exe - 0 error(s), 19 warning(s)
+</pre>
+</body>
+</html>
