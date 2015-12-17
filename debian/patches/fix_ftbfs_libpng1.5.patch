@@ -1,3 +1,8 @@
+Description: Fix the build with libpng 1.5.
+Forwarded: no
+Author: Vincent Cheng <vcheng@debian.org>
+Last-Update: 2014-03-31
+
 --- fenix-0.92a.dfsg1.orig/fxi/src/img_png.c
 +++ fenix-0.92a.dfsg1/fxi/src/img_png.c
 @@ -101,7 +101,11 @@ GRAPH * gr_read_png (const char * filena
