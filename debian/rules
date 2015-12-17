@@ -5,14 +5,11 @@
 
 export LC_ALL=C
 
-CPPFLAGS = $(shell dpkg-buildflags --get CPPFLAGS)
+DEB_CFLAGS_MAINT_APPEND= -Wall -fno-strict-aliasing -DUSE_GETTEXT
+export DEB_CFLAGS_MAINT_APPEND
 
-CFLAGS = $(shell dpkg-buildflags --get CFLAGS)
-CFLAGS += -Wall -fno-strict-aliasing
-CFLAGS += -DUSE_GETTEXT
-
-LDFLAGS = $(shell dpkg-buildflags --get LDFLAGS)
-LDFLAGS += -Wl,-z,defs
+DEB_LDFLAGS_MAINT_APPEND= -Wl,-z,defs
+export DEB_LDFLAGS_MAINT_APPEND
 
 override_dh_auto_configure:
 	chmod +x configure
@@ -22,13 +19,10 @@ override_dh_auto_configure:
 		--enable-map \
 		--enable-fpg \
 		--enable-dependency-tracking \
-		CFLAGS="$(CFLAGS)" \
-		CPPFLAGS="$(CPPFLAGS)" \
-		LDFLAGS="$(LDFLAGS)" \
 		LIBS="-lm -ldl"
 
 override_dh_auto_build:
-	dh_auto_build -- CFLAGS="$(CFLAGS)"
+	dh_auto_build
 	$(MAKE) -C debian/i18n
 
 override_dh_auto_clean:

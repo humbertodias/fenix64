@@ -2,6 +2,11 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
 
   * Fix the build with giflib5 using the patch supplied by
     Matthias Klose <doko@debian.org>.  Closes: #803279
+  * Bump the debhelper compatibility level to 9:
+    - use CPPFLAGS, CFLAGS, and LDFLAGS provided by debhelper
+    - thus, drop the explicit versioned dependency on dpkg-dev
+    - add the cflags-env patch to actually honor CFLAGS passed via
+      the environment
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 

@@ -29,3 +29,4 @@ no_--as-needed_in_fxi-src-Makefile.patch
 libgif.patch
 fix_ftbfs_libpng1.5.patch
 giflib5.diff
+cflags-env.patch
