@@ -1,7 +1,7 @@
 Description: Honor CFLAGS passed via the environment.
 Forwarded: no
 Author: Peter Pentchev <roam@ringlet.net>
-Last-Update: 2015-12-17
+Last-Update: 2015-12-18
 
 --- a/configure
 +++ b/configure
@@ -36,7 +36,7 @@ Last-Update: 2015-12-17
 -	CFLAGS="-g $INCLUDES"
 -else
 -	CFLAGS="-O2 -finline-functions -ffast-math $INCLUDES"
-+if [ -z "$CFLAGS" ]; then
++if test -z "$CFLAGS"; then
 +	if test "x$enable_debug" = "xyes"; then
 +		CFLAGS="-g"
 +	else
