@@ -21,6 +21,9 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
   * Refresh the debian/fenix.sh script a bit.
   * Drop the version in the autotools-dev dependency, satisfied even in
     oldoldstable.
+  * Convert debian/TODO and debian/doc/map.txt to UTF-8.  Unfortunately,
+    this still leaves some non-UTF-8 characters in patches that reference
+    the original program source.
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 
