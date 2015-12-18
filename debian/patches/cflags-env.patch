@@ -3,29 +3,6 @@ Forwarded: no
 Author: Peter Pentchev <roam@ringlet.net>
 Last-Update: 2015-12-18
 
---- a/configure
-+++ b/configure
-@@ -3173,11 +3173,16 @@
- fi
- 
- 
--if test "x$enable_debug" = "xyes"; then
--	CFLAGS="-g $INCLUDES"
--else
--	CFLAGS="-O2 -finline-functions -ffast-math $INCLUDES"
-+echo "RDBG before: CFLAGS '$CFLAGS'" >&6
-+if [ -z "$CFLAGS" ]; then
-+	if test "x$enable_debug" = "xyes"; then
-+		CFLAGS="-g"
-+	else
-+		CFLAGS="-O2 -finline-functions -ffast-math"
-+	fi
- fi
-+CFLAGS="$CFLAGS $INCLUDES"
-+echo "RDBG after:  CFLAGS '$CFLAGS'" >&6
- 
- 
- ac_ext=c
 --- a/configure.in
 +++ b/configure.in
 @@ -84,11 +84,14 @@

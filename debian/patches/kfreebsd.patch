@@ -1,19 +1,8 @@
 Description: Fix the build on GNU/kFreeBSD
 Forwarded: no
 Author: Peter Pentchev <roam@ringlet.net>
-Last-Update: 2011-03-15
+Last-Update: 2015-12-18
 
---- a/configure
-+++ b/configure
-@@ -1621,7 +1621,7 @@
- 
- 
- case "$target_os" in
--    linux-gnu*)
-+    linux-gnu*|kfreebsd-gnu*)
-         case "$target_cpu" in
-             powerpc*)
- 	            COMMON_CFLAGS="-Wall -DTARGET_LinuxPPC -DTARGET_Linux"
 --- a/configure.in
 +++ b/configure.in
 @@ -40,7 +40,7 @@
