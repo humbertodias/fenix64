@@ -1,5 +1,8 @@
-# Copyright (C) 2008,  Darren Salt <linux@youmustbejoking.demon.co.uk>
-# See: #485062
+Description: Provide prototypes for some more functions.
+Bug-Debian: https://bugs.debian.org/485062
+Forwarded: no
+Author: Darren Salt <linux@youmustbejoking.demon.co.uk>
+Last-Update: 2008-06-08
 
 diff -ur fenix-0.92a.dfsg1.orig/fxi/inc/g_pal.h fenix-0.92a.dfsg1/fxi/inc/g_pal.h
 --- fenix-0.92a.dfsg1.orig/fxi/inc/g_pal.h	2008-06-07 22:06:44.000000000 +0100

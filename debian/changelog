@@ -8,7 +8,7 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
     - add the cflags-env patch to actually honor CFLAGS passed via
       the environment
   * Declare compliance with Debian Policy 3.9.6 with no changes.
-  * Add a DEP-3 header to the fix_ftbfs_libpng1.5 patch.
+  * Add a DEP-3 header to all the patches that did not have them.
   * Convert the copyright file to the 1.0 machine-readable format and
     add my debian/* copyright notice.
   * Enable Large File Support.

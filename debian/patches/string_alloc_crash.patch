@@ -1,5 +1,8 @@
-# Copyright (C) 2008,  Darren Salt <linux@youmustbejoking.demon.co.uk>
-# See: #485061
+Description: Properly (re)allocate memory to fix crashes.
+Bug-Debian: https://bugs.debian.org/485061
+Forwarded: no
+Author: Darren Salt <linux@youmustbejoking.demon.co.uk>
+Last-Update: 2008-06-08
 
 diff -ur fenix-0.92a.dfsg1.orig/fxi/src/strings.c fenix-0.92a.dfsg1/fxi/src/strings.c
 --- fenix-0.92a.dfsg1.orig/fxi/src/strings.c	2008-06-07 21:34:32.000000000 +0100

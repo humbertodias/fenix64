@@ -1,6 +1,7 @@
-# Copyright (C) 2007  Dann Frazier <dannf@debian.org>
-# Licensed under the GPL, see /usr/share/common-licenses/GPL
-# See http://bugs.debian.org/437735
+Description: Provide prototypes for pal_set() and pal_map_assign().
+Forwarded: no
+Author: Dann Frazier <dannf@debian.org>
+Last-Update: 2007-08-28
 
 Index: fenix-0.92a.dfsg1/fxi/inc/g_pal.h
 ===================================================================

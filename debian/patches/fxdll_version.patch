@@ -1,5 +1,7 @@
-# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
-# Licensed under the GPL, see /usr/share/common-licenses/GPL
+Description: Add a plugin interface version.
+Forwarded: no
+Author: Miriam Ruiz <little_miry@yahoo.es>
+Last-Update: 2007-08-02
 
 Index: fenix-0.92a.dfsg1/fxc/src/c_main.c
 ===================================================================

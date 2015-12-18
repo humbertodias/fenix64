@@ -1,6 +1,8 @@
-# Copyright (C) 2008  Miriam Ruiz <little_miry@yahoo.es>
-# Licensed under the GPL, see /usr/share/common-licenses/GPL
-# Closes: #481928
+Description: Recognize armel (linux-gnueabi) as a Linux arch, too.
+Bug-Debian: https://bugs.debian.org/481928
+Forwarded: no
+Author: Miriam Ruiz <little_miry@yahoo.es>
+Last-Update: 2008-06-06
 
 Index: fenix-0.92a.dfsg1/configure
 ===================================================================

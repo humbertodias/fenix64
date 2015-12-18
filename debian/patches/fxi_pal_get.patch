@@ -1,6 +1,7 @@
-# Copyright (C) 2007  Dann Frazier <dannf@debian.org>
-# Licensed under the GPL, see /usr/share/common-licenses/GPL
-# See http://bugs.debian.org/437735
+Description: Also provide a prototype for pal_get().
+Forwarded: no
+Author: Dann Frazier <dannf@debian.org>
+Last-Update: 2007-11-15
 
 --- fenix-0.92a.dfsg1/fxi/inc/g_pal.h~	2007-10-08 15:54:16.000000000 -0600
 +++ fenix-0.92a.dfsg1/fxi/inc/g_pal.h	2007-10-08 16:00:04.000000000 -0600

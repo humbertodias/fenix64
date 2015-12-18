@@ -1,5 +1,7 @@
-# Copyright (C) 2007  Miriam Ruiz <little_miry@yahoo.es>
-# Licensed under the GPL, see /usr/share/common-licenses/GPL
+Description: Add gettext/NLS support to fenix-fxc.
+Forwarded: no
+Author: Miriam Ruiz <little_miry@yahoo.es>
+Last-Update: 2007-07-13
 
 Index: fenix-0.92a.dfsg1/fxc/src/c_data.c
 ===================================================================
