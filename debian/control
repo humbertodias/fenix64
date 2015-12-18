@@ -10,7 +10,7 @@ Build-Depends:
  autotools-dev,
  debhelper (>= 9),
  libgif-dev,
- libmikmod2-dev,
+ libmikmod-dev,
  libpng-dev,
  libsdl-mixer1.2-dev,
  libsdl1.2-dev,

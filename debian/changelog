@@ -25,6 +25,7 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
     this still leaves some non-UTF-8 characters in patches that reference
     the original program source.
   * Use the dpkg-dev defaults for compressing the Debian tarball.
+  * Depend on libmikmod-dev instead of libmikmod2-dev.  Closes: #744986.
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 
