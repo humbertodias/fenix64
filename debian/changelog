@@ -19,6 +19,8 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
     Reported by: Jakub Wilk <jwilk@debian.org>
     Submitted by: Christian PERRIER <bubulle@debian.org>
   * Refresh the debian/fenix.sh script a bit.
+  * Drop the version in the autotools-dev dependency, satisfied even in
+    oldoldstable.
 
  -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
 
