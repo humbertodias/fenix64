@@ -59,4 +59,4 @@ get-orig-source:
 	rm -rf Fenix fenix092a-src-release.tgz
 
 %:
-	dh $@ --with autotools_dev
+	dh $@ --with autotools_dev --with autoreconf

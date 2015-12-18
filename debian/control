@@ -9,6 +9,7 @@ Uploaders:
 Build-Depends:
  autotools-dev,
  debhelper (>= 9),
+ dh-autoreconf,
  libgif-dev,
  libmikmod-dev,
  libpng-dev,
