@@ -1,4 +1,4 @@
-fenix (0.92a.dfsg1-12) unstable; urgency=medium
+fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
 
   * Fix the build with giflib5 using the patch supplied by
     Matthias Klose <doko@debian.org>.  Closes: #803279
