@@ -1,4 +1,4 @@
-fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
+fenix (0.92a.dfsg1-12) unstable; urgency=medium
 
   * Fix the build with giflib5 using the patch supplied by
     Matthias Klose <doko@debian.org>.  Closes: #803279
@@ -31,7 +31,7 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
     the source files, too.
   * Point the Vcs-* source control fields to the migrated Git repository.
 
- -- Peter Pentchev <roam@ringlet.net>  Thu, 17 Dec 2015 16:11:53 +0200
+ -- Peter Pentchev <roam@ringlet.net>  Sun, 20 Dec 2015 16:02:47 +0200
 
 fenix (0.92a.dfsg1-11) unstable; urgency=medium
 
