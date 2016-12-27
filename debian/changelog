@@ -34,7 +34,7 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
 
   [ Petter Reinholdtsen ]
   * Updated Standards-Version from 3.9.6 to 3.9.8.
-  * Acknoledge NMU 0.92a.dfsg1-11.1.
+  * Acknowledge NMU 0.92a.dfsg1-11.1.
 
  -- Peter Pentchev <roam@ringlet.net>  Sun, 20 Dec 2015 16:02:47 +0200
 
