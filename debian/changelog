@@ -36,6 +36,9 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
   * Updated Standards-Version from 3.9.6 to 3.9.8.
   * Acknowledge NMU 0.92a.dfsg1-11.1.
 
+  [ Simon McVittie ]
+  * Update Vcs-* source control fields for salsa.debian.org
+
  -- Peter Pentchev <roam@ringlet.net>  Sun, 20 Dec 2015 16:02:47 +0200
 
 fenix (0.92a.dfsg1-11.1) unstable; urgency=medium
