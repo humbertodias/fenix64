@@ -3,6 +3,12 @@ Upstream-Name: fenix
 Upstream-Contact: Fenix Team <fenix@divsite.net>
 Source: http://sourceforge.net/projects/fenix
 License: GPL-2+
+Files-Excluded:
+  Fenix.dsw
+  fpg/FPG.dsp fpg/fpg_resource.rc fpg/resource.h
+  fxc/FXC.dep fxc/FXC.dsp fxc/FXC.mak fxc/src/fxc.rc fxc/src/resource.h
+  fxi/FXI.dep fxi/FXI.dsp fxi/FXI.mak fxi/src/FXI.rc fxi/src/resource.h
+  map/MAP.dsp map/map_resource.rc map/resource.h
 
 Files: *
 Copyright:
