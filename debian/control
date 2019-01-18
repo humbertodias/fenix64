@@ -21,7 +21,7 @@ Build-Depends:
 Standards-Version: 3.9.8
 Vcs-Git: https://salsa.debian.org/games-team/fenix.git
 Vcs-Browser: https://salsa.debian.org/games-team/fenix
-Homepage: http://fenix.divsite.net/
+Homepage: https://fenix.divsite.net/
 
 Package: fenix
 Architecture: arm armel armhf hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel mipsn32 mipsn32el powerpc s390 sh4 sparc

@@ -1,6 +1,6 @@
 Description: Link against libgif
 Author: Thibaut Gridel <tgridel@free.fr>
-Bug-Debian: http://bugs.debian.org/732787
+Bug-Debian: https://bugs.debian.org/732787
 Forwarded: no
 Last-Update: 2015-12-18
 
