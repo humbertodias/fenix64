@@ -48,15 +48,5 @@ override_dh_installdocs:
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
 
-get-orig-source:
-	dh_testdir
-	dh_testroot
-	wget http://switch.dl.sourceforge.net/sourceforge/fenix/fenix092a-src-release.tgz
-	rm -f ../fenix_0.92a.dfsg1.orig.tar.gz
-	tar xvfz fenix092a-src-release.tgz
-	cd Fenix && rm -f `grep -i microsoft * -r | awk -F: '{print $$1}' | sort --unique`
-	tar cvfz ../fenix_0.92a.dfsg1.orig.tar.gz Fenix/*
-	rm -rf Fenix fenix092a-src-release.tgz
-
 %:
 	dh $@ --with autotools_dev --with autoreconf
