@@ -46,7 +46,7 @@ override_dh_installdocs:
 	dh_installdocs --exclude=license.txt --exclude=authors.txt
 
 override_dh_installchangelogs:
-	dh_installchangelogs NEWS
+	dh_installchangelogs -X ChangeLog
 
 %:
 	dh $@ --with autotools_dev --with autoreconf
