@@ -158,7 +158,7 @@ fenix (0.92a.dfsg1-4.1) unstable; urgency=high
 
   [ Vincent Fourmond ]
   * Urgency high to fix a RC bug in testing
-  * Switch to using libgif-dev instead of libungif4-dev, as the latter 
+  * Switch to using libgif-dev instead of libungif4-dev, as the latter
     is deprecated
 
  -- Vincent Fourmond <fourmond@debian.org>  Sun, 20 Jul 2008 16:01:24 +0200
@@ -253,4 +253,3 @@ fenix0.92 (0.92a.dfsg1-1) unstable; urgency=low
   * Initial release (Closes: #427558)
 
  -- Miriam Ruiz <little_miry@yahoo.es>  Mon, 04 Jun 2007 17:46:25 +0000
-
