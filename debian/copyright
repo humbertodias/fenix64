@@ -19,7 +19,7 @@ License: GPL-2+
 Files: debian/*
 Copyright:
   © 2007 Miriam Ruiz <little_miry@yahoo.es>
-  © 2011, 2015 Peter Pentchev <roam@debian.org>
+  © 2011, 2015, 2019 Peter Pentchev <roam@debian.org>
 License: GPL-2+
 
 Files: debian/doc/*
