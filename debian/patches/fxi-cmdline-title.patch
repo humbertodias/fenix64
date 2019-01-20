@@ -1,0 +1,26 @@
+Description: Fix a missed case in fxi's -t command-line option processing.
+Forwarded: no
+Author: Peter Pentchev <roam@ringlet.net>
+Last-Update: 2019-01-21
+
+--- a/fxi/src/main.c
++++ b/fxi/src/main.c
+@@ -262,15 +262,17 @@
+ 
+ 					if (argv[i][j] == 't')
+ 					{
++						if (apptitle) free(apptitle);
+ 						if (argv[i][j+1] == 0)
+ 						{
+ 							if (i == argc-1)
+ 								gr_error (_("You must provide a title")) ;
+-							if (apptitle) free(apptitle);
+ 							apptitle = strdup(argv[i+1]);
+ 							i++ ;
+ 							break ;
+ 						}
++						apptitle = strdup(argv[i]+j+1);
++						break;
+ 					}
+ 
+ 					if (argv[i][j] == 'i')

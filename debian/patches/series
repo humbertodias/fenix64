@@ -32,3 +32,5 @@ giflib5.diff
 cflags-env.patch
 declare-load-file.patch
 fxi-fx-prefix.patch
+fxc-cmdline-crash.patch
+fxi-cmdline-title.patch
