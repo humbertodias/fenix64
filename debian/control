@@ -5,7 +5,7 @@ Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
 Uploaders:
  Miriam Ruiz <little_miry@yahoo.es>,
  Barry deFreese <bdefreese@debian.org>,
- Peter Pentchev <roam@ringlet.net>
+ Peter Pentchev <roam@debian.org>
 Build-Depends:
  debhelper-compat (= 12),
  libgif-dev,
