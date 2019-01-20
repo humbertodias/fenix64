@@ -7,9 +7,7 @@ Uploaders:
  Barry deFreese <bdefreese@debian.org>,
  Peter Pentchev <roam@ringlet.net>
 Build-Depends:
- autotools-dev,
- debhelper-compat (= 9),
- dh-autoreconf,
+ debhelper-compat (= 12),
  libgif-dev,
  libmikmod-dev,
  libpng-dev,
