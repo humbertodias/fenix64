@@ -39,7 +39,29 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
   [ Simon McVittie ]
   * Update Vcs-* source control fields for salsa.debian.org
 
- -- Peter Pentchev <roam@ringlet.net>  Sun, 20 Dec 2015 16:02:47 +0200
+  [ Peter Pentchev ]
+  * Add the fxi-fx-prefix patch to fix the build with recent glibc.
+    Closes: #917982
+  * Remove a patch not referenced in the series file.
+  * List the upstream files excluded from the DFSG-repacked tarball.
+  * Remove some trailing whitespace from old changelog entries.
+  * Drop the get-orig-source target now that we have Files-Excluded.
+  * Switch some Debian- and upstream-related URLs to the HTTPS scheme.
+  * Install debian/examples/skeleton.prg as a fenix-dev example.
+  * Use the debhelper-compat (= 9) mechanism.
+  * Update to debhelper compatibility level 12:
+    - drop the dependencies and invocations of dh_autoreconf and
+      dh_autotools_dev - those are done automatically in compatibility
+      level 10
+  * Bring up to compliance with Debian Policy 4.3.0:
+    - switch to priority optional instead of extra
+    - install the NEWS file as NEWS, not changelog, in both packages
+    - add "Rules-Requires-Root: no" to the source control stanza
+  * Add "Multi-Arch: foreign" to the binary packages.
+  * Use my Debian e-mail address.
+  * Add the year 2019 to my debian/* copyright notice.
+
+ -- Peter Pentchev <roam@debian.org>  Sun, 20 Jan 2019 18:07:23 +0200
 
 fenix (0.92a.dfsg1-11.1) unstable; urgency=medium
 
