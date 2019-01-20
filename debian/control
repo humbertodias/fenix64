@@ -24,6 +24,7 @@ Rules-Requires-Root: no
 
 Package: fenix
 Architecture: arm armel armhf hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel mipsn32 mipsn32el powerpc s390 sh4 sparc
+Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: development environment for making 2D games
  Fenix is an interpreted script programming language, especially designed to
@@ -32,6 +33,7 @@ Description: development environment for making 2D games
 
 Package: fenix-dev
 Architecture: all
+Multi-Arch: foreign
 Depends: libsdl1.2-dev, zlib1g-dev, ${misc:Depends}
 Suggests: fenix
 Description: development environment for making 2D games - header files
