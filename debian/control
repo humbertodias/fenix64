@@ -16,10 +16,11 @@ Build-Depends:
  libsmpeg-dev,
  libvorbis-dev,
  zlib1g-dev
-Standards-Version: 3.9.8
+Standards-Version: 4.3.0
 Vcs-Git: https://salsa.debian.org/games-team/fenix.git
 Vcs-Browser: https://salsa.debian.org/games-team/fenix
 Homepage: https://fenix.divsite.net/
+Rules-Requires-Root: no
 
 Package: fenix
 Architecture: arm armel armhf hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel mipsn32 mipsn32el powerpc s390 sh4 sparc
