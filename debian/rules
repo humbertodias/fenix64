@@ -14,6 +14,18 @@ export DEB_CFLAGS_MAINT_APPEND
 DEB_LDFLAGS_MAINT_APPEND= -Wl,-z,defs
 export DEB_LDFLAGS_MAINT_APPEND
 
+ifneq (,$(filter fenix,$(shell dh_listpackages)))
+BUILD_FENIX=yes
+else
+BUILD_FENIX=no
+endif
+ifneq (,$(filter fenix-dev,$(shell dh_listpackages)))
+BUILD_FENIX_DEV=yes
+else
+BUILD_FENIX_DEV=no
+endif
+
+ifeq (${BUILD_FENIX},yes)
 override_dh_auto_configure:
 	chmod +x configure
 	dh_auto_configure -- \
@@ -28,10 +40,6 @@ override_dh_auto_build:
 	dh_auto_build
 	$(MAKE) -C debian/i18n
 
-override_dh_auto_clean:
-	dh_auto_clean
-	$(MAKE) -C debian/i18n clean
-
 override_dh_auto_install:
 	dh_auto_install
 	cd $(CURDIR)/debian/tmp/usr/bin/ && \
@@ -41,12 +49,29 @@ override_dh_auto_install:
 	$(MAKE) -C debian/i18n install INSTALLPREFIX=$(CURDIR)/debian/tmp/usr/share/locale/
 	cp debian/fenix.sh $(CURDIR)/debian/tmp/usr/bin/fenix
 	chmod +x $(CURDIR)/debian/tmp/usr/bin/fenix
+else
+override_dh_auto_configure:
+
+override_dh_auto_build:
+
+override_dh_auto_install:
+endif
+
+override_dh_auto_clean:
+	dh_auto_clean
+	$(MAKE) -C debian/i18n clean
 
 override_dh_installdocs:
 	dh_installdocs --exclude=license.txt --exclude=authors.txt
 
 override_dh_installchangelogs:
 	dh_installchangelogs -X ChangeLog
+
+build-indep:
+	dh $@ --without autoreconf
+
+binary-indep:
+	dh $@ --without autoreconf
 
 %:
 	dh $@

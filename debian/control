@@ -8,6 +8,7 @@ Uploaders:
  Peter Pentchev <roam@debian.org>
 Build-Depends:
  debhelper-compat (= 12),
+Build-Depends-Arch:
  libgif-dev,
  libmikmod-dev,
  libpng-dev,
