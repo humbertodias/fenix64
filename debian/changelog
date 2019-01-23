@@ -1,5 +1,12 @@
 fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
 
+  TODO: I'm working on fixing some more bugs, adding some tests,
+  and actually making fenix 64-bit clean with some very promising
+  results.  I will add the bug fixes and tests to this package
+  in the next couple of days and upload a version with that, then
+  finish my 64-bit-cleanness patches and upload another version to
+  experimental.
+
   [ Peter Pentchev ]
   * Fix the build with giflib5 using the patch supplied by
     Matthias Klose <doko@debian.org>.  Closes: #803279
