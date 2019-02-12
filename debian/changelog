@@ -67,8 +67,15 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
   * Add "Multi-Arch: foreign" to the binary packages.
   * Use my Debian e-mail address.
   * Add the year 2019 to my debian/* copyright notice.
+  * Do not compile anything when building only architecture-independent
+    packages.  Closes: #917493
+  * Add the fxc-cmdline-crash and fxi-cmdline-title patches to
+    fix some command-line processing problems.  Closes: #715899
+  * Add the map-gif-256-colors patch to fix fenix-map's parsing of
+    GIF images with 256 colors.
+  * Add a simple test suite.
 
- -- Peter Pentchev <roam@debian.org>  Sun, 20 Jan 2019 18:07:23 +0200
+ -- Peter Pentchev <roam@debian.org>  Tue, 12 Feb 2019 16:53:29 +0200
 
 fenix (0.92a.dfsg1-11.1) unstable; urgency=medium
 
