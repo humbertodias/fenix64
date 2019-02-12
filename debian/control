@@ -9,13 +9,17 @@ Uploaders:
 Build-Depends:
  debhelper-compat (= 12),
 Build-Depends-Arch:
+ libgd-perl,
  libgif-dev,
  libmikmod-dev,
+ libpath-tiny-perl,
  libpng-dev,
  libsdl-mixer1.2-dev,
  libsdl1.2-dev,
  libsmpeg-dev,
+ libtest-command-perl,
  libvorbis-dev,
+ perl,
  zlib1g-dev
 Standards-Version: 4.3.0
 Vcs-Git: https://salsa.debian.org/games-team/fenix.git
