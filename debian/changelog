@@ -1,11 +1,4 @@
-fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
-
-  TODO: I'm working on fixing some more bugs, adding some tests,
-  and actually making fenix 64-bit clean with some very promising
-  results.  I will add the bug fixes and tests to this package
-  in the next couple of days and upload a version with that, then
-  finish my 64-bit-cleanness patches and upload another version to
-  experimental.
+fenix (0.92a.dfsg1-12) unstable; urgency=medium
 
   [ Peter Pentchev ]
   * Fix the build with giflib5 using the patch supplied by
@@ -75,7 +68,7 @@ fenix (0.92a.dfsg1-12) UNRELEASED; urgency=medium
     GIF images with 256 colors.
   * Add a simple test suite.
 
- -- Peter Pentchev <roam@debian.org>  Tue, 12 Feb 2019 16:53:29 +0200
+ -- Peter Pentchev <roam@debian.org>  Wed, 13 Feb 2019 16:35:24 +0200
 
 fenix (0.92a.dfsg1-11.1) unstable; urgency=medium
 
