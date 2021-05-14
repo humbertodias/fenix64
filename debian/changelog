@@ -1,3 +1,14 @@
+fenix (0.92a.dfsg1-12.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Add a patch to fix FTBFS with gcc 10, declaring debug as an external
+    variable (Closes: #987637)
+  * Modify autopkgtest to assert fenix debug output
+  * Only run autopkgtest on architectures where binary package fenix is built
+    (required by the test suite)
+
+ -- Baptiste Beauplat <lyknode@debian.org>  Fri, 14 May 2021 14:13:28 +0200
+
 fenix (0.92a.dfsg1-12) unstable; urgency=medium
 
   [ Peter Pentchev ]
