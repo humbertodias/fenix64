@@ -1,4 +1,4 @@
-Test-Command: env TESTDIR="$(pwd)/debian/tests/t" TEST_FENIX_MAP=/usr/bin/fenix-map TEST_FENIX_FXC=/usr/bin/fenix-fxc TEST_FENIX_FXI=/usr/bin/fenix-fxi TERM=dumb prove -v -r debian/tests/t
+Test-Command: env SDL_VIDEODRIVER=dummy TESTDIR="$(pwd)/debian/tests/t" TEST_FENIX_MAP=/usr/bin/fenix-map TEST_FENIX_FXC=/usr/bin/fenix-fxc TEST_FENIX_FXI=/usr/bin/fenix-fxi TERM=dumb prove -v -r debian/tests/t
 Depends: @, libgd-perl, libpath-tiny-perl, libtest-command-perl, perl
 Restrictions: allow-stderr
 Architecture: arm

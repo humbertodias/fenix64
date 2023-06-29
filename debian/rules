@@ -54,6 +54,7 @@ ifeq (,$(filter nocheck,${DEB_BUILD_OPTIONS}))
 override_dh_auto_test:
 	dh_auto_test
 	env \
+	    SDL_VIDEODRIVER=dummy \
 	    TESTDIR='${CURDIR}/debian/tests/t' \
 	    TEST_FENIX_MAP='${CURDIR}/map/map' \
 	    TEST_FENIX_FXC='${CURDIR}/fxc/src/fxc' \
