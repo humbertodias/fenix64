@@ -1,3 +1,19 @@
+fenix (0.92a.dfsg1-13) unstable; urgency=medium
+
+  * Team upload
+  * Acknowledge NMU
+  * d/rules, d/tests: Run tests with SDL_VIDEODRIVER=dummy.
+    We don't use xvfb-run or any other mechanism for providing a temporary
+    X11 or Wayland display, so nothing is going to be displayed anyway.
+    Explicitly using SDL_VIDEODRIVER=dummy prevents sdl12-compat from
+    trying SDL 2's Wayland backend, which results in libwayland logging a
+    warning to stderr if XDG_RUNTIME_DIR is invalid (as it generally will
+    be inside a schroot: see #858466). This caused the build-time test to
+    fail, because the test asserts that there is no extraneous output on
+    stderr. (Closes: #1039581)
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 29 Jun 2023 11:20:08 +0100
+
 fenix (0.92a.dfsg1-12.1) unstable; urgency=medium
 
   * Non-maintainer upload.
