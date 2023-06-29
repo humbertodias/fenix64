@@ -1,0 +1,19 @@
+From: Baptiste Beauplat <lyknode@debian.org>
+Date: Tue, 11 May 2021 21:06:15 +0200
+Subject: Fix FTBFS with gcc 10 (Closes: #987637)
+
+Declare debug as an external variable.
+Declaration and assignation is done in main.c.
+---
+
+--- a/fxc/src/c_main.c
++++ b/fxc/src/c_main.c
+@@ -182,7 +182,7 @@
+ #ifdef TARGET_MAC
+ static int debug ;
+ #else
+-int debug;
++extern int debug;
+ #endif
+ 
+ void compile_init ()

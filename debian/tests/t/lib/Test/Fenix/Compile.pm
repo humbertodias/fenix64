@@ -41,12 +41,11 @@ sub test_compile($)
 		Test::More::plan tests => 4;
 
 		my $cmd = Test::Command->new(cmd => [
-			$fxc, $test->{test}{src}->basename,
+			$fxc, '-d', $test->{test}{src}->basename,
 		]);
 		$cmd->exit_is_num(0);
-		# Yeah, this is backwards, I know...
-		$cmd->stdout_is_eq('');
-		$cmd->stderr_isnt_eq('');
+		$cmd->stdout_like(qr/END/);
+		$cmd->stderr_like(qr/----- Main procedure/);
 
 		Test::More::ok -f $test->{test}{exe},
 		    'the compiled program exists';
