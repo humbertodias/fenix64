@@ -71,8 +71,7 @@ MODE7 current_mode7[10] ;
 
 void gr_mode7_bbox (int n, REGION * r)
 {
-    if (n >= 0 && n <= 9)
-        *r = *current_mode7[n].region;
+    if (n >= 0 && n <= 9) *r = *current_mode7[n].region;
 }
 
 int gr_mode7_active (int n)
@@ -253,11 +252,8 @@ void gr_mode7_draw (int n)
 
         //if (point_z >= camera_z) break ;
 
-        lines[y].right_bmp_x = fdiv( fmul((point_x - camera_x), -camera_z),
-                           (point_z - camera_z) ) + camera_x ;
-
-        lines[y].right_bmp_y = fdiv( fmul((point_y - camera_y), -camera_z),
-                           (point_z - camera_z) ) + camera_y ;
+        lines[y].right_bmp_x = fdiv(fmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
+        lines[y].right_bmp_y = fdiv(fmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
 
         /* Averigua el incremento necesario para cada paso de la línea */
 
@@ -275,118 +271,112 @@ void gr_mode7_draw (int n)
     if (outdoor)
     {
         outdoor_hmask = outdoor_vmask = 0xFFFFFFFF ;
-        while (~(outdoor_hmask << 1) < (int)outdoor->width-1)
-            outdoor_hmask <<= 1 ;
-        while (~(outdoor_vmask << 1) < (int)outdoor->height-1)
-            outdoor_vmask <<= 1 ;
+        while (~(outdoor_hmask << 1) < (int)outdoor->width-1) outdoor_hmask <<= 1 ;
+        while (~(outdoor_vmask << 1) < (int)outdoor->height-1) outdoor_vmask <<= 1 ;
         outdoor_hmask = ~outdoor_hmask ;
         outdoor_vmask = ~outdoor_vmask ;
     }
 
-    jump = camera_z < 0 ? -1 : 1 ;
-    ptr += (jump > 0 ? dest->pitch : -(int)dest->pitch) ;
+    jump = (camera_z < 0) ? -1 : 1 ;
+    ptr += ((jump > 0) ? dest->pitch : -(int)dest->pitch) ;
     y   += jump ;
 
-    if (dest->depth != 8)
-        gr_error ("Profundidad de color no soportada\n(mode7, dest)") ;
-    if (outdoor && outdoor->depth != 8)
-        gr_error ("Profundidad de color no soportada\n(mode7, out)") ;
-    if (indoor && indoor->depth != 8)
-        gr_error ("Profundidad de color no soportada\n(mode7, in)") ;
+    if (dest->depth != 8) gr_error ("Profundidad de color no soportada\n(mode7, dest)") ;
+    if (outdoor && outdoor->depth != 8) gr_error ("Profundidad de color no soportada\n(mode7, out)") ;
+    if (indoor && indoor->depth != 8) gr_error ("Profundidad de color no soportada\n(mode7, in)") ;
 
-    if ((dat->flags & B_TRANSLUCENT) && !trans_table_updated)
-        gr_make_trans_table() ;
+    if ((dat->flags & B_TRANSLUCENT) && !trans_table_updated) gr_make_trans_table() ;
 
     if (!(dat->flags & B_TRANSLUCENT))
-    for ( ; y < height && y >= 0 ; y += jump)
-    {
-        if (dat->flags & B_HMIRROR)
+        for ( ; y < height && y >= 0 ; y += jump)
         {
-            bmp_x = lines[y].right_bmp_x ;
-            bmp_y = lines[y].right_bmp_y ;
-            hinc  = -lines[y].hinc ;
-            vinc  = -lines[y].vinc ;
-        }
-        else
-        {
-            bmp_x = lines[y].left_bmp_x ;
-            bmp_y = lines[y].left_bmp_y ;
-            hinc  = lines[y].hinc ;
-            vinc  = lines[y].vinc ;
-        }
-
-        baseline = ptr ;
-
-        for (x = 0 ; x < width ; x++)
-        {
-            sx = fixtoi (bmp_x) ;
-            sy = fixtoi (bmp_y) ;
-
-            if (indoor && sx >= 0 && sx < indoor->width &&
-                sy >= 0 && sy < indoor->height)
+            if (dat->flags & B_HMIRROR)
             {
-                c = ((Uint8*)indoor->data)[indoor->pitch*sy + sx] ;
-                if (c > 0) *ptr   = c ;
-                ptr++ ;
+                bmp_x = lines[y].right_bmp_x ;
+                bmp_y = lines[y].right_bmp_y ;
+                hinc  = -lines[y].hinc ;
+                vinc  = -lines[y].vinc ;
             }
             else
             {
-                if (outdoor) c = ((Uint8*)outdoor->data)[outdoor->pitch*(sy & outdoor_vmask) + (sx & outdoor_hmask)] ;
-                else         c = dat->color ;
-                if (c > 0) *ptr   = c ;
-                ptr++ ;
+                bmp_x = lines[y].left_bmp_x ;
+                bmp_y = lines[y].left_bmp_y ;
+                hinc  = lines[y].hinc ;
+                vinc  = lines[y].vinc ;
             }
 
-            bmp_x += hinc ;
-            bmp_y += vinc ;
-        }
+            baseline = ptr ;
 
-        ptr = baseline + (jump > 0 ? dest->pitch : -(int)dest->pitch) ;
-    }
-    else
-    for ( ; y < height && y >= 0 ; y += jump)
-    {
-        if (dat->flags & B_HMIRROR)
-        {
-            bmp_x = lines[y].right_bmp_x ;
-            bmp_y = lines[y].right_bmp_y ;
-            hinc  = -lines[y].hinc ;
-            vinc  = -lines[y].vinc ;
+            for (x = 0 ; x < width ; x++)
+            {
+                sx = fixtoi (bmp_x) ;
+                sy = fixtoi (bmp_y) ;
+
+                if (indoor && sx >= 0 && sx < indoor->width &&
+                    sy >= 0 && sy < indoor->height)
+                {
+                    c = ((Uint8*)indoor->data)[indoor->pitch*sy + sx] ;
+                    if (c > 0) *ptr   = c ;
+                    ptr++ ;
+                }
+                else
+                {
+                    if (outdoor) c = ((Uint8*)outdoor->data)[outdoor->pitch*(sy & outdoor_vmask) + (sx & outdoor_hmask)] ;
+                    else         c = dat->color ;
+                    if (c > 0) *ptr   = c ;
+                    ptr++ ;
+                }
+
+                bmp_x += hinc ;
+                bmp_y += vinc ;
+            }
+
+            ptr = baseline + ((jump > 0) ? dest->pitch : -(int)dest->pitch) ;
         }
         else
-        {
-            bmp_x = lines[y].left_bmp_x ;
-            bmp_y = lines[y].left_bmp_y ;
-            hinc  = lines[y].hinc ;
-            vinc  = lines[y].vinc ;
-        }
-
-        baseline = ptr ;
-
-        for (x = 0 ; x < width ; x++)
-        {
-            sx = fixtoi (bmp_x) ;
-            sy = fixtoi (bmp_y) ;
-
-            if (indoor && sx >= 0 && sx < indoor->width && sy >= 0 && sy < indoor->height) {
-                *ptr = trans_table[((Uint8*)indoor->data)[indoor->pitch*sy + sx]][*ptr] ;
-                ptr++;
-            } else {
-                if (outdoor) {
-                    *ptr = trans_table[((Uint8*)outdoor->data)[outdoor->pitch*(sy & outdoor_vmask) + (sx & outdoor_hmask)]][*ptr] ;
-                    ptr++;
-                } else {
-                    *ptr = trans_table[dat->color][*ptr] ;
-                    ptr++;
+            for ( ; y < height && y >= 0 ; y += jump)
+            {
+                if (dat->flags & B_HMIRROR)
+                {
+                    bmp_x = lines[y].right_bmp_x ;
+                    bmp_y = lines[y].right_bmp_y ;
+                    hinc  = -lines[y].hinc ;
+                    vinc  = -lines[y].vinc ;
                 }
+                else
+                {
+                    bmp_x = lines[y].left_bmp_x ;
+                    bmp_y = lines[y].left_bmp_y ;
+                    hinc  = lines[y].hinc ;
+                    vinc  = lines[y].vinc ;
+                }
+
+                baseline = ptr ;
+
+                for (x = 0 ; x < width ; x++)
+                {
+                    sx = fixtoi (bmp_x) ;
+                    sy = fixtoi (bmp_y) ;
+
+                    if (indoor && sx >= 0 && sx < indoor->width && sy >= 0 && sy < indoor->height) {
+                        *ptr = trans_table[((Uint8*)indoor->data)[indoor->pitch*sy + sx]][*ptr] ;
+                        ptr++;
+                    } else {
+                        if (outdoor) {
+                            *ptr = trans_table[((Uint8*)outdoor->data)[outdoor->pitch*(sy & outdoor_vmask) + (sx & outdoor_hmask)]][*ptr] ;
+                            ptr++;
+                        } else {
+                            *ptr = trans_table[dat->color][*ptr] ;
+                            ptr++;
+                        }
+                    }
+
+                    bmp_x += hinc ;
+                    bmp_y += vinc ;
+                }
+
+                ptr = baseline + ((jump > 0) ? dest->pitch : -(int)dest->pitch) ;
             }
-
-            bmp_x += hinc ;
-            bmp_y += vinc ;
-        }
-
-        ptr = baseline + (jump > 0 ? dest->pitch : -(int)dest->pitch) ;
-    }
 
     /* Crea una lista ordenada de instancias a dibujar */
 

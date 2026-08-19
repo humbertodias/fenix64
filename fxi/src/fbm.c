@@ -80,6 +80,46 @@ static void arrange_keyframes (GRAPH * graph)
 	}
 }
 
+
+
+
+
+
+
+
+int fbm_insert_frame(gr, frame, where)
+{
+}
+
+int fbm_remove_frame(gr, frame)
+{
+}
+
+int fbm_insert_keyframe(gr, keyframe, where)
+{
+}
+
+int fbm_remove_keyframe(gr, keyframe)
+{
+}
+
+int fbm_insert_sequence(gr, seq, where)
+{
+}
+
+int fbm_remove_sequence(gr, seq)
+{
+}
+
+
+
+
+
+
+
+
+
+
 /*
  *  FUNCTION : fbm_load_from
  *
@@ -166,12 +206,13 @@ GRAPH * fbm_load_from (file * fp, int fgc_depth)
 		fbm_error = "Fichero FBM corrupto";
 		return NULL;
 	}
+/*
 	if (header.width > FBM_MAX_WIDTH || header.height > FBM_MAX_HEIGHT)
 	{
 		fbm_error = "Fichero FBM corrupto";
 		return NULL;
 	}
-
+*/
 	// Allocate space in memory for the data
 
 	sequences = (FBM_SEQUENCE *) malloc(sizeof(FBM_SEQUENCE) * (header.max_sequence+1));
@@ -222,25 +263,21 @@ GRAPH * fbm_load_from (file * fp, int fgc_depth)
 					{
 						fbm_error = "Fichero FBM truncado";
 						error = 1;
+						break;
 					}
-					else
-					{
-						if (!palette_loaded) {
-							for (n = 0 ; n < 256 ; n++)
-							{
-								palette[n].r = color_palette[3*n + 0];
-								palette[n].g = color_palette[3*n + 1];
-								palette[n].b = color_palette[3*n + 2];
-							}
-
-
-							// bug 62 : initialization of palette vars
-
-							palette_loaded = 1 ;
-							palette_changed = 1 ;
+					if (!palette_loaded) {
+						for (n = 0 ; n < 256 ; n++)
+						{
+							palette[n].r = color_palette[3*n + 0];
+							palette[n].g = color_palette[3*n + 1];
+							palette[n].b = color_palette[3*n + 2];
 						}
+                    }
 
-					}
+                    graph->palette = pal_new2(color_palette);
+
+                    palette_loaded = 1 ;
+					palette_changed = 1 ;
 				}
 				break;
 
@@ -295,9 +332,9 @@ GRAPH * fbm_load_from (file * fp, int fgc_depth)
 			case 4:				// Read the graphic data
 
             	if (graph->depth == 1)
-            		size = (graph->width + 7)/8 /* * graph->height*/;
+            		size = (graph->width + 7)/8 ;
             	else
-            		size = graph->width /* * map->height */ * graph->depth / 8;
+            		size = graph->width * graph->depth / 8;
 
                 h = graph->height * graph->frames;
 
@@ -321,13 +358,15 @@ GRAPH * fbm_load_from (file * fp, int fgc_depth)
 
 	if (error)
 	{
-		if (graph != NULL)
-			bitmap_destroy(graph);
+		if (graph) {
+		    bitmap_destroy(graph);
+		}
 		else
 		{
-			if (sequences) free(sequences);
-			if (keyframes) free(keyframes);
-		}
+        	if (sequences) free(sequences);
+        	if (keyframes) free(keyframes);
+        }
+
 		return NULL;
 	}
 
@@ -389,6 +428,7 @@ int fbm_save_to (GRAPH * map, file * fp, int with_palette)
 	static char			color_palette[768];
     char                * data_copy = NULL;
     char                * data = NULL;
+    SDL_Color           * gpal = NULL;
 
 	// Prepare the header
 
@@ -439,11 +479,13 @@ int fbm_save_to (GRAPH * map, file * fp, int with_palette)
 
 	if (map->depth == 8 && with_palette)
 	{
+        if (map->palette) gpal = map->palette->rgb; else gpal = palette;
+
 		for (n = 0 ; n < 256 ; n++)
 		{
-			color_palette[3*n + 0] = palette[n].r;
-			color_palette[3*n + 1] = palette[n].g;
-			color_palette[3*n + 2] = palette[n].b;
+			color_palette[3*n    ] = gpal[n].r;
+			color_palette[3*n + 1] = gpal[n].g;
+			color_palette[3*n + 2] = gpal[n].b;
 		}
 
 		if (file_write (fp, &color_palette, 768) != 768)
@@ -501,13 +543,12 @@ int fbm_save_to (GRAPH * map, file * fp, int with_palette)
 		}
 	}
 
-
 	// Write the graphic data
 
 	if (map->depth == 1)
-		size = (map->width + 7)/8 /* * map->height*/;
+		size = (map->width + 7)/8 ;
 	else
-		size = map->width /* * map->height */ * map->depth / 8;
+		size = map->width * map->depth / 8;
 
 	if (map->depth == 16)
 	{

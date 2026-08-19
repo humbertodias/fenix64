@@ -236,7 +236,7 @@
 /* Funciones de cadena (2) */
 
 #define MN_POINTER2STR          (0x75| MN_1_PARAMS)
-#define MN_POINTER2BOL          (0x76| MN_1_PARAMS)
+/* #define MN_POINTER2BOL          (0x76| MN_1_PARAMS) */
 #define MN_STR2INT              (0x77| MN_1_PARAMS)
 #define MN_STR2FLOAT            (0x78| MN_1_PARAMS)
 #define MN_STR2CHR              (0x79| MN_1_PARAMS)

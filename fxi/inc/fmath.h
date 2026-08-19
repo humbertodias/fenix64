@@ -24,101 +24,111 @@
  *
  */
 
-/* Rutinas matemáticas de punto fijo, basadas en Allegro */
+#ifndef _FMATH_H
+    #define _FMATH_H
 
-#ifndef M_PI
-#define M_PI           3.14159265358979323846  /* pi */
-#endif
+    /* Rutinas matemáticas de punto fijo, basadas en Allegro */
 
-#ifndef MAX
-#define MAX(a,b)        ((a)>(b) ? (a):(b))
-#define MIN(a,b)        ((a)<(b) ? (a):(b))
-#endif
+    #ifndef M_PI
+    #define M_PI           3.14159265358979323846  /* pi */
+    #endif
 
-typedef long int fixed ;
+    #ifndef ABS
+    #define ABS(x) (((x) < 0) ? -(x):(x))
+    #endif
+    #ifndef MAX
+    #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+    #endif
+    #ifndef MIN
+    #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+    #endif
 
-extern fixed cos_table[90001] ;
-extern int   cos_table_initialized ;
-extern void  init_cos_tables() ;
+    typedef long int fixed ;
 
-#ifndef __GNUC__
-#define inline __inline
-#endif
+    extern fixed cos_table[90001] ;
+    extern int   cos_table_initialized ;
+    extern void  init_cos_tables() ;
 
-#ifdef DEBUG
-# define __INLINE static
-#else
-# define __INLINE static inline
-#endif
+    #ifndef __GNUC__
+    #define inline __inline
+    #endif
 
-//#define FIXED_PREC 12
+    #ifdef DEBUG
+    # define __INLINE static
+    #else
+    # define __INLINE static inline
+    #endif
 
-#define FIXED_PREC      10000
-#define FIXED_PREC_MED  5000
-#define FIXED_PREC_DEC  1000
+    //#define FIXED_PREC 12
 
-__INLINE fixed ftofix(double x)
-{
-	return (long)(x * FIXED_PREC);
+    #define FIXED_PREC      10000
+    #define FIXED_PREC_MED  5000
+    #define FIXED_PREC_DEC  1000
 
-}
+    __INLINE fixed ftofix(double x)
+    {
+    	return (long)(x * FIXED_PREC);
 
-__INLINE float fixtof (fixed x)
-{
-	return ((float)x) / FIXED_PREC ;
-}
-
-__INLINE fixed itofix(int x)
-{
-	return x * FIXED_PREC ;
-}
-
-__INLINE int fixceil(fixed x)
-{
-    int xd;
-
-    if (x<0) {
-        xd = x % FIXED_PREC ;
-        x -= (FIXED_PREC + xd) ;
-    } else if (x>0) {
-        xd = x % FIXED_PREC ;
-        x += (FIXED_PREC - xd) ;
     }
 
-	return x ;
-}
+    __INLINE float fixtof (fixed x)
+    {
+    	return ((float)x) / FIXED_PREC ;
+    }
 
-__INLINE int fixtoi(fixed x)
-{
-	return x / FIXED_PREC ;
-}
+    __INLINE fixed itofix(int x)
+    {
+    	return x * FIXED_PREC ;
+    }
 
-__INLINE fixed fcos(int x)
-{
-if (x < 0) x = -x ;
-if (x >= 360000) x %= 360000 ;
-if (x >= 270000) return cos_table[360000 - x] ;
-if (x >= 180000) return -cos_table[x - 180000] ;
-if (x >= 90000) return -cos_table[180000 - x] ;
-return cos_table[x] ;
-}
+    __INLINE int fixceil(fixed x)
+    {
+        int xd;
 
-__INLINE fixed fsin(int x)
-{
-if (x < 0) return -fsin(-x) ;
-if (x >= 360000) x %= 360000 ;
-if (x >= 270000) return -cos_table[x - 270000] ;
-if (x >= 180000) return -cos_table[270000 - x] ;
-if (x >= 90000) return cos_table[x - 90000 ] ;
-return cos_table[90000 - x] ;
-}
+        if (x<0) {
+            xd = x % FIXED_PREC ;
+            x -= (FIXED_PREC + xd) ;
+        } else if (x>0) {
+            xd = x % FIXED_PREC ;
+            x += (FIXED_PREC - xd) ;
+        }
+    
+    	return x ;
+    }
+    
+    __INLINE int fixtoi(fixed x)
+    {
+    	return x / FIXED_PREC ;
+    }
 
-__INLINE fixed fmul(int x, int y)
-{
-	return ftofix (fixtof(x) * fixtof(y)) ;
-}
+    __INLINE fixed fcos(int x)
+    {
+    if (x < 0) x = -x ;
+    if (x >= 360000) x %= 360000 ;
+    if (x >= 270000) return cos_table[360000 - x] ;
+    if (x >= 180000) return -cos_table[x - 180000] ;
+    if (x >= 90000) return -cos_table[180000 - x] ;
+    return cos_table[x] ;
+    }
 
-__INLINE fixed fdiv(int x, int y)
-{
-	return ftofix (fixtof(x) / fixtof(y)) ;
-}
+    __INLINE fixed fsin(int x)
+    {
+    if (x < 0) return -fsin(-x) ;
+    if (x >= 360000) x %= 360000 ;
+    if (x >= 270000) return -cos_table[x - 270000] ;
+    if (x >= 180000) return -cos_table[270000 - x] ;
+    if (x >= 90000) return cos_table[x - 90000 ] ;
+    return cos_table[90000 - x] ;
+    }
+
+    __INLINE fixed fmul(int x, int y)
+    {
+    	return ftofix (fixtof(x) * fixtof(y)) ;
+    }
+
+    __INLINE fixed fdiv(int x, int y)
+    {
+    	return ftofix (fixtof(x) / fixtof(y)) ;
+    }
+
+#endif

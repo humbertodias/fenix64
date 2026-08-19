@@ -29,9 +29,6 @@
 
 #include "fxi.h"
 
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#define MAX(a,b) ((a)>(b)?(a):(b))
-
 /* Indicadores de bloqueo */
 #define GRAPH_HWRAP 1
 #define GRAPH_VWRAP 2

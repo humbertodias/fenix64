@@ -151,10 +151,10 @@ static int fxi_say (INSTANCE * my, int * params)
 
 static int fxi_rand (INSTANCE * my, int * params)
 {
-    int num1 = params[0] ;
-    int num2 = params[1] ;
+    int num1 = MIN(params[0], params[1]) ;
+    int num2 = MAX(params[0], params[1]) ;
 
-    return num1 + (int)(((double)(num2-num1+1) * rand()) / (RAND_MAX+1.0)) ;
+    return num1 + (rand()%(num2-num1+1)) ;
 }
 
 static int fxi_rand_seed (INSTANCE * my, int * params)
@@ -166,7 +166,7 @@ static int fxi_rand_seed (INSTANCE * my, int * params)
 static int fxi_abs (INSTANCE * my, int * params)
 {
     float num = *(float *)&params[0] ;
-    float res = num < 0 ? -num:num ;
+    float res = (num < 0) ? -num:num ;
     return *(int *)&res ;
 }
 
@@ -182,11 +182,11 @@ static int fxi_fget_angle (INSTANCE * my, int * params)
     double dy = params[3] - params[1] ;
     int angle ;
 
-    if (dx == 0) return dy > 0 ? 270000 : 90000 ;
+    if (dx == 0) return (dy > 0) ? 270000L : 90000L ;
 
     angle = (int) (atan(dy / dx) * 180000.0 / M_PI) ;
 
-    return dx > 0 ? -angle:-angle+180000 ;
+    return (dx > 0) ? -angle:-angle+180000L ;
 }
 
 static int fxi_fget_dist (INSTANCE * my, int * params)
@@ -203,11 +203,11 @@ static int fxi_near_angle (INSTANCE * my, int * params)
     int dest  = params[1] ;
     int incr  = params[2] ;
 
-    if (angle < dest && dest-angle > 180000)
-        angle += 360000 ;
+    if (angle < dest && dest-angle > 180000L)
+        angle += 360000L ;
 
-    if (angle > dest && angle-dest > 180000)
-        angle -= 360000 ;
+    if (angle > dest && angle-dest > 180000L)
+        angle -= 360000L ;
 
     if (angle < dest)
     {
@@ -220,8 +220,8 @@ static int fxi_near_angle (INSTANCE * my, int * params)
         if (angle < dest) angle = dest ;
     }
 
-    if (angle < 0) return angle + 360000 ;
-    if (angle >= 360000) return angle - 360000 ;
+    if (angle < 0) return angle + 360000L ;
+    if (angle >= 360000L) return angle - 360000L ;
     return angle ;
 }
 
@@ -375,7 +375,7 @@ static int fxi_signal (INSTANCE * my, int * params)
             if (instance_visible(i))
                 gr_mark_instance(i);
 
-            switch (params[1] >= 100 ? params[1]-100 : params[1])
+            switch ((params[1] >= 100) ? params[1]-100 : params[1])
             {
                 case 0:     /* S_KILL */
                     LOCDWORD(i, STATUS) = (LOCDWORD(i, STATUS) & STATUS_WAITING_MASK) | STATUS_KILLED ;
@@ -494,45 +494,45 @@ static int fxi_get_id (INSTANCE * my, int * params)
 
     if (!params[0])
     {
+        LOCDWORD(my, TYPE_SCAN) = 0 ;
         if (LOCDWORD(my, ID_SCAN))
         {
-            ptr = instance_get (LOCDWORD(my,ID_SCAN)) ;
+            ptr = instance_get (LOCDWORD(my, ID_SCAN)) ;
             if (ptr) ptr = ptr->next ;
         }
         while (ptr)
         {
             if ((LOCDWORD(ptr, STATUS) & ~STATUS_WAITING_MASK) >= STATUS_RUNNING)
             {
-                LOCDWORD(my,ID_SCAN) = LOCDWORD(ptr, PROCESS_ID) ;
+                LOCDWORD(my, ID_SCAN) = LOCDWORD(ptr, PROCESS_ID) ;
                 return LOCDWORD(ptr, PROCESS_ID) ;
             }
             ptr = ptr->next ;
         }
-        LOCDWORD(my,ID_SCAN) = 0 ;
         return 0 ;
     }
 
-    if (LOCDWORD(my,TYPE_SCAN))
+    LOCDWORD(my, ID_SCAN) = 0 ;
+    if (LOCDWORD(my, TYPE_SCAN))
     {
-        ptr = instance_get (LOCDWORD(my,TYPE_SCAN)) ;
-        if (LOCDWORD(ptr,PROCESS_TYPE) != params[0])
+        ptr = instance_get (LOCDWORD(my, TYPE_SCAN)) ;
+        if (LOCDWORD(ptr, PROCESS_TYPE) != params[0])
             ptr = first_instance ;
         else if (ptr)
             ptr = ptr->next ;
     }
     while (ptr)
     {
-        if (LOCDWORD(ptr,PROCESS_TYPE) == params[0])
+        if (LOCDWORD(ptr, PROCESS_TYPE) == params[0])
         {
             if ((LOCDWORD(ptr, STATUS) & ~STATUS_WAITING_MASK) >= STATUS_RUNNING)
             {
-                LOCDWORD(my,TYPE_SCAN) = LOCDWORD(ptr,PROCESS_ID);
-                return LOCDWORD(ptr,PROCESS_ID) ;
+                LOCDWORD(my, TYPE_SCAN) = LOCDWORD(ptr, PROCESS_ID);
+                return LOCDWORD(ptr, PROCESS_ID) ;
             }
         }
         ptr = ptr->next ;
     }
-    LOCDWORD(my,TYPE_SCAN) = 0 ;
     return 0 ;
 }
 
@@ -687,13 +687,14 @@ static void draw_at (GRAPH * dest, int x, int y, REGION * r, INSTANCE * i)
 
     scalex = LOCDWORD(i,GRAPHSIZEX);
     scaley = LOCDWORD(i,GRAPHSIZEY);
-    if (scalex == 100 && scaley == 100)
-        scalex = scaley = LOCDWORD(i,GRAPHSIZE);
+    if (scalex == 100 && scaley == 100) scalex = scaley = LOCDWORD(i,GRAPHSIZE);
 
     map = instance_graph (i) ;
     if (!map) return ;
+
     // PATCH - XGRAPH DOES NOT ROTATE DESTINATION GRAPHIC
-    if (LOCDWORD(i,ANGLE) || scaley != 100 || scalex != 100) {
+    if ((map->current_keyframe >= 0 && map->keyframes[map->current_keyframe].angle) ||
+        LOCDWORD(i,ANGLE) || scaley != 100 || scalex != 100) {
         if (LOCDWORD(i,XGRAPH) && scalex == 100 && scaley == 100) {
             gr_blit (dest, r, x, y, LOCDWORD(i,FLAGS), map) ;
         } else {
@@ -763,10 +764,8 @@ static int check_collision_with_mouse (INSTANCE * proc1)
 
     /* Creates a temporary bitmap (only once) */
 
-    if (!bmp)
-        bmp = bitmap_new (0, 2, 2, enable_16bits ? 16:8, 1) ;
-    if (!bmp)
-        return 0 ;
+    if (!bmp) bmp = bitmap_new (0, 2, 2, enable_16bits ? 16:8, 1) ;
+    if (!bmp) return 0 ;
     memset (bmp->data, 0, 2) ;
 
     /* Retrieves process information */
@@ -788,11 +787,9 @@ static int check_collision_with_mouse (INSTANCE * proc1)
             {
                 REGION * r = scrolls[i].region;
 
-                if (r->x > mx || r->x2 < mx || r->y > my || r->y2 < my)
-                    continue;
+                if (r->x > mx || r->x2 < mx || r->y > my || r->y2 < my) continue;
                 draw_at (bmp, x+r->x-mx-scrolls[i].posx0, y+r->y-my-scrolls[i].posy0, &bbox1, proc1);
-                if (enable_16bits ? *(Uint16 *)bmp->data : *(Uint8 *)bmp->data)
-                    return 1;
+                if (enable_16bits ? *(Uint16 *)bmp->data : *(Uint8 *)bmp->data) return 1;
             }
         }
         return 0;
@@ -834,8 +831,8 @@ static int check_collision (INSTANCE * proc1, INSTANCE * proc2)
         bitmap_destroy (bmp) ;
         return 0;
     }
-    memset (bmp->data, 0, w*h*(depth == 16?2:1)) ;
-    memset (bmp2->data, 0, w*h*(depth == 16?2:1)) ;
+    memset (bmp->data, 0, w*h*((depth == 16)?2:1)) ;
+    memset (bmp2->data, 0, w*h*((depth == 16)?2:1)) ;
 
     get_pos (proc1, &x, &y) ;
     x -= bbox1.x ;
@@ -897,20 +894,18 @@ static int fxi_collision (INSTANCE * my, int * params)
 {
     INSTANCE * ptr = instance_get(params[0]) ;
 
-    if (params[0] == -1)
-        return check_collision_with_mouse(my) ? 1:0 ;
+    if (params[0] == -1) return (check_collision_with_mouse(my)) ? 1 : 0 ;
 
     /* ADDED IN 0.74 - Checks only for a single instance */
-    /*DEBUG*/
 
-    if (params[0] >= FIRST_INSTANCE_ID && ptr)
-        return check_collision(my,ptr) ;
+    if (params[0] >= FIRST_INSTANCE_ID && ptr) return check_collision(my,ptr) ;
 
     /* we must use full list of instances or get types from it */
     ptr = first_instance ;
 
     if (!params[0])
     {
+        LOCDWORD(my, TYPE_SCAN) = 0 ;
         if (LOCDWORD(my, ID_SCAN))
         {
             ptr = instance_get (LOCDWORD(my, ID_SCAN)) ;
@@ -932,24 +927,25 @@ static int fxi_collision (INSTANCE * my, int * params)
             }
             ptr = ptr->next ;
         }
-        LOCDWORD (my, ID_SCAN) = 0 ;
         return 0 ;
     }
 
-    if (LOCDWORD(my,TYPE_SCAN))
+    LOCDWORD (my, ID_SCAN) = 0 ;
+    if (LOCDWORD(my, TYPE_SCAN))
     {
-        ptr = instance_get (LOCDWORD(my,TYPE_SCAN)) ;
-        if (ptr && LOCDWORD(ptr,PROCESS_TYPE) != params[0]) ptr = first_instance ;
-        else if (ptr) ptr = ptr->next ;
+        ptr = instance_get (LOCDWORD(my, TYPE_SCAN)) ;
+        if (ptr && LOCDWORD(ptr, PROCESS_TYPE) != params[0])
+            ptr = first_instance ;
+        else if (ptr)
+            ptr = ptr->next ;
     }
-
     while (ptr)
     {
-        if (LOCDWORD(ptr,PROCESS_TYPE) == params[0] && ptr != my)
+        if (LOCDWORD(ptr, PROCESS_TYPE) == params[0] && ptr != my)
         {
             if (((LOCDWORD(ptr, STATUS) & ~STATUS_WAITING_MASK) == STATUS_RUNNING ||
                  (LOCDWORD(ptr, STATUS) & ~STATUS_WAITING_MASK) == STATUS_FROZEN     ) &&
-                check_collision (my, ptr))
+                check_collision(my, ptr))
             {
                 LOCDWORD(my, TYPE_SCAN) = LOCDWORD(ptr, PROCESS_ID) ;
                 return LOCDWORD(ptr, PROCESS_ID) ;
@@ -957,7 +953,6 @@ static int fxi_collision (INSTANCE * my, int * params)
         }
         ptr = ptr->next ;
     }
-    LOCDWORD(my,TYPE_SCAN) = 0 ;
     return 0 ;
 }
 
@@ -1011,7 +1006,7 @@ fxi_set_mode_3 (INSTANCE * my, int * params)
     if (params[0]>1600 || params[1]>1400)
         gr_error ("Modo gráfico no soportado");
 
-    GLODWORD(GRAPH_MODE) = ((GLODWORD(GRAPH_MODE) & 0xFF) | params[2]);
+    GLODWORD(GRAPH_MODE) = ((GLODWORD(GRAPH_MODE) & 0xFF00) | params[2]);
     gr_init(params[0], params[1]) ;
     return 1 ;
 }
@@ -1143,10 +1138,71 @@ static int fxi_out_region (INSTANCE * my, int * params)
 
 /* Paleta de colores */
 
+
+static int fxi_pal_create (INSTANCE * my, int * params)
+{
+    return (int) pal_new((PALETTE *)NULL) ;
+}
+
+static int fxi_pal_clone (INSTANCE * my, int * params)
+{
+    return (int) pal_new((PALETTE *)(params[0])) ;
+}
+
+static int fxi_pal_unload (INSTANCE * my, int * params)
+{
+    pal_destroy((PALETTE *)(params[0])) ;
+    return 1;
+}
+
+static int fxi_pal_refresh (INSTANCE * my, int * params)
+{
+    pal_refresh(NULL) ;
+    return 1;
+}
+
+static int fxi_pal_refresh_2 (INSTANCE * my, int * params)
+{
+    pal_refresh((PALETTE *)(params[0]));
+    return 1;
+}
+
+static int fxi_pal_map_assign (INSTANCE * my, int * params)
+{
+    return pal_map_assign (params[0], params[1], (PALETTE *)(params[2]));
+}
+
+static int fxi_pal_map_remove (INSTANCE * my, int * params)
+{
+    return pal_map_remove (params[0], params[1]);
+}
+
+static int fxi_pal_map_getid (INSTANCE * my, int * params)
+{
+    GRAPH * bmp = bitmap_get (params[0], params[1]) ;
+    if (!bmp || bmp->depth != 8) return 0 ;
+    return (int) bmp->palette ;
+}
+
+static int fxi_pal_set (INSTANCE * my, int * params)
+{
+    return (pal_set ((PALETTE *)(params[0]), params[1], params[2], (Uint8 *)params[3])) ;
+}
+
+static int fxi_pal_get (INSTANCE * my, int * params)
+{
+    return (pal_get ((PALETTE *)(params[0]), params[1], params[2], (Uint8 *)params[3])) ;
+}
+
+
 static int fxi_load_fpl (INSTANCE * my, int * params)
 {
     const char * palname = string_get (params[0]) ;
-    int r = palname ? fpl_load(palname) : 0 ;
+    int r ;
+    int old_palette_loaded = palette_loaded ;
+    palette_loaded = 0 ;
+    r = palname ? fpl_load(palname) : 0 ;
+    if (!r) palette_loaded = old_palette_loaded ;
     string_discard (params[0]) ;
     return r ;
 }
@@ -1162,7 +1218,11 @@ static int fxi_save_fpl (INSTANCE * my, int * params)
 static int fxi_load_pal (INSTANCE * my, int * params)
 {
     const char * palname = string_get (params[0]) ;
-    int r = palname ? gr_load_pal(palname) : 0 ;
+    int r ;
+    int old_palette_loaded = palette_loaded ;
+    palette_loaded = 0 ;
+    r = palname ? gr_load_pal(palname) : 0 ;
+    if (!r) palette_loaded = old_palette_loaded ;
     string_discard (params[0]) ;
     return r ;
 }
@@ -1265,7 +1325,7 @@ static int fxi_rgb (INSTANCE * my, int * params)
 {
     if (!scr_initialized) gr_init (320, 200) ;
     return enable_16bits ? gr_rgb (params[0], params[1], params[2]) :
-        gr_find_nearest_color (params[0], params[1], params[2]) ;
+                           gr_find_nearest_color (params[0], params[1], params[2]) ;
 }
 
 extern int fade_step ;
@@ -1641,7 +1701,7 @@ static int fxi_xput (INSTANCE * my, int * params)
         background_8bits_used = 0;
     }
 
-    if (params[4] == 0 && params[5] == 100)
+    if (params[4] == 0 && params[5] == 100 && !(map->current_keyframe >= 0 && map->keyframes[map->current_keyframe].angle))
     {
         gr_blit (background, &regions[r], params[2], params[3], params[6], map) ;
         return 0 ;
@@ -1819,7 +1879,7 @@ static int fxi_map_xput (INSTANCE * my, int * params)
     GRAPH * dest = bitmap_get (params[0], params[1]) ;
     GRAPH * orig = bitmap_get (params[0], params[2]) ;
 
-    if (params[5] == 0 && params[6] == 100)
+    if (params[5] == 0 && params[6] == 100 && !(orig->current_keyframe >= 0 && orig->keyframes[orig->current_keyframe].angle))
         gr_blit (dest, 0, params[3], params[4], params[7], orig) ;
     else
         gr_rotated_blit (dest, 0, params[3], params[4], params[7], params[5], params[6], params[6], orig) ;
@@ -1835,7 +1895,7 @@ static int fxi_map_xputnp (INSTANCE * my, int * params)
     GRAPH * dest = bitmap_get (params[0], params[1]) ;
     GRAPH * orig = bitmap_get (params[2], params[3]) ;
 
-    if (params[6] == 0 && params[7] == 100 && params[8] == 100)
+    if (params[6] == 0 && params[7] == 100 && params[8] == 100 && !(orig->current_keyframe >= 0 && orig->keyframes[orig->current_keyframe].angle))
         gr_blit (dest, 0, params[4], params[5], params[9], orig) ;
     else
         gr_rotated_blit (dest, 0, params[4], params[5], params[9], params[6], params[7], params[8], orig) ;
@@ -1908,8 +1968,7 @@ static int fxi_map_block_copy (INSTANCE * my, int * params)
                 orig = background_8bits ;
         }
         else
-            gr_error ("Mapa %d no disponible en el fichero %d",
-            params[4], params[0]) ;
+            gr_error ("Mapa %d no disponible en el fichero %d", params[4], params[0]) ;
     }
 
     x  = params[5] ;
@@ -2086,19 +2145,18 @@ static int fxi_get_glyph (INSTANCE * my, int * params)
     GRAPH * map ;
     unsigned char c = params[1];
 
-    if (font->charset == CHARSET_CP850)
-        c = win_to_dos[c];
+    if (font->charset == CHARSET_CP850) c = win_to_dos[c];
 
     if (!scr_initialized) gr_init (320, 200) ;
     if (!font) return 0;
-    if(!font->glyph[c].bitmap) return 0;
+    if (!font->glyph[c].bitmap) return 0;
 
     map = bitmap_clone (font->glyph[c].bitmap);
     if (!map) return 0;
     if (!map->ncpoints) bitmap_add_cpoint (map, map->width/2, map->height/2);
     bitmap_add_cpoint (map, font->glyph[c].xoffset, font->glyph[c].yoffset);
     bitmap_add_cpoint (map, font->glyph[c].xadvance, font->glyph[c].yadvance);
-    return map->code;
+   return map->code;
 }
 
 /** SET_GLYPH (FONT, GLYPH, LIBRARY, GRAPHIC)
@@ -2111,13 +2169,11 @@ static int fxi_set_glyph (INSTANCE * my, int * params)
     GRAPH * map  = bitmap_get(params[2], params[3]);
     unsigned char c = params[1];
 
-    if (font->charset == CHARSET_CP850)
-        c = win_to_dos[c];
+    if (font->charset == CHARSET_CP850) c = win_to_dos[c];
 
     if (font && map)
     {
-        if (font->glyph[c].bitmap)
-            bitmap_destroy (font->glyph[c].bitmap);
+        if (font->glyph[c].bitmap) bitmap_destroy (font->glyph[c].bitmap);
         font->glyph[c].bitmap = bitmap_clone(map);
         if (map->ncpoints >= 3 && map->cpoints)
         {
@@ -2379,9 +2435,47 @@ static int fxi_filelength (INSTANCE * my, int * params)
 
 static int fxi_fputs (INSTANCE * my, int * params)
 {
-    int r = file_puts ((file *)params[0], string_get(params[1])) ;
+    char *str = string_get(params[1]);
+    int r = file_puts ((file *)params[0], str) ;
+    if (str[strlen(str)-1] != '\n') file_puts ((file *)params[0], "\r\n") ;
+/*    int r = file_puts ((file *)params[0], string_get(params[1])) ; */
     string_discard(params[1]) ;
     return r ;
+}
+
+static int fxi_fgets (INSTANCE * my, int * params)
+{
+    char buffer[1024] ;
+    int str, str2 = 0, str3 ;
+    int len, sigue = 1 ;
+
+    while(sigue)
+    {
+        len = file_gets ((file *)params[0], buffer, sizeof(buffer)) ;
+        if (len < 1)
+            sigue = 0 ;
+        else {
+            if (buffer[len-1] == '\n')
+            {
+                len-- ;
+                buffer[len] = '\0' ;
+                sigue = 0 ;
+            }
+            if (buffer[len-1] == '\r') buffer[len-1] = '\0' ;
+        }
+        str = string_new (buffer) ;
+        if (str2)
+        {
+            str3 = string_add (str2, str) ;
+            string_discard (str) ;
+            string_discard (str2) ;
+            str2 = str3 ;
+        }
+        else
+            str2 = str ;
+    }
+    string_use (str2) ;
+    return str2 ;
 }
 
 static int fxi_file (INSTANCE * my, int * params)
@@ -2406,39 +2500,6 @@ static int fxi_file (INSTANCE * my, int * params)
     string_use (str) ;
     file_close (f) ;
     return str ;
-}
-
-static int fxi_fgets (INSTANCE * my, int * params)
-{
-    char buffer[1024] ;
-    int str, str2 = 0, str3 ;
-    int len, sigue ;
-
-    for (;;)
-    {
-        file_gets ((file *)params[0], buffer, sizeof(buffer)) ;
-        len = strlen(buffer) ;
-        if (len > 1 && buffer[len-1] == '\n' && buffer[len-2] == '\\')
-        {
-            buffer[len-2] = 0 ;
-            sigue = 1 ;
-        }
-        else    sigue = 0 ;
-
-        str = string_new (buffer) ;
-        if (str2)
-        {
-            str3 = string_add (str2, str) ;
-            string_discard (str) ;
-            string_discard (str2) ;
-            str2 = str3 ;
-        }
-        else    str2 = str ;
-
-        if (!sigue) break ;
-    }
-    string_use (str2) ;
-    return str2 ;
 }
 
 static int fxi_feof (INSTANCE * my, int * params)
@@ -3970,9 +4031,9 @@ static int fxi_filter (INSTANCE *my, int *params)
                 }
             }
             r1/=tabla[9];g1/=tabla[9];b1/=tabla[9];
-            r=((int)r1)>255?255:(int)r1;
-            g=((int)g1)>255?255:(int)g1;
-            b=((int)b1)>255?255:(int)b1;
+            r=(((int)r1)>255)?255:(int)r1;
+            g=(((int)g1)>255)?255:(int)g1;
+            b=(((int)b1)>255)?255:(int)b1;
 
             if(r<0)r=0;
             if(g<0)g=0;
@@ -4809,7 +4870,7 @@ static int fxi_glob (INSTANCE * my, int * params)
     }
 
     stat (globd.gl_pathv[currentFile], &s);
-    gr_con_printf ("%s (size %d) es un %s", globd.gl_pathv[currentFile], s.st_size, S_ISDIR(s.st_mode) ? "directorio":"fichero");
+    gr_con_printf ("%s (size %d) es un %s", globd.gl_pathv[currentFile], s.st_size, (S_ISDIR(s.st_mode)) ? "directorio":"fichero");
 
     /* Store the file name and path */
     if (GLODWORD(FILE_NAME))
@@ -4840,7 +4901,7 @@ static int fxi_glob (INSTANCE * my, int * params)
     }
 
     /* Store integer and boolean variables */
-    GLODWORD(FILE_DIRECTORY) = (S_ISDIR(s.st_mode) ? 1:0);
+    GLODWORD(FILE_DIRECTORY) = ((S_ISDIR(s.st_mode)) ? 1:0);
     GLODWORD(FILE_HIDDEN)    = (*ptr == '.');
     GLODWORD(FILE_READONLY)  = !(s.st_mode & 0444);
     GLODWORD(FILE_SIZE)      = s.st_size;

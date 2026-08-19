@@ -69,10 +69,8 @@ static void init_alpha16_tables (int count)
 	int      i, color, inc, next = 0, factor;
 	Uint16 * table16 = NULL;
 
-	if (alpha16_tables_ok == count)
-		return;
-	if (count <= 0 || count > 128)
-		return;
+	if (alpha16_tables_ok == count) return;
+	if (count <= 0 || count > 128) return;
 
 	inc = 256/count;
 
@@ -387,10 +385,9 @@ void gr_fade16 (GRAPH * graph, int r, int g, int b)
 
 		for (x = 0 ; x < graph->width ; x++, ptr++)
 		{
-			*ptr = (
-				  Rtable[((*ptr & Rmask) >> Rshift)]
-				| Gtable[((*ptr & Gmask) >> Gshift)]
-				| Btable[((*ptr & Bmask) >> Bshift)] );
+			*ptr = (Rtable[((*ptr & Rmask) >> Rshift)] |
+			        Gtable[((*ptr & Gmask) >> Gshift)] |
+			        Btable[((*ptr & Bmask) >> Bshift)] );
 		}
 	}
 }
@@ -411,8 +408,7 @@ void gr_fade16 (GRAPH * graph, int r, int g, int b)
 
 Uint16 * gr_alpha16 (int alpha)
 {
-	if (alpha16_tables_ok == 0)
-		init_alpha16_tables(GLODWORD(ALPHA_STEPS));
+	if (alpha16_tables_ok == 0) init_alpha16_tables(GLODWORD(ALPHA_STEPS));
 	return alpha16[alpha];
 }
 

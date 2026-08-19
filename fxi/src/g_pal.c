@@ -47,10 +47,15 @@
 
 extern GRAPH * gr_read_png (const char * filename) ;
 
-SDL_Color  palette[256] ;
-SDL_Color vpalette[256] ;
+static unsigned char colors[256][3] ;
 
+PALETTE * first_palette = NULL ;
+
+SDL_Color  palette[256] ;
+
+SDL_Color vpalette[256] ;
 Uint16     colorequiv[256] ;    /* Equivalencia paleta -> pantalla   */
+
 Uint16     colorghost[65536] ;  /* Deja un color a 50% de intensidad */
 
 int palette_loaded = 0 ;
@@ -58,6 +63,7 @@ int palette_changed = 0 ;
 
 static int fade_inc = 0 ;
 int        fade_on = 0 ;
+int        fade_set = 0 ;
 int        fade_step = 64 ;
 SDL_Color  fade_from ;
 SDL_Color  fade_to ;
@@ -142,6 +148,161 @@ int default_palette[] =
       252, 52,252, 252,108,252, 252,164,252, 252,220,252
 } ;
 
+void pal_refresh(PALETTE * pal) {
+    PALETTE * p ;
+    int n;
+
+    if (enable_16bits) {
+        if (!pal)
+            p = first_palette;
+        else
+            p = pal ;
+
+        while (p) {
+            for (n = 0 ; n < 256 ; n++)
+                p->colorequiv[n] = SDL_MapRGB (screen->format, p->rgb[n].r, p->rgb[n].g, p->rgb[n].b);
+            p = p->next;
+            if (pal) break;
+        }
+    }
+}
+
+
+void pal_use(PALETTE * pal)
+{
+    if (pal) pal->use++;
+}
+
+int pal_discard(PALETTE * pal)
+{
+    if (!pal) return 0;
+    if (pal->use) pal->use--;
+    return pal->use;
+}
+
+PALETTE * pal_new(PALETTE * basepal)
+{
+    PALETTE * pal = malloc(sizeof(PALETTE));
+
+    if (!pal) return NULL ;
+
+    if (basepal) {
+        memmove(pal->rgb, basepal->rgb, sizeof(pal->rgb)) ;
+        memmove(pal->colorequiv, basepal->colorequiv, sizeof(pal->colorequiv)) ;
+    } else {
+        /* Default */
+        memmove(pal->rgb, palette, sizeof(pal->rgb)) ;
+        if (enable_16bits) {
+            int n;
+            for (n = 0 ; n < 256 ; n++)
+                pal->colorequiv[n] = SDL_MapRGB (screen->format, pal->rgb[n].r, pal->rgb[n].g, pal->rgb[n].b) ;
+        }
+    }
+
+    pal->use        = 1 ;
+    pal->next       = first_palette ;
+    pal->prev       = NULL ;
+    first_palette   = pal ;
+
+    return pal;
+}
+
+PALETTE * pal_new2(unsigned char * datapal)
+{
+    PALETTE * pal = malloc(sizeof(PALETTE));
+    int n;
+
+    if (!pal) return NULL ;
+
+    if (datapal) {
+		for (n = 0 ; n < 256 ; n++)
+		{
+			pal->rgb[n].r = datapal[3*n    ];
+			pal->rgb[n].g = datapal[3*n + 1];
+			pal->rgb[n].b = datapal[3*n + 2];
+		}
+    } else {
+        /* Default */
+        memmove(pal->rgb, palette, sizeof(pal->rgb)) ;
+    }
+
+    if (enable_16bits) {
+        for (n = 0 ; n < 256 ; n++)
+            pal->colorequiv[n] = SDL_MapRGB (screen->format, pal->rgb[n].r, pal->rgb[n].g, pal->rgb[n].b) ;
+    }
+
+    pal->use        = 1 ;
+    pal->next       = first_palette ;
+    pal->prev       = NULL ;
+    first_palette   = pal ;
+
+    return pal;
+}
+
+void pal_destroy(PALETTE * pal)
+{
+    if (!pal) return ;
+
+    if (pal_discard(pal)) return ;
+
+    if (pal->next) pal->next->prev = pal->prev ;
+    if (pal->prev) pal->prev->next = pal->next ;
+
+    if (pal == first_palette) first_palette = pal->next ;
+
+    free (pal);
+}
+
+int pal_get (PALETTE * spal, int color, int num, Uint8 * pal)
+{
+    if (!spal || num < 1 || color < 0 || color > 255) return 0;
+    if (color+num >= 256) num = 256-color ;
+
+    while (num--)
+    {
+        *pal++ = spal->rgb[color  ].r ;
+        *pal++ = spal->rgb[color  ].g ;
+        *pal++ = spal->rgb[color++].b ;
+    }
+    return num;
+}
+
+int pal_set (PALETTE * spal, int color, int num, Uint8 * pal)
+{
+    if (!spal || num < 1 || color < 0 || color > 255) return 0;
+    if (color+num >= 256) num = 256-color ;
+
+    while (num--)
+    {
+        spal->rgb[color  ].r = *pal++ ;
+        spal->rgb[color  ].g = *pal++ ;
+        spal->rgb[color++].b = *pal++ ;
+    }
+    return num;
+}
+
+int pal_map_assign (int libid, int mapcode, PALETTE * palid)
+{
+    GRAPH * bmp = bitmap_get (libid, mapcode) ;
+    PALETTE * oldpal ;
+    if (!bmp || bmp->depth != 8 || !palid) return 0 ;
+    oldpal = bmp->palette ;
+    bmp->palette = palid ;
+    pal_use(bmp->palette) ;
+    if (oldpal) pal_destroy(oldpal) ;
+    return 1 ;
+}
+
+int pal_map_remove (int libid, int mapcode)
+{
+    GRAPH * bmp = bitmap_get (libid, mapcode) ;
+    if (!bmp || bmp->depth != 8) return 0 ;
+    if (bmp->palette) pal_destroy (bmp->palette) ;
+    bmp->palette = NULL ;
+    return 1 ;
+}
+
+/* ---------------------------- */
 
 static void activate_vpalette()
 {
@@ -190,7 +351,7 @@ void gr_roll_palette (int color0, int num, int inc)
     while (inc <= -num) inc += num ;
     if (!inc) return ;
 
-        memcpy  (&backup[color0],  &palette[color0],     sizeof(SDL_Color)*num) ;
+    memcpy (&backup[color0], &palette[color0], sizeof(SDL_Color)*num) ;
 
     if (inc < 0) /* Derecha */
     {
@@ -209,21 +370,24 @@ void gr_roll_palette (int color0, int num, int inc)
 
 void gr_fade_init (int r, int g, int b, int speed)
 {
+    if (fade_pos.r == r && fade_pos.g == g && fade_pos.b == b) return;
+
     fade_inc  = speed;
     fade_step = 0;
     fade_on   = 1 ;
     fade_from = fade_pos;
-    fade_to.r = r > 200 ? 200 : r ;
-    fade_to.g = g > 200 ? 200 : g ;
-    fade_to.b = b > 200 ? 200 : b ;
+    fade_to.r = (r > 200) ? 200 : r ;
+    fade_to.g = (g > 200) ? 200 : g ;
+    fade_to.b = (b > 200) ? 200 : b ;
 
     GLODWORD(FADING) = 1 ;
 }
 
 void gr_fade_step()
 {
-    if (fade_on != 0)
+    if (fade_on)
     {
+        fade_set = 1 ;
         GLODWORD(FADING) = 1 ;
 
         fade_step += fade_inc ;
@@ -233,6 +397,7 @@ void gr_fade_step()
             fade_step = 0 ;
             fade_on = 0 ;
         }
+
         if (fade_step >= 64)
         {
             GLODWORD(FADING) = 0 ;
@@ -248,7 +413,15 @@ void gr_fade_step()
             (fade_pos.r == 100 && fade_pos.g == 100 && fade_pos.b == 100))
         {
             GLODWORD(FADING) = 0 ;
+            fade_step = 100 ;
             fade_on = 0;
+        }
+    }
+
+    if (fade_set)
+    {
+        if (!fade_on && fade_to.r == 100 && fade_to.g == 100 && fade_to.b == 100) {
+            fade_set = 0;
         }
 
         activate_vpalette() ;
@@ -258,15 +431,15 @@ void gr_fade_step()
             gr_fade16 (scrbitmap,  fade_pos.r, fade_pos.g, fade_pos.b);
         }
     }
+
 }
 
+#if 0
 int gr_read_pal (file * fp)
 {
-    unsigned char colors[256][3] ;
     int i ;
 
-    if (!file_read (fp, colors, 3 * 256))
-        return 0 ;
+    if (!file_read (fp, colors, 3 * 256)) return 0 ;
 
     /* Ignora definiciones de gama */
     file_seek (fp, 576, SEEK_CUR) ;
@@ -276,8 +449,6 @@ int gr_read_pal (file * fp)
         palette[i].r = colors[i][0] << 2 ;
         palette[i].g = colors[i][1] << 2 ;
         palette[i].b = colors[i][2] << 2 ;
-
-
     }
 
     palette_loaded = 1 ;
@@ -285,6 +456,45 @@ int gr_read_pal (file * fp)
 
     return 1 ;
 }
+#endif
+
+PALETTE * gr_read_pal (file * fp)
+{
+    int i ;
+    PALETTE * pal;
+
+    if (!file_read (fp, colors, 3 * 256)) return NULL ;
+
+    for (i = 0 ; i < 256 ; i++)
+    {
+        colors[i][0] = colors[i][0] << 2 ;
+        colors[i][1] = colors[i][1] << 2 ;
+        colors[i][2] = colors[i][2] << 2 ;
+        if (!palette_loaded) {
+            palette[i].r = colors[i][0] ;
+            palette[i].g = colors[i][1] ;
+            palette[i].b = colors[i][2] ;
+        }
+    }
+
+    pal = pal_new2(colors);
+
+    palette_loaded = 1 ;
+    palette_changed = 1 ;
+
+    return pal ;
+}
+
+PALETTE * gr_read_pal_with_gamma (file * fp)
+{
+    PALETTE * pal = gr_read_pal (fp);
+
+    /* Ignora definiciones de gama */
+    if (pal) file_seek (fp, 576, SEEK_CUR) ;
+
+    return pal ;
+}
+
 
 /*
  *  FUNCTION : gr_save_pal
@@ -302,7 +512,6 @@ int gr_save_pal (const char * filename)
 {
     file * fp = file_open (filename, "wb");
     char header[8] = "pal\x1A\x0D\x0A";
-    unsigned char colors[256][3] ;
     int i;
 
     if (!fp)
@@ -334,18 +543,18 @@ int gr_load_pal (const char * filename)
     int r = 0 ;
     int i = 0 ;
 
-    if (!fp) return -1 ;
+    if (!fp) return 0 ;
     file_read (fp, header, 8) ;
     if (strcmp (header, "map\x1A\x0D\x0A") == 0)
     {
         file_seek (fp, 48, SEEK_SET) ;
-        r = gr_read_pal (fp) ;
+        r = gr_read_pal_with_gamma (fp) ;
     }
     else if (strcmp (header, "fpg\x1A\x0D\x0A") == 0 ||
         strcmp (header, "fnt\x1A\x0D\x0A") == 0 ||
         strcmp (header, "pal\x1A\x0D\x0A") == 0)
     {
-        r = gr_read_pal (fp) ;
+        r = gr_read_pal_with_gamma (fp) ;
     }
     else if (memcmp (header, "\x89PNG", 4) == 0)
     {
@@ -354,8 +563,11 @@ int gr_load_pal (const char * filename)
         file_close (fp);
         palette_loaded = 0;
         graph = gr_read_png(filename);
-        if (graph) bitmap_destroy(graph);
-        return 1;
+        if (graph) {
+            r = (int) graph->palette;
+            pal_use(graph->palette);
+            bitmap_destroy(graph);
+        }
     }
     else {
         // Soporte para FGC
@@ -367,7 +579,7 @@ int gr_load_pal (const char * filename)
             {
                 fgc_error = "Fichero FGC corrupto o truncado";
                 file_close(fp);
-                return -1;
+                return 0;
             }
             ARRANGE_DWORD(&fgcHeader.version);
             ARRANGE_DWORD(&fgcHeader.depth);
@@ -376,43 +588,41 @@ int gr_load_pal (const char * filename)
 
             if (fgcHeader.depth == 8) {
 
-                static unsigned char color_palette[256][3];
-
                 file_seek (fp, fgcHeader.palette, SEEK_SET) ;
+                r = gr_read_pal (fp);
 
-
-                if (file_read(fp, color_palette, 768) != 768) {
+/*
+                if (file_read(fp, colors, 768) != 768) {
                     fgc_error = "PALETA - Fichero FGC truncado";
                     file_close(fp);
-                    return -1;
+                    return 0;
                 }
 
                 for (i = 0 ; i < 256 ; i++) {
-                    palette[i].r = color_palette[i][0];
-                    palette[i].g = color_palette[i][1];
-                    palette[i].b = color_palette[i][2];
+                    palette[i].r = colors[i][0];
+                    palette[i].g = colors[i][1];
+                    palette[i].b = colors[i][2];
 
                 }
                 palette_loaded = 1 ;
                 palette_changed = 1 ;
                 r = 1 ;
+*/
             } else {
                 fgc_error = "Fichero FGC no contiene información de paleta";
                 file_close(fp);
-                return -1;
+                return 0;
             }
         }
         else if (strcmp (header, FBM_MAGIC) == 0) {
             // Soporte para FBM
-
-            static unsigned char color_palette[256][3];
 
             file_seek (fp, 0, SEEK_SET) ;
 
             if (file_read(fp,&fbmHeader,sizeof(FBM_FILE_HEADER)!=sizeof(FBM_FILE_HEADER))) {
                 fbm_error = "Fichero FBM corrupto o truncado";
                 file_close(fp);
-                return -1;
+                return 0;
             }
 
             ARRANGE_DWORD(&fbmHeader.depth);
@@ -420,28 +630,29 @@ int gr_load_pal (const char * filename)
             if (fbmHeader.depth!=8) {
                 fbm_error = "Fichero FBM no contiene informarcion de paleta";
                 file_close(fp);
-                return -1;
+                return 0;
             }
 
             file_seek (fp, sizeof(FBM_FILE_HEADER)+sizeof(FBM_HEADER), SEEK_SET) ;
 
-
-            if (file_read(fp, color_palette, 768) != 768) {
+            r = gr_read_pal (fp);
+/*
+            if (file_read(fp, colors, 768) != 768) {
                 fbm_error = "PALETA - Fichero FGC truncado";
                 file_close(fp);
-                return -1;
+                return 0;
             }
 
             for (i = 0 ; i < 256 ; i++) {
-                palette[i].r = color_palette[i][0];
-                palette[i].g = color_palette[i][1];
-                palette[i].b = color_palette[i][2];
+                palette[i].r = colors[i][0];
+                palette[i].g = colors[i][1];
+                palette[i].b = colors[i][2];
             }
 
             palette_loaded = 1 ;
             palette_changed = 1 ;
             r = 1 ;
-
+*/
         } else if (strcmp (header, FPL_MAGIC) == 0) {
 
             // FPL SUPPORT
@@ -466,9 +677,7 @@ int gr_rgb (int r, int g, int b)
     g >>= screen->format->Gloss ;
     b >>= screen->format->Bloss ;
 
-    color= (r << screen->format->Rshift) |
-           (g << screen->format->Gshift) |
-           (b << screen->format->Bshift) ;
+    color= (r << screen->format->Rshift) | (g << screen->format->Gshift) | (b << screen->format->Bshift) ;
     if (!color) return 1 ;
     return color ;
 }
@@ -523,9 +732,9 @@ inline int find_nearest_color (const int first, const int last, SDL_Color key)
     for (n = first ; n <= last ; n++)
     {
         c = &palette[color_list[n]] ;
-        diff =  (key.r > c->r ? key.r-c->r : c->r-key.r)
-             +  (key.g > c->g ? key.g-c->g : c->g-key.g)
-             +  (key.b > c->b ? key.b-c->b : c->b-key.b) ;
+        diff =  ((key.r > c->r) ? key.r-c->r : c->r-key.r)
+             +  ((key.g > c->g) ? key.g-c->g : c->g-key.g)
+             +  ((key.b > c->b) ? key.b-c->b : c->b-key.b) ;
         if (diff < bestdiff) {
             bestdiff = diff ;
             best     = n ;
@@ -733,22 +942,22 @@ void gr_refresh_palette()
     /* Actualiza la paleta */
 
     palette_changed = 0 ;
-
-    if (fade_step != 100)
+/*
+    if (fade_step != 64 && fade_step != 0)
     {
         memcpy (vpalette, palette, sizeof(vpalette)) ;
         activate_vpalette() ;
         background_dirty = 1 ; // Temporal, hasta buscar una solucion mejor
     }
     else
-    {
+    { */
         if (enable_16bits) {
             for (n = 0 ; n < 256 ; n++)
                 colorequiv[n] = SDL_MapRGB (screen->format, palette[n].r, palette[n].g, palette[n].b) ;
         } else {
             SDL_SetColors (screen, palette, 0, 256) ;
         }
-    }
+//    }
 }
 
 void gr_set_rgb (int color, int r, int g, int b)

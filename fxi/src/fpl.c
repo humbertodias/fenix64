@@ -93,7 +93,7 @@ int fpl_load_from (file * fp)
 	}
 
 	for (n = 0 ; n < 256 ; n++) {
-		palette[n].r = color_palette[3*n + 0];
+		palette[n].r = color_palette[3*n    ];
 		palette[n].g = color_palette[3*n + 1];
 		palette[n].b = color_palette[3*n + 2];
 	}
@@ -128,7 +128,7 @@ int fpl_save_to (file * fp)
 
 	for (n = 0 ; n < 256 ; n++)
 	{
-		color_palette[3*n + 0] = palette[n].r;
+		color_palette[3*n    ] = palette[n].r;
 		color_palette[3*n + 1] = palette[n].g;
 		color_palette[3*n + 2] = palette[n].b;
 	}

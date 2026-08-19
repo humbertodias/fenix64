@@ -175,7 +175,7 @@ static int freetype(int * data, DCB_TYPEDEF * var)
 	return result;
 }
 
-/*static */void freestrings(PROCDEF * proc, int * data)
+void freestrings(PROCDEF * proc, int * data)
 {
     // Splinter, descarto todas las strings privadas
     int i, s = 0, r;
@@ -204,53 +204,51 @@ void instance_go_all ()
             if (must_exit) break ;
 
         } else {
-            if (!last_instance_run) {
-                /* Ejecuta uno a uno todos los procesos */
-                i_count = 0 ;
-            }
-
-            while (1)
-            {
-                if (last_instance_run && instance_exists(last_instance_run)) {
+            if (last_instance_run) {
+                if (instance_exists(last_instance_run)) {
                     i = last_instance_run;
                 } else {
                     last_instance_run = NULL;
                     i = instance_next_by_priority();
-                    if (!i) break;
                 }
-                if (LOCDWORD(i, STATUS) == STATUS_KILLED ||
-                    LOCDWORD(i, STATUS) == STATUS_DEAD   ||
+            } else {
+                i = instance_next_by_priority();
+                i_count = 0 ;
+            }
+
+            while (i)
+            {
+                if (LOCDWORD(i, STATUS) == STATUS_KILLED || LOCDWORD(i, STATUS) == STATUS_DEAD ||
                     last_instance_run)
                 {
+                    // Run instance
+                } else if (LOCDWORD(i, STATUS) == STATUS_RUNNING && LOCDWORD(i, FRAME_PERCENT) < 100) {
+                    LOCDWORD(i, TYPE_SCAN) = 0;
+                    LOCDWORD(i, ID_SCAN) = 0;
+                } else {
+                    i = instance_next_by_priority();
                     last_instance_run = NULL;
-
-                    instance_go (i);
-
-                    if (force_debug || must_exit) break;
                     continue;
                 }
 
+                i_count++;
+
                 last_instance_run = NULL;
 
-                if (LOCDWORD(i, STATUS) != STATUS_RUNNING) continue;
+                instance_go (i);
 
-                if (LOCDWORD(i, FRAME_PERCENT) < 100) {
-                    LOCDWORD(i, TYPE_SCAN) = 0;
-                    LOCDWORD(i, ID_SCAN) = 0;
-
-                    instance_go (i);
-
-                    if (force_debug || must_exit) break;
-                    i_count++;
+                if (force_debug) {
+                    show_console = 1;
+                    last_instance_run  = trace_instance;
+                    break;
                 }
+
+                if (must_exit) break;
+
+                i = instance_next_by_priority();
             }
 
             if (must_exit) break ;
-
-            if (force_debug) {
-                show_console = 1;
-                last_instance_run  = trace_instance;
-            }
 
             /* Si no se ejecutó nada: Dibujar, actualizar variables, etc. */
 
@@ -283,8 +281,7 @@ void instance_go_all ()
                     i = next ;
                 }
 
-                if (!first_instance)
-                    break ;
+                if (!first_instance) break ;
 
                 /* Dibuja el frame */
 
@@ -299,14 +296,12 @@ void instance_go_all ()
                 gprof_end   ("Drawing");
 
                 gprof_begin ("Interpreter");
-
                 gr_advance_timers() ;
 
                 if (debug_on_frame) {
                     debug_on_frame = 0;
                     show_console = 1;
                 }
-
                 continue ;
             }
 
@@ -319,8 +314,7 @@ void instance_go_all ()
 
 int instance_go (INSTANCE * r)
 {
-    if (!r)
-        return 0 ;
+    if (!r) return 0 ;
 
     register int * ptr = r->codeptr ;
     register int * stack_ptr = stack_gptr ;
@@ -328,10 +322,10 @@ int instance_go (INSTANCE * r)
     int n ;
     int return_value = LOCDWORD(r, PROCESS_ID) ;
     int was_visible;
-    SYSPROC * p ;
-    INSTANCE * i ;
-    PROCDEF * proc = r->proc, * aproc ;
-    static char buffer[16], * str ;
+    SYSPROC * p = NULL ;
+    INSTANCE * i = NULL ;
+    PROCDEF * proc = r->proc;
+    static char buffer[16], * str = NULL ;
 
     /* This variable contains a pointer to the private area at the stack.
        It is 0 if the current process uses the instance's private area instead */
@@ -346,17 +340,22 @@ int instance_go (INSTANCE * r)
 
     /* ------------------------------------------------------------------------------- */
     /* Restauro si salio por debug */
+#if 0
     if (r->inpridata) {
         private_data = r->inpridata;
         base_code = r->inproc->code;
         proc = r->inproc;
     }
+#endif
+
+    switchval = r->switchval;
+    switchval_string = r->switchval_string;
+    cased = r->cased;
 
     if (r->stack)
     {
         /* Restore a saved stack, if present */
-        if ((*r->stack) & STACK_SIZE_MASK)
-            memcpy (stack_ptr, r->stack+1, *r->stack * 4);
+        if ((*r->stack) & STACK_SIZE_MASK) memcpy (stack_ptr, r->stack+1, ((*r->stack) & STACK_SIZE_MASK) * 4);
         stack_ptr += ((*r->stack) & STACK_SIZE_MASK);
         free (r->stack);
         r->stack = NULL;
@@ -378,7 +377,11 @@ int instance_go (INSTANCE * r)
 
     trace_sentence = -1;
 
-    while(!must_exit && (LOCDWORD(r, STATUS) & STATUS_WAITING_MASK) != STATUS_KILLED)
+    while(!must_exit /*&&
+          (LOCDWORD(r, STATUS) == STATUS_RUNNING ||
+           LOCDWORD(r, STATUS) == STATUS_DEAD) &&
+          !(LOCDWORD(r, STATUS) & STATUS_WAITING_MASK)
+         */)
     {
         if (debug_next && trace_sentence != -1) {
             force_debug = 1;
@@ -386,11 +389,16 @@ int instance_go (INSTANCE * r)
             r->codeptr = ptr ;
             stack_gptr = stack_ptr ;
             return_value = LOCDWORD(r, PROCESS_ID);
-
+#if 0
             if (private_data != r->pridata) {
                 r->inpridata = private_data;
                 r->inproc = proc;
             }
+#endif
+            r->switchval = switchval;
+            r->switchval_string = switchval_string;
+            r->cased = cased;
+
             break;
         }
 
@@ -455,11 +463,12 @@ int instance_go (INSTANCE * r)
 
             case MN_CALL:
             case MN_PROC:
-                aproc = procdef_get (ptr[1]) ;
-                if (!aproc) gr_error ("Error: Procedimiento desconocido\n") ;
-                proc = aproc;
+                proc = procdef_get (ptr[1]) ;
+                if (!proc) gr_error ("Error: Procedimiento desconocido\n") ;
 
+#if 0
                 if (proc->flags & (PROC_USES_FRAME | PROC_USES_LOCALS | PROC_USES_PUBLICS))
+#endif
                 {
                     /* Process uses FRAME or locals, must create an instance */
                     i = instance_new (proc, r) ;
@@ -476,7 +485,8 @@ int instance_go (INSTANCE * r)
                     LOCDWORD(r,STATUS) |= STATUS_WAITING_MASK;
                     i->called_by   = r;
 
-                    /* Ejecuto la funcion/processo... */
+                    // Ejecuto la funcion/processo...
+
                     if (*ptr == MN_CALL) {
                         *stack_ptr++ = instance_go (i);
                     } else {
@@ -492,7 +502,12 @@ int instance_go (INSTANCE * r)
                     /* If the process is a function in a frame, save the stack and leave */
                     /* Si sigue corriendo la funcion/proceso que lance, es porque esta en un frame.
                        Si esta ejecutando codigo, es porque su STATUS es RUNNING */
-                    if (child_is_alive && LOCDWORD(r,STATUS) & STATUS_WAITING_MASK)
+                    if (child_is_alive &&
+                        ((LOCDWORD(r,STATUS) & STATUS_WAITING_MASK) ||
+                         (LOCDWORD(r,STATUS) & ~STATUS_WAITING_MASK) == STATUS_FROZEN ||
+                         (LOCDWORD(r,STATUS) & ~STATUS_WAITING_MASK) == STATUS_SLEEPING
+                        )
+                       )
                     {
                         /* En este caso me pongo a dormir y retorno */
                         i->called_by   = r;
@@ -509,7 +524,7 @@ int instance_go (INSTANCE * r)
                         /* Esta instancia no va a ejecutar otro codigo hasta que retorne el hijo */
                         r->codeptr = ptr ;
 
-                        /* Apunto global stack a stack_begin (inicio de mi stack) */
+                        /* Apunto global stack a stack_begin (inicio del stack original) */
                         stack_gptr = stack_begin;
 
                         /* Si no fue un call, seteo un flag en la len para no retornar valor */
@@ -521,24 +536,24 @@ int instance_go (INSTANCE * r)
                             force_debug = 1;
                             debug_next = 0;
                         }
+
                         return 0;
                     }
 
                     /* Me despierto */
                     LOCDWORD(r, STATUS) &= ~STATUS_WAITING_MASK;
-                    if (child_is_alive) {
-                        i->called_by = NULL;
-                    }
+                    if (child_is_alive) i->called_by = NULL;
                     proc = r->proc;
                 }
+#if 0
                 else
                 {
                     /* This process can be called locally: create a private memory area using the stack */
                     /* Solo privadas, si usa otro tipo de variables es una instancia */
+
                     int * old_data      = private_data;
                     private_data = stack_ptr - proc->params;
-                    if (stack_ptr > stack + sizeof(stack)/4 - proc->private_size/4 - 128) // 128 = reservado
-                        gr_error ("Stack overflow!");
+                    if (stack_ptr > stack + sizeof(stack)/4 - proc->private_size/4 - 128) gr_error ("Stack overflow!");
 
                     stack_ptr += ( proc->private_size/4 - proc->params ) ;
 
@@ -554,6 +569,7 @@ int instance_go (INSTANCE * r)
                     *stack_ptr++ = (Sint32) old_data;               //                    (stack_ptr[-2] in return)
                     base_code = ptr = proc->code;
                 }
+#endif
                 break ;
 
             case MN_SYSCALL:
@@ -632,7 +648,7 @@ int instance_go (INSTANCE * r)
             case MN_REMOTE | MN_STRING:
             case MN_REMOTE | MN_FLOAT:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = (int) &LOCDWORD(i, ptr[1]) ;
@@ -648,7 +664,7 @@ int instance_go (INSTANCE * r)
             case MN_REMOTE_PUBLIC | MN_STRING:
             case MN_REMOTE_PUBLIC | MN_FLOAT:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = (int) &PUBDWORD(i, ptr[1]) ;
@@ -689,7 +705,7 @@ int instance_go (INSTANCE * r)
             case MN_GET_REMOTE | MN_FLOAT:
             case MN_GET_REMOTE | MN_UNSIGNED:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = LOCDWORD(i,ptr[1]) ;
@@ -700,7 +716,7 @@ int instance_go (INSTANCE * r)
             case MN_GET_REMOTE_PUBLIC | MN_FLOAT:
             case MN_GET_REMOTE_PUBLIC | MN_UNSIGNED:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = PUBDWORD(i,ptr[1]) ;
@@ -748,7 +764,7 @@ int instance_go (INSTANCE * r)
 
             case MN_GET_REMOTE | MN_STRING:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = LOCDWORD(i,ptr[1]) ;
@@ -758,7 +774,7 @@ int instance_go (INSTANCE * r)
 
             case MN_GET_REMOTE_PUBLIC | MN_STRING:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = PUBDWORD(i,ptr[1]) ;
@@ -823,7 +839,7 @@ int instance_go (INSTANCE * r)
             case MN_WORD | MN_GET_REMOTE:
             case MN_WORD | MN_GET_REMOTE | MN_UNSIGNED:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = LOCWORD(i,ptr[1]) ;
@@ -833,7 +849,7 @@ int instance_go (INSTANCE * r)
             case MN_WORD | MN_GET_REMOTE_PUBLIC:
             case MN_WORD | MN_GET_REMOTE_PUBLIC | MN_UNSIGNED:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = PUBWORD(i,ptr[1]) ;
@@ -846,11 +862,11 @@ int instance_go (INSTANCE * r)
                 ptr++ ;
                 break ;
 
-            case MN_WORD | MN_NOT:
+/*            case MN_WORD | MN_NOT:
             case MN_WORD | MN_NOT | MN_UNSIGNED:
                 stack_ptr[-1] = !(stack_ptr[-1]) ;
                 ptr++ ;
-                break ;
+                break ; */
 
             /* Acceso a variables tipo BYTE */
 
@@ -896,7 +912,7 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_GET_REMOTE:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = (signed char) LOCBYTE(i,ptr[1]) ;
@@ -905,7 +921,7 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_GET_REMOTE | MN_UNSIGNED:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = LOCBYTE(i,ptr[1]) ;
@@ -914,7 +930,7 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_GET_REMOTE_PUBLIC:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = (signed char) PUBBYTE(i,ptr[1]) ;
@@ -923,7 +939,7 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_GET_REMOTE_PUBLIC | MN_UNSIGNED:
                 i = instance_get (stack_ptr[-1]) ;
-                if (i == 0)
+                if (!i)
                     gr_error ("Error de ejecucion en proceso %s(%d):\nProcedimiento %d no activo\n", proc->name, LOCDWORD(r,PROCESS_ID), stack_ptr[-1]) ;
                 else
                     stack_ptr[-1] = PUBBYTE(i,ptr[1]) ;
@@ -940,11 +956,11 @@ int instance_go (INSTANCE * r)
                 ptr++ ;
                 break ;
 
-            case MN_BYTE | MN_NOT:
+/*            case MN_BYTE | MN_NOT:
             case MN_BYTE | MN_NOT | MN_UNSIGNED:
                 stack_ptr[-1] = !(stack_ptr[-1]) ;
                 ptr++ ;
-                break ;
+                break ; */
 
             /* Operaciones matemáticas  en coma floatante */
 
@@ -977,8 +993,7 @@ int instance_go (INSTANCE * r)
                 break ;
 
             case MN_FLOAT | MN_DIV:
-                if (*((float *)&stack_ptr[-1]) == 0.0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (*((float *)&stack_ptr[-1]) == 0.0) gr_error ("Error: Division por cero\n") ;
                 *(float *)&stack_ptr[-2] /= *((float *)&stack_ptr[-1]) ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1051,8 +1066,7 @@ int instance_go (INSTANCE * r)
             case MN_DIV | MN_WORD:
             case MN_DIV | MN_BYTE:
             case MN_DIV:
-                if (stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 stack_ptr[-2] /= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1061,8 +1075,7 @@ int instance_go (INSTANCE * r)
             case MN_DIV | MN_WORD | MN_UNSIGNED:
             case MN_DIV | MN_BYTE | MN_UNSIGNED:
             case MN_DIV | MN_UNSIGNED:
-                if (stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 stack_ptr[-2] = (Uint32)stack_ptr[-2] / (Uint32)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1071,8 +1084,7 @@ int instance_go (INSTANCE * r)
             case MN_MOD | MN_WORD:
             case MN_MOD | MN_BYTE:
             case MN_MOD:
-                if (stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 stack_ptr[-2] %= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1081,8 +1093,7 @@ int instance_go (INSTANCE * r)
             case MN_MOD | MN_WORD | MN_UNSIGNED:
             case MN_MOD | MN_BYTE | MN_UNSIGNED:
             case MN_MOD | MN_UNSIGNED:
-                if (stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 stack_ptr[-2] = (Uint32)stack_ptr[-2] % (Uint32)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1091,121 +1102,101 @@ int instance_go (INSTANCE * r)
             /* Operaciones a nivel de bit */
 
             case MN_ROR:
-//                (Sint32)(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Sint32)(stack_ptr[-2]) >> stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_ROR | MN_UNSIGNED:
-//                (Uint32)(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr[-2] = (Uint32)(stack_ptr[-2]) >> stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_ROR:
-//                (Sint16)(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr[-2] = (Sint16)(stack_ptr[-2]) >> stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_ROR | MN_UNSIGNED:
-//                (Uint16)(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr[-2] = (Uint16)(stack_ptr[-2]) >> stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_ROR:
-//                (Sint8)(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr[-2] = (Sint8)(stack_ptr[-2]) >> stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_ROR | MN_UNSIGNED:
-//                (Uint8)(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr[-2] = (Uint8)(stack_ptr[-2]) >> stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_ROL:
-//                (Sint32)(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Sint32)(stack_ptr[-2]) << stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
+
             /* Todos estos ROL siguientes no serian necesarios, pero bueno... */
             case MN_ROL | MN_UNSIGNED:
-//                (Uint32)(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Uint32)(stack_ptr[-2]) << stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_ROL:
-//                (Sint16)(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Sint16)(stack_ptr[-2]) << stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_ROL | MN_UNSIGNED:
-//                (Uint16)(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Uint16)(stack_ptr[-2]) << stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_ROL:
-//                (Sint8)(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Sint8)(stack_ptr[-2]) << stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_ROL | MN_UNSIGNED:
-//                (Uint8)(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 (stack_ptr[-2]) = (Uint8)(stack_ptr[-2]) << stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
-/*
-            case MN_ROL:
-                stack_ptr[-2] >>= stack_ptr[-1] ;
-                stack_ptr-- ;
-                ptr++ ;
-                break ;
-
-            case MN_ROL:
-                stack_ptr[-2] <<= stack_ptr[-1] ;
-                stack_ptr-- ;
-                ptr++ ;
-                break ;
-*/
             case MN_BAND:
+            case MN_BAND | MN_UNSIGNED:
                 stack_ptr[-2] &= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BOR:
+            case MN_BOR | MN_UNSIGNED:
                 stack_ptr[-2] |= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BXOR:
+            case MN_BXOR | MN_UNSIGNED:
                 stack_ptr[-2] ^= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BNOT:
+            case MN_BNOT | MN_UNSIGNED:
                 stack_ptr[-1] = ~(stack_ptr[-1]) ;
                 ptr++ ;
                 break ;
@@ -1488,21 +1479,23 @@ int instance_go (INSTANCE * r)
                 string_use (stack_ptr[-ptr[1]-1]) ;
                 ptr += 2 ;
                 break ;
-
+/*
             case MN_POINTER2BOL:
-                stack_ptr[-ptr[1]-1] = stack_ptr[-ptr[1]-1] ? 1:0 ;
+                stack_ptr[-ptr[1]-1] = (stack_ptr[-ptr[1]-1]) ? 1:0 ;
                 ptr += 2 ;
                 break ;
-
+*/
             case MN_STR2FLOAT:
-                n = stack_ptr[-ptr[1]-1] ; str = (char *)string_get(n) ;
+                n = stack_ptr[-ptr[1]-1] ;
+                str = (char *)string_get(n) ;
                 *(float *)(&stack_ptr[-ptr[1]-1]) = str ? (float)atof(str) : 0.0f ;
                 string_discard (n) ;
                 ptr += 2 ;
                 break ;
 
             case MN_STR2INT:
-                n = stack_ptr[-ptr[1]-1] ; str = (char *)string_get(n) ;
+                n = stack_ptr[-ptr[1]-1] ;
+                str = (char *)string_get(n) ;
                 stack_ptr[-ptr[1]-1] = str ? atoi(str) : 0 ;
                 string_discard (n) ;
                 ptr += 2 ;
@@ -1601,8 +1594,7 @@ int instance_go (INSTANCE * r)
 
             case MN_VARDIV:
             case MN_VARDIV | MN_UNSIGNED:
-                if (stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 *(Sint32 *)(stack_ptr[-2]) /= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1610,8 +1602,7 @@ int instance_go (INSTANCE * r)
 
             case MN_VARMOD:
             case MN_VARMOD | MN_UNSIGNED:
-                if (stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 *(Sint32 *)(stack_ptr[-2]) %= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1727,8 +1718,7 @@ int instance_go (INSTANCE * r)
 
             case MN_WORD | MN_VARDIV:
             case MN_WORD | MN_VARDIV | MN_UNSIGNED:
-                if ((Sint16)stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if ((Sint16)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 *(Sint16 *)(stack_ptr[-2]) /= (Sint16)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1736,8 +1726,7 @@ int instance_go (INSTANCE * r)
 
             case MN_WORD | MN_VARMOD:
             case MN_WORD | MN_VARMOD | MN_UNSIGNED:
-                if ((Sint16)stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if ((Sint16)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 *(Sint16 *)(stack_ptr[-2]) %= (Sint16)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1853,8 +1842,7 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_VARDIV:
             case MN_BYTE | MN_VARDIV | MN_UNSIGNED:
-                if ((Uint8)stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if ((Uint8)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 *(Uint8 *)(stack_ptr[-2]) /= (Uint8)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1862,8 +1850,7 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_VARMOD:
             case MN_BYTE | MN_VARMOD | MN_UNSIGNED:
-                if ((Uint8)stack_ptr[-1] == 0)
-                    gr_error ("Error: Division por cero\n") ;
+                if ((Uint8)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
                 *(Uint8 *)(stack_ptr[-2]) %= (Uint8)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -1968,8 +1955,7 @@ int instance_go (INSTANCE * r)
                 break ;
 
             case MN_FLOAT | MN_VARDIV:
-                if (*(float *)&stack_ptr[-1] == 0.0)
-                    gr_error ("Error: Division por cero\n") ;
+                if (*(float *)&stack_ptr[-1] == 0.0) gr_error ("Error: Division por cero\n") ;
                 *(float *)(stack_ptr[-2]) /= *(float *)&stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
@@ -2028,8 +2014,7 @@ int instance_go (INSTANCE * r)
                 break ;
 
             case MN_SWITCH | MN_STRING:
-                if (switchval_string != 0)
-                    string_discard (switchval_string);
+                if (switchval_string != 0) string_discard (switchval_string);
                 switchval_string = *--stack_ptr;
                 cased = 0;
                 ptr++;
@@ -2078,8 +2063,7 @@ int instance_go (INSTANCE * r)
             case MN_TYPE:
                 {
                 PROCDEF * proct = procdef_get (ptr[1]) ;
-                if (!proct)
-                    gr_error ("Error: Procedimiento desconocido\n") ;
+                if (!proct) gr_error ("Error: Procedimiento desconocido\n") ;
                 *stack_ptr++ = proct->type ;
                 ptr += 2 ;
                 break ;
@@ -2092,11 +2076,9 @@ int instance_go (INSTANCE * r)
                 stack_gptr = stack_ptr ;
                 return_value = LOCDWORD(r, PROCESS_ID);
 
-                if (r->called_by &&
-                    instance_exists(r->called_by) &&
-                    (LOCDWORD(r->called_by, STATUS) & STATUS_WAITING_MASK) &&
-                    !(r->proc->flags & PROC_FUNCTION)
-                   )
+                if (!(r->proc->flags & PROC_FUNCTION) &&
+                    r->called_by && instance_exists(r->called_by) &&
+                    (LOCDWORD(r->called_by, STATUS) & STATUS_WAITING_MASK))
                 {
                     /* We're returning and the parent is waiting: wake it up */
                     if (r->called_by->stack && !(r->called_by->stack[0] & STACK_NO_RETURN_VALUE)) {
@@ -2109,28 +2091,30 @@ int instance_go (INSTANCE * r)
                 goto break_all ;
 
             case MN_END:
+#if 0
                 if (private_data == r->pridata) /* Esto es una nueva instancia */
+#endif
                 {
-                    if (LOCDWORD (r,STATUS) != STATUS_DEAD)
-                        LOCDWORD (r,STATUS) = STATUS_KILLED ;
+                    if (LOCDWORD(r,STATUS) != STATUS_DEAD) LOCDWORD(r,STATUS) = STATUS_KILLED ;
                     stack_gptr = stack_ptr ;
                     goto break_all ;
                 }
-
+#if 0
                 return_value = LOCDWORD(r, PROCESS_ID);
                 *stack_ptr++ = return_value;
-
+#endif
             case MN_RETURN:
+#if 0
                 if (private_data == r->pridata) /* Esto es una nueva instancia */
+#endif
                 {
-                    if (LOCDWORD (r,STATUS) != STATUS_DEAD)
-                        LOCDWORD (r,STATUS) = STATUS_KILLED ;
+                    if (LOCDWORD(r,STATUS) != STATUS_DEAD) LOCDWORD(r,STATUS) = STATUS_KILLED ;
                     stack_ptr-- ;
                     stack_gptr = stack_ptr ;
                     return_value = *stack_ptr ;
                     goto break_all ;
                 }
-
+#if 0
                 /* The process is inside a stack-call */
                 proc = (PROCDEF *)stack_ptr[-4]; // stack_ptr[-4] = Recupero el proc de la instancia actual
                 freestrings(proc, private_data);
@@ -2152,7 +2136,7 @@ int instance_go (INSTANCE * r)
 
                 r->inpridata = NULL;
                 r->inproc = NULL;
-
+#endif
                 break;
 
             /* Otros */
@@ -2188,7 +2172,7 @@ int instance_go (INSTANCE * r)
         }
 
         /* Si me killearon o estoy en waiting salgo */
-        if (LOCDWORD(r,STATUS) == STATUS_KILLED || LOCDWORD(r,STATUS) & STATUS_WAITING_MASK) {
+        if ((LOCDWORD(r,STATUS) & ~STATUS_WAITING_MASK) == STATUS_KILLED || (LOCDWORD(r,STATUS) & STATUS_WAITING_MASK)) {
             r->codeptr = ptr;
             stack_gptr = stack_ptr ;
             return_value = LOCDWORD(r, PROCESS_ID);
@@ -2203,6 +2187,7 @@ int instance_go (INSTANCE * r)
                 break ;
         }
 #endif
+
     }
 
 /* *** SALIDA GENERAL *** */
@@ -2210,40 +2195,34 @@ break_all:
 
     gprof_end (proc->name);
 
-    /* Check for waiting parent */
-    if (r->called_by && instance_exists(r->called_by)         &&
-        LOCDWORD(r->called_by, STATUS) & STATUS_WAITING_MASK  &&
-        (LOCDWORD(r, STATUS) == STATUS_KILLED || !*ptr || *ptr == MN_RETURN || *ptr == MN_END)
-       )
-    {
-        /* We're returning and the parent is waiting: wake it up */
-        if (r->called_by->stack &&
-            !((*r->called_by->stack) & STACK_NO_RETURN_VALUE)
-           )
+    if (!*ptr || *ptr == MN_RETURN || *ptr == MN_END || LOCDWORD(r, STATUS) == STATUS_KILLED) {
+        /* Check for waiting parent */
+        if (r->called_by && instance_exists(r->called_by) && (LOCDWORD(r->called_by, STATUS) & STATUS_WAITING_MASK))
         {
-            r->called_by->stack[(*r->called_by->stack) & STACK_SIZE_MASK] = return_value;
-        }
-        LOCDWORD(r->called_by, STATUS) &= ~STATUS_WAITING_MASK;
-    }
+            /* We're returning and the parent is waiting: wake it up */
+            if (r->called_by->stack && !(r->called_by->stack[0] & STACK_NO_RETURN_VALUE)) {
+                r->called_by->stack[r->called_by->stack[0] & STACK_SIZE_MASK] = return_value;
+            }
 
-    /* The process should be destroyed immediately,
-     * it is a function-type one */
-    if (!*ptr || *ptr == MN_RETURN || *ptr == MN_END || LOCDWORD(r, STATUS) == STATUS_KILLED) // Splinter
-    {
+            LOCDWORD(r->called_by, STATUS) &= ~STATUS_WAITING_MASK;
+        }
+        r->called_by = NULL;
+
+        /* The process should be destroyed immediately, it is a function-type one */
         /* Ejecuto ONEXIT */
         if ((LOCDWORD(r,STATUS) & ~STATUS_WAITING_MASK) != STATUS_DEAD && r->exitcode) {
             LOCDWORD(r,STATUS) = STATUS_DEAD;
             r->codeptr = r->exitcode;
-            if (r->called_by && instance_exists(r->called_by)) {
-                r->called_by = NULL;
-            }
+
             instance_go(r);
         } else {
             instance_destroy(r);
         }
 
-        if (was_visible)
-            object_list_dirty = 1;
+        /* Apunto global stack a stack_begin (inicio del stack original) */
+        stack_gptr = stack_begin;
+
+        if (was_visible) object_list_dirty = 1;
     }
     else if (LOCDWORD(r, STATUS) != STATUS_KILLED && r->first_run)
     {
@@ -2259,13 +2238,15 @@ break_all:
         object_list_unsorted = 1;
     }
 
-    if (switchval_string != 0)
-        string_discard(switchval_string);
+//    if (switchval_string != 0) string_discard(switchval_string);
 
     if (debug_next && trace_sentence != -1) {
         force_debug = 1;
         debug_next = 0;
     }
+
+    /* Apunto global stack a stack_begin (inicio del stack original) */
+/*    stack_gptr = stack_begin; */
 
     return return_value;
 }

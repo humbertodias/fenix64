@@ -58,11 +58,11 @@ int lib_count = 0 ;
  *      ID of the new library or -1 if error
  */
 
-static GRLIB * grlib_create ();
+static GRLIB * grlib_create () ;
 
 int grlib_new ()
 {
-	GRLIB * lib  = grlib_create();
+	GRLIB * lib  = grlib_create() ;
 	int i ;
 
 	if (lib_nextid == MAXLIBS && lib_count == lib_nextid) return -1 ;
@@ -73,13 +73,12 @@ int grlib_new ()
 	{
 		for (i = 0 ; i < lib_nextid ; i++)
 		{
-			if (!libs[i])
-				break ;
+			if (!libs[i]) break ;
 		}
 		if (i == lib_nextid)
 		{
-			gr_error ("grlib_new: sin memoria");
-			return -1;
+			gr_error ("grlib_new: sin memoria") ;
+			return -1 ;
 		}
 		libs[i] = lib ;
 		return i ;
@@ -98,11 +97,11 @@ static GRLIB * grlib_create ()
 	lib = (GRLIB *) malloc (sizeof(GRLIB)) ;
 	if (!lib) return 0 ;
 	lib->maps = (GRAPH **) malloc (16 * sizeof(GRAPH *)) ;
-	lib->name[0] = 0;
+	lib->name[0] = 0 ;
 	if (!lib->maps) return 0 ;
 
 	lib->map_reserved = 16 ;
-	memset (lib->maps, 0, 16 * sizeof(GRAPH *));
+	memset (lib->maps, 0, 16 * sizeof(GRAPH *)) ;
 	return lib ;
 }
 
@@ -121,8 +120,7 @@ static GRLIB * grlib_create ()
 
 GRLIB * grlib_get (int libid)
 {
-	if (libid < 0 || libid >= lib_nextid)
-		return 0 ;
+	if (libid < 0 || libid >= lib_nextid) return 0 ;
 	return libs[libid] ;
 }
 
@@ -172,18 +170,18 @@ void grlib_destroy (int libid)
 
 int grlib_unload_map (int libid, int mapcode)
 {
-	GRLIB * lib;
+	GRLIB * lib ;
 
 	if (libid == 0 && mapcode > 999)
-		lib = syslib;
+		lib = syslib ;
 	else
-		lib = grlib_get(libid);
+		lib = grlib_get(libid) ;
 
-	if (lib == NULL) return 0;
+	if (lib == NULL) return 0 ;
 
-	if (lib->map_reserved <= mapcode) return 0;
+	if (lib->map_reserved <= mapcode) return 0 ;
 
-	if (lib->maps[mapcode] == 0) return 0;
+	if (lib->maps[mapcode] == 0) return 0 ;
 
 	bitmap_destroy (lib->maps[mapcode]) ;
 	lib->maps[mapcode] = 0 ;
@@ -207,20 +205,20 @@ int grlib_unload_map (int libid, int mapcode)
 
 int grlib_add_map (int libid, GRAPH * map)
 {
-	GRLIB * lib = grlib_get(libid);
-	if (map->code > 999) lib = syslib;
+	GRLIB * lib = grlib_get(libid) ;
+	if (map->code > 999) lib = syslib ;
 	if (!lib) return -1 ;
 	if (map->code < 0) return -1 ;
 
-	grlib_unload_map (libid, map->code);
+	grlib_unload_map (libid, map->code) ;
 
 	if (lib->map_reserved <= map->code)
 	{
-		int new_reserved = (map->code & ~0x001F) + 32;
+		int new_reserved = (map->code & ~0x001F) + 32 ;
 		lib->maps = (GRAPH **) realloc (lib->maps, sizeof(GRAPH*) * new_reserved) ;
 		if (!lib->maps) gr_error ("grlib_add_map: sin memoria\n") ;
-		memset (lib->maps + lib->map_reserved, 0, (new_reserved - lib->map_reserved) * sizeof(GRAPH *));
-		lib->map_reserved = new_reserved;
+		memset (lib->maps + lib->map_reserved, 0, (new_reserved - lib->map_reserved) * sizeof(GRAPH *)) ;
+		lib->map_reserved = new_reserved ;
 	}
 	lib->maps[map->code] = map ;
 	return map->code ;
@@ -281,7 +279,7 @@ GRAPH * bitmap_get (int libid, int mapcode)
 	/* Get the map from a FPG */
 
 	lib = grlib_get(libid) ;
-	if (lib && lib->map_reserved > mapcode) return lib->maps[mapcode];
+	if (lib && lib->map_reserved > mapcode) return lib->maps[mapcode] ;
 	return 0 ;
 }
 
@@ -298,24 +296,13 @@ GRAPH * bitmap_get (int libid, int mapcode)
  *
  */
 
-static int gr_read_lib (file * fp);
+static int gr_read_lib (file * fp) ;
 
 int gr_load_fpg (const char * libname)
 {
 	int libid ;
 	file * fp = file_open (libname, "rb") ;
-
-	if (!fp)
-	{
-#ifdef WIN32
-		char buffer[2048];
-		GetCurrentDirectory(2048, buffer);
-		gr_error ("Libreria %s no encontrada en %s\n", libname, buffer) ;
-#else
-		gr_error ("Libreria %s no encontrada\n", libname) ;
-#endif
-		return -1 ;
-	}
+	if (!fp) return -1 ;
 	libid = gr_read_lib (fp) ;
 	file_close (fp) ;
 	return libid ;
@@ -331,13 +318,14 @@ static int gr_read_lib (file * fp)
 	unsigned c;
 	GRLIB * lib ;
 	GRAPH * gr ;
+	PALETTE * pal = NULL ;
 
 	struct
 	{
 		int	code ;
 		int	regsize ;
-		char	name[32] ;
-		char	fpname[12] ;
+		char name[32] ;
+		char fpname[12] ;
 		int	width ;
 		int	height ;
 		int	flags ;
@@ -347,7 +335,7 @@ static int gr_read_lib (file * fp)
 	libid = grlib_new() ;
 	if (libid < 0) return 0 ;
 	lib = libs[libid] ;
-	if (lib == 0) return 0;
+	if (lib == 0) return 0 ;
 
 	file_read (fp, header, 8) ;
 	if (strcmp (header, "f16\x1A\x0D\x0A") == 0)
@@ -359,28 +347,26 @@ static int gr_read_lib (file * fp)
 	else
 		return 0 ;
 
-	if (bpp == 8)
-	{
-		if (palette_loaded)
-			file_seek (fp, 576 + 768, SEEK_CUR) ;
-		else if (!gr_read_pal (fp))
-			return 0 ;
-	}
+	if (bpp == 8 && !(pal = gr_read_pal_with_gamma (fp))) return 0 ;
 
 	while (!file_eof(fp))
 	{
 		if (!file_read (fp, &chunk, 64)) break ;
 
-		ARRANGE_DWORD (&chunk.code);
-		ARRANGE_DWORD (&chunk.regsize);
-		ARRANGE_DWORD (&chunk.width);
-		ARRANGE_DWORD (&chunk.height);
-		ARRANGE_DWORD (&chunk.flags);
+		ARRANGE_DWORD (&chunk.code) ;
+		ARRANGE_DWORD (&chunk.regsize) ;
+		ARRANGE_DWORD (&chunk.width) ;
+		ARRANGE_DWORD (&chunk.height) ;
+		ARRANGE_DWORD (&chunk.flags) ;
 
 		/* Cabecera del gráfico */
 
-		gr = bitmap_new (chunk.code, chunk.width, chunk.height, bpp, 1);
-		if (!gr) return 0 ;
+		gr = bitmap_new (chunk.code, chunk.width, chunk.height, bpp, 1) ;
+		if (!gr) {
+		    grlib_destroy (libid) ;
+            pal_destroy (pal) ; // Elimino la instancia inicial
+		    return 0 ;
+		}
 		memcpy (gr->name, chunk.name, 32) ;
 		gr->name[31] = 0 ;
 		gr->ncpoints = chunk.flags ;
@@ -391,15 +377,19 @@ static int gr_read_lib (file * fp)
 		if (gr->ncpoints)
 		{
 			gr->cpoints = (CPOINT *) malloc(gr->ncpoints * sizeof(CPOINT)) ;
-			if (!gr->cpoints) { free(gr) ; return 0 ; }
+			if (!gr->cpoints) {
+                bitmap_destroy (gr) ;
+                pal_destroy (pal) ;
+			    return 0 ;
+			}
 			for (c = 0 ; c < gr->ncpoints ; c++)
 			{
 				file_readSint16 (fp, &px) ;
 				file_readSint16 (fp, &py) ;
 				if (px == -1 && py == -1)
 				{
-					gr->cpoints[c].x = CPOINT_UNDEFINED;
-					gr->cpoints[c].y = CPOINT_UNDEFINED;
+					gr->cpoints[c].x = CPOINT_UNDEFINED ;
+					gr->cpoints[c].y = CPOINT_UNDEFINED ;
 				}
 				else
 				{
@@ -416,23 +406,26 @@ static int gr_read_lib (file * fp)
 
 		for (y = 0 ; y < gr->height ; y++)
 		{
-			Uint8 * ptr = (Uint8 *)gr->data + gr->pitch*y;
+			Uint8 * ptr = (Uint8 *)gr->data + gr->pitch*y ;
 			if (!file_read (fp, ptr, len))
 			{
-				free (gr) ;
+				bitmap_destroy (gr) ;
+    		    grlib_destroy (libid) ;
 				break ;
 			}
 			if (bpp == 16)
 			{
-				ARRANGE_WORDS (ptr, len/2);
-				if (scr_initialized)
-					gr_convert16_565ToScreen ((Uint16 *)ptr, len/2);
+				ARRANGE_WORDS (ptr, len/2) ;
+				if (scr_initialized) gr_convert16_565ToScreen ((Uint16 *)ptr, len/2) ;
 			}
 		}
 
-
 		grlib_add_map (libid, gr) ;
+        pal_map_assign (libid, gr, pal) ;
 	}
+
+    pal_destroy (pal) ; // Elimino la instancia inicial
+
 	return libid ;
 }
 
@@ -451,9 +444,6 @@ static int gr_read_lib (file * fp)
 
 void grlib_init()
 {
-	if (!syslib)
-	{
-		syslib = grlib_create() ;
-	}
+	if (!syslib) syslib = grlib_create() ;
 }
 

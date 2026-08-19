@@ -1,0 +1,1224 @@
+# Microsoft Developer Studio Generated Dependency File, included by FXI.mak
+
+.\src\g_blit.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fmath.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_console.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_draw.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\instance_st.h"\
+	
+
+.\src\g_flic.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_main.c : \
+	"..\..\..\dxsdk\include\basetsd.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_maps.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_mode7.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fmath.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_pal.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\font.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_scroll.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_systexts.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\g_texts.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\img_pcx.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\img_png.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\i_debug.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\i_func.c : \
+	"..\..\..\dxsdk\include\basetsd.h"\
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\fnc_exports.h"\
+	"..\include\fnx_loadlib.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\sysprocs.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fmath.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\i_main.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\instance.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\pathfind.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\sound.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+..\libpng\png.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngerror.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pnggccrd.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngget.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngmem.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngpread.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngread.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngrio.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngrtran.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngrutil.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngset.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngtrans.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngvcrd.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngwio.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngwrite.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngwtran.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+..\libpng\pngwutil.c : \
+	"..\libpng\png.h"\
+	"..\libpng\pngconf.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+.\src\dcbr.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+..\common\files.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+.\src\fnc_exports.c : \
+	"..\..\..\dxsdk\include\basetsd.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\fnc_exports.h"\
+	"..\include\fnx_loadlib.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fmath.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\main.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+.\src\strings.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\sdl_mixer.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\begin_code.h"\
+	"..\sdl\include\close_code.h"\
+	"..\sdl\include\sdl.h"\
+	"..\sdl\include\sdl_active.h"\
+	"..\sdl\include\sdl_audio.h"\
+	"..\sdl\include\sdl_byteorder.h"\
+	"..\sdl\include\sdl_cdrom.h"\
+	"..\sdl\include\sdl_error.h"\
+	"..\sdl\include\sdl_events.h"\
+	"..\sdl\include\sdl_getenv.h"\
+	"..\sdl\include\sdl_joystick.h"\
+	"..\sdl\include\sdl_keyboard.h"\
+	"..\sdl\include\sdl_keysym.h"\
+	"..\sdl\include\sdl_main.h"\
+	"..\sdl\include\sdl_mouse.h"\
+	"..\sdl\include\sdl_mutex.h"\
+	"..\sdl\include\sdl_quit.h"\
+	"..\sdl\include\sdl_rwops.h"\
+	"..\sdl\include\sdl_timer.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\sdl\include\sdl_version.h"\
+	"..\sdl\include\sdl_video.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\flic.h"\
+	".\inc\flic_st.h"\
+	".\inc\fxi.h"\
+	".\inc\grlib.h"\
+	".\inc\grlib_st.h"\
+	".\inc\i_procdef.h"\
+	".\inc\i_procdef_st.h"\
+	".\inc\instance.h"\
+	".\inc\instance_st.h"\
+	".\inc\sound.h"\
+	
+
+..\common\xctype.c : \
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	
+
+.\res\fxi.rc : \
+	".\res\fxi.ico"\
+	

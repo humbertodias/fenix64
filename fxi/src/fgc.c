@@ -48,12 +48,12 @@ const char * fgc_error = "";
 /*
  *  FUNCTION : fgc_load
  *
- *  Loads an FGC file, given its name. 
+ *  Loads an FGC file, given its name.
  *
- *  PARAMS : 
+ *  PARAMS :
  *		filename		Name of the file
  *
- *  RETURN VALUE : 
+ *  RETURN VALUE :
  *      Number (identifier) of the new library
  *		-1 if error (fgc_error will have a description in this case)
  *
@@ -61,13 +61,14 @@ const char * fgc_error = "";
 
 int fgc_load (const char * filename)
 {
-	file *		fp; 
+	file *		fp;
 	int			id;
 	GRLIB *		lib;
 	GRAPH *     graph;
 	FGC_HEADER	header;
 	Uint32 *	offsets;
 	Uint32		i;
+	PALETTE *   pal = NULL;
 
 	// Open the file and check the header and version
 
@@ -138,6 +139,8 @@ int fgc_load (const char * filename)
 			return -1;
 		}
 
+        pal = pal_new2(color_palette);
+
 		if (!palette_loaded)
 		{
 			for (i = 0 ; i < 256 ; i++)
@@ -156,7 +159,7 @@ int fgc_load (const char * filename)
 	for (i = 0 ; i < header.count ; i++)
 	{
 		file_seek(fp, offsets[i], SEEK_SET);
-		
+
 		graph = fbm_load_from(fp, header.depth);
 		if (graph == NULL)
 		{
@@ -164,23 +167,27 @@ int fgc_load (const char * filename)
 			break;
 		}
 		grlib_add_map (id, graph);
+		if (graph->depth == 8 && !graph->palette) pal_map_assign(id, graph, pal);
 	}
 
 	free(offsets);
 	file_close(fp);
+
+    pal_destroy(pal); // Elimino la instancia inicial
+
 	return (i == header.count ? id : -1);
 }
 
 /*
  *  FUNCTION : fgc_save
  *
- *  Save a FGC file, given its name. 
+ *  Save a FGC file, given its name.
  *
- *  PARAMS : 
+ *  PARAMS :
  *		id				ID of the library (must be > 0)
  *		filename		Name of the file
  *
- *  RETURN VALUE : 
+ *  RETURN VALUE :
  *		1 if error, 0 otherwise (fgc_error will have a description in this case)
  *
  */
@@ -192,9 +199,10 @@ int fgc_save (int id, const char * filename)
 	file *		fp;
 	int			i, n;
 	Uint32 *    offsets;
+	int         palette_saved = 0;
 
-	// Check the parameters 
-	
+	// Check the parameters
+
 	lib = grlib_get(id);
 	if (lib == NULL || !lib->maps)
 	{
@@ -212,12 +220,10 @@ int fgc_save (int id, const char * filename)
 
 	for (i = 0 ; i < lib->map_reserved ; i++)
 	{
-		if (lib->maps[i] == NULL)
-			continue;
+		if (lib->maps[i] == NULL) continue;
 
 		// Maps with code > 999 are not inside a collection
-		if (lib->maps[i]->code > 999)
-			continue;
+		if (lib->maps[i]->code > 999) continue;
 
 		header.count++;
 		if (header.depth == 0)
@@ -257,19 +263,16 @@ int fgc_save (int id, const char * filename)
 
 	for (i = n = 0 ; i < lib->map_reserved ; i++)
 	{
-		if (lib->maps[i] == NULL)
-			continue;
+		if (lib->maps[i] == NULL) continue;
 		// Maps with code > 999 are not inside a collection
-		if (lib->maps[i]->code > 999)
-			continue;
+		if (lib->maps[i]->code > 999) continue;
 
 		if (n == 0)
 		{
 			offsets[n] = sizeof(FGC_HEADER) + 4*header.count;
-			if (header.depth == 8)
-				offsets[n] += 768;
+			if (header.depth == 8) offsets[n] += 768;
 		}
-		
+
 		offsets[n+1] = offsets[n] + fbm_size(lib->maps[i], 0, 0);
 
 		n++;
@@ -288,48 +291,50 @@ int fgc_save (int id, const char * filename)
 		fgc_error = "Error escribiendo en fichero FGC";
 		file_close (fp);
 		return 0;
-	} 
+	}
 
 	ARRANGE_DWORD(&header.count);
 	ARRANGE_DWORD(&header.depth);
-	
+
 	if (file_write(fp, offsets, 4*header.count) != 4*(int)header.count)
 	{
 		fgc_error = "Error escribiendo en fichero FGC";
 		file_close (fp);
 		return 0;
-	} 
-	
-	// Write the graphic palette
-
-	if (header.depth == 8)
-	{
-		static char color_palette[768];
-
-		for (i = 0 ; i < 256 ; i++)
-		{
-			color_palette[3*i + 0] = palette[i].r;
-			color_palette[3*i + 1] = palette[i].g;
-			color_palette[3*i + 2] = palette[i].b;
-		}
-		if (file_write(fp, color_palette, 768) != 768)
-		{
-			fgc_error = "Error al escribir, FGC truncado";
-			free(offsets);
-			file_close(fp);
-			return -1;
-		} 
 	}
 
 	// Write each graphic
 
 	for (i = n = 0 ; i < lib->map_reserved ; i++)
 	{
-		if (lib->maps[i] == NULL)
-			continue;
+		if (lib->maps[i] == NULL) continue;
 		// Maps with code > 999 are not inside a collection
-		if (lib->maps[i]->code > 999)
-			continue;
+		if (lib->maps[i]->code > 999) continue;
+
+    	// Write the graphic palette
+
+    	if (!palette_saved && header.depth == 8)
+    	{
+    		static char color_palette[768];
+		    SDL_Color * gpal = palette ;
+
+            if (lib->maps[i]->palette) gpal = lib->maps[i]->palette->rgb; else gpal = palette;
+
+    		for (i = 0 ; i < 256 ; i++)
+    		{
+    			color_palette[3*i    ] = gpal[i].r;
+    			color_palette[3*i + 1] = gpal[i].g;
+    			color_palette[3*i + 2] = gpal[i].b;
+    		}
+    		if (file_write(fp, color_palette, 768) != 768)
+    		{
+    			fgc_error = "Error al escribir, FGC truncado";
+    			free(offsets);
+    			file_close(fp);
+    			return -1;
+    		}
+    		palette_saved = 1;
+    	}
 
 		assert (file_pos(fp) == (int)offsets[n]);
 
@@ -339,7 +344,7 @@ int fgc_save (int id, const char * filename)
 			free(offsets);
 			file_close(fp);
 			return 0;
-		} 
+		}
 		n++;
 	}
 

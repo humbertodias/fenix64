@@ -128,6 +128,8 @@ FXEXTERN int    (*_file_read       )(file * fp, void * buffer, int len) ;
 FXEXTERN int    (*_file_write      )(file * fp, const void * buffer, int len) ;
 FXEXTERN int    (*_file_gets       )(file * fp, char * buffer, int len) ;
 FXEXTERN int    (*_file_puts       )(file * fp, const char * buffer) ;
+FXEXTERN int    (*_file_qgets      )(file * fp, char * buffer, int len) ;
+FXEXTERN int    (*_file_qputs      )(file * fp, const char * buffer) ;
 FXEXTERN int    (*_file_size       )(file * fp) ;
 FXEXTERN int    (*_file_pos        )(file * fp) ;
 FXEXTERN int    (*_file_seek       )(file * fp, int pos, int where) ;
@@ -142,6 +144,9 @@ FXEXTERN FILE * (*_file_fp         )(file * fp) ;
 #define file_read		(*_file_read)
 #define file_write		(*_file_write)
 #define file_gets		(*_file_gets)
+#define file_puts		(*_file_puts)
+#define file_qgets		(*_file_qgets)
+#define file_qputs		(*_file_qputs)
 #define file_size		(*_file_size)
 #define file_pos		(*_file_pos)
 #define file_seek		(*_file_seek)
@@ -399,19 +404,21 @@ FXEXTERN int          * _palette_changed ;       /* Poner a 1 cuando se cambien 
 FXEXTERN int          * _fade_on ;               /* ¿Hay un fade activo?                  */
 FXEXTERN int          * _fade_step ;             /* Si lo hay, posición (0=off)           */
 
-FXEXTERN int   (*_gr_read_pal           )(file * file) ;
-FXEXTERN void  (*_gr_refresh_palette    )() ;
-FXEXTERN void  (*_gr_fade_init          )(int r, int g, int b, int speed, int dir) ;
-FXEXTERN void  (*_gr_fade_step          )() ;
-FXEXTERN void  (*_gr_roll_palette       )(int color0, int num, int inc) ;
-FXEXTERN int   (*_gr_find_nearest_color )(int r, int g, int b) ;
-FXEXTERN void  (*_gr_set_rgb            )(int c, int r, int g, int b) ;
-FXEXTERN int   (*_gr_rgb                )(int r, int g, int b) ;
-FXEXTERN void  (*_gr_get_rgb            )(int color, int *r, int *g, int *b) ;
-FXEXTERN void  (*_gr_set_colors         )(int color, int num, Uint8 * pal) ;
-FXEXTERN void  (*_gr_get_colors         )(int color, int num, Uint8 * pal) ;
+FXEXTERN PALETTE *  (*_gr_read_pal           )(file * file) ;
+FXEXTERN PALETTE *  (*_gr_read_pal_with_gamma)(file * file) ;
+FXEXTERN void       (*_gr_refresh_palette    )() ;
+FXEXTERN void       (*_gr_fade_init          )(int r, int g, int b, int speed, int dir) ;
+FXEXTERN void       (*_gr_fade_step          )() ;
+FXEXTERN void       (*_gr_roll_palette       )(int color0, int num, int inc) ;
+FXEXTERN int        (*_gr_find_nearest_color )(int r, int g, int b) ;
+FXEXTERN void       (*_gr_set_rgb            )(int c, int r, int g, int b) ;
+FXEXTERN int        (*_gr_rgb                )(int r, int g, int b) ;
+FXEXTERN void       (*_gr_get_rgb            )(int color, int *r, int *g, int *b) ;
+FXEXTERN void       (*_gr_set_colors         )(int color, int num, Uint8 * pal) ;
+FXEXTERN void       (*_gr_get_colors         )(int color, int num, Uint8 * pal) ;
 
 #define gr_read_pal				(*_gr_read_pal)
+#define gr_read_pal_with_gamma  (*_gr_read_pal_with_gamma)
 #define gr_refresh_palette		(*_gr_refresh_palette)
 #define gr_fade_init			(*_gr_fade_init)
 #define gr_fade_step			(*_gr_fade_step)
@@ -948,6 +955,8 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
     _file_write                 = FENIX_import ( "file_write" ); \
     _file_gets                  = FENIX_import ( "file_gets" ); \
     _file_puts                  = FENIX_import ( "file_puts" ); \
+    _file_qgets                 = FENIX_import ( "file_qgets" ); \
+    _file_qputs                 = FENIX_import ( "file_qputs" ); \
     _file_size                  = FENIX_import ( "file_size" ); \
     _file_pos                   = FENIX_import ( "file_pos" ); \
     _file_seek                  = FENIX_import ( "file_seek" ); \

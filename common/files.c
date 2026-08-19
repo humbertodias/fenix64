@@ -120,7 +120,7 @@ int file_read (file * fp, void * buffer, int len)
 
 /* Guarda una cadena "cuoteada" al disco */
 
-int file_puts (file * fp, const char * buffer)
+int file_qputs (file * fp, const char * buffer)
 {
 	char dest[1024], * optr ;
 	const char * ptr ;
@@ -158,7 +158,7 @@ int file_puts (file * fp, const char * buffer)
 
 /* Recupera una cadena de un fichero y la "descuotea" */
 
-int file_gets (file * fp, char * buffer, int len)
+int file_qgets (file * fp, char * buffer, int len)
 {
 	char * ptr, * result = NULL ;
 
@@ -218,6 +218,63 @@ int file_gets (file * fp, char * buffer, int len)
 		}
 		ptr++ ;
 	}
+	return strlen(buffer) ;
+}
+
+/* Guarda una cadena al disco */
+
+int file_puts (file * fp, const char * buffer)
+{
+	return file_write (fp, buffer, strlen(buffer)) ;
+}
+
+/* Recupera una cadena de un fichero y la "descuotea" */
+
+int file_gets (file * fp, char * buffer, int len)
+{
+	char * ptr, * result = NULL ;
+
+	if (fp->type == F_XFILE)
+	{
+		XFILE * xf ;
+		int l = 0;
+		char * ptr = result = buffer ;
+
+		xf = &x_file[fp->n] ;
+
+		fseek (xf->fp, fp->pos, SEEK_SET) ;
+		while (l < len)
+		{
+			if (fp->pos >= xf->offset + xf->size)
+			{
+				fp->eof = 1 ;
+				break ;
+			}
+			fread (ptr, 1, 1, xf->fp) ;
+			l++ ;
+			fp->pos++ ;
+			if (*ptr++ == '\n') break ;
+		}
+		*ptr = 0 ;
+		fp->pos = ftell(xf->fp) ;
+
+	    if (l == 0) return 0 ;
+
+	}
+	else if (fp->type == F_GZFILE)
+	{
+		result = gzgets (fp->gz, buffer, len) ;
+	}
+	else
+	{
+		result = fgets(buffer, len, fp->fp);
+	}
+
+	if (result == NULL) {
+	    buffer[0] = 0 ;
+	    return 0 ;
+	}
+
 	return strlen(buffer) ;
 }
 
@@ -336,7 +393,7 @@ int file_write (file * fp, void * buffer, int len)
 		int result = gzwrite (fp->gz, buffer, len) ;
 		if ((fp->error = (result < 0)) != 0)
             result = 0 ;
-		return ( result < len ) ? 0 : len ;
+		return (result < len) ? 0 : len ;
 	}
 
 

@@ -43,7 +43,7 @@
 enum {
 	AlphaBits  = 0,
 	RedBits    = 5,
-	GreenBits  = 6,
+    GreenBits  = 6,
 	BlueBits   = 5,
 
 	AlphaShift = RedBits+GreenBits+BlueBits,
@@ -95,6 +95,16 @@ typedef struct _cpoint
 }
 CPOINT ;
 
+typedef struct _palette
+{
+    SDL_Color       rgb[256] ;
+    Uint16          colorequiv[256] ;
+    int             use;
+    struct _palette * next ;
+    struct _palette * prev ;
+}
+PALETTE ;
+
 typedef struct _bitmap
 {
     void      * data ;				/* Pointer to the bitmap data at current frame */
@@ -111,6 +121,8 @@ typedef struct _bitmap
     CPOINT    * cpoints ;			/* Pointer to the control points ([0] = center) */
     Uint32      ncpoints;			/* Number of control points */
     Uint32      offset ;			/* Offset of the graphic (in the FPG file) */
+
+    PALETTE   * palette ;           /* Palette for 8 bits graphics */
 
     Sint16    * blend_table ;		/* Pointer to 16 bits blend table if any */
 

@@ -148,7 +148,7 @@ mnemonics[] =
     { "STR2FLOAT", MN_STR2FLOAT, 1 },
     { "FLOAT2STR", MN_FLOAT2STR, 1 },
     { "POINTER2STR", MN_POINTER2STR, 1 },
-    { "POINTER2BOL", MN_POINTER2BOL, 1 },
+//    { "POINTER2BOL", MN_POINTER2BOL, 1 },
 
     { "A2STR", MN_A2STR, 0 },
     { "STR2A", MN_STR2A, 0 },
@@ -231,7 +231,7 @@ void instance_dump(INSTANCE * father, int indent)
     if (dcb.data.NID && dcbproc->data.ID) {
         sprintf (buffer, "%s", getid(dcbproc->data.ID)) ;
     } else {
-        sprintf (buffer, "%s", proc->type == 0 ? "MAIN":"PROC") ;
+        sprintf (buffer, "%s", (proc->type == 0) ? "MAIN":"PROC") ;
     }
 
     line[0] = 0 ;
@@ -276,7 +276,7 @@ void instance_dump(INSTANCE * father, int indent)
             if (dcb.data.NID && dcbproc->data.ID) {
                 sprintf (buffer, "%s", getid(dcbproc->data.ID)) ;
             } else {
-                sprintf (buffer, "%s", proc->type == 0 ? "MAIN":"PROC") ;
+                sprintf (buffer, "%s", (proc->type == 0) ? "MAIN":"PROC") ;
             }
 
             line[0] = 0 ;

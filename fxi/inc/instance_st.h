@@ -27,6 +27,10 @@
 #ifndef __INSTANCE_ST_H
 #define __INSTANCE_ST_H
 
+//#ifndef __I_PROCDEF_H
+//#include "i_procdef.h"
+//#endif
+
 #define STACK_NO_RETURN_VALUE	0x8000
 #define STACK_SIZE_MASK			0x7FFF
 
@@ -67,7 +71,6 @@ typedef struct _instance
 
 	/* Function support */
 
-/*	struct _instance * waiting_for ; */
 	struct _instance * called_by ;
 
 	/* The first integer at the stack is the stack size,
@@ -80,14 +83,14 @@ typedef struct _instance
 	struct _procdef  * inproc ;
 	void             * inpridata ;
 
-	int               breakpoint;
+    int switchval;
+    int switchval_string;
+    int cased;
+
+	int              breakpoint;
 
 }
 INSTANCE ;
-
-//#ifndef __I_PROCDEF_H
-//#include "i_procdef.h"
-//#endif
 
 /* Macros para acceder a datos locales o privados de una instancia */
 #define LOCDWORD(a,b) ( *(Sint32 *) ((Uint8 *)(a->locdata)+b) )

@@ -54,6 +54,7 @@ void err_buildErrorTable() {
 	int	   size ;
 	char * msg = NULL ;
 	struct _errmsg * err = NULL ;
+	int len;
 
 	/* open the desired localized error file, check for existence if not open EN default */
 	strcpy(fname,"msg/") ;
@@ -65,7 +66,7 @@ void err_buildErrorTable() {
 	fp = file_open(fname,"r") ;
 
 	if (fp) {
-		while (file_gets (fp,line,1024)) {
+		while (len = file_qgets (fp,line,1024)) {
 			// Check for multiline...
 			if (line[0]=='_') {
 				// must resize the string and concatenate

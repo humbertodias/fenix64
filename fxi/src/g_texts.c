@@ -77,8 +77,7 @@ char *strrev(char *str)
 {
       char *p1, *p2;
 
-      if (! str || ! *str)
-            return str;
+      if (! str || ! *str) return str;
       for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; ++p1, --p2)
       {
             *p1 ^= *p2;
@@ -178,9 +177,7 @@ static int info_text (TEXT * text, REGION * bbox)
     if (!str) return 1;
 
 	font = gr_font_get (text->fontid);
-	if (font == NULL) {
-		return 1;
-	}
+	if (!font) return 1;
 
 	/* Calculate the text dimensions */
 
@@ -197,8 +194,7 @@ static int info_text (TEXT * text, REGION * bbox)
 
 		for (c = 0 ; c < 256 ; c++)
 		{
-			if (font->glyph[c].bitmap == NULL)
-				continue;
+			if (font->glyph[c].bitmap == NULL) continue;
 			if (font->maxheight < (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset)
 				font->maxheight = (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset;
 		}
@@ -255,21 +251,18 @@ static int info_text (TEXT * text, REGION * bbox)
 		case TEXT_FLOAT:
 		case TEXT_INT:
 		case TEXT_DWORD:
-			if (text->last_value == *(int *)text->var)
-				return 0;
+			if (text->last_value == *(int *)text->var) return 0;
 			text->last_value = *(int *)text->var;
 			return 1;
 		case TEXT_BYTE:
 		case TEXT_SBYTE:
 		case TEXT_CHAR:
-			if (text->last_value == *(Uint8 *)text->var)
-				return 0;
+			if (text->last_value == *(Uint8 *)text->var) return 0;
 			text->last_value = *(Uint8 *)text->var;
 			return 1;
 		case TEXT_WORD:
 		case TEXT_SHORT:
-			if (text->last_value == *(Uint16 *)text->var)
-				return 0;
+			if (text->last_value == *(Uint16 *)text->var) return 0;
 			text->last_value = *(Uint16 *)text->var;
 			return 1;
 		case TEXT_CHARARRAY:
@@ -323,8 +316,7 @@ void draw_text (TEXT * text, REGION * clip)
 
 		for (c = 0 ; c < 256 ; c++)
 		{
-			if (font->glyph[c].bitmap == NULL)
-				continue;
+			if (font->glyph[c].bitmap == NULL) continue;
 			if (font->maxheight < (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset)
 				font->maxheight = (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset;
 		}
@@ -367,8 +359,7 @@ void draw_text (TEXT * text, REGION * clip)
 	fntcolor8 = text->color8;
 	fntcolor16 = text->color16;
 
-    if(!gr_text_put (0, clip, text->fontid, x, y, str))
-	    gr_text_destroy(text->id);
+    if(!gr_text_put (0, clip, text->fontid, x, y, str)) gr_text_destroy(text->id);
 
 	fntcolor8 = save8;
 	fntcolor16 = save16;
@@ -612,7 +603,7 @@ int gr_text_put (GRAPH * dest, REGION * clip, int fontid, int x, int y, const un
 
 	if (fntcolor8 == -1)
 	{
-		gr_setcolor (dest->depth == 8 ? gr_find_nearest_color(255,255,255):gr_rgb(255,255,255));
+		gr_setcolor ((dest->depth == 8) ? gr_find_nearest_color(255,255,255):gr_rgb(255,255,255));
 	}
 	else
 	{

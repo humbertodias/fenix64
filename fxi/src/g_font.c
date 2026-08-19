@@ -152,8 +152,7 @@ int gr_font_newfrombitmap (char * chardata, int width, int height, int options)
 		for (y = 0 ; y < height ; y++, ptr += bitmap->pitch)
 			memcpy (ptr, charptr + linesize*y, linesize);
 
-		if (bitmap->modified > 0)
-			bitmap->modified = 0 ;
+		if (bitmap->modified > 0) bitmap->modified = 0 ;
 		bitmap->info_flags = 0 ;
 	}
 
@@ -330,6 +329,7 @@ static int gr_font_loadfrom (file * fp)
 	int types, i, id;
 	Uint32 y;
 	FONT * f;
+	PALETTE * pal = NULL;
 
 	struct
 	{
@@ -338,7 +338,7 @@ static int gr_font_loadfrom (file * fp)
 		int	yoffset ;
 		int	fileoffset ;
 	}
-	oldchardata[256];
+    oldchardata[256];
 
 	struct
 	{
@@ -371,20 +371,20 @@ static int gr_font_loadfrom (file * fp)
 	/* Read or ignore the palette */
 
 	if (bpp == 8)
-	{
-		if (palette_loaded)
-			file_seek (fp, 576 + 768, SEEK_CUR) ;
-		else
-			if (!gr_read_pal (fp)) return -1 ;
-	}
+	    if (!(pal = gr_read_pal_with_gamma (fp))) return -1 ;
 
 	/* Read the character data (detect old format) */
 
 	if (header[2] == 'x')
 	{
-		if (!file_readSint32(fp, &types)) return -1 ;
-		if (!file_read(fp, chardata, sizeof(chardata)))
-			return -1 ;
+		if (!file_readSint32(fp, &types)) {
+		    pal_destroy(pal);
+		    return -1 ;
+		}
+		if (!file_read(fp, chardata, sizeof(chardata))){
+		    pal_destroy(pal);
+		    return -1 ;
+		}
 		for (i = 0 ; i < 256 ; i++)
 		{
 			ARRANGE_DWORD (&chardata[i].width);
@@ -398,9 +398,14 @@ static int gr_font_loadfrom (file * fp)
 	}
 	else
 	{
-		if (!file_readSint32(fp, &types)) return -1 ;
-		if (!file_read(fp, oldchardata, sizeof(oldchardata)))
-			return -1 ;
+		if (!file_readSint32(fp, &types)) {
+		    pal_destroy(pal);
+		    return -1 ;
+		}
+		if (!file_read(fp, oldchardata, sizeof(oldchardata))){
+		    pal_destroy(pal);
+		    return -1 ;
+		}
 		for (i = 0 ; i < 256 ; i++)
 		{
 			ARRANGE_DWORD (&oldchardata[i].width);
@@ -421,7 +426,11 @@ static int gr_font_loadfrom (file * fp)
 	/* Create the font */
 
 	id = gr_font_new() ;
-	if (id == -1) return -1;
+	if (id == -1) {
+	    pal_destroy(pal);
+	    return -1 ;
+	}
+
 	f = fonts[id];
 	assert (f != 0) ;
 
@@ -446,31 +455,29 @@ static int gr_font_loadfrom (file * fp)
 		f->glyph[i].xadvance = chardata[i].xadvance ;
 		f->glyph[i].yadvance = chardata[i].yadvance ;
 
-		if (chardata[i].fileoffset == 0 ||
-		    chardata[i].width      == 0 ||
-		    chardata[i].height     == 0) continue ;
+		if (chardata[i].fileoffset == 0 || chardata[i].width == 0 || chardata[i].height == 0) continue ;
 
 		f->glyph[i].xoffset = chardata[i].xoffset ;
 		f->glyph[i].yoffset = chardata[i].yoffset ;
 
 		file_seek (fp, chardata[i].fileoffset, SEEK_SET) ;
-		f->glyph[i].bitmap = gr = bitmap_new (i, chardata[i].width,
-			chardata[i].height, f->bpp, 1) ;
+		f->glyph[i].bitmap = gr = bitmap_new (i, chardata[i].width, chardata[i].height, f->bpp, 1) ;
 		assert (gr) ;
 		bitmap_add_cpoint (gr, 0, 0) ;
+		gr->palette = pal;
+		pal_use(pal);
 
 		for (y = 0, ptr = gr->data ; y < gr->height ; y++, ptr += gr->pitch)
 		{
-			if (!file_read (fp, ptr, gr->widthb))
-				break ;
-			if (gr->depth == 16)
-				gr_convert16_565ToScreen ((Uint16 *)ptr, gr->width);
+			if (!file_read (fp, ptr, gr->widthb)) break ;
+			if (gr->depth == 16) gr_convert16_565ToScreen ((Uint16 *)ptr, gr->width);
 		}
 
 		f->glyph[i].yoffset = chardata[i].yoffset ;
 	}
-	if (f->glyph[32].xadvance == 0)
-		f->glyph[32].xadvance = 4 ;
+	if (f->glyph[32].xadvance == 0) f->glyph[32].xadvance = 4 ;
+
+    pal_destroy(pal); // Elimino la instancia inicial
 
 	return id ;
 }
@@ -514,6 +521,7 @@ int gr_font_save (int fontid, const char * filename)
 		int	fileoffset ;
 	}
 	chardata[256] ;
+	int palette_saved = 0;
 
 	if (fontid < 0 || fontid > 255 || !fonts[fontid])
 	{
@@ -547,28 +555,10 @@ int gr_font_save (int fontid, const char * filename)
 	header[7] = font->bpp;
 	gzwrite (file, &header, 8);
 
-	/* Write the palette */
-
-	if (font->bpp == 8)
-	{
-		Uint8   colors[256][3];
-		Uint8 * block = calloc(576,1) ;
-
-		for (n = 1 ; n < 256 ; n++)
-		{
-			colors[n][0] = palette[n].r >> 2 ;
-			colors[n][1] = palette[n].g >> 2 ;
-			colors[n][2] = palette[n].b >> 2 ;
-		}
-		gzwrite (file, &colors, 768) ;
-		gzwrite (file, block, 576) ;
-		free(block) ;
-	}
-
 	/* Write the character information */
 
 	memset (chardata, 0, sizeof(chardata));
-	offset = 8 + 4 + (font->bpp == 8 ? 576+768:0) + sizeof(chardata);
+	offset = 8 + 4 + ((font->bpp == 8) ? 576+768:0) + sizeof(chardata);
 
 	for (n = 0 ; n < 256 ; n++)
 	{
@@ -577,6 +567,30 @@ int gr_font_save (int fontid, const char * filename)
 
 		if (font->glyph[n].bitmap)
 		{
+        	/* Write the palette */
+
+           	if (!palette_saved && font->bpp == 8)
+        	{
+        		Uint8   colors[256][3];
+        		Uint8 * block = calloc(576,1) ;
+        		SDL_Color * gpal = palette ;
+        		int k;
+
+                if (font->glyph[n].bitmap->palette) gpal = font->glyph[n].bitmap->palette->rgb; else gpal = palette;
+
+                /* Generate palette info */
+                for (k = 0 ; k < 256 ; k++) {
+                    colors[k][0] = gpal[k].r >> 2 ;
+                    colors[k][1] = gpal[k].g >> 2 ;
+                    colors[k][2] = gpal[k].b >> 2 ;
+                }
+
+        		gzwrite (file, &colors, 768) ;
+        		gzwrite (file, block, 576) ;
+        		free(block) ;
+        		palette_saved = 1;
+        	}
+
 			chardata[n].width      = font->glyph[n].bitmap->width;
 			chardata[n].height     = font->glyph[n].bitmap->height;
 			chardata[n].xadvance   = font->glyph[n].xadvance;
@@ -585,8 +599,7 @@ int gr_font_save (int fontid, const char * filename)
 			chardata[n].yoffset    = font->glyph[n].yoffset;
 			chardata[n].fileoffset = offset;
 
-			offset += font->glyph[n].bitmap->widthb
-				    * chardata[n].height;
+			offset += font->glyph[n].bitmap->widthb * chardata[n].height;
 		}
 
 		ARRANGE_DWORD (&chardata[n].xadvance);
@@ -646,12 +659,12 @@ int gr_font_save (int fontid, const char * filename)
 				}
 			}
 
-			if (gr->depth == 16)
-				free(block);
+			if (gr->depth == 16) free(block);
 		}
 	}
 
 	gzclose(file);
+
 	return 1;
 }
 
@@ -694,6 +707,7 @@ int gr_load_bdf (const char * filename)
 	int xadvance = 0;
 	int yadvance = 0;
 	int minyoffset = 0;
+	int len;
 
 	/* Arrays used to convert hex ASCII to binary */
 
@@ -730,8 +744,8 @@ int gr_load_bdf (const char * filename)
 
 	for (line[2047] = 0 ; ; )
 	{
-		if (!file_gets (fp, line, 2047))
-			break;
+		if (!(len = file_gets (fp, line, 2047))) break;
+		if (line[len-1] == '\n') line[len-1] = '\0';
 
 		/* Handle global-level commands */
 
@@ -792,27 +806,22 @@ int gr_load_bdf (const char * filename)
 				font->glyph[encoding].xoffset  = xoffset;
 				font->glyph[encoding].yoffset  = -yoffset-height;
 
-				if (minyoffset > -yoffset-height)
-					minyoffset = -yoffset-height;
+				if (minyoffset > -yoffset-height) minyoffset = -yoffset-height;
 
 				error = 1;
 				font->glyph[encoding].bitmap = bitmap_new (encoding, width, height, 1, 1);
-				if (font->glyph[encoding].bitmap == 0)
-					break;
+				if (font->glyph[encoding].bitmap == 0) break;
 				bitmap_add_cpoint (font->glyph[encoding].bitmap, 0, 0) ;
 
-				if (font->maxwidth < width)
-					font->maxwidth = width;
-				if (font->maxheight < height)
-					font->maxheight = height;
+				if (font->maxwidth < width) font->maxwidth = width;
+				if (font->maxheight < height) font->maxheight = height;
 
 				for (y = 0 ; y < height ; y++)
 				{
-					if (!file_gets (fp, line, 2047))
-						break;
+					if (!(len=file_gets (fp, line, 2047))) break;
+					if (line[len-1] == '\n') line[len-1] = '\0';
 					ptr  = line;
-					optr = (Uint8 *)font->glyph[encoding].bitmap->data +
-						   font->glyph[encoding].bitmap->pitch * y;
+					optr = (Uint8 *)font->glyph[encoding].bitmap->data + font->glyph[encoding].bitmap->pitch * y;
 
 					for (x = 0 ; x < width ; x += 8)
 					{
@@ -862,7 +871,6 @@ int gr_load_bdf (const char * filename)
 
 FONT * gr_font_get (int id)
 {
-	if (id >= 0 && id <= 255)
-		return fonts[id];
+	if (id >= 0 && id <= 255) return fonts[id];
 	return NULL;
 }

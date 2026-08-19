@@ -105,11 +105,11 @@ int fxi_cd_getinfo (INSTANCE * my, int * params)
 	GLODWORD(CD_TRACK)  = sdl_cd->cur_track;
 	FRAMES_TO_MSF (sdl_cd->cur_frame, &GLODWORD(CD_MINUTE), &GLODWORD(CD_SECOND), &GLODWORD(CD_SUBFRAME));
 
-	for (i = 0, pos = CD_TRACKINFO ; i < sdl_cd->numtracks ; i++, pos += 4)
+	for (i = 0, pos = CD_TRACKINFO ; i < sdl_cd->numtracks ; i++, pos += 16)
 	{
 		total += sdl_cd->track[i].length;
 		GLODWORD(pos) = (sdl_cd->track[i].type == SDL_AUDIO_TRACK);
-		FRAMES_TO_MSF (sdl_cd->track[i].length, &GLODWORD(pos+1), &GLODWORD(pos+2), &GLODWORD(pos+3));
+		FRAMES_TO_MSF (sdl_cd->track[i].length, &GLODWORD(pos+4), &GLODWORD(pos+8), &GLODWORD(pos+12));
 	}
 	FRAMES_TO_MSF (total, &GLODWORD(CD_MINUTES), &GLODWORD(CD_SECONDS), &GLODWORD(CD_FRAMES));
 	return 1;
@@ -239,7 +239,7 @@ int fxi_cd_stop (INSTANCE * my, int * params)
 	return !SDL_CDStop(sdl_cd);
 }
 
-
+/*
 int fxi_cd_numtracks(INSTANCE * my, int * params)
 {
 	if (params[0] < 0 || params[0] >= SDL_CDNumDrives()) return 0;
@@ -270,4 +270,5 @@ int fxi_cd_getcurtrack(INSTANCE * my, int * params)
 
 	return sdl_cd->cur_track;
 }
+*/
 

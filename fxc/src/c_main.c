@@ -515,7 +515,7 @@ void compile_process ()
     }
 
     if (identifier_is_basic_type(token.code)) { /* Salto identificador de tipo basico */
-        tcode = token.code;
+        tcode = token.code ;
         token_next();
     }
 
@@ -546,7 +546,7 @@ void compile_process ()
         compile_error (MSG_EXPECTED, "(") ;
     }
 
-    if ( !is_declare )
+    if (!is_declare)
         proc->defined = 1 ;
 
     if (is_function) {
@@ -571,35 +571,35 @@ void compile_process ()
     }
 
     if (tcode == identifier_word){
-        if (is_declare && proc->declared && proc->type != signed_prefix ? TYPE_SHORT : TYPE_WORD)
+        if (is_declare && proc->declared && proc->type != (signed_prefix ? TYPE_SHORT : TYPE_WORD))
             compile_error (MSG_PROTO_ERROR) ;
         proc->type = signed_prefix ? TYPE_SHORT : TYPE_WORD;
         signed_prefix = unsigned_prefix = 0;
     }
 
     if (tcode == identifier_dword){
-        if (is_declare && proc->declared && proc->type != signed_prefix ? TYPE_INT : TYPE_DWORD)
+        if (is_declare && proc->declared && proc->type != (signed_prefix ? TYPE_INT : TYPE_DWORD))
             compile_error (MSG_PROTO_ERROR) ;
         proc->type = signed_prefix ? TYPE_INT : TYPE_DWORD;
         signed_prefix = unsigned_prefix = 0;
     }
 
     if (tcode == identifier_byte){
-        if (is_declare && proc->declared && proc->type != signed_prefix ? TYPE_SBYTE : TYPE_BYTE)
+        if (is_declare && proc->declared && proc->type != (signed_prefix ? TYPE_SBYTE : TYPE_BYTE))
             compile_error (MSG_PROTO_ERROR) ;
         proc->type = signed_prefix ? TYPE_SBYTE : TYPE_BYTE;
         signed_prefix = unsigned_prefix = 0;
     }
 
     if (tcode == identifier_int){
-        if (is_declare && proc->declared && proc->type != unsigned_prefix ? TYPE_DWORD : TYPE_INT)
+        if (is_declare && proc->declared && proc->type != (unsigned_prefix ? TYPE_DWORD : TYPE_INT))
             compile_error (MSG_PROTO_ERROR) ;
         proc->type = unsigned_prefix ? TYPE_DWORD : TYPE_INT;
         signed_prefix = unsigned_prefix = 0;
     }
 
     if (tcode == identifier_short){
-        if (is_declare && proc->declared && proc->type != unsigned_prefix ? TYPE_WORD : TYPE_SHORT)
+        if (is_declare && proc->declared && proc->type != (unsigned_prefix ? TYPE_WORD : TYPE_SHORT))
             compile_error (MSG_PROTO_ERROR) ;
         proc->type = unsigned_prefix ? TYPE_WORD : TYPE_SHORT;
         signed_prefix = unsigned_prefix = 0;
@@ -870,26 +870,24 @@ void compile_process ()
        los datos declarados aquí tienen el mismo efecto que si son
        declarados externamente y afectarán a todos los procesos (Ya no va mas esto, ahora los datos locales son locales, Splinter) */
 
-    if (!proc->declared) {
-        while ( token.type == IDENTIFIER && ( token.code == identifier_local  ||
-                                              token.code == identifier_public ||
-                                              token.code == identifier_private ) ) {
-            if ( token.code == identifier_local || token.code == identifier_public )
-            {
-                /* (2006/11/19 19:34 GMT-03:00, Splinter - jj_arg@yahoo.com) */
-                /* Ahora las declaraciones locales, son solo locales al proceso, pero visibles desde todo proceso */
-                /* Se permite declarar local/publica una variable que haya sido declarada global, es una variable propia, no es la global */
-                VARSPACE * v[] = { &local, proc->privars, NULL };
-                compile_varspace ( proc->pubvars, proc->pubdata, 1, 1, 0, v, DEFAULT_ALIGNMENT ) ;
-            } else if ( token.code == identifier_private ) {
-                /* (2006/11/19 19:34 GMT-03:00, Splinter - jj_arg@yahoo.com) */
-                /* Se permite declarar privada una variable que haya sido declarada global, es una variable propia, no es la global */
-                VARSPACE * v[] = { &local, proc->pubvars, NULL };
-                compile_varspace ( proc->privars, proc->pridata, 1, 1, 0, v, DEFAULT_ALIGNMENT ) ;
-            }
-
-            token_next () ;
+    while ( token.type == IDENTIFIER && ( token.code == identifier_local  ||
+                                          token.code == identifier_public ||
+                                          token.code == identifier_private ) ) {
+        if ((!proc->declared) && (token.code == identifier_local || token.code == identifier_public))
+        {
+            /* (2006/11/19 19:34 GMT-03:00, Splinter - jj_arg@yahoo.com) */
+            /* Ahora las declaraciones locales, son solo locales al proceso, pero visibles desde todo proceso */
+            /* Se permite declarar local/publica una variable que haya sido declarada global, es una variable propia, no es la global */
+            VARSPACE * v[] = { &local, proc->privars, NULL };
+            compile_varspace ( proc->pubvars, proc->pubdata, 1, 1, 0, v, DEFAULT_ALIGNMENT ) ;
+        } else if (token.code == identifier_private) {
+            /* (2006/11/19 19:34 GMT-03:00, Splinter - jj_arg@yahoo.com) */
+            /* Se permite declarar privada una variable que haya sido declarada global, es una variable propia, no es la global */
+            VARSPACE * v[] = { &local, proc->pubvars, NULL };
+            compile_varspace ( proc->privars, proc->pridata, 1, 1, 0, v, DEFAULT_ALIGNMENT ) ;
         }
+
+        token_next () ;
     }
 
     /* Gestiona procesos cuyos parámetros son variables locales */

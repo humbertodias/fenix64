@@ -46,9 +46,9 @@
 #define CHARHEIGHT 8
 
 #define CONSOLE_HISTORY 512
-#define CONSOLE_LINES   16
-#define CONSOLE_COLUMNS 52
-#define COMMAND_HISTORY 64
+#define CONSOLE_LINES   25
+#define CONSOLE_COLUMNS 80
+#define COMMAND_HISTORY 128
 
 #define HELPTXT \
             "¬02Process Info¬07\n"                                          \
@@ -75,11 +75,11 @@
             "¬02Process Interaction¬07\n"                                   \
             "¬04RUN proc [args]¬07  Run a process\n"                        \
             "¬04KILL proc      ¬07  Kill a process\n"                       \
-            "¬04WEAKUP proc    ¬07  Weakup a process\n"                     \
+            "¬04WAKEUP proc    ¬07  Wakeup a process\n"                     \
             "¬04SLEEP proc     ¬07  Sleep a process\n"                      \
             "¬04FREEZE proc    ¬07  Freeze a process\n"                     \
             "¬04KILLALL proc   ¬07  Kill all process with criteria\n"       \
-            "¬04WEAKUPALL proc ¬07  Weakup all process with criteria\n"     \
+            "¬04WAKEUPALL proc ¬07  Wakeup all process with criteria\n"     \
             "¬04SLEEPALL proc  ¬07  Sleep all process with criteria\n"      \
             "¬04FREEZEALL proc ¬07  Freeze all process with criteria\n"     \
             "\n"                                                            \
@@ -360,6 +360,7 @@ void gr_con_show(int doit)
     }
 }
 
+extern int * stack_gptr;
 
 void gr_con_draw()
 {
@@ -369,6 +370,14 @@ void gr_con_draw()
 
     if (!console_initialized)
         return ;
+
+    if (console_columns > scrbitmap->width / CHARWIDTH) {
+        console_columns = scrbitmap->width / CHARWIDTH ;
+    }
+
+    if (console_lines > ( scrbitmap->height - CHARHEIGHT * 2 ) / CHARHEIGHT) {
+        console_lines = ( scrbitmap->height - CHARHEIGHT * 2 ) / CHARHEIGHT ;
+    }
 
     if (console_showing)
     {
@@ -389,14 +398,6 @@ void gr_con_draw()
         if (con_y < 0) { con_y = 0 ; vy = CHARHEIGHT ; return ; }
     }
 
-    if ( scrbitmap->width < console_columns * CHARWIDTH ) {
-        console_columns = scrbitmap->width / CHARWIDTH ;
-    }
-
-    if ( scrbitmap->height < console_lines * CHARHEIGHT ) {
-        console_lines = ( scrbitmap->height - CHARHEIGHT * 2 ) / CHARHEIGHT ;
-    }
-
     x = (scrbitmap->width - console_columns*CHARWIDTH)/2 ;
     y = -console_lines*CHARHEIGHT + con_y ;
 
@@ -414,8 +415,8 @@ void gr_con_draw()
             gr_sys_color (console_showcolor, 0) ;
             gr_sys_puts (scrbitmap,
                          (scrbitmap->width - strlen(result)*CHARWIDTH)/2,
-                         con_y <= 0 ? 2:con_y+CHARHEIGHT, result, strlen(result));
-            gr_mark_rect (0, con_y <= 0 ? 2:con_y+CHARHEIGHT, scr_width, CHARHEIGHT);
+                         (con_y <= 0) ? 2:con_y+CHARHEIGHT, result, strlen(result));
+            gr_mark_rect (0, (con_y <= 0) ? 2:con_y+CHARHEIGHT, scr_width, CHARHEIGHT);
         }
     }
 
@@ -1221,7 +1222,7 @@ void eval_factor()
             _snprintf (result.name, sizeof(result.name), "%g", base) ;
             return ;
         }
-        op = token.name[0] == '*' ? 1: token.name[0] == '/' ? 2:3 ;
+        op = (token.name[0] == '*') ? 1: (token.name[0] == '/') ? 2:3 ;
         get_token() ;
     }
 }
@@ -1252,7 +1253,7 @@ static void eval_subexpression()
             _snprintf (result.name, sizeof(result.name), "%g", base) ;
             return ;
         }
-        op = token.name[0] == '+' ? 1:-1 ;
+        op = (token.name[0] == '+') ? 1:-1 ;
         get_token() ;
     }
 }
@@ -1279,7 +1280,7 @@ static char * eval_expression(const char * here, int interactive)
     }
 
     memset (part, 0, sizeof(buffer));
-    strncpy (part, here, token_ptr - here - (token.type != NOTOKEN ? 1:0));
+    strncpy (part, here, token_ptr - here - ((token.type != NOTOKEN) ? 1:0));
 
     if (result.type == T_CONSTANT)
     {
@@ -1478,7 +1479,7 @@ void gr_con_do (const char * command)
         return ;
     }
 
-    if (strncmp (action, "BREAK", 5) == 0)
+    if (strcmp (action, "BREAK") == 0)
     {
         if (*ptr) {
             if (*ptr >= '0' && *ptr <= '9')
@@ -1542,7 +1543,7 @@ void gr_con_do (const char * command)
         return ;
     }
 
-    if (strncmp (action, "DELETE", 6) == 0)
+    if (strcmp (action, "DELETE") == 0)
     {
         if (*ptr) {
             if (*ptr >= '0' && *ptr <= '9')
@@ -1600,9 +1601,9 @@ void gr_con_do (const char * command)
         return ;
     }
 
-    if (strncmp (action, "LOCAL", 5) == 0 ||
-        strncmp (action, "PRIVATE", 7) == 0 ||
-        strncmp (action, "PUBLIC", 6) == 0)
+    if (strcmp (action, "LOCALS") == 0 ||
+        strcmp (action, "PRIVATES") == 0 ||
+        strcmp (action, "PUBLICS") == 0)
     {
         int show_locals = action[0] == 'L';
         int show_public = action[0] == 'P' && action[1] == 'U' ;
@@ -1675,7 +1676,7 @@ void gr_con_do (const char * command)
         return ;
     }
 
-    if (strncmp (action, "RUN", 3) == 0)
+    if (strcmp (action, "RUN") == 0)
     {
         if (*ptr) {
             aptr = action;
@@ -1751,10 +1752,10 @@ void gr_con_do (const char * command)
         }
     }
 
-    if (strncmp (action, "KILLALL", 7) == 0 ||
-        strncmp (action, "SLEEPALL", 8) == 0 ||
-        strncmp (action, "WEAKUPALL", 9) == 0 ||
-        strncmp (action, "FREEZEALL", 9) == 0 )
+    if (strcmp (action, "KILLALL") == 0 ||
+        strcmp (action, "SLEEPALL") == 0 ||
+        strcmp (action, "WAKEUPALL") == 0 ||
+        strcmp (action, "FREEZEALL") == 0 )
     {
         char    act = *action;
         int     found = 0;
@@ -1790,10 +1791,10 @@ void gr_con_do (const char * command)
         return ;
     }
 
-    if (strncmp (action, "KILL", 4) == 0 ||
-        strncmp (action, "SLEEP", 5) == 0 ||
-        strncmp (action, "WEAKUP", 6) == 0 ||
-        strncmp (action, "FREEZE", 6) == 0 )
+    if (strcmp (action, "KILL") == 0 ||
+        strcmp (action, "SLEEP") == 0 ||
+        strcmp (action, "WAKEUP") == 0 ||
+        strcmp (action, "FREEZE") == 0 )
     {
         char act=*action;
         i = findproc(NULL, action, ptr);

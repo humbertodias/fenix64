@@ -39,17 +39,15 @@
 #include "files.h"
 #include "grlib.h"
 
-#define ABS(x) ((x) < 0 ? -(x):(x))
-
 int      syscolor8 = 15 ;
 Uint16   syscolor16 = 0xFFFF ;
-Uint16   syscolor16_alpha;
+Uint16   syscolor16_alpha = 0xFFFF ;
 int      drawing_alpha = 255;
-Uint16 * drawing_alpha16;
-Uint8  * drawing_alpha8;
+Uint16 * drawing_alpha16 = NULL ;
+Uint8  * drawing_alpha8 = NULL ;
 Uint32   drawing_stipple = 0xFFFFFFFF;
 
-static DRAWING_OBJECT * drawing_objects = NULL;
+DRAWING_OBJECT * drawing_objects = NULL;
 
 #ifdef __GNUC__
 #define _inline inline
@@ -65,8 +63,7 @@ _inline void _HLine8_nostipple (Uint8 * ptr, Uint32 length)
     {
         register int n;
 
-        for (n = length ; n ; n--, ptr++)
-            *ptr = drawing_alpha8[(syscolor8 << 8) + *ptr];
+        for (n = length; n; n--, ptr++) *ptr = drawing_alpha8[(syscolor8 << 8) + *ptr];
     }
 }
 
@@ -76,20 +73,18 @@ _inline void _HLine8_stipple (Uint8 * ptr, Uint32 length)
 
     if (drawing_alpha == 255)
     {
-        for (n = length ; n ; n--, ptr++)
+        for (n = length; n; n--, ptr++)
         {
-            if (drawing_stipple & 1)
-                *ptr = syscolor8;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
+            if (drawing_stipple & 1) *ptr = syscolor8;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
         }
     }
     else
     {
-        for (n = length ; n ; n--, ptr++)
+        for (n = length; n; n--, ptr++)
         {
-            if (drawing_stipple & 1)
-                *ptr = drawing_alpha8[(syscolor8 << 8) + *ptr];
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
+            if (drawing_stipple & 1) *ptr = drawing_alpha8[(syscolor8 << 8) + *ptr];
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
         }
     }
 }
@@ -100,13 +95,11 @@ _inline void _HLine16_nostipple (Uint16 * ptr, Uint32 length)
 
     if (drawing_alpha == 255)
     {
-        for (n = length ; n ; n--)
-            *ptr++ = syscolor16 ;
+        for (n = length; n; n--) *ptr++ = syscolor16 ;
     }
     else
     {
-        for (n = length ; n ; n--, ptr++)
-            *ptr = drawing_alpha16[*ptr] + syscolor16_alpha ;
+        for (n = length; n; n--, ptr++) *ptr = drawing_alpha16[*ptr] + syscolor16_alpha ;
     }
 }
 
@@ -116,20 +109,18 @@ _inline void _HLine16_stipple (Uint16 * ptr, Uint32 length)
 
     if (drawing_alpha == 255)
     {
-        for (n = length ; n ; n--, ptr++)
+        for (n = length; n; n--, ptr++)
         {
-            if (drawing_stipple & 1)
-                *ptr = syscolor16 ;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
+            if (drawing_stipple & 1) *ptr = syscolor16 ;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
         }
     }
     else
     {
-        for (n = length ; n ; n--, ptr++)
+        for (n = length; n; n--, ptr++)
         {
-            if (drawing_stipple & 1)
-                *ptr = drawing_alpha16[*ptr] + syscolor16_alpha ;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
+            if (drawing_stipple & 1) *ptr = drawing_alpha16[*ptr] + syscolor16_alpha ;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
         }
     }
 }
@@ -166,17 +157,16 @@ _inline void _Pixel16 (Uint16 * ptr, Uint16 color, Uint16 color_alpha)
 
 int gr_get_pixel (GRAPH * dest, int x, int y)
 {
-    if (x < 0 || y < 0 || x >= (int)dest->width || y >= (int)dest->height)
-        return -1 ;
+    if (x < 0 || y < 0 || x >= (int)dest->width || y >= (int)dest->height) return -1 ;
 
     switch (dest->depth)
     {
         case 8:
-            return ((Uint8 *)dest->data) [x + dest->pitch*y] ;
+            return ((Uint8 *)dest->data) [x + dest->pitch * y] ;
         case 16:
-            return ((Uint16 *)dest->data)[x + dest->pitch*y/2] ;
+            return ((Uint16 *)dest->data)[x + dest->pitch * y / 2] ;
         case 1:
-            return (((Uint8 *)dest->data)[x/8 + dest->pitch*y] & (0x80 >> (x & 7))) ? 1:0;
+            return (((Uint8 *)dest->data)[x / 8 + dest->pitch * y] & (0x80 >> (x & 7))) ? 1:0;
         default:
             gr_error ("gr_get_pixel: Profundidad de color no soportada");
             return 0;
@@ -201,25 +191,27 @@ int gr_get_pixel (GRAPH * dest, int x, int y)
 
 void gr_put_pixel (GRAPH * dest, int x, int y, int color)
 {
-    if (x < 0 || y < 0 || x >= (int)dest->width || y >= (int)dest->height)
-        return ;
+    if (x < 0 || y < 0 || x >= (int)dest->width || y >= (int)dest->height) return ;
 
     dest->modified = 1 ;
 
     switch (dest->depth)
     {
         case 8:
-            _Pixel8(((Uint8 *)dest->data)+ x + dest->pitch*y, color);
+            _Pixel8(((Uint8 *)dest->data)+ x + dest->pitch * y, color);
             break;
+
         case 16:
-            _Pixel16(((Uint16 *)dest->data) + x + dest->pitch*y/2, color, gr_alpha16(drawing_alpha)[color]) ;
+            _Pixel16(((Uint16 *)dest->data) + x + dest->pitch * y / 2, color, gr_alpha16(drawing_alpha)[color]) ;
             break;
+
         case 1:
             if (color)
-                ((Uint8 *)dest->data)[x/8 + dest->pitch*y] |= (0x80 >> (x & 7)) ;
+                (((Uint8 *)dest->data)[x / 8 + dest->pitch * y]) |= (0x80 >> (x & 7)) ;
             else
-                ((Uint8 *)dest->data)[x/8 + dest->pitch*y] &= ~(0x80 >> (x & 7)) ;
+                (((Uint8 *)dest->data)[x / 8 + dest->pitch * y]) &= ~(0x80 >> (x & 7)) ;
             break;
+
         default:
             gr_error ("gr_put_pixel: Profundidad de color no soportada");
     }
@@ -245,6 +237,8 @@ void gr_put_pixelc (GRAPH * dest, REGION * clip, int x, int y, int color)
 {
     if (clip && x >= clip->x && x <= clip->x2 && y >= clip->y && y <= clip->y2)
         gr_put_pixel (dest, x, y, color);
+
+    dest->modified = 1;
 }
 
 /*
@@ -266,8 +260,7 @@ void gr_clear (GRAPH * dest)
 
     memset (dest->data, 0, dest->pitch * dest->height) ;
 
-    if (dest == background)
-        background_is_black = 1;
+    if (dest == background) background_is_black = 1;
 }
 
 /*
@@ -293,27 +286,132 @@ void gr_clear_as (GRAPH * dest, int color)
     switch (dest->depth)
     {
         case 8:
-            for (y = 0 ; y < dest->height ; y++)
-                memset ((Uint8 *)dest->data + dest->pitch * y, color, dest->width) ;
+        {
+            memset (dest->data, color, dest->pitch * dest->height) ;
+/*
+            Uint8 * data = dest->data ;
+            for (y = 0; y < dest->height; y++) {
+                memset (data, color, dest->pitch) ;
+                data += dest->pitch ;
+            }
+*/
             break;
+        }
+
         case 16:
-            for (y = 0 ; y < dest->height ; y++)
+        {
+            Uint8 * data = dest->data ;
+            for (y = 0; y < dest->height; y++)
             {
-                Uint16 * ptr = (Uint16 *)dest->data + dest->pitch*y/2;
-                int n, m = dest->width ;
-                for (n = 0 ; n < m ; n++) *ptr++ = color ;
+                Uint16 * ptr = (Uint16 *)data ;
+                int n ;
+                for (n = 0; n < dest->width; n++) *ptr++ = color ;
+                data += dest->pitch ;
             }
             break;
+        }
+
         case 1:
-            for (y = 0 ; y < dest->height ; y++)
-                memset ((Uint8 *)dest->data + dest->pitch * y, color ? 0xFF:0, dest->width/8) ;
+        {
+            int c = color ? 0xFF : 0 ;
+            memset (dest->data, c, dest->pitch * dest->height) ;
+/*
+            Uint8 * data = dest->data ;
+            int c = color ? 0xFF : 0 ;
+            for (y = 0; y < dest->height; y++) {
+                memset (data, c, dest->pitch) ;
+                data += dest->pitch ;
+            }
+*/
             break;
+        }
+
         default:
             gr_error ("gr_clear_as: Profundidad de color no soportada");
     }
 
-    if (dest == background && !color)
-        background_is_black = 1;
+    if (dest == background && !color) background_is_black = 1;
+}
+
+/*
+ *  FUNCTION : gr_clear_region
+ *
+ *  Clear a region bitmap (paint all pixels as 0 [transparent])
+ *
+ *  PARAMS :
+ *      dest            Bitmap to clear
+ *      region          Region to clear or NULL for the whole screen
+ *
+ *  RETURN VALUE :
+ *      None
+ *
+ */
+
+void gr_clear_region (GRAPH * dest, REGION * region)
+{
+    REGION base_region ;
+    int y, n, l ;
+
+    if (!dest) dest = scrbitmap ;
+    dest->modified = 1 ;
+
+    if (!region)
+    {
+        region = &base_region ;
+        region->x = 0 ;
+        region->y = 0 ;
+        region->x2 = dest->width - 1 ;
+        region->y2 = dest->height - 1 ;
+    }
+    else
+    {
+        base_region = *region ;
+        region = &base_region ;
+        region->x = MAX(MIN(region->x, region->x2), 0) ;
+        region->y = MAX(MIN(region->y, region->y2), 0) ;
+        region->x2 = MIN(MAX(region->x, region->x2), dest->width - 1) ;
+        region->y2 = MIN(MAX(region->y, region->y2), dest->height - 1) ;
+    }
+
+    switch (dest->depth)
+    {
+        case 8:
+        {
+            Uint8 * data = ((Uint8 *)dest->data) + dest->pitch * region->y + region->x ;
+            l = region->x2 - region->x + 1;
+            for (y = region->y; y <= region->y2; y++) {
+                memset (data, 0, l) ;
+                data += dest->pitch ;
+            }
+
+            break ;
+        }
+
+        case 16:
+        {
+            Uint8 * data = ((Uint8 *)dest->data) + dest->pitch * region->y + region->x * 2;
+            l = region->x2 - region->x + 1;
+            for (y = region->y; y <= region->y2; y++) {
+                Uint16 * ptr = (Uint16 *)data ;
+                for (n = 0; n < l; n++) *ptr++ = 0 ;
+                data += dest->pitch ;
+            }
+            break ;
+        }
+
+        case 1:
+        {
+            Uint8 * data = ((Uint8 *)dest->data) + region->x / 8 ;
+            l = (region->x2 - region->x - 1) / 8 + 1 ;
+            for (y = region->y; y <= region->y2; y++) {
+                /* Esta debe ser cambiada, por bits */
+                memset (data, 0, l) ;
+                data += dest->pitch ;
+            }
+            break ;
+        }
+    }
+
 }
 
 /*
@@ -335,26 +433,27 @@ void gr_clear_as (GRAPH * dest, int color)
 void gr_vline (GRAPH * dest, REGION * clip, int x, int y, int h)
 {
     REGION base_clip ;
+    int old_stipple = drawing_stipple;
 
     if (!dest) dest = scrbitmap ;
+    dest->modified = 1 ;
+
     if (!clip)
     {
         clip = &base_clip ;
         clip->x = 0 ;
         clip->y = 0 ;
-        clip->x2 = dest->width-1 ;
-        clip->y2 = dest->height-1 ;
+        clip->x2 = dest->width - 1 ;
+       clip->y2 = dest->height - 1 ;
     }
 
-    dest->modified = 1 ;
-
-    if (h < 0) h = -h, y -= h-1 ;
+    if (h < 0) h = -h, y -= (h - 1) ;
     if (x < clip->x || x > clip->x2) return ;
 
-    if (y < clip->y) h += y-clip->y, y = clip->y ;
-    if (y+h > clip->y2) h = clip->y2+1-y ;
+    if (y < clip->y) h += y - clip->y, y = clip->y;
+    if (y + h > clip->y2) h = clip->y2 - y + 1 ;
 
-    if (h < 1) return ;
+    if (h < 0) return ;
 
     if (dest->depth == 8)
     {
@@ -364,9 +463,8 @@ void gr_vline (GRAPH * dest, REGION * clip, int x, int y, int h)
         {
             while (h--)
             {
-                if (drawing_stipple & 1)
-                    _Pixel8 (ptr, syscolor8) ;
-                drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
+                if (drawing_stipple & 1) _Pixel8 (ptr, syscolor8) ;
+                drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
                 ptr += dest->pitch ;
             }
         }
@@ -382,15 +480,15 @@ void gr_vline (GRAPH * dest, REGION * clip, int x, int y, int h)
     else if (dest->depth == 16)
     {
         Uint16 * ptr = dest->data ;
-        ptr += dest->pitch * y / 2 + x ;
+        int inc = dest->pitch / 2 ;
+        ptr += inc * y + x ;
         if (drawing_stipple != 0xFFFFFFFF)
         {
             while (h--)
             {
-                if (drawing_stipple & 1)
-                    _Pixel16 (ptr, syscolor16, syscolor16_alpha) ;
-                drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
-                ptr += dest->pitch / 2 ;
+                if (drawing_stipple & 1) _Pixel16 (ptr, syscolor16, syscolor16_alpha) ;
+                drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+                ptr += inc ;
             }
         }
         else
@@ -398,10 +496,43 @@ void gr_vline (GRAPH * dest, REGION * clip, int x, int y, int h)
             while (h--)
             {
                 _Pixel16 (ptr, syscolor16, syscolor16_alpha) ;
-                ptr += dest->pitch / 2 ;
+                ptr += inc ;
             }
         }
     }
+    else if (dest->depth == 1)
+    {
+        Uint8 * ptr = dest->data;
+        int mask ;
+        ptr += dest->pitch * y + x / 8;
+        mask = (1 << (7-(x & 7)));
+        if (drawing_stipple != 0xFFFFFFFF)
+        {
+            while (h--)
+            {
+                if (drawing_stipple & 1) {
+                    if (!syscolor8)
+                        *ptr &= ~mask;
+                    else
+                        *ptr |= mask;
+                }
+                drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+                ptr += dest->pitch ;
+            }
+        } else {
+            while (h--)
+            {
+                if (!syscolor8)
+                    *ptr &= ~mask;
+                else
+                    *ptr |= mask;
+                ptr += dest->pitch ;
+            }
+        }
+    }
+
+    drawing_stipple = old_stipple;
+
 }
 
 /*
@@ -423,6 +554,7 @@ void gr_vline (GRAPH * dest, REGION * clip, int x, int y, int h)
 void gr_hline (GRAPH * dest, REGION * clip, int x, int y, int w)
 {
     REGION base_clip ;
+    int old_stipple = drawing_stipple;
 
     if (!dest) dest = scrbitmap ;
     if (!clip)
@@ -430,19 +562,19 @@ void gr_hline (GRAPH * dest, REGION * clip, int x, int y, int w)
         clip = &base_clip ;
         clip->x = 0 ;
         clip->y = 0 ;
-        clip->x2 = dest->width-1 ;
-        clip->y2 = dest->height-1 ;
+        clip->x2 = dest->width - 1 ;
+        clip->y2 = dest->height - 1 ;
     }
 
     dest->modified = 1 ;
 
-    if (w < 0) w = -w, x -= w-1 ;
+    if (w < 0) w = -w, x -= (w - 1) ;
     if (y < clip->y || y > clip->y2) return ;
 
     if (x < clip->x) w += x-clip->x, x = clip->x ;
-    if (x+w > clip->x2) w = clip->x2+1-x ;
+    if (x + w > clip->x2) w = clip->x2 - x + 1 ;
 
-    if (w < 1) return ;
+    if (w < 0) return ;
 
     if (dest->depth == 8)
     {
@@ -466,22 +598,45 @@ void gr_hline (GRAPH * dest, REGION * clip, int x, int y, int w)
     {
         Uint8 * ptr = dest->data;
         int mask ;
-        ptr += dest->pitch * y + x/8;
+        ptr += dest->pitch * y + x / 8;
         mask = (1 << (7-(x & 7)));
-        while (w--)
+
+        if (drawing_stipple != 0xFFFFFFFF)
         {
-            if (!syscolor8)
-                *ptr &= ~mask;
-            else
-                *ptr |= mask;
-            mask >>= 1;
-            if (!mask)
+            while (w--)
             {
-                mask = 0x80;
-                ptr++;
+                if (drawing_stipple & 1) {
+                    if (!syscolor8)
+                        *ptr &= ~mask;
+                    else
+                        *ptr |= mask;
+                }
+                mask >>= 1;
+                if (!mask)
+                {
+                    mask = 0x80;
+                    ptr++;
+                }
+                drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            }
+        } else {
+            while (w--)
+            {
+                if (!syscolor8)
+                    *ptr &= ~mask;
+                else
+                    *ptr |= mask;
+                mask >>= 1;
+                if (!mask)
+                {
+                    mask = 0x80;
+                    ptr++;
+                }
             }
         }
     }
+
+    drawing_stipple = old_stipple;
 }
 
 /*
@@ -506,26 +661,39 @@ void gr_box (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
     REGION base_clip ;
 
     if (!dest) dest = scrbitmap ;
+    dest->modified = 1 ;
+
     if (!clip)
     {
         clip = &base_clip ;
         clip->x = 0 ;
         clip->y = 0 ;
-        clip->x2 = dest->width-1 ;
-        clip->y2 = dest->height-1 ;
+        clip->x2 = dest->width - 1 ;
+        clip->y2 = dest->height - 1 ;
+    }
+    else
+    {
+        base_clip = *clip ;
+        clip = &base_clip ;
+        clip->x = MAX(MIN(clip->x, clip->x2), 0) ;
+        clip->y = MAX(MIN(clip->y, clip->y2), 0) ;
+        clip->x2 = MIN(MAX(clip->x, clip->x2), dest->width - 1) ;
+        clip->y2 = MIN(MAX(clip->y, clip->y2), dest->height - 1) ;
     }
 
-    dest->modified = 1 ;
+    if (w < 0) w = -w, x -= (w - 1) ;
+    if (h < 0) h = -h, y -= (h - 1) ;
 
-    if (w < 0) w = -w, x -= w ;
-    if (h < 0) h = -h, y -= h ;
+    if (x < clip->x) w += x - clip->x, x = clip->x ;
+    if (y < clip->y) h += y - clip->y, y = clip->y ;
 
-    if (x < clip->x) w += x-clip->x, x = clip->x ;
-    if (y < clip->y) h += y-clip->y, y = clip->y ;
-    if (x+w > clip->x2) w = clip->x2+1-x ;
-    if (y+h > clip->y2) h = clip->y2+1-y ;
+    if (x + w > clip->x2) w = clip->x2 - x + 1 ;
+    if (y + h > clip->y2) h = clip->y2 - y + 1 ;
 
-    if (w < 1 || h < 1) return ;
+    if (w < 0 || h < 0) return ;
+
+    if (!w) w++;
+    if (!h) h++;
 
     if (dest->depth == 8)
     {
@@ -540,17 +708,23 @@ void gr_box (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
     else if (dest->depth == 16)
     {
         Uint16 * ptr = dest->data ;
-        ptr += dest->pitch * y / 2 + x ;
+        int inc = dest->pitch / 2 ;
+        ptr += dest->pitch / 2 * y + x ;
         while (h--)
         {
             _HLine16_nostipple (ptr, w) ;
-            ptr += dest->pitch/2 ;
+            ptr += inc ;
         }
     }
     else if (dest->depth == 1)
     {
+        int old_stipple = drawing_stipple;
+        drawing_stipple = 0xFFFFFFFF;
+
         while (h--)
-            gr_hline (dest, clip, x, y+h, w);
+            gr_hline (dest, clip, x, y + h, w);
+
+        drawing_stipple = old_stipple;
     }
 }
 
@@ -573,20 +747,19 @@ void gr_box (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
 
 void gr_rectangle (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
 {
-    int stipple = drawing_stipple;
+    int stipple = drawing_stipple ;
 
-    if (w < 0) w = -w, x -= w ;
-    if (h < 0) h = -h, y -= h ;
+    dest->modified = 1;
 
-    gr_hline (dest, clip, x, y, w) ;
-    if (h > 1)
-        gr_vline (dest, clip, x+w-1, y, h) ;
-    drawing_stipple = stipple;
-    if (w > 1 && h > 1)
-    {
-        gr_vline (dest, clip, x, y, h) ;
-        gr_hline (dest, clip, x, y+h-1, w) ;
-    }
+    if (w < 0) w = -w, x -= (w - 1);
+    if (h < 0) h = -h, y -= (h - 1);
+
+    if (w)                 gr_hline (dest, clip, x        , y        , w     ) ;
+    if ((w - 1) && h && w) gr_vline (dest, clip, x + w - 1, y        , h     ) ;
+    if ((h - 1) && w && h) gr_hline (dest, clip, x + w - 1, y + h - 1, -w    ) ;
+    if (h)                 gr_vline (dest, clip, x        , y + h - 1, -h    ) ;
+
+    drawing_stipple = stipple ;
 }
 
 /*
@@ -608,8 +781,9 @@ void gr_rectangle (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
 void gr_circle (GRAPH * dest, REGION * clip, int x, int y, int r)
 {
     int cx = 0, cy = r ;
-    int lcx = -1, lcy = -1;
+    int lcy = -1;
     int df = 1-r, de = 3, dse = -2*r + 5 ;
+    int old_stipple = drawing_stipple;
     REGION base_clip ;
     int color = 0;
 
@@ -624,7 +798,8 @@ void gr_circle (GRAPH * dest, REGION * clip, int x, int y, int r)
     }
 
     dest->modified = 1 ;
-    if (dest->depth == 8) {
+
+    if (dest->depth == 8 || dest->depth == 1) {
         color = syscolor8;
     } else if (dest->depth == 16) {
         color = syscolor16;
@@ -632,35 +807,33 @@ void gr_circle (GRAPH * dest, REGION * clip, int x, int y, int r)
 
     do {
         if (drawing_stipple & 1) {
+            gr_put_pixelc (dest, clip, x-cx, y-cy, color) ;
+            if (cx) gr_put_pixelc (dest, clip, x+cx, y-cy, color) ;
 
-            if (lcx != cx) {
-                gr_put_pixelc (dest, clip, x-cx, y-cy, color) ;
-                if (x-cx!=x+cx)
-                    gr_put_pixelc (dest, clip, x+cx, y-cy, color) ;
-                if (y-cy != y+cy) {
-                    gr_put_pixelc (dest, clip, x-cx, y+cy, color) ;
-                    if (x-cx!=x+cx)
-                        gr_put_pixelc (dest, clip, x+cx, y+cy, color) ;
-                }
-                if (y-cx != y-cy) {
-                    gr_put_pixelc (dest, clip, x-cy, y-cx, color) ;
-                    if (x-cy!=x+cy)
-                        gr_put_pixelc (dest, clip, x+cy, y-cx, color) ;
-                }
-                if (y-cx != y+cx && y+cy != y+cx) {
-                    gr_put_pixelc (dest, clip, x-cy, y+cx, color) ;
-                    if (x-cy!=x+cy)
-                        gr_put_pixelc (dest, clip, x+cy, y+cx, color) ;
-                }
+            if (cy) {
+                gr_put_pixelc (dest, clip, x-cx, y+cy, color) ;
+                if (cx) gr_put_pixelc (dest, clip, x+cx, y+cy, color) ;
+            }
+
+            if (cx != cy) {
+                gr_put_pixelc (dest, clip, x-cy, y-cx, color) ;
+                if (cy) gr_put_pixelc (dest, clip, x+cy, y-cx, color) ;
+            }
+
+            if (cx && cy != cx) {
+                gr_put_pixelc (dest, clip, x-cy, y+cx, color) ;
+                if (cy) gr_put_pixelc (dest, clip, x+cy, y+cx, color) ;
             }
         }
-        drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
+        drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
 
-        lcx = cx; lcy = cy;
+        lcy = cy;
         cx++ ;
         if (df < 0) df += de,  de += 2, dse += 2 ;
         else        df += dse, de += 2, dse += 4, cy-- ;
     } while (cx <= cy) ;
+
+    drawing_stipple = old_stipple;
 
 }
 
@@ -684,31 +857,29 @@ void gr_circle (GRAPH * dest, REGION * clip, int x, int y, int r)
 void gr_fcircle (GRAPH * dest, REGION * clip, int x, int y, int r)
 {
     int cx = 0, cy = r ;
-    int lcx = -1, lcy = -1;
-    int df = 1-r, de = 3, dse = -2*r + 5 ;
+    int df = 1 - r, de = 3, dse = -2*r + 5 ;
     int old_stipple = drawing_stipple;
     drawing_stipple = 0xFFFFFFFF;
 
+    dest->modified = 1;
     do
     {
-        if (lcy != cy) {
-            gr_hline (dest, clip, x-cx, y-cy, 2*cx) ;
-            if (y-cy != y+cy)
-                gr_hline (dest, clip, x-cx, y+cy, 2*cx) ;
+        if (cx != cy) {
+            gr_hline (dest, clip, x-cy, y-cx, 2*cy+1) ;
+            if (cx) gr_hline (dest, clip, x-cy, y+cx, 2*cy+1) ;
         }
-        if (lcx != cx) {
-            if (y-cx != y-cy)
-                gr_hline (dest, clip, x-cy, y-cx, 2*cy) ;
-            if (y-cx != y+cx && y+cy != y+cx)
-                gr_hline (dest, clip, x-cy, y+cx, 2*cy) ;
+        if (df < 0) {
+            df += de,  de += 2, dse += 2 ;
+        } else {
+            df += dse, de += 2, dse += 4;
+            gr_hline (dest, clip, x-cx, y-cy, 2*cx+1) ;
+            if (cy) gr_hline (dest, clip, x-cx, y+cy, 2*cx+1) ;
+            cy-- ;
         }
-
-        lcx = cx; lcy = cy;
         cx++ ;
-        if (df < 0) df += de,  de += 2, dse += 2 ;
-        else        df += dse, de += 2, dse += 4, cy-- ;
     }
     while (cx <= cy) ;
+
     drawing_stipple = old_stipple;
 }
 
@@ -733,15 +904,17 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
     int n, m, hinc, vinc ;
     int i1, i2, dd ;
     REGION base_clip ;
+    int old_stipple = drawing_stipple;
 
     if (!w) {
         gr_vline (dest, clip, x, y, h) ;
         return ;
-        }
+    }
+
     if (!h) {
         gr_hline (dest, clip, x, y, w) ;
         return ;
-        }
+    }
 
     if (!dest) dest = scrbitmap ;
     if (!clip)
@@ -749,74 +922,80 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
         clip = &base_clip ;
         clip->x = 0 ;
         clip->y = 0 ;
-        clip->x2 = dest->width-1 ;
-        clip->y2 = dest->height-1 ;
+        clip->x2 = dest->width - 1 ;
+        clip->y2 = dest->height - 1 ;
     }
 
     dest->modified = 1 ;
 
     /* Clipping de la línea - INCORRECTO pero funcional */
 
+/* TODO: SE NECESITA CORREGIR CLIPPING EN LINE */
+#if 0
     if (x < clip->x) /* izquierda */
     {
-        if (x+w < clip->x) return;
+        if ((x + w) < clip->x) return ;
         n = clip->x - x ;
-        m = w ? n*h/ABS(w) : 0;
+        m = w ? n * h / ABS(w) : 0 ;
         x += n, w -= n, y += m, h -= m ;
-        if (w == 0) return;
+        if (w == 0) return ;
     }
-    if (x+w < clip->x) /* w < 0 */
+    if ((x + w) < clip->x) /* w < 0 */
     {
-        n = clip->x - (x+w) ; m = w ? n*h/ABS(w) : 0 ;
+        n = clip->x - (x + w) ;
+        m = w ? n * h / ABS(w) : 0 ;
         w += n, h -= m ;
-        if (w == 0) return;
+        if (w == 0) return ;
     }
     if (y < clip->y) /* arriba */
     {
-        if (y+h < clip->y) return;
-        m = clip->y - y ; n = h ? m*w/ABS(h) : 0 ;
+        if ((y + h) < clip->y) return ;
+        m = clip->y - y ;
+        n = h ? m * w / ABS(h) : 0 ;
         x += n, w -= n, y += m, h -= m ;
-        if (h == 0) return;
+        if (h == 0) return ;
     }
-    if (y+h < clip->y) /* h < 0 */
+    if ((y + h) < clip->y) /* h < 0 */
     {
-        m = clip->y - (y+h) ; n = h ? m*w/ABS(h) : 0;
+        m = clip->y - (y + h) ;
+        n = h ? m * w / ABS(h) : 0 ;
         w -= n, h += m ;
-        if (h == 0) return;
+        if (h == 0) return ;
     }
     if (x > clip->x2) /* derecha */
     {
-        if (x+w > clip->x2) return;
+        if ((x + w) > clip->x2) return ;
         n = x - clip->x2 ;
-        m = w ? n*h/ABS(w) : 0;
+        m = w ? n * h / ABS(w) : 0 ;
         x -= n, w += n, y += m, h -= m ;
-        if (w == 0) return;
+        if (w == 0) return ;
     }
-    if (x+w > clip->x2) /* w > 0 */
+    if ((x + w) > clip->x2) /* w > 0 */
     {
-        n = (x+w) - clip->x2 ;
-        m = w ? n*h/ABS(w) : 0;
+        n = (x + w) - clip->x2 ;
+        m = w ? n * h / ABS(w) : 0 ;
         w -= n, h -= m ;
-        if (w == 0) return;
+        if (w == 0) return ;
     }
     if (y > clip->y2) /* abajo */
     {
-        if (y+h > clip->y2) return;
+        if ((y + h) > clip->y2) return ;
         m = y - clip->y2 ;
-        n = m*w/ABS(h);
+        n = m * w / ABS(h) ;
         x += n, w -= n, y -= m, h += m ;
-        if (h == 0) return;
-    }
-    if (y+h > clip->y2) /* h > 0 */
-    {
-        m = (y+h) - clip->y2 ;
-        n = h ? m*w/ABS(h) : 0;
-        w -= n, h -= m ;
-        if (h == 0) return;
+        if (h == 0) return ;
     }
 
-    hinc = w > 0 ? 1:-1 ;
-    vinc = h > 0 ? dest->pitch:-(int)dest->pitch ;
+    if ((y + h) > clip->y2) /* h > 0 */
+    {
+        m = (y + h) - clip->y2 ;
+        n = h ? m * w / ABS(h) : 0 ;
+        w -= n, h -= m ;
+        if (h == 0) return ;
+    }
+#endif
+    hinc = (w > 0) ? 1 : -1 ;
+    vinc = (h > 0) ? dest->pitch : -(int)dest->pitch ;
     if (dest->depth == 16) vinc /= 2;
 
     /* Aquí va una implementación deprisa y corriendo de Bresenham */
@@ -824,59 +1003,77 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
     w = ABS(w) ;
     h = ABS(h) ;
 
-    if (w > h)
-    {
-        i1 = 2 * h ;
-        dd = i1 - w ;
-        i2 = dd - w ;
-    }
-    else
-    {
-        i1 = 2 * w ;
-        dd = i1 - h ;
-        i2 = dd - h ;
+    if (w > h) {
+        i1 = 2 * h ; dd = i1 - w ; i2 = dd - w ;
+    } else {
+        i1 = 2 * w ; dd = i1 - h ; i2 = dd - h ;
     }
 
     if (dest->depth == 8)
     {
-        Uint8 * ptr = (Uint8 *)dest->data + dest->pitch*y + x;
+        Uint8 * ptr = (Uint8 *)dest->data + dest->pitch * y + x;
 
         if (w > h) while (w--)
         {
-            if (drawing_stipple & 1)
-                _Pixel8(ptr, syscolor8) ;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
-            if (dd >= 0) ptr += hinc+vinc, dd += i2 ;
-            else         ptr += hinc,      dd += i1 ;
+            if (drawing_stipple & 1) _Pixel8(ptr, syscolor8) ;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            if (dd >= 0) ptr += hinc + vinc, dd += i2 ;
+            else         ptr += hinc,        dd += i1 ;
         }
         else while (h--)
         {
-            if (drawing_stipple & 1)
-                _Pixel8(ptr, syscolor8 ) ;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
-            if (dd >= 0) ptr += vinc+hinc, dd += i2 ;
-            else         ptr += vinc,      dd += i1 ;
+            if (drawing_stipple & 1) _Pixel8(ptr, syscolor8) ;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            if (dd >= 0) ptr += vinc + hinc, dd += i2 ;
+            else         ptr += vinc,        dd += i1 ;
         }
     }
     else if (dest->depth == 16)
     {
-        Uint16 * ptr = (Uint16 *)dest->data + dest->pitch*y/2 + x;
+        Uint16 * ptr = (Uint16 *)dest->data + dest->pitch * y / 2 + x;
 
         if (w > h) while (w--)
         {
             if (drawing_stipple & 1) _Pixel16(ptr, syscolor16, syscolor16_alpha) ;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
-            if (dd >= 0) ptr += hinc+vinc, dd += i2 ;
-            else         ptr += hinc,      dd += i1 ;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            if (dd >= 0) ptr += hinc + vinc, dd += i2 ;
+            else         ptr += hinc,        dd += i1 ;
         }
         else while (h--)
         {
             if (drawing_stipple & 1) _Pixel16(ptr, syscolor16, syscolor16_alpha) ;
-            drawing_stipple = ((drawing_stipple << 1) | (drawing_stipple & 0x80000000 ? 1:0));
-            if (dd >= 0) ptr += vinc+hinc, dd += i2 ;
-            else         ptr += vinc,      dd += i1 ;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            if (dd >= 0) ptr += vinc + hinc, dd += i2 ;
+            else         ptr += vinc,        dd += i1 ;
         }
     }
+    else if(dest->depth == 1)
+    {
+        Uint8 * ptr = dest->data + dest->pitch * y + x / 8;
+        Uint8 mask, rmask ;
+        mask = (1 << (7-(x & 7)));
+
+        if (hinc < 0) rmask = 0x01 ; else rmask = 0x80 ;
+
+        if (w > h) while (w--)
+        {
+            if (drawing_stipple & 1) if (!syscolor8) *ptr &= ~mask; else *ptr |= mask;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            if (dd >= 0) ptr += vinc, dd += i2 ;
+            else                      dd += i1 ;
+            if (hinc < 0) mask <<= 1; else mask >>= 1; if (!mask) mask = rmask, ptr += hinc ;
+        }
+        else while (h--)
+        {
+            if (drawing_stipple & 1) if (!syscolor8) *ptr &= ~mask ; else *ptr |= mask;
+            drawing_stipple = ((drawing_stipple << 1) | ((drawing_stipple & 0x80000000) ? 1:0));
+            if (dd >= 0) { ptr += vinc, dd += i2 ; if (hinc < 0) mask <<= 1; else mask >>= 1; if (!mask) mask = rmask, ptr += hinc ; }
+            else           ptr += vinc, dd += i1 ;
+        }
+    }
+
+    drawing_stipple = old_stipple;
+
 }
 
 /*
@@ -922,14 +1119,13 @@ void gr_bezier (GRAPH * dest, REGION * clip, int * params)
     int i;
     int n = 1;
 
+    dest->modified = 1;
+
     /* Compute number of iterations */
 
-    if(level < 1)
-        level=1;
-    if(level >= 15)
-        level=15;
-    while (level-- > 0)
-        n*= 2;
+    if(level < 1) level=1;
+    if(level >= 15) level=15;
+    while (level-- > 0) n*= 2;
     delta = 1.0f / (float)n;
 
     /* Compute finite differences */
@@ -986,6 +1182,7 @@ int info_object (DRAWING_OBJECT * dr, REGION * clip)
     switch (dr->type)
     {
         case DRAWOBJ_CIRCLE:
+        case DRAWOBJ_FCIRCLE:
             newclip.x  = dr->x1-dr->x2;
             newclip.y  = dr->y1-dr->x2;
             newclip.x2 = dr->x1+dr->x2;
@@ -1005,7 +1202,7 @@ int info_object (DRAWING_OBJECT * dr, REGION * clip)
             break;
     }
 
-    if (newclip.x != clip->x || newclip.y != clip->y ||
+    if (newclip.x  != clip->x  || newclip.y  != clip->y ||
         newclip.x2 != clip->x2 || newclip.y2 != clip->y2)
     {
         *clip = newclip;
@@ -1027,7 +1224,7 @@ int info_object (DRAWING_OBJECT * dr, REGION * clip)
  *
  */
 
-static void draw_object (DRAWING_OBJECT * dr, REGION * clip)
+void draw_object (DRAWING_OBJECT * dr, REGION * clip)
 {
     int b8 = syscolor8;
     int b16 = syscolor16;
@@ -1035,16 +1232,18 @@ static void draw_object (DRAWING_OBJECT * dr, REGION * clip)
     syscolor8 = dr->color8;
     syscolor16 = dr->color16;
 
+    if (drawing_alpha!=255) gr_setalpha(drawing_alpha);
+
     switch (dr->type)
     {
         case DRAWOBJ_LINE:
             gr_line (scrbitmap, clip, dr->x1, dr->y1, dr->x2-dr->x1, dr->y2-dr->y1);
             break;
         case DRAWOBJ_RECT:
-            gr_rectangle (scrbitmap, clip, dr->x1, dr->y1, dr->x2-dr->x1, dr->y2-dr->y1);
+            gr_rectangle (scrbitmap, clip, dr->x1, dr->y1, dr->x2-dr->x1, dr->y2-dr->y1) ;
             break;
         case DRAWOBJ_BOX:
-            gr_box (scrbitmap, clip, dr->x1, dr->y1, dr->x2-dr->x1, dr->y2-dr->y1);
+            gr_box (scrbitmap, clip, dr->x1, dr->y1, dr->x2-dr->x1, dr->y2-dr->y1) ;
             break;
         case DRAWOBJ_CIRCLE:
             gr_circle (scrbitmap, clip, dr->x1, dr->y1, dr->x2);
@@ -1158,8 +1357,7 @@ void gr_drawing_move (int id, int x, int y)
 
             dr->x1 += incx;
             dr->y1 += incy;
-            if (dr->type == DRAWOBJ_CIRCLE || dr->type == DRAWOBJ_FCIRCLE)
-                return;
+            if (dr->type == DRAWOBJ_CIRCLE || dr->type == DRAWOBJ_FCIRCLE) return;
             dr->x2 += incx;
             dr->y2 += incy;
             dr->x3 += incx;
@@ -1243,7 +1441,6 @@ void gr_setcolor (int c)
         syscolor16 = c ;
     }
 
-    if (drawing_alpha != 255)
-        syscolor16_alpha = gr_alpha16(drawing_alpha)[syscolor16];
+    if (drawing_alpha != 255) syscolor16_alpha = gr_alpha16(drawing_alpha)[syscolor16];
 }
 

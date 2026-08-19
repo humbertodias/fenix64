@@ -65,6 +65,8 @@ static symbol default_symbols[] = {
     { "file_write"                      , file_write                  },
     { "file_gets"                       , file_gets                   },
     { "file_puts"                       , file_puts                   },
+    { "file_qgets"                      , file_qgets                  },
+    { "file_qputs"                      , file_qputs                  },
     { "file_size"                       , file_size                   },
     { "file_pos"                        , file_pos                    },
     { "file_seek"                       , file_seek                   },

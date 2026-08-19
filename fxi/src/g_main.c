@@ -103,8 +103,8 @@ int joy_y[8] = { 0, 0, 0, 0, 0, 0, 0, 0 } ;
 int joy_b[8] = { 0, 0, 0, 0, 0, 0, 0, 0 } ;
 
 static int sdl_equiv[SDLK_LAST+1] ;
-key_equiv key_table[127] ;  /* Now we have a search table with equivs */
-unsigned char * keystate ;        /* Pointer to key states */
+key_equiv key_table[127] ;              /* Now we have a search table with equivs */
+unsigned char * keystate = NULL;        /* Pointer to key states */
 int keystate_size = 0 ;
 
 static int equivs[] =
@@ -295,9 +295,6 @@ extern int default_palette[];
 
 REGION    regions[32] ;
 
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-
 /*
  *  FUNCTION : region_define
  *
@@ -409,8 +406,8 @@ REGION * region_new (int x, int y, int width, int height)
 
     region->x = MAX (x, 0) ;
     region->y = MAX (y, 0) ;
-    region->x2 = MIN (scr_width,  x+width)  - 1 ;
-    region->y2 = MIN (scr_height, y+height) - 1 ;
+    region->x2 = MIN (scr_width,  x + width)  - 1 ;
+    region->y2 = MIN (scr_height, y + height) - 1 ;
     return region ;
 }
 
@@ -592,7 +589,7 @@ static void do_events ()
     /* Reset ascii and scancode if last key was released... */
     /* must check all the linked equivs */
 
-    if (show_console == 0) memcpy (keystate, SDL_GetKeyState(NULL), keystate_size) ;
+    if (show_console == 0 && keystate) memcpy (keystate, SDL_GetKeyState(NULL), keystate_size) ;
 
     GLODWORD(MOUSEWHEELUP)   = 0 ;
     GLODWORD(MOUSEWHEELDOWN) = 0 ;
@@ -607,17 +604,24 @@ static void do_events ()
             curr=curr->next ;
         }
     }
+
     if (pressed==0) {
         GLODWORD(ASCII) = 0 ;
         GLODWORD(SCANCODE) = 0 ;
     }
+
     while (SDL_PollEvent (&e))
     {
         switch (e.type)
         {
             case SDL_MOUSEMOTION:
-                GLODWORD(MOUSEX) = e.motion.x ;
-                GLODWORD(MOUSEY) = e.motion.y ;
+                if (enable_scale || scale_mode != SCALE_NONE) {
+                    GLODWORD(MOUSEX) = e.motion.x / 2 ;
+                    GLODWORD(MOUSEY) = e.motion.y / 2 ;
+                } else {
+                    GLODWORD(MOUSEX) = e.motion.x ;
+                    GLODWORD(MOUSEY) = e.motion.y ;
+                }
                 break ;
 /*
             case SDL_JOYAXISMOTION:
@@ -709,8 +713,7 @@ static void do_events ()
                     }
                     if (e.key.keysym.sym == SDLK_p)
                     {
-                        if (!show_console)
-                            show_profile = !show_profile;
+                        if (!show_console) show_profile = !show_profile;
                         background_dirty = 1;
                         break ;
                     }
@@ -861,15 +864,16 @@ static void do_events ()
     }
 
     /* Now actualized every frame... */
-    GLODWORD(SHIFTSTATUS) = ((m & KMOD_LSHIFT)                    ? 1 : 0) +
-                            ((m & KMOD_RSHIFT)                    ? 2 : 0) +
-                            ((m & KMOD_RCTRL) || (m & KMOD_LCTRL) ? 4 : 0) +
-                            ((m & KMOD_LALT)  || (m & KMOD_RALT)  ? 8 : 0)  ;
+    GLODWORD(SHIFTSTATUS) = ((m & KMOD_LSHIFT)                      ? 1 : 0) +
+                            ((m & KMOD_RSHIFT)                      ? 2 : 0) +
+                            (((m & KMOD_RCTRL) || (m & KMOD_LCTRL)) ? 4 : 0) +
+                            (((m & KMOD_LALT)  || (m & KMOD_RALT))  ? 8 : 0) ;
 
     last_mouse_x = GLODWORD(MOUSEX) ;
     last_mouse_y = GLODWORD(MOUSEY) ;
     /* ALLOW DLL EXPORT */
     exit_status  = GLODWORD(EXIT_STATUS) ;
+
 }
 
 
@@ -1048,7 +1052,8 @@ void draw_instance_at (INSTANCE * proc_ptr, REGION * region, int x, int y)
     }
 
     // PATCH - XGRAPH DOES NOT ROTATE DESTINATION GRAPHIC
-    if (LOCDWORD(i,ANGLE) || scalex != 100 || scaley != 100) {
+    if ((map->current_keyframe >= 0 && map->keyframes[map->current_keyframe].angle) ||
+        LOCDWORD(i,ANGLE) || scalex != 100 || scaley != 100) {
         if (LOCDWORD(i,XGRAPH) && scalex == 100 && scaley == 100) {
             gr_blit (0, region, x, y, flags, map) ;
         } else {
@@ -1077,6 +1082,7 @@ void draw_instance (INSTANCE * proc_ptr, REGION * clip)
 
     map = instance_graph (i) ;
     if (!map) return ;
+
     if (map->frames > 1) bitmap_animate(map) ;
 
     r = LOCDWORD(i,REGIONID);
@@ -1110,7 +1116,8 @@ void draw_instance (INSTANCE * proc_ptr, REGION * clip)
     fclip = regions[r];
     if (clip) region_union (&fclip, clip);
 
-    if (LOCDWORD(i,ANGLE) || scalex != 100 || scaley != 100) {
+    if ((map->current_keyframe >= 0 && map->keyframes[map->current_keyframe].angle) ||
+        LOCDWORD(i,ANGLE) || scalex != 100 || scaley != 100) {
         if (LOCDWORD(i,XGRAPH) && scalex == 100 && scaley == 100) {
             gr_blit (0, &regions[r], x, y, flags, map) ;
         } else {
@@ -1191,7 +1198,8 @@ void draw_mouse (void * ptr, REGION * clip)
     region = regions[r];
     if (clip) region_union (&region, clip);
 
-    if (GLODWORD(MOUSEANGLE) || GLODWORD(MOUSESIZE) != 100)
+    if ((map->current_keyframe >= 0 && map->keyframes[map->current_keyframe].angle) ||
+        GLODWORD(MOUSEANGLE) || GLODWORD(MOUSESIZE) != 100)
         gr_rotated_blit (0, &region, GLODWORD(MOUSEX),
                          GLODWORD(MOUSEY), GLODWORD(MOUSEFLAGS),
                          GLODWORD(MOUSEANGLE), GLODWORD(MOUSESIZE),
@@ -1304,9 +1312,10 @@ void gr_destroy_object (int id)
         first_dll_object = object->next;
         if (object->x.bbox.x == -2)
             (*object->x.info)(object->x.what, &object->x.bbox);
+
         gr_mark_rect (object->x.bbox.x, object->x.bbox.y,
-                      object->x.bbox.x2 - object->x.bbox.x + 1,
-                      object->x.bbox.y2 - object->x.bbox.y + 1);
+                      object->x.bbox.x2 - object->x.bbox.x,
+                      object->x.bbox.y2 - object->x.bbox.y);
         free (object);
         dll_object_count--;
     }
@@ -1316,11 +1325,10 @@ void gr_destroy_object (int id)
         {
             next = object->next;
             object->next = next->next;
-            if (next->x.bbox.x == -2)
-                (*next->x.info)(next->x.what, &next->x.bbox);
+            if (next->x.bbox.x == -2) (*next->x.info)(next->x.what, &next->x.bbox);
             gr_mark_rect (next->x.bbox.x, next->x.bbox.y,
-                          next->x.bbox.x2 - next->x.bbox.x + 1,
-                          next->x.bbox.y2 - next->x.bbox.y + 1);
+                          next->x.bbox.x2 - next->x.bbox.x,
+                          next->x.bbox.y2 - next->x.bbox.y);
             free (next);
             dll_object_count--;
             break;
@@ -1331,8 +1339,7 @@ void gr_destroy_object (int id)
 
 int compare_actions (const OBJECT * a1, const OBJECT * a2)
 {
-    return (a1->z == a2->z ? a1->id - a2->id : a2->z - a1->z) ;
-//    return (a2->z - a1->z) ;
+    return ((a1->z == a2->z) ? a1->id - a2->id : a2->z - a1->z) ;
 }
 
 void draw_mode7 (void * ptr, REGION * clip)
@@ -1407,12 +1414,17 @@ void gr_mark_rect (int x, int y, int width, int height)
     w = scr_width / 16;
     h = scr_height / 8;
 
-    for (cx = x/w*w ; cx < x+width ; cx += w)
+    x = MIN(x, x + width);
+    y = MIN(y, y + height);
+    width = ABS(width);
+    height = ABS(height);
+
+    for (cx = x / w * w ; cx <= x + width ; cx += w)
     {
-        for (cy = y/h*h ; cy < y+height ; cy += h)
+        for (cy = y / h * h ; cy <= y + height ; cy += h)
         {
-            if (cx/w < 16 && cx/w >= 0)
-                zonearray[cx/w] |= (1 << (cy / h));
+            if (cx / w < 16 && cx / w >= 0)
+                zonearray[cx / w] |= (1 << (cy / h));
         }
     }
 }
@@ -1431,19 +1443,7 @@ void gr_mark_rect (int x, int y, int width, int height)
 
 void gr_mark_instance (INSTANCE * r)
 {
-    int x, y, w, h;
-
-    w = scr_width / 16;
-    h = scr_height / 8;
-
-    for (x = LOCDWORD(r, BOX_X0)/w*w ; x <= LOCDWORD(r, BOX_X1) ; x += w)
-    {
-        for (y = LOCDWORD(r, BOX_Y0)/h*h ; y <= LOCDWORD(r, BOX_Y1) ; y += h)
-        {
-            if (x/w < 16 && x/w >= 0)
-                zonearray[x/w] |= (1 << (y / h));
-        }
-    }
+    gr_mark_rect(LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y0), LOCDWORD(r, BOX_X1)-LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y1)-LOCDWORD(r, BOX_Y0));
 }
 
 /*
@@ -1484,44 +1484,21 @@ void gr_mark_instances (int onlychanged)
 
             if (onlychanged)
             {
-                if ((LOCDWORD(r,CHANGED) = instance_poschanged(r)) == 0)
-                    continue;
+                if ((LOCDWORD(r,CHANGED) = instance_poschanged(r)) == 0) continue;
 
                 /* Mark the previous position */
-
-                for (x = LOCDWORD(r, BOX_X0)/w*w ; x <= LOCDWORD(r, BOX_X1) ; x += w)
-                {
-                    for (y = LOCDWORD(r, BOX_Y0)/h*h ; y <= LOCDWORD(r, BOX_Y1) ; y += h)
-                    {
-                        if (x/w < 16 && x/w >= 0)
-                            zonearray[x/w] |= (1 << (y / h));
-                    }
-                }
+                gr_mark_rect(LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y0), LOCDWORD(r, BOX_X1)-LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y1)-LOCDWORD(r, BOX_Y0));
 
                 /* Update and mark the new position */
                 instance_posupdate(r);
                 instance_update_bbox (r);
 
-                for (x = LOCDWORD(r, BOX_X0)/w*w ; x <= LOCDWORD(r, BOX_X1) ; x += w)
-                {
-                    for (y = LOCDWORD(r, BOX_Y0)/h*h ; y <= LOCDWORD(r, BOX_Y1) ; y += h)
-                    {
-                        if (x/w < 16 && x/w >= 0)
-                            zonearray[x/w] |= (1 << (y / h));
-                    }
-                }
+                gr_mark_rect(LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y0), LOCDWORD(r, BOX_X1)-LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y1)-LOCDWORD(r, BOX_Y0));
             }
             else
             {
                 /* Mark the current position (next frame, the next will be marked */
-                for (x = LOCDWORD(r, BOX_X0)/w*w ; x <= LOCDWORD(r, BOX_X1) ; x += w)
-                {
-                    for (y = LOCDWORD(r, BOX_Y0)/h*h ; y <= LOCDWORD(r, BOX_Y1) ; y += h)
-                    {
-                        if (x/w < 16 && x/w >= 0)
-                            zonearray[x/w] |= (1 << (y / h));
-                    }
-                }
+                gr_mark_rect(LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y0), LOCDWORD(r, BOX_X1)-LOCDWORD(r, BOX_X0), LOCDWORD(r, BOX_Y1)-LOCDWORD(r, BOX_Y0));
 
                 /* Update the bounding box */
                 instance_update_bbox (r);
@@ -1536,24 +1513,17 @@ void gr_mark_instances (int onlychanged)
 
             if (!onlychanged || object_list[i].changed)
             {
-                for (x = region.x/w*w ; x <= region.x2 ; x += w)
-                    for (y = region.y/h*h ; y <= region.y2 ; y += h)
-                    {
-                        if (x/w < 16 && x/w >= 0)
-                            zonearray[x/w] |= (1 << (y / h));
-                    }
+                gr_mark_rect (region.x,region.y,region.x2-region.x,region.y2-region.y);
             }
 
             /* Mark updated object position */
 
             if (object_list[i].changed)
             {
-                for (x = object_list[i].bbox.x/w*w ; x <= object_list[i].bbox.x2 ; x += w)
-                    for (y = object_list[i].bbox.y/h*h ; y <= object_list[i].bbox.y2 ; y += h)
-                    {
-                        if (x/w < 16 && x/w >= 0)
-                            zonearray[x/w] |= (1 << (y / h));
-                    }
+                gr_mark_rect (object_list[i].bbox.x,
+                              object_list[i].bbox.y,
+                              object_list[i].bbox.x2-object_list[i].bbox.x,
+                              object_list[i].bbox.y2-object_list[i].bbox.y);
             }
         }
     }
@@ -1612,30 +1582,28 @@ int gr_mark_rects (REGION * rects)
             if (zonearray[x] & (1 << y))
             {
                 zonearray[x] &= ~(1 << y);
-                for (cw = 1 ; x+cw < 16 ; cw++)
+                for (cw = 1 ; x + cw < 16 ; cw++)
                 {
                     if (zonearray[x+cw] & (1 << y))
                         zonearray[x+cw] &= ~(1 << y);
                     else
                         break;
                 }
-                for (ch = 1 ; y+ch < 8 ; ch++)
+                for (ch = 1 ; y + ch < 8 ; ch++)
                 {
                     /* Si hay algun hueco, entonces corto aca, ahora vuelve a entrar y esto entra en otra recta */
-                    for (x2 = x ; x2 < x+cw ; x2++)
-                        if (!(zonearray[x2] & (1 << (y+ch))))
-                            break;
+                    for (x2 = x ; x2 < x + cw ; x2++)
+                        if (!(zonearray[x2] & (1 << (y + ch)))) break;
 
-                    if (x2 < x+cw)
-                        break;
+                    if (x2 < x+cw) break;
 
                     for (x2 = x ; x2 < x+cw ; x2++)
                         zonearray[x2] &= ~(1 << (y+ch));
                 }
-                rects[count].x  = w*x;
-                rects[count].y  = h*y;
-                rects[count].x2 = w*cw + rects[count].x - 1 ;
-                rects[count].y2 = h*ch + rects[count].y - 1 ;
+                rects[count].x  = w * x;
+                rects[count].y  = h * y;
+                rects[count].x2 = w * cw + rects[count].x - 1 ;
+                rects[count].y2 = h * ch + rects[count].y - 1 ;
                 count++;
             }
         }
@@ -1837,6 +1805,7 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
     if (restore_type == 1 || background_dirty)
     {
         /* COMPLETE_RESTORE */
+
         if (background_is_black) {
             gr_clear (scrbitmap) ;
         }
@@ -1858,6 +1827,7 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
 
         /* Reset the zone-to-update array for the next frame */
         memset (zonearray, 0, 128/8);
+
     }
     else if (restore_type == 0)
     {
@@ -1865,19 +1835,18 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
         gr_mark_instances (dump_type == 0);
         n = updaterects_count = gr_mark_rects (updaterects);
 
-        /* Reset the zone-to-update array for the next frame */
-        memset (zonearray, 0, 128/8);
-
-        gr_setcolor (0);
-        for (a = 0 ; a < n ; a++)
+        for (a = 0; a < n; a++)
         {
             if (background_is_black)
-                gr_box (dest, &updaterects[a], 0, 0, 9999, 9999) ;
+                gr_clear_region (scrbitmap, &updaterects[a]);
             else if (enable_16bits && background_8bits_used)
                 gr_blit (scrbitmap, &updaterects[a], 0, 0, B_NOCOLORKEY, background_8bits);
             else
                 gr_blit (scrbitmap, &updaterects[a], 0, 0, B_NOCOLORKEY, background);
         }
+
+        /* Reset the zone-to-update array for the next frame */
+        memset (zonearray, 0, 128/8);
     }
 
     gprof_end ("Background");
@@ -1896,18 +1865,18 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
                 if (object_list[a].draw == draw_instance)
                 {
                     INSTANCE * i = (INSTANCE *)object_list[a].what;
-                    if (LOCDWORD(i,BOX_X1) < updaterects[n].x ||
-                        LOCDWORD(i,BOX_X0) > updaterects[n].x2 ||
-                        LOCDWORD(i,BOX_Y1) < updaterects[n].y ||
-                        LOCDWORD(i,BOX_Y0) > updaterects[n].y2)
+                    if (MAX(LOCDWORD(i,BOX_X0),LOCDWORD(i,BOX_X1)) < updaterects[n].x ||
+                        MIN(LOCDWORD(i,BOX_X0),LOCDWORD(i,BOX_X1)) > updaterects[n].x2 ||
+                        MAX(LOCDWORD(i,BOX_Y0),LOCDWORD(i,BOX_Y1)) < updaterects[n].y ||
+                        MIN(LOCDWORD(i,BOX_Y0),LOCDWORD(i,BOX_Y1)) > updaterects[n].y2)
                         continue;
                 }
                 else
                 {
-                    if (object_list[a].bbox.x2 < updaterects[n].x ||
-                        object_list[a].bbox.x  > updaterects[n].x2 ||
-                        object_list[a].bbox.y2 < updaterects[n].y ||
-                        object_list[a].bbox.y  > updaterects[n].y2)
+                    if (MAX(object_list[a].bbox.x,object_list[a].bbox.x2) < updaterects[n].x ||
+                        MIN(object_list[a].bbox.x,object_list[a].bbox.x2) > updaterects[n].x2 ||
+                        MAX(object_list[a].bbox.y,object_list[a].bbox.y2) < updaterects[n].y ||
+                        MIN(object_list[a].bbox.y,object_list[a].bbox.y2) > updaterects[n].y2)
                         continue;
                 }
                 (*object_list[a].draw) (object_list[a].what, &updaterects[n]) ;
@@ -1946,18 +1915,26 @@ void gr_draw_frame ()
 
     if (gr_lock_screen() < 0) return ;
 
-    if ( !show_console ) {
+    if (!show_console) {
         /* Dibuja la pantalla */
 
         gr_draw_screen (scrbitmap, GLODWORD(RESTORETYPE), GLODWORD(DUMPTYPE));
 
         /* Fading */
 
-        if (fade_on != 0)
+        if (fade_on || fade_set)
         {
             gr_fade_step() ;
             background_dirty = 1;
         }
+    } else {
+        /* Muestro consola, marco toda la pantalla */
+
+        updaterects_count = 1;
+        updaterects[0].x = 0;
+        updaterects[0].y = 0;
+        updaterects[0].x2 = scr_width-1;
+        updaterects[0].y2 = scr_height-1;
     }
 
     /* Visualiza la consola */
@@ -1965,8 +1942,7 @@ void gr_draw_frame ()
     gr_con_show(show_console) ;
     gr_con_draw() ;
 
-    if (show_profile)
-        gprof_draw (scrbitmap);
+    if (show_profile) gprof_draw (scrbitmap);
 
     /* Actualiza la paleta y la pantalla */
 
@@ -1976,7 +1952,7 @@ void gr_draw_frame ()
 
 }
 
-/* FUnción de inicialización de la librería gráfica */
+/* Función de inicialización de la librería gráfica */
 
 static int screen_locked = 0 ;
 
@@ -1985,11 +1961,12 @@ int gr_lock_screen()
     if (screen_locked) return 1 ;
     screen_locked = 1 ;
 
-    if (SDL_LockSurface (screen) < 0)
-        return -1 ;
+    if (SDL_LockSurface (screen) < 0) return -1 ;
 
     if ( (!enable_scale && scale_mode == SCALE_NONE) && !double_buffer)
     {
+        if (scrbitmap && !scrbitmap_is_fake) free (scrbitmap->data) ;
+
         if (!scrbitmap)
         {
             scrbitmap = bitmap_new (0, screen->w, screen->h, enable_16bits ? 16:8, 1) ;
@@ -2016,6 +1993,12 @@ int gr_lock_screen()
     }
     else
     {
+        if (scrbitmap && scrbitmap_is_fake)
+        {
+            bitmap_destroy_fake (scrbitmap) ;
+            scrbitmap = NULL ;
+        }
+
         scrbitmap_is_fake = 0 ;
 
         if (!scrbitmap)
@@ -2035,6 +2018,7 @@ void gr_unlock_screen()
 {
     int     a ;
     GRAPH   * scr;
+    int     m = 1;
 
     if (!screen_locked) return ;
     screen_locked = 0 ;
@@ -2043,10 +2027,9 @@ void gr_unlock_screen()
     if (enable_scale || scale_mode != SCALE_NONE)
     {
         int aux_scale_mode;
+        m = 2;
 
-        if (enable_scale || GLODWORD(SCALE_MODE) != SCALE_NONE ) {
-            scale_mode     = GLODWORD(SCALE_MODE);
-        }
+        if (enable_scale || GLODWORD(SCALE_MODE) != SCALE_NONE ) scale_mode = GLODWORD(SCALE_MODE);
         aux_scale_mode = (scale_mode != SCALE_NONE) ? scale_mode : SCALE_SCALE2X;
 
         if (scrbitmap->depth == 8)
@@ -2055,12 +2038,11 @@ void gr_unlock_screen()
             Uint16 * extra;
             int length = scrbitmap->width * scrbitmap->height, n;
 
-            if (scrbitmap_extra == NULL
-                || scrbitmap_extra->width != scrbitmap->width
-                || scrbitmap_extra->height != scrbitmap->height)
+            if (scrbitmap_extra         == NULL             ||
+                scrbitmap_extra->width  != scrbitmap->width ||
+                scrbitmap_extra->height != scrbitmap->height)
             {
-                if (scrbitmap_extra)
-                    bitmap_destroy (scrbitmap_extra);
+                if (scrbitmap_extra) bitmap_destroy (scrbitmap_extra);
                 scrbitmap_extra = bitmap_new (0, scrbitmap->width, scrbitmap->height, 16, 1);
             }
 
@@ -2073,71 +2055,59 @@ void gr_unlock_screen()
             while (length--)
                 *extra++ = colorequiv[*original++];
 
-            scr=scrbitmap_extra;
+            scr = scrbitmap_extra;
         } else {
-            scr=scrbitmap;
+            scr = scrbitmap;
         }
 
         /* Esto podria ir en un modulo aparte */
         switch ( aux_scale_mode ) {
             case    SCALE_SCALE2X:
-                    scale2x (scr->data, scr->pitch,
-                             screen->pixels, screen->pitch,
-                             scr->width, scr->height);
+                    scale2x (scr->data, scr->pitch, screen->pixels, screen->pitch, scr->width, scr->height);
                     break;
 
             case    SCALE_HQ2X:
-                    hq2x (scr->data, scr->pitch,
-                          screen->pixels, screen->pitch,
-                          scr->width, scr->height);
+                    hq2x (scr->data, scr->pitch, screen->pixels, screen->pitch, scr->width, scr->height);
                     break;
 
             case    SCALE_SCANLINE2X:
-                    scanline2x (scr->data, scr->pitch,
-                                screen->pixels, screen->pitch,
-                                scr->width, scr->height);
+                    scanline2x (scr->data, scr->pitch, screen->pixels, screen->pitch, scr->width, scr->height);
                     break;
 
             case    SCALE_NOFILTER:
-                    scale_normal2x (scr->data, scr->pitch,
-                                    screen->pixels, screen->pitch,
-                                    scr->width, scr->height);
+                    scale_normal2x (scr->data, scr->pitch, screen->pixels, screen->pitch, scr->width, scr->height);
                     break;
 
             case    SCALE_NONE:
                     /* No usado */
                     break;
         }
+
         SDL_UnlockSurface (screen) ;
-        SDL_UpdateRect (screen, 0, 0, 0, 0) ;
+        SDL_Flip(screen) ;
+
+/*        SDL_UpdateRect (screen, 0, 0, 0, 0) ; */
     }
     else if (scrbitmap_is_fake)
     {
         SDL_UnlockSurface (screen) ;
 
-        scrbitmap->data = 0 ;
+/*        scrbitmap->data = 0 ;
         if (double_buffer)
             SDL_Flip(screen) ;
-        else
-        {
-            if (updaterects_count == 0)
-                /* Nothing to update! */ ;
-            else
-            {
-                SDL_Rect rects[128];
-                int i;
+        else */
+        if (updaterects_count) {
+            SDL_Rect rects[128];
+            int i;
 
-                for (i = 0 ; i < updaterects_count ; i++)
-                {
-                    rects[i].x = updaterects[i].x;
-                    rects[i].y = updaterects[i].y;
-                    rects[i].w = updaterects[i].x2 - rects[i].x + 1;
-                    rects[i].h = updaterects[i].y2 - rects[i].y + 1;
-                }
-                SDL_UpdateRects (screen, updaterects_count, rects) ;
+            for (i = 0 ; i < updaterects_count ; i++)
+            {
+                rects[i].x = updaterects[i].x;
+                rects[i].y = updaterects[i].y;
+                rects[i].w = (updaterects[i].x2 - rects[i].x + 1);
+                rects[i].h = (updaterects[i].y2 - rects[i].y + 1);
             }
-            SDL_UnlockSurface (screen) ;
-            SDL_UpdateRect (screen, 0, 0, 0, 0) ;
+            SDL_UpdateRects (screen, updaterects_count, rects) ;
         }
     }
     else
@@ -2191,7 +2161,8 @@ void gr_unlock_screen()
         }
 
         SDL_UnlockSurface (screen) ;
-        SDL_UpdateRect (screen, 0, 0, 0, 0) ;
+        SDL_Flip(screen) ;
+/*        SDL_UpdateRect (screen, 0, 0, 0, 0) ; */
     }
 }
 
@@ -2228,7 +2199,7 @@ void gr_init(int width, int height)
     if (scr_initialized && scrbitmap)
     {
         if (scrbitmap_is_fake)
-            free (scrbitmap) ;
+            bitmap_destroy_fake (scrbitmap) ;
         else
             bitmap_destroy (scrbitmap) ;
 
@@ -2311,7 +2282,6 @@ void gr_init(int width, int height)
             scr_initialized = 1; /* Para evitar reentradas dentro de la funcion bitmap_16bits_conversion */
             bitmap_16bits_conversion();
         }
-
     }
 
     for (n = 0 ; n < 256 ; n++)
@@ -2348,6 +2318,8 @@ void gr_init(int width, int height)
     regions[0].x2 = width-1 ;
     regions[0].y2 = height-1 ;
 
+    if (enable_16bits) pal_refresh(NULL) ;
+
     /* Bitmaps de fondo */
 
     if (!background || scr_width != width || scr_height != height)
@@ -2377,10 +2349,11 @@ void gr_init(int width, int height)
     scr_width = width ;
     scr_height = height ;
 
+    SDL_WarpMouse(scr_width / 2, scr_height / 2);
+
     /* Paleta de colores por defecto */
 
-    if (!palette_loaded)
-    {
+    if (!palette_loaded) {
         for (n = 0 ; n < 256 ; n++)
             gr_set_rgb (n, default_palette[n*3]/4, default_palette[n*3+1]/4, default_palette[n*3+2]/4) ;
     }

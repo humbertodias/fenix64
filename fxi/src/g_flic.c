@@ -247,6 +247,7 @@ static FLIC * flic_do_color (FLIC * flic)
 
 	palette_loaded  = 1 ;
 	palette_changed = 1 ;
+
 	return flic ;
 }
 

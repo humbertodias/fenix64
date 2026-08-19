@@ -1,0 +1,459 @@
+# Microsoft Developer Studio Generated Dependency File, included by FXC.mak
+
+.\src\c_code.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\c_data.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\c_debug.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+.\src\c_fixed.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\c_main.c : \
+	"..\..\..\dxsdk\include\basetsd.h"\
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\fnx_loadlib.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\codeblock.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\constants.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+.\src\dcbw.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+..\common\files.c : \
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	
+
+.\src\identifier.c : \
+	".\inc\identifiers.h"\
+	
+
+.\src\main.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\main_div.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+.\src\procedure.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+.\src\segment.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\strings.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+.\src\sysstub.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\sysprocs.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\token.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\typedef.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	".\src\messages.c"\
+	
+
+.\src\varspace.c : \
+	"..\include\dcb.h"\
+	"..\include\files.h"\
+	"..\include\files_st.h"\
+	"..\include\offsets.h"\
+	"..\include\pslang.h"\
+	"..\include\strings.h"\
+	"..\include\typedef.h"\
+	"..\include\typedef_st.h"\
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	"..\sdl\include\sdl_types.h"\
+	"..\zlib\zconf.h"\
+	"..\zlib\zlib.h"\
+	".\inc\codeblock.h"\
+	".\inc\compiler.h"\
+	".\inc\constants.h"\
+	".\inc\fxc.h"\
+	".\inc\identifiers.h"\
+	".\inc\procdef.h"\
+	".\inc\segment.h"\
+	".\inc\token.h"\
+	".\inc\varspace.h"\
+	
+
+..\common\xctype.c : \
+	"..\include\xctype.h"\
+	"..\include\xctype_st.h"\
+	
+
+.\res\fxc.rc : \
+	".\res\fxc.ico"\
+	

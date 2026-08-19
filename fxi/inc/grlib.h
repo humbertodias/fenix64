@@ -42,6 +42,8 @@ extern int              audio_initialized ;
 extern int				enable_16bits ;      /* 1 = 16bpp MODE on                */
 extern int				enable_filtering ;   /* 1 = 16bpp filter MODE on         */
 
+extern DRAWING_OBJECT * drawing_objects ;
+
 extern Uint16			syscolor16 ;
 extern int				syscolor8 ;			 /* Color for drawing primitives	 */
 extern Uint16           fntcolor16 ;
@@ -132,19 +134,29 @@ extern void         gr_fill_nearest_table() ;
 extern int          palette_loaded ;        /* ¿Se ha cargado ya la paleta inicial ? */
 extern int          palette_changed ;       /* Poner a 1 cuando se cambien colores   */
 extern int          fade_on ;               /* ¿Hay un fade activo?                  */
+extern int          fade_set ;              /* ¿Hay un fade seteado pero inactivo?   */
 extern int          fade_step ;             /* Si lo hay, posición (0=off)           */
 
-extern int          gr_read_pal           (file * file) ;
-extern void         gr_refresh_palette    () ;
-extern void         gr_fade_init          (int pr, int pg, int pb, int speed) ;
-extern void         gr_fade_step          () ;
-extern void         gr_roll_palette       (int color0, int num, int inc) ;
-extern int          gr_find_nearest_color (int r, int g, int b) ;
-extern void         gr_set_rgb            (int c, int r, int g, int b) ;
-extern int          gr_rgb                (int r, int g, int b) ;
-extern void         gr_get_rgb            (int color, int *r, int *g, int *b) ;
-extern void         gr_set_colors         (int color, int num, Uint8 * pal) ;
-extern void         gr_get_colors         (int color, int num, Uint8 * pal) ;
+
+extern PALETTE * pal_new(PALETTE * basepal);
+extern PALETTE * pal_new2(unsigned char * datapal);
+
+extern void pal_destroy(PALETTE * pal);
+extern void pal_refresh(PALETTE * pal);
+
+extern PALETTE    * gr_read_pal             (file * fp) ;
+extern PALETTE    * gr_read_pal_with_gamma  (file * fp);
+
+extern void         gr_refresh_palette      () ;
+extern void         gr_fade_init            (int pr, int pg, int pb, int speed) ;
+extern void         gr_fade_step            () ;
+extern void         gr_roll_palette         (int color0, int num, int inc) ;
+extern int          gr_find_nearest_color   (int r, int g, int b) ;
+extern void         gr_set_rgb              (int c, int r, int g, int b) ;
+extern int          gr_rgb                  (int r, int g, int b) ;
+extern void         gr_get_rgb              (int color, int *r, int *g, int *b) ;
+extern void         gr_set_colors           (int color, int num, Uint8 * pal) ;
+extern void         gr_get_colors           (int color, int num, Uint8 * pal) ;
 
 /* Blend ops */
 /* --------- */
@@ -204,6 +216,7 @@ extern GRAPH * bitmap_clone      (GRAPH * t) ;
 extern GRAPH * bitmap_new_syslib (int w, int h, int depth, int frames) ;
 extern GRAPH * bitmap_get        (int libid, int mapcode) ;
 extern void    bitmap_destroy    (GRAPH * map) ;
+extern void    bitmap_destroy_fake (GRAPH * map) ;
 extern void    bitmap_add_cpoint (GRAPH *map, int x, int y) ;
 extern void    bitmap_set_cpoint (GRAPH * map, Uint32 point, int x, int y);
 extern void    bitmap_analize    (GRAPH * bitmap) ;
@@ -309,6 +322,9 @@ extern void gr_bezier    (GRAPH * dest, REGION * clip, int * params) ;
 extern int  gr_drawing_new     (DRAWING_OBJECT drawing, int z) ;
 extern void gr_drawing_destroy (int id) ;
 extern void gr_drawing_move    (int id, int x, int y) ;
+
+extern void draw_object (DRAWING_OBJECT * dr, REGION * clip) ;
+extern int info_object (DRAWING_OBJECT * dr, REGION * clip) ;
 
 /* Bitmaps */
 

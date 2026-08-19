@@ -55,6 +55,8 @@
 #include "files.h"
 #include "xctype.h"
 
+#include "fmath.h"
+
 /*
  *  CONSTANTS
  */

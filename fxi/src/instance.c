@@ -53,14 +53,14 @@
 /* destrucción, duplicado, etc.                                           */
 /* ---------------------------------------------------------------------- */
 
-INSTANCE * first_instance = 0 ;
-INSTANCE * last_instance  = 0 ;
+INSTANCE * first_instance = NULL ;
+INSTANCE * last_instance  = NULL ;
 
 /* Priority lists */
 
-static INSTANCE * first_by_priority;
-static INSTANCE * iterator_by_priority = NULL;
-static int        iterator_reset = 1;
+static INSTANCE * first_by_priority     = NULL ;
+static INSTANCE * iterator_by_priority  = NULL ;
+static int        iterator_reset        = 1;
 
 /* Dirty list: a list of all instances that need an update because
  * they changed its priority since the last execution
@@ -127,6 +127,10 @@ INSTANCE * instance_duplicate (INSTANCE * father)
 
 	r->inpridata    = NULL ;
 	r->inproc       = NULL ;
+
+    r->switchval        = 0;
+    r->switchval_string = 0;
+    r->cased            = 0;
 
 	r->breakpoint   = 0 ;
 
@@ -199,8 +203,8 @@ INSTANCE * instance_duplicate (INSTANCE * father)
 	/* Initialize list pointers */
 
 	r->next_dirty = dirty_list;
-	dirty_list = r;
-	r->is_dirty = 1;
+	dirty_list    = r;
+	r->is_dirty   = 1;
 
 	LOCDWORD(r, STATUS) = STATUS_RUNNING;
 
@@ -241,6 +245,10 @@ INSTANCE * instance_new (PROCDEF * proc, INSTANCE * father)
 
 	r->inpridata    = NULL ;
 	r->inproc       = NULL ;
+
+    r->switchval        = 0;
+    r->switchval_string = 0;
+    r->cased            = 0;
 
 	r->breakpoint   = 0 ;
 
@@ -317,7 +325,7 @@ INSTANCE * instance_new (PROCDEF * proc, INSTANCE * father)
 
 	r->next_dirty = dirty_list;
 	dirty_list    = r;
-	r->is_dirty = 1;
+	r->is_dirty   = 1;
 
 	LOCDWORD(r, STATUS) = STATUS_RUNNING;
 
@@ -390,8 +398,7 @@ void instance_destroy_all (INSTANCE * except)
 	while (i)
 	{
 		next = i->next ;
-		if (i != except)
-			instance_destroy (i) ;
+		if (i != except) instance_destroy (i) ;
 		i = next ;
 	}
 }
@@ -417,13 +424,11 @@ void instance_destroy (INSTANCE * r)
 	INSTANCE * father, * bigbro, * smallbro, * smallson, * bigson, * smallerbro=NULL;
 	int n ;
 
-	if (LOCDWORD(r, GRAPHID) != 0)
-		object_list_dirty = 1;
+	if (LOCDWORD(r, GRAPHID) != 0) object_list_dirty = 1;
 
 	LOCDWORD(r, STATUS) = STATUS_RUNNING;
 
-	if (LOCDWORD(r, BOX_X0) != -2)
-		gr_mark_instance(r);
+	if (LOCDWORD(r, BOX_X0) != -2) gr_mark_instance(r);
 
 	/* Actualiza la cuenta de referencia de las variables tipo string */
 
@@ -440,15 +445,11 @@ void instance_destroy (INSTANCE * r)
 
     /* Si tengo hermano mayor */
 	bigbro = instance_get(LOCDWORD(r,BIGBRO)) ;
-	if (bigbro) {
-	    LOCDWORD(bigbro,SMALLBRO) = LOCDWORD(r,SMALLBRO) ;
-	}
+	if (bigbro) LOCDWORD(bigbro,SMALLBRO) = LOCDWORD(r,SMALLBRO) ;
 
     /* Si tengo un hermano */
 	smallbro = instance_get(LOCDWORD(r,SMALLBRO)) ;
-	if (smallbro) {
-	    LOCDWORD(smallbro,BIGBRO) = LOCDWORD(r,BIGBRO) ;
-	}
+	if (smallbro) LOCDWORD(smallbro,BIGBRO) = LOCDWORD(r,BIGBRO) ;
 
     /* Yo, ya estoy fuera */
 
@@ -508,41 +509,28 @@ void instance_destroy (INSTANCE * r)
 
 	/* Quita la instancia de la lista */
 
-	if (r->prev) {
-	    r->prev->next  = r->next ;
-	}
+	if (r->prev) r->prev->next  = r->next ;
 
-	if (r->next) {
-	    r->next->prev = r->prev ;
-	}
+	if (r->next) r->next->prev = r->prev ;
 
-	if (first_instance == r)
-		first_instance = r->next ;
+	if (first_instance == r) first_instance = r->next ;
 
-	if (last_instance == r)
-		last_instance = r->prev ;
+	if (last_instance == r) last_instance = r->prev ;
 
 	/* Remove the instance from the priority list */
-	if (first_by_priority == r)
-		first_by_priority = r->next_by_priority;
+	if (first_by_priority == r) first_by_priority = r->next_by_priority;
 
-	if (r->prev_by_priority)
-		r->prev_by_priority->next_by_priority = r->next_by_priority;
-
-	if (r->next_by_priority)
-		r->next_by_priority->prev_by_priority = r->prev_by_priority;
+	if (r->prev_by_priority) r->prev_by_priority->next_by_priority = r->next_by_priority;
+	if (r->next_by_priority) r->next_by_priority->prev_by_priority = r->prev_by_priority;
 
 	/* Remove the instance from the dirty list */
 
-	if (dirty_list == r)
+	if (dirty_list == r) {
 		dirty_list = r->next_dirty;
-    else if (r->is_dirty)
-	{
+    } else if (r->is_dirty) {
 		INSTANCE * i = dirty_list;
-		while (i)
-		{
-			if (i->next_dirty == r)
-			{
+		while (i) {
+			if (i->next_dirty == r) {
 				i->next_dirty = r->next_dirty;
 				break;
 			}
@@ -550,12 +538,11 @@ void instance_destroy (INSTANCE * r)
 		}
 	}
 
-	if (r->stack)
-		free (r->stack) ;
+	if (r->stack) free (r->stack) ;
 
-	free (r->locdata) ;
-	free (r->pubdata) ;
-	free (r->pridata) ;
+	if (r->locdata) free (r->locdata) ;
+	if (r->pubdata) free (r->pubdata) ;
+	if (r->pridata) free (r->pridata) ;
 	free (r) ;
 }
 
@@ -596,12 +583,11 @@ void instance_update_bbox (INSTANCE * i)
 	scalex = LOCDWORD(i,GRAPHSIZEX);
 	scaley = LOCDWORD(i,GRAPHSIZEY);
 	if (scalex == 100 && scaley == 100)
-		scalex = scaley = LOCDWORD(i,GRAPHSIZE);
+	    scalex = scaley = LOCDWORD(i,GRAPHSIZE);
 
-	gr_get_bbox (&dest, r, x, y,
-		LOCDWORD(i,FLAGS) ^ LOCDWORD(i,XGRAPH_FLAGS),
-		LOCDWORD(i,XGRAPH) ? 0 : LOCDWORD(i,ANGLE),
-		scalex, scaley, gr) ;
+	gr_get_bbox (&dest, r, x, y, LOCDWORD(i,FLAGS) ^ LOCDWORD(i,XGRAPH_FLAGS),
+                        		 (LOCDWORD(i,XGRAPH)) ? 0 : LOCDWORD(i,ANGLE),
+                        		 scalex, scaley, gr) ;
 
 	if (LOCDWORD(i, CTYPE) == 1)	/* c_scroll */
 	{
@@ -641,8 +627,7 @@ int instance_visible (INSTANCE * i)
 	if ((LOCDWORD(i,STATUS) & ~STATUS_WAITING_MASK) == STATUS_SLEEPING ||
 	    (LOCDWORD(i,STATUS) & ~STATUS_WAITING_MASK) == STATUS_RUNNING)
 	{
-		if (instance_graph(i))
-			return 1;
+		if (instance_graph(i)) return 1;
 	}
 
 	return 0;
@@ -696,26 +681,22 @@ int instance_poschanged (INSTANCE * i)
 {
 	GRAPH * graph = instance_graph(i);
 
-	if (graph && (graph->modified ||
-	              (graph->frames > 0 && graph->next_time < current_time)
-	              )
-	   )
+	if (graph && (graph->modified || (graph->frames > 1 && graph->next_time < current_time)))
 	    return 1;
 
-	return
-	    LOCDWORD(i,SAVED_X)       != LOCDWORD(i,COORDX)		||
-		LOCDWORD(i,SAVED_Y)       != LOCDWORD(i,COORDY)		||
-		LOCDWORD(i,SAVED_GRAPH)   != LOCDWORD(i,GRAPHID)	||
-		LOCDWORD(i,SAVED_ANGLE)   != LOCDWORD(i,ANGLE)		||
-		LOCDWORD(i,SAVED_ALPHA)   != LOCDWORD(i,ALPHA)		||
-		LOCDWORD(i,SAVED_BLENDOP) != LOCDWORD(i,BLENDOP)	||
-		LOCDWORD(i,SAVED_SIZE)    != LOCDWORD(i,GRAPHSIZE)	||
-		LOCDWORD(i,SAVED_SIZEX)   != LOCDWORD(i,GRAPHSIZEX) ||
-		LOCDWORD(i,SAVED_SIZEY)   != LOCDWORD(i,GRAPHSIZEY) ||
-		LOCDWORD(i,SAVED_FLAGS)   != LOCDWORD(i,FLAGS)		||
-		LOCDWORD(i,SAVED_FILE)	  != LOCDWORD(i,FILEID)		||
-		LOCDWORD(i,SAVED_XGRAPH)  != LOCDWORD(i,XGRAPH)		||
-		LOCDWORD(i,PREV_Z)        != LOCDWORD(i,COORDZ)		;
+	return  LOCDWORD(i,SAVED_X)       != LOCDWORD(i,COORDX)		||
+    		LOCDWORD(i,SAVED_Y)       != LOCDWORD(i,COORDY)		||
+    		LOCDWORD(i,SAVED_GRAPH)   != LOCDWORD(i,GRAPHID)	||
+    		LOCDWORD(i,SAVED_ANGLE)   != LOCDWORD(i,ANGLE)		||
+    		LOCDWORD(i,SAVED_ALPHA)   != LOCDWORD(i,ALPHA)		||
+    		LOCDWORD(i,SAVED_BLENDOP) != LOCDWORD(i,BLENDOP)	||
+    		LOCDWORD(i,SAVED_SIZE)    != LOCDWORD(i,GRAPHSIZE)	||
+    		LOCDWORD(i,SAVED_SIZEX)   != LOCDWORD(i,GRAPHSIZEX) ||
+    		LOCDWORD(i,SAVED_SIZEY)   != LOCDWORD(i,GRAPHSIZEY) ||
+    		LOCDWORD(i,SAVED_FLAGS)   != LOCDWORD(i,FLAGS)		||
+    		LOCDWORD(i,SAVED_FILE)	  != LOCDWORD(i,FILEID)		||
+    		LOCDWORD(i,SAVED_XGRAPH)  != LOCDWORD(i,XGRAPH)		||
+    		LOCDWORD(i,PREV_Z)        != LOCDWORD(i,COORDZ)		;
 }
 
 /*
@@ -800,17 +781,14 @@ int instance_exists (INSTANCE * i)
 
 INSTANCE * instance_next_by_priority()
 {
-	INSTANCE * i;
-	INSTANCE * j;
-	INSTANCE * best_prev;
-	INSTANCE * best_next;
-
-	if (iterator_by_priority == NULL)
-	{
+	INSTANCE * i = NULL ;
+	INSTANCE * j = NULL ;
+	INSTANCE * best_prev = NULL ;
+	INSTANCE * best_next = NULL ;
+	if (!iterator_by_priority) {
 		// NULL will be returned once and then the list will be reset
 
-		if (!iterator_reset)
-		{
+		if (!iterator_reset) {
 			iterator_reset = 1;
 			return NULL;
 		}
@@ -819,23 +797,18 @@ INSTANCE * instance_next_by_priority()
 		// Add all dirty instances to its place at the list
 
 		i = dirty_list;
-		while (i != NULL)
-		{
+		while (i != NULL) {
 			// Check the priority value
 
-			if (LOCDWORD(i, PRIORITY) < MIN_PRIORITY)
-				LOCDWORD(i, PRIORITY) = MIN_PRIORITY;
-			if (LOCDWORD(i, PRIORITY) > MAX_PRIORITY)
-				LOCDWORD(i, PRIORITY) = MAX_PRIORITY;
+			if (LOCDWORD(i, PRIORITY) < MIN_PRIORITY) LOCDWORD(i, PRIORITY) = MIN_PRIORITY;
+			if (LOCDWORD(i, PRIORITY) > MAX_PRIORITY) LOCDWORD(i, PRIORITY) = MAX_PRIORITY;
 
 			// Remove the instance from the list
 
-			if (i->prev_by_priority)
-				i->prev_by_priority->next_by_priority = i->next_by_priority;
-			if (i->next_by_priority)
-				i->next_by_priority->prev_by_priority = i->prev_by_priority;
-			if (first_by_priority == i)
-				first_by_priority = i->next_by_priority;
+			if (i->prev_by_priority) i->prev_by_priority->next_by_priority = i->next_by_priority;
+			if (i->next_by_priority) i->next_by_priority->prev_by_priority = i->prev_by_priority;
+
+			if (first_by_priority == i) first_by_priority = i->next_by_priority;
 
 			// Add the instance to the list. The easy case is when there is
 			// already some instance with the same priority.
@@ -846,67 +819,53 @@ INSTANCE * instance_next_by_priority()
             i->prev_by_priority = NULL;
 			i->next_by_priority = NULL;
 
-			while (j)
-			{
-				if (LOCDWORD(j, PRIORITY) == LOCDWORD(i, PRIORITY))
-				{
+			while (j) {
+				if (LOCDWORD(j, PRIORITY) == LOCDWORD(i, PRIORITY)) {
 					i->prev_by_priority = j;
 					i->next_by_priority = j->next_by_priority;
 					j->next_by_priority = i;
 
-					if (i->next_by_priority)
-						i->next_by_priority->prev_by_priority = i;
+					if (i->next_by_priority) i->next_by_priority->prev_by_priority = i;
 					break;
-				}
-				else if (LOCDWORD(j, PRIORITY) > LOCDWORD(i, PRIORITY))
-				{
+				} else if (LOCDWORD(j, PRIORITY) > LOCDWORD(i, PRIORITY)) {
 					best_prev = j;
-				}
-				else if (!best_next)
-				{
+				} else if (!best_next) {
 					best_next = j;
 				}
 
 				j = j->next_by_priority;
 			}
 
-			if (j == NULL)
-			{
+			if (!j) {
 				// No best case
-				if (best_prev)
-				{
+				if (best_prev) {
 					// But some instance was found with a lower priority
 
 					i->next_by_priority = best_prev->next_by_priority;
 					best_prev->next_by_priority = i;
 
-					if (i->next_by_priority)
-						i->next_by_priority->prev_by_priority = i;
+					if (i->next_by_priority) i->next_by_priority->prev_by_priority = i;
 
 				    i->prev_by_priority = best_prev; /* Splinter */
-				}
-				else if (best_next)
-				{
+				} else if (best_next) {
 					// But some instance was found with a higher priority
 
 					i->prev_by_priority = best_next->prev_by_priority;
 					best_next->prev_by_priority = i;
 
-					if (i->prev_by_priority)
+					if (i->prev_by_priority) {
 						i->prev_by_priority->next_by_priority = i;
-					else
+					} else {
 						first_by_priority = i;
+					}
 
 				    i->next_by_priority = best_next; /* Splinter */
-				}
-				else
-				{
+				} else {
 					// There are no instances in the list
 
 					first_by_priority   = i;
 				}
 			}
-
 			i->is_dirty = 0;
 			i = i->next_dirty;
 		}
@@ -915,12 +874,19 @@ INSTANCE * instance_next_by_priority()
 
 		dirty_list = NULL;
 
-		iterator_by_priority = first_by_priority->next_by_priority;
+		if (first_by_priority)
+		    iterator_by_priority = first_by_priority->next_by_priority;
+		else
+		    iterator_by_priority = NULL;
+
 		return first_by_priority;
 	}
 
 	i = iterator_by_priority;
-	iterator_by_priority = iterator_by_priority->next_by_priority;
+
+	if (iterator_by_priority)
+	    iterator_by_priority = iterator_by_priority->next_by_priority;
+
 	return i;
 }
 

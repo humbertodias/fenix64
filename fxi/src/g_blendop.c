@@ -323,8 +323,8 @@ void blend_grayscale (Sint16 * blend, int method)
 			r = GETR(i);
 			g = GETG(i);
 			b = GETB(i);
-			max = r > g ? r > b ? r : g : g > b ? g : b ;
-			min = r < g ? r < b ? r : g : g < b ? g : b ;
+			max = (r > g) ? (r > b) ? r : g : (g > b) ? g : b ;
+			min = (r < g) ? (r < b) ? r : g : (g < b) ? g : b ;
 			r = (max+min)/2;
 			blend[i] = MAKERGB(r, r, r) ;
 		}
@@ -336,7 +336,7 @@ void blend_grayscale (Sint16 * blend, int method)
 			r = GETR(i);
 			g = GETG(i);
 			b = GETB(i);
-			max = r > g ? r > b ? r : g : g > b ? g : b ;
+			max = (r > g) ? (r > b) ? r : g : (g > b) ? g : b ;
 			blend[i] = MAKERGB(max, max, max) ;
 		}
 	}

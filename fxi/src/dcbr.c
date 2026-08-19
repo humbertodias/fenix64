@@ -116,7 +116,7 @@ static int load_file (const char * filename, int n)
 
     while (!file_eof(fp))
     {
-        file_gets (fp, line, 2048) ;
+        file_qgets (fp, line, 2048) ;
         trim(line);
         if (allocated == count)
         {

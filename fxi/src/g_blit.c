@@ -89,6 +89,8 @@ Sint16  * ghost1;
 Sint16  * ghost2;
 Uint8   * ghost8;
 
+Uint16 * pcolorequiv = NULL ;
+
 /*
     Calculates additive blend value
 */
@@ -236,9 +238,6 @@ static int compare_vertex_y (const VERTEX * a, const VERTEX * b)
  *
  */
 
-extern Sint16 * ghost1;
-extern Sint16 * ghost2;
-extern Uint8  * ghost8;
 /*
 void draw_span_1to1(GRAPH * dest, GRAPH * orig, int x, int y, int pixels,
                     int s, int t, int incs, int inct)
@@ -280,8 +279,7 @@ void draw_span_1to1_nocolorkey(GRAPH * dest, GRAPH * orig, int x, int y, int pix
 }
 */
 
-void draw_span_1to8(GRAPH * dest, GRAPH * orig, int x, int y, int pixels,
-                    int s, int t, int incs, int inct)
+void draw_span_1to8(GRAPH * dest, GRAPH * orig, int x, int y, int pixels, int s, int t, int incs, int inct)
 {
     Uint8 * ptr = (Uint8 *)dest->data + dest->pitch*y + x ;
     int cs = s, ct = t, i;
@@ -295,8 +293,7 @@ void draw_span_1to8(GRAPH * dest, GRAPH * orig, int x, int y, int pixels,
     }
 }
 
-void draw_span_8to8_nocolorkey(GRAPH * dest, GRAPH * orig, int x, int y, int pixels,
-                                int s, int t, int incs, int inct)
+void draw_span_8to8_nocolorkey(GRAPH * dest, GRAPH * orig, int x, int y, int pixels, int s, int t, int incs, int inct)
 {
     Uint8 * ptr = (Uint8 *)dest->data + dest->pitch*y + x;
     int cs = s, ct = t, i;
@@ -394,7 +391,7 @@ void draw_span_8to16(GRAPH * dest, GRAPH * orig, int x, int y, int pixels,
     for (i = 0 ; i < pixels ; i++)
     {
         Uint8 * tex = (Uint8 *)orig->data + orig->pitch*(ct >> 16) + (cs >> 16);
-        if (*tex != 0) *ptr = colorequiv[*tex];
+        if (*tex != 0) *ptr = pcolorequiv[*tex];
         ptr++;
         cs += incs, ct += inct;
     }
@@ -410,7 +407,7 @@ void draw_span_8to16_ablend (GRAPH * dest, GRAPH * orig, int x, int y, int pixel
     for (i = 0 ; i < pixels ; i++)
     {
         Uint8 * tex = (Uint8 *)orig->data + orig->pitch*(ct >> 16) + (cs >> 16);
-        if (*tex != 0) *ptr = ablend(colorequiv[*tex],*ptr);
+        if (*tex != 0) *ptr = ablend(pcolorequiv[*tex],*ptr);
         ptr++;
         cs += incs, ct += inct;
     }
@@ -425,7 +422,7 @@ void draw_span_8to16_tablend(GRAPH * dest, GRAPH * orig, int x, int y, int pixel
     for (i = 0 ; i < pixels ; i++)
     {
         Uint8 * tex = (Uint8 *)orig->data + orig->pitch*(ct >> 16) + (cs >> 16);
-        if (*tex != 0) *ptr = ablend((Uint16)(ghost1[colorequiv[*tex]] + ghost2[*ptr]),*ptr);
+        if (*tex != 0) *ptr = ablend((Uint16)(ghost1[pcolorequiv[*tex]] + ghost2[*ptr]),*ptr);
         ptr++;
         cs += incs, ct += inct;
     }
@@ -440,7 +437,7 @@ void draw_span_8to16_translucent(GRAPH * dest, GRAPH * orig, int x, int y, int p
     for (i = 0 ; i < pixels ; i++)
     {
         Uint8 * tex = (Uint8 *)orig->data + orig->pitch*(ct >> 16) + (cs >> 16);
-        if (*tex != 0) *ptr = ghost1[colorequiv[*tex]] + ghost2[*ptr];
+        if (*tex != 0) *ptr = ghost1[pcolorequiv[*tex]] + ghost2[*ptr];
         ptr++;
         cs += incs, ct += inct;
     }
@@ -455,7 +452,7 @@ void draw_span_8to16_nocolorkey(GRAPH * dest, GRAPH * orig, int x, int y, int pi
     for (i = 0 ; i < pixels ; i++)
     {
         Uint8 * tex = (Uint8 *)orig->data + orig->pitch*(ct >> 16) + (cs >> 16);
-        *ptr++ = colorequiv[*tex];
+        *ptr++ = pcolorequiv[*tex];
         cs += incs, ct += inct;
     }
 }
@@ -652,7 +649,7 @@ void draw_hspan_8to16(Uint16 * scr, Uint8 * tex, int pixels, int incs)
 
     for (i = 0 ; i < pixels ; i++)
     {
-        if (*tex != 0) *scr = colorequiv[*tex];
+        if (*tex != 0) *scr = pcolorequiv[*tex];
         scr++;
         tex += incs;
     }
@@ -664,7 +661,7 @@ void draw_hspan_8to16_ablend(Uint16 * scr, Uint8 * tex, int pixels, int incs)
 
     for (i = 0 ; i < pixels ; i++)
     {
-        if (*tex != 0) *scr = ablend(colorequiv[*tex], *scr);
+        if (*tex != 0) *scr = ablend(pcolorequiv[*tex], *scr);
         scr++;
         tex += incs;
     }
@@ -676,7 +673,7 @@ void draw_hspan_8to16_tablend(Uint16 * scr, Uint8 * tex, int pixels, int incs)
 
     for (i = 0 ; i < pixels ; i++)
     {
-        if (*tex != 0) *scr = ablend((Uint16)(ghost1[colorequiv[*tex]] + ghost2[*scr]),*scr);
+        if (*tex != 0) *scr = ablend((Uint16)(ghost1[pcolorequiv[*tex]] + ghost2[*scr]),*scr);
         scr++;
         tex += incs;
     }
@@ -688,7 +685,7 @@ void draw_hspan_8to16_translucent(Uint16 * scr, Uint8 * tex, int pixels, int inc
 
     for (i = 0 ; i < pixels ; i++)
     {
-        if (*tex != 0) *scr = ghost1[colorequiv[*tex]] + ghost2[*scr];
+        if (*tex != 0) *scr = ghost1[pcolorequiv[*tex]] + ghost2[*scr];
         scr++;
         tex += incs;
     }
@@ -700,7 +697,7 @@ void draw_hspan_8to16_nocolorkey(Uint16 * scr, Uint8 * tex, int pixels, int incs
 
     for (i = 0 ; i < pixels ; i++)
     {
-        *scr++ = colorequiv[*tex];
+        *scr++ = pcolorequiv[*tex];
         tex += incs;
     }
 }
@@ -966,10 +963,10 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
 
     if (clip)
     {
-        min.x = MAX( clip->x, 0 );
-        min.y = MAX( clip->y, 0 );
-        max.x = MIN( clip->x2, (int)dest->width - 1 );
-        max.y = MIN( clip->y2, (int)dest->height - 1 );
+        min.x = MAX(clip->x, 0 );
+        min.y = MAX(clip->y, 0 );
+        max.x = MIN(clip->x2, (int)dest->width - 1);
+        max.y = MIN(clip->y2, (int)dest->height - 1);
     }
     else
     {
@@ -1018,12 +1015,9 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
 
     /* Analize the bitmap if needed (find if no color key used */
 
-    if (gr->modified)
-        bitmap_analize (gr) ;
+    if (gr->modified) bitmap_analize (gr) ;
 
-    if (gr->info_flags & GI_NOCOLORKEY) {
-        flags |= B_NOCOLORKEY ;
-    }
+    if (gr->info_flags & GI_NOCOLORKEY) flags |= B_NOCOLORKEY ;
 
     /* Setup the 16 bits translucency tables if necessay */
 
@@ -1052,8 +1046,7 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
         ghost8 = (Uint8 *)trans_table ;
     }
 /*
-    if ((flags & B_TRANSLUCENT) && !trans_table_updated)
-        gr_make_trans_table() ;
+    if ((flags & B_TRANSLUCENT) && !trans_table_updated) gr_make_trans_table() ;
 */
     #ifdef MMX_FUNCTIONS
     if (MMX_available) {
@@ -1093,6 +1086,8 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
     }
     else if (dest->depth == 16 && gr->depth == 8)
     {
+        pcolorequiv = gr->palette ? gr->palette->colorequiv : colorequiv ;
+
         if (flags & B_TRANSLUCENT){
             if(flags & B_ABLEND){
                 bt=0;
@@ -1325,10 +1320,10 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 
     if (clip)
     {
-        min.x = MAX( clip->x, 0 );
-        min.y = MAX( clip->y, 0 );
-        max.x = MIN( clip->x2, (int)dest->width-1 );
-        max.y = MIN( clip->y2, (int)dest->height-1 );
+        min.x = MAX(clip->x, 0);
+        min.y = MAX(clip->y, 0);
+        max.x = MIN(clip->x2, (int)dest->width - 1);
+        max.y = MIN(clip->y2, (int)dest->height - 1);
     }
     else
     {
@@ -1340,11 +1335,9 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 
     /* Analize the bitmap if needed (find if no color key used */
 
-    if (gr->modified)
-        bitmap_analize (gr) ;
+    if (gr->modified) bitmap_analize (gr) ;
 
-    if (gr->info_flags & GI_NOCOLORKEY)
-        flags |= B_NOCOLORKEY ;
+    if (gr->info_flags & GI_NOCOLORKEY) flags |= B_NOCOLORKEY ;
 
     /* Setup the 16 bits translucency tables if necessay */
 
@@ -1372,9 +1365,9 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
         ghost1 = ghost2 = colorghost ;
         ghost8 = (Uint8 *)trans_table ;
     }
+
 /*
-    if ((flags & B_TRANSLUCENT) && !trans_table_updated)
-        gr_make_trans_table() ;
+    if ((flags & B_TRANSLUCENT) && !trans_table_updated) gr_make_trans_table() ;
 */
     #ifdef MMX_FUNCTIONS
     if (MMX_available) {
@@ -1441,6 +1434,8 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
     }
     else if (dest->depth == 16 && gr->depth == 8)
     {
+        pcolorequiv = gr->palette ? gr->palette->colorequiv : colorequiv ;
+
         if (flags & B_TRANSLUCENT){
             if(flags & B_ABLEND){
                 bt=0;
@@ -1472,8 +1467,9 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
             }else if(flags & B_SBLEND){
                 bt=1;
                 draw_hspan = draw_hspan_16to16_tablend;
-            }else
+            }else{
                 draw_hspan = draw_hspan_16to16_translucent;
+            }
         }
         else if(flags & B_ABLEND){
             bt=0;
@@ -1562,10 +1558,8 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 
     /* Mirror the texture coordinates if needed */
 
-    if (flags & B_HMIRROR)
-        s = gr->width - 1 - s;
-    if (flags & B_VMIRROR)
-        t = gr->height - 1 - t;
+    if (flags & B_HMIRROR) s = gr->width - 1 - s;
+    if (flags & B_VMIRROR) t = gr->height - 1 - t;
 
     /* Calculate the initial pointers and advances */
 
@@ -1576,20 +1570,19 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
     tex_inc   = gr->pitch ;
     direction = 1;
 
-    if (flags & B_VMIRROR)
-        tex_inc = -tex_inc;
-    if (flags & B_HMIRROR)
-        direction = -1;
+    if (flags & B_VMIRROR) tex_inc = -tex_inc;
+    if (flags & B_HMIRROR) direction = -1;
 
     if (p > 0)
     {
-        for (i = 0 ; i < l ; i++)
+        for (i = 0; i < l; i++)
         {
             (*draw_hspan) (scr, tex, p, direction);
             scr = (Uint8 *)scr + scr_inc;
             tex = (Uint8 *)tex + tex_inc;
         }
     }
+
     dest->modified = 1 ;
 }
 
