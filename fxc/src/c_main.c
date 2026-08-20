@@ -157,11 +157,7 @@ int identifier_import ;
 
 int reserved_words ;
 
-#ifdef TARGET_MAC
-static int debug ;
-#else
-int debug;
-#endif
+extern int debug;
 
 void compile_init ()
 {
