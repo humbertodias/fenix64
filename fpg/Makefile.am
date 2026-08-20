@@ -5,7 +5,7 @@ bin_PROGRAMS=fpg
 
 INCLUDES = $(COMMON_CFLAGS)
 
-fpg_LDADD=$(COMMON_LIBS) -lz  -lungif -lpng
+fpg_LDADD=$(COMMON_LIBS) -lz $(GIF_LIB) -lpng
 
 SOURCE_FILES=fpg.c
 

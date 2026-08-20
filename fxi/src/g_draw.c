@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright  1999 Jos Luis Cebrin Page
+ *  Copyright  2002 Fenix Team
  *
  */
 
@@ -50,7 +50,7 @@ Uint32   drawing_stipple = 0xFFFFFFFF;
 DRAWING_OBJECT * drawing_objects = NULL;
 
 #ifdef __GNUC__
-#define _inline inline
+#define _inline static inline
 #endif
 
 _inline void _HLine8_nostipple (Uint8 * ptr, Uint32 length)
@@ -928,7 +928,7 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
 
     dest->modified = 1 ;
 
-    /* Clipping de la línea - INCORRECTO pero funcional */
+    /* Clipping de la lnea - INCORRECTO pero funcional */
 
 /* TODO: SE NECESITA CORREGIR CLIPPING EN LINE */
 #if 0
@@ -998,7 +998,7 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
     vinc = (h > 0) ? dest->pitch : -(int)dest->pitch ;
     if (dest->depth == 16) vinc /= 2;
 
-    /* Aquí va una implementación deprisa y corriendo de Bresenham */
+    /* Aqu va una implementacin deprisa y corriendo de Bresenham */
 
     w = ABS(w) ;
     h = ABS(h) ;
@@ -1175,8 +1175,9 @@ void gr_bezier (GRAPH * dest, REGION * clip, int * params)
  *
  */
 
-int info_object (DRAWING_OBJECT * dr, REGION * clip)
+int info_object (void * what, REGION * clip)
 {
+    DRAWING_OBJECT * dr = (DRAWING_OBJECT *) what;
     REGION newclip;
 
     switch (dr->type)
@@ -1224,8 +1225,9 @@ int info_object (DRAWING_OBJECT * dr, REGION * clip)
  *
  */
 
-void draw_object (DRAWING_OBJECT * dr, REGION * clip)
+void draw_object (void * what, REGION * clip)
 {
+    DRAWING_OBJECT * dr = (DRAWING_OBJECT *) what;
     int b8 = syscolor8;
     int b16 = syscolor16;
 

@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
+ *  Copyright ù 2002 Fenix Team
  *
  */
 
@@ -63,7 +63,7 @@ typedef struct _text
 	int color16 ;
 	int objectid ;
 	int last_value ;
-	char * text ;           /* Memoria din·mica */
+	char * text ;           /* Memoria dinùmica */
 	const void * var  ;		/* CHANGED TO VOID to allow diff. data types */
 } TEXT;
 
@@ -166,8 +166,9 @@ static const char * get_text (TEXT * text)
  *
  */
 
-static int info_text (TEXT * text, REGION * bbox)
+static int info_text (void * what, REGION * bbox)
 {
+	TEXT * text = (TEXT *) what;
 	const char * str = get_text(text);
 	int x, y, width, height;
 	REGION prev = *bbox;
@@ -285,8 +286,9 @@ static int info_text (TEXT * text, REGION * bbox)
  *
  */
 
-void draw_text (TEXT * text, REGION * clip)
+void draw_text (void * what, REGION * clip)
 {
+	TEXT * text = (TEXT *) what;
 	const char * str = get_text(text);
 	int save8, save16;
 	int x, y, width, height;

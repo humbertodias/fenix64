@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
+ *  Copyright ù 2002 Fenix Team
  *
  */
 
@@ -290,7 +290,7 @@ static Uint8    zonearray[128/8];
 extern int default_palette[];
 
 /* ---------------------------------------------------------------------- */
-/* GestiÛn de regiones                                                    */
+/* Gestiùn de regiones                                                    */
 /* ---------------------------------------------------------------------- */
 
 REGION    regions[32] ;
@@ -450,7 +450,7 @@ void region_destroy (REGION * region)
 }
 
 /* ---------------------------------------------------------------------- */
-/* GestiÛn de eventos (ratÛn, teclado)                                    */
+/* Gestiùn de eventos (ratùn, teclado)                                    */
 /* ---------------------------------------------------------------------- */
 
 void add_key_equiv(int equiv, int keyconst)
@@ -578,7 +578,7 @@ static void do_events ()
     keypress = 0 ;
     m = SDL_GetModState() ;
 
-    /* El cambio de mouse.x/y afecta directamente al ratÛn */
+    /* El cambio de mouse.x/y afecta directamente al ratùn */
 
     if (last_mouse_x != -1 && (GLODWORD(MOUSEX) != last_mouse_x || GLODWORD(MOUSEY) != last_mouse_y))
     {
@@ -665,7 +665,7 @@ static void do_events ()
 */
             case SDL_KEYDOWN:
 
-                /* Teclas del sistema ALT+... (sÛlo modo debug) */
+                /* Teclas del sistema ALT+... (sùlo modo debug) */
 
                 if (dcb.data.NID != 0 && (e.key.keysym.mod & KMOD_LALT))
                 {
@@ -779,7 +779,7 @@ static void do_events ()
                     }
                 }
 
-                /* Almacena la pulsaciÛn de la tecla */
+                /* Almacena la pulsaciùn de la tecla */
 
                 k = sdl_equiv[e.key.keysym.sym];
                 if (k == 0)
@@ -878,7 +878,7 @@ static void do_events ()
 
 
 /* ---------------------------------------------------------------------- */
-/* InicializaciÛn y controles de tiempo                                   */
+/* Inicializaciùn y controles de tiempo                                   */
 /* ---------------------------------------------------------------------- */
 
 /*
@@ -1016,7 +1016,7 @@ int gr_timer()
     return last_frame_ticks;
 }
 
-/* Rutinas gr·ficas de alto nivel */
+/* Rutinas grùficas de alto nivel */
 
 void draw_instance_at (INSTANCE * proc_ptr, REGION * region, int x, int y)
 {
@@ -1070,7 +1070,7 @@ void draw_instance_at (INSTANCE * proc_ptr, REGION * region, int x, int y)
     if (LOCDWORD(i,BLENDOP) != 0) map->blend_table = blend_table;
 }
 
-void draw_instance (INSTANCE * proc_ptr, REGION * clip)
+void draw_instance (void * proc_ptr, REGION * clip)
 {
     INSTANCE * i = (INSTANCE *) proc_ptr ;
     GRAPH * map ;
@@ -1337,9 +1337,11 @@ void gr_destroy_object (int id)
     }
 }
 
-int compare_actions (const OBJECT * a1, const OBJECT * a2)
+int compare_actions (const void * a1, const void * a2)
 {
-    return ((a1->z == a2->z) ? a1->id - a2->id : a2->z - a1->z) ;
+    const OBJECT * o1 = a1;
+    const OBJECT * o2 = a2;
+    return ((o1->z == o2->z) ? o1->id - o2->id : o2->z - o1->z) ;
 }
 
 void draw_mode7 (void * ptr, REGION * clip)
@@ -1675,7 +1677,7 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
             i = i->next ;
         }
 
-        /* AÒade los objetos creados por DLLs */
+        /* Aùade los objetos creados por DLLs */
 
         if (object_list_allocated <= object_count+dll_object_count+32)
         {
@@ -1689,7 +1691,7 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
             if (object->hidden == 0) object_list[object_count++] = object->x ;
         }
 
-        /* AÒade las acciones fijas internas, como dibujar textos */
+        /* Aùade las acciones fijas internas, como dibujar textos */
 
         if (GLODWORD(MOUSEGRAPH))
         {
@@ -1712,7 +1714,7 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
             object_count++ ;
         }
 
-        /* AÒade los planos de scroll que haya activos */
+        /* Aùade los planos de scroll que haya activos */
 
         for (n = 0 ; n < 10 ; n++)
         {
@@ -1746,7 +1748,7 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
             }
         }
 
-        /* Ordena por Z la lista y ejecuta cada acciÛn */
+        /* Ordena por Z la lista y ejecuta cada acciùn */
 
         qsort (object_list, object_count, sizeof(OBJECT), compare_actions) ;
 
@@ -1902,7 +1904,7 @@ void gr_draw_frame ()
 {
     if (jump)
     {
-        do_events() ;       /* Recoge teclas y dem·s     */
+        do_events() ;       /* Recoge teclas y demùs     */
         current_jump++ ;
         return ;
     }
@@ -1948,11 +1950,11 @@ void gr_draw_frame ()
 
     gr_unlock_screen() ;
 
-    do_events() ;       /* Recoge teclas y dem·s     */
+    do_events() ;       /* Recoge teclas y demùs     */
 
 }
 
-/* FunciÛn de inicializaciÛn de la librerÌa gr·fica */
+/* Funciùn de inicializaciùn de la librerùa grùfica */
 
 static int screen_locked = 0 ;
 
@@ -2194,7 +2196,7 @@ void gr_init(int width, int height)
     background_8bits = NULL;
     background_8bits_used = 0;
 
-    /* Inicializa el modo gr·fico */
+    /* Inicializa el modo grùfico */
 
     if (scr_initialized && scrbitmap)
     {

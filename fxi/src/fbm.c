@@ -87,28 +87,49 @@ static void arrange_keyframes (GRAPH * graph)
 
 
 
-int fbm_insert_frame(gr, frame, where)
+int fbm_insert_frame(GRAPH * gr, int frame, int where)
 {
+	(void)gr;
+	(void)frame;
+	(void)where;
+	return 0;
 }
 
-int fbm_remove_frame(gr, frame)
+int fbm_remove_frame(GRAPH * gr, int frame)
 {
+	(void)gr;
+	(void)frame;
+	return 0;
 }
 
-int fbm_insert_keyframe(gr, keyframe, where)
+int fbm_insert_keyframe(GRAPH * gr, int keyframe, int where)
 {
+	(void)gr;
+	(void)keyframe;
+	(void)where;
+	return 0;
 }
 
-int fbm_remove_keyframe(gr, keyframe)
+int fbm_remove_keyframe(GRAPH * gr, int keyframe)
 {
+	(void)gr;
+	(void)keyframe;
+	return 0;
 }
 
-int fbm_insert_sequence(gr, seq, where)
+int fbm_insert_sequence(GRAPH * gr, int seq, int where)
 {
+	(void)gr;
+	(void)seq;
+	(void)where;
+	return 0;
 }
 
-int fbm_remove_sequence(gr, seq)
+int fbm_remove_sequence(GRAPH * gr, int seq)
 {
+	(void)gr;
+	(void)seq;
+	return 0;
 }
 
 

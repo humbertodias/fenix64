@@ -147,8 +147,10 @@ static int gprof_allocate (int count)
  *		> 1 if sample b should be drawn first
  */
 
-static int gprof_compare (const int * a, const int * b)
+static int gprof_compare (const void * va, const void * vb)
 {
+	const int * a = va;
+	const int * b = vb;
 	if (samples[*b].parent == samples[*a].parent)
 	{
 		int timediff;

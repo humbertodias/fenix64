@@ -40,14 +40,14 @@ int keyoffset = 0;
  *	Comparison functions used by sort_variables
  */
 
-int compare_int		(const Sint32 * a, const Sint32 * b)	{ return *(Sint32 *)((Uint8 *)a + keyoffset) - *(Sint32 *)((Uint8 *)b + keyoffset); }
-int compare_dword	(const Uint32 * a, const Uint32 * b)	{ return *(Uint32 *)((Uint8 *)a + keyoffset) - *(Uint32 *)((Uint8 *)b + keyoffset); }
-int compare_word	(const Uint16 * a, const Uint16 * b)	{ return *(Uint16 *)((Uint8 *)a + keyoffset) - *(Uint16 *)((Uint8 *)b + keyoffset); }
-int compare_short   (const Sint16 * a, const Sint16 * b)	{ return *(Sint16 *)((Uint8 *)a + keyoffset) - *(Sint16 *)((Uint8 *)b + keyoffset); }
-int compare_byte    (const Uint8  * a, const Uint8  * b)	{ return *(Uint8  *)((Uint8 *)a + keyoffset) - *(Uint8  *)((Uint8 *)b + keyoffset); }
-int compare_sbyte   (const Sint8  * a, const Sint8  * b)	{ return *(Sint8  *)((Uint8 *)a + keyoffset) - *(Sint8  *)((Uint8 *)b + keyoffset); }
-int compare_float   (const float  * a, const float  * b)	{ return *(float  *)((Uint8 *)a + keyoffset) - *(float  *)((Uint8 *)b + keyoffset); }
-int compare_string  (const int    * a, const int    * b)	{ return strcmp(string_get(*(int *)((Uint8 *)a + keyoffset)), string_get(*(int *)((Uint8 *)b + keyoffset))); }
+int compare_int		(const void * a, const void * b)	{ return *(Sint32 *)((Uint8 *)a + keyoffset) - *(Sint32 *)((Uint8 *)b + keyoffset); }
+int compare_dword	(const void * a, const void * b)	{ return *(Uint32 *)((Uint8 *)a + keyoffset) - *(Uint32 *)((Uint8 *)b + keyoffset); }
+int compare_word	(const void * a, const void * b)	{ return *(Uint16 *)((Uint8 *)a + keyoffset) - *(Uint16 *)((Uint8 *)b + keyoffset); }
+int compare_short   (const void * a, const void * b)	{ return *(Sint16 *)((Uint8 *)a + keyoffset) - *(Sint16 *)((Uint8 *)b + keyoffset); }
+int compare_byte    (const void * a, const void * b)	{ return *(Uint8  *)((Uint8 *)a + keyoffset) - *(Uint8  *)((Uint8 *)b + keyoffset); }
+int compare_sbyte   (const void * a, const void * b)	{ return *(Sint8  *)((Uint8 *)a + keyoffset) - *(Sint8  *)((Uint8 *)b + keyoffset); }
+int compare_float   (const void * a, const void * b)	{ return *(float  *)((Uint8 *)a + keyoffset) - *(float  *)((Uint8 *)b + keyoffset); }
+int compare_string  (const void * a, const void * b)	{ return strcmp(string_get(*(int *)((Uint8 *)a + keyoffset)), string_get(*(int *)((Uint8 *)b + keyoffset))); }
 
 /*
  *  FUNCTION : dcb_typedef_reduce

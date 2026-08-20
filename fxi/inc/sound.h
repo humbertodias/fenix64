@@ -27,7 +27,11 @@
 #ifndef __SOUND_H
 #define __SOUND_H
 
+#ifdef TARGET_MAC
+#include <SDL/SDL_mixer.h>
+#else
 #include "SDL_mixer.h"
+#endif
 
 void            sound_init      ();
 void            sound_close     ();

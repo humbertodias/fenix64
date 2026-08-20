@@ -421,7 +421,7 @@ static int gr_read_lib (file * fp)
 		}
 
 		grlib_add_map (libid, gr) ;
-        pal_map_assign (libid, gr, pal) ;
+        pal_map_assign (libid, gr->code, pal) ;
 	}
 
     pal_destroy (pal) ; // Elimino la instancia inicial

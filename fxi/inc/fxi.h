@@ -146,7 +146,7 @@ extern int report_graphics ;
 #include "sound.h"
 #include "flic.h"
 
-extern void   do_exit       () ;
+extern void   do_exit       (int n) ;
 extern int    dcb_load      (const char * filename) ;
 extern int    dcb_load_from (file * fp, int offset) ;
 extern char * getid         (unsigned int code) ;

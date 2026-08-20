@@ -167,7 +167,7 @@ int fgc_load (const char * filename)
 			break;
 		}
 		grlib_add_map (id, graph);
-		if (graph->depth == 8 && !graph->palette) pal_map_assign(id, graph, pal);
+		if (graph->depth == 8 && !graph->palette) pal_map_assign(id, graph->code, pal);
 	}
 
 	free(offsets);

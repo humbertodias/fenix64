@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
+ *  Copyright ù 2002 Fenix Team
  *
  *
  */
@@ -31,12 +31,14 @@
  */
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "fxi.h"
 
 
 typedef struct {
 	char *file;
-	int *id, (*fn)();
+	int *id;
+	int (*fn)(const char *);
 } bgdata ;
 
 /**
@@ -47,7 +49,7 @@ typedef struct {
 bgdata *prep(int *params){
 	bgdata *t=(bgdata*)malloc(sizeof(bgdata));
 	t->file=(char *)string_get(params[0]);
-	t->id=(int*)params[1];
+	t->id=(int *)(intptr_t)params[1];
 	string_discard(params[0]);
 	return t;
 }
