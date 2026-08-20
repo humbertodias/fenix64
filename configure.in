@@ -138,20 +138,35 @@ if test "$fxi" = yes; then
                 ;;
         esac
     fi
-    case "$target_os" in
-        mingw*)
-            dnl AC_CHECK_LIB uses main(); -lSDLmain/-mwindows expect SDL_main/WinMain.
-            SDL_MIXER_CHECK_LIBS="-lSDL -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi"
-            ;;
-        *)
-            SDL_MIXER_CHECK_LIBS="-lSDL"
-            ;;
-    esac
-    AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, [
+    AC_MSG_CHECKING([for SDL_mixer.h])
+    sdl_mixer_h=""
+    for d in \
+        $MINGW_PREFIX/include/SDL \
+        $FENIX_DEPS/include/SDL \
+        /usr/include/SDL \
+        /usr/local/include/SDL \
+        /opt/homebrew/include/SDL
+    do
+        if test -n "$d" && test -f "$d/SDL_mixer.h"; then
+            sdl_mixer_h="$d/SDL_mixer.h"
+            break
+        fi
+    done
+    if test -z "$sdl_mixer_h"; then
+        for d in `echo "$SDL_CFLAGS $SDL_MIXER_CFLAGS $CPPFLAGS" | tr ' ' '\n' | sed -n 's/^-I//p'`; do
+            if test -f "$d/SDL_mixer.h"; then
+                sdl_mixer_h="$d/SDL_mixer.h"
+                break
+            fi
+        done
+    fi
+    if test -n "$sdl_mixer_h"; then
         SDL_MIXER_LIBS="-lSDL_mixer"
-    ], [
+        AC_MSG_RESULT([$sdl_mixer_h])
+    else
+        AC_MSG_RESULT([no])
         AC_MSG_ERROR([*** SDL_mixer 1.2 not found (need SDL_mixer 1.2, not SDL2/SDL3_mixer)])
-    ], [$SDL_MIXER_CHECK_LIBS])
+    fi
     case "$target_os" in
         linux-gnu*|kfreebsd-gnu*)
             AC_CHECK_LIB(X11, [XQueryTree,XMoveWindow],,)

@@ -217,7 +217,7 @@ jobs:
           export LDFLAGS="-L$MINGW_PREFIX/lib"
           export SDL_CONFIG="$MINGW_PREFIX/bin/sdl-config"
           ./configure --host="$HOST" --enable-fpg --enable-map --disable-sdltest \
-            || { echo '===== config.log (tail) ====='; tail -n 80 config.log; exit 1; }
+            || { echo '===== SDL_mixer / config.log ====='; ls -l "$MINGW_PREFIX/include/SDL" || true; grep -A 40 'SDL_mixer' config.log || tail -n 120 config.log; exit 1; }
 
       - name: Build
         run: make -j"$(nproc)"
