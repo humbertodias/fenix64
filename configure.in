@@ -96,7 +96,7 @@ AC_PROG_INSTALL
 dnl Check for compilers
 AC_PROG_CC
 
-AC_CHECK_LIB(m,fabs,LIBS="$LIBS",AC_MSG_RESULT(math library not found))
+AC_CHECK_LIB(m, fabs, [LIBS="-lm $LIBS"], [AC_MSG_RESULT(math library not found)])
 
 if test "x$enable_debug" = "xyes"; then
 	CFLAGS="-g $INCLUDES"

@@ -341,7 +341,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I../inc -DDEBUG
-fxi_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng $(SDL_MIXER_LIBS)
+fxi_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng $(SDL_MIXER_LIBS) -lm
 SOURCE_FILES = main.c dcbr.c instance.c strings.c \
               i_main.c i_debug.c i_func.c \
 	          g_main.c g_maps.c g_blit.c g_texts.c g_pal.c g_draw.c \

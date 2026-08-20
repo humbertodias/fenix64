@@ -5,7 +5,7 @@ bin_PROGRAMS = fxi
 
 INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I../inc -DDEBUG
 
-fxi_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng $(SDL_MIXER_LIBS)
+fxi_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng $(SDL_MIXER_LIBS) -lm
 
 SOURCE_FILES = main.c dcbr.c instance.c strings.c \
               i_main.c i_debug.c i_func.c \
