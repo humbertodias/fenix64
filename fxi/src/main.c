@@ -273,7 +273,7 @@ int main (int argc, char **argv)
 
 		if (!filename)
 		{
-			gr_error ( FXI_VERSION "\nCopyright(C) 2002 Fenix Team\nCopyright (C)1999 Jose Luis Cebrian\n"
+			gr_error ( FXI_VERSION "\nCopyright(C) 2002 Fenix Team\nCopyright(C) 1999 Jose Luis Cebrian\n"
 				"Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n"
 				"Usage: %s [options] file.dcb\n\n"
 				"   -d       Activate DEBUG mode\n"
@@ -374,4 +374,3 @@ int main (int argc, char **argv)
 	do_exit(0);
 	return 0;
 }
-
