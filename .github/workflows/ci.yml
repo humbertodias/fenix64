@@ -22,7 +22,7 @@ env:
 
 jobs:
   linux:
-    name: Linux (${{ env.LINKAGE }})
+    name: Linux (${{ inputs.linkage || 'static' }})
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -72,7 +72,7 @@ jobs:
             fpg/fpg
 
   macos:
-    name: macOS (${{ env.LINKAGE }})
+    name: macOS (${{ inputs.linkage || 'static' }})
     runs-on: macos-latest
     env:
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -132,7 +132,7 @@ jobs:
           path: dist/*
 
   windows-mingw:
-    name: Windows (MinGW, ${{ env.LINKAGE }})
+    name: Windows (MinGW, ${{ inputs.linkage || 'static' }})
     runs-on: ubuntu-latest
     env:
       HOST: x86_64-w64-mingw32
