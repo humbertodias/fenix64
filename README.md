@@ -1,51 +1,55 @@
 [![CI](https://github.com/humbertodias/fenix64/actions/workflows/ci.yml/badge.svg)](https://github.com/humbertodias/fenix64/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/humbertodias/fenix64/actions/workflows/pages.yml/badge.svg)](https://github.com/humbertodias/fenix64/actions/workflows/pages.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/humbertodias/fenix64)
+![GitHub all releases](https://img.shields.io/github/downloads/humbertodias/fenix64/total)
 
 # Fenix Project 1.0
 
-Instrucciones para poder compilar el proyecto.
+Interpreted script language for 2D games: compiler `fxc`, interpreter `fxi`, and the `map` / `fpg` graphic tools.
 
-## WIN32 (MinGW) (base para cualquier UNIX)
+- [API reference](https://humbertodias.github.io/fenix64/docs/) — Doxygen docs for `fxc`, `fxi`, `map`, and `fpg` (published from `main` via GitHub Pages).
 
-El proyecto compila como cualquier versión UNIX.
+## Install
 
-Se necesita los siguientes paquetes (que pueden ser instalados en cualquier directorio del sistema MinGW, solo Win32):
+The installer defaults to a **static** build.
 
-- MinGW-5.1.0
-  - `mingw-runtime-3.11.tar.gz`
-  - `w32api-3.8.tar.gz`
-  - `binutils-2.15.91-20040904-1.tar.gz`
-  - `gcc-core-3.4.2-20040916-1.tar.gz`
-  - `gcc-g++-3.4.2-20040916-1.tar.gz`
-  - `mingw32-make-3.80.0-3.tar.gz`
-- `MSYS-1.0.10.exe`
+Linux / macOS / Git Bash:
 
-Libs válidas también para sistemas UNIX:
-
-- `libpng-1.2.12.tar.gz`
-- `SDL-1.2.11.tar.gz`
-- `SDL_mixer-1.2.7.tar.gz`
-- `smpeg-0.4.3.tar.gz`
-- `zlib-1.2.3.tar.gz`
-
-**Notas:**
-
-- Si bien estas son las versiones utilizadas en esta compilación, cualquier versión de estos paquetes debería funcionar correctamente.
-- Si tenemos instalado MSVC, en la consola MSYS asegurémonos de eliminar el seteo de las variables de compilación del MSVC (`INCLUDE`, `LIB`, etc.).
-- Solo en Windows: copiar la `SDL.dll` en el directorio raíz del Fenix antes de correr configure.
-
-Pasos a seguir para compilar:
-
-```sh
-./configure --enable-fpg --enable-map
-make
+```shell
+curl -sL "https://raw.githubusercontent.com/humbertodias/fenix64/main/scripts/install.sh" | bash
 ```
 
-## WIN32 (MSVC) (no actualizado a partir de la versión 0.85)
+Shared libraries:
 
-El proyecto está preparado para compilar a partir de una estructura como la siguiente:
+```shell
+curl -sL "https://raw.githubusercontent.com/humbertodias/fenix64/main/scripts/install.sh" | FENIX_LINKAGE=shared bash
+```
 
-```text
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/humbertodias/fenix64/main/scripts/install.ps1 | iex
+```
+
+Shared DLLs:
+
+```powershell
+$env:FENIX_LINKAGE = "shared"
+irm https://raw.githubusercontent.com/humbertodias/fenix64/main/scripts/install.ps1 | iex
+```
+
+It installs `fxc`, `fxi`, `map`, and `fpg` into `$HOME/fenix` (`FENIX_HOME`) and prepends that directory to `PATH`.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FENIX_HOME` | `$HOME/fenix` | Install directory |
+| `FENIX_VERSION` | `latest` | Release tag |
+| `FENIX_LINKAGE` | `static` | `static` or `shared` archive |
+| `FENIX_REPO` | `humbertodias/fenix64` | GitHub repository |
+
+## Project Structure
+
+```
 /<FENIXROOT>
   |
   |- FENIX (contenido de este módulo de CVS)
@@ -62,28 +66,4 @@ El proyecto está preparado para compilar a partir de una estructura como la sig
   |- LIBUNGIF (si quieres compilar MAP.EXE necesitas la LIBUNGIF)
 ```
 
-Versiones con que se compila actualmente el CVS:
-
-- [SDL 1.2.8](https://www.libsdl.org)
-- [SDL_mixer 1.2.6](https://www.libsdl.org)
-- [ZLIB 1.2.3](https://www.zlib.net)
-- [LIBPNG 1.2.8](https://www.libpng.org)
-- [LIBUNGIF 4.0](https://sourceforge.net/projects/libungif)
-
-Se incluyen los ficheros DSW y DSP necesarios para poder compilar en Visual Studio 6, que es el compilador "oficial" de la versión Win32. Estos ficheros pueden recuperarse desde versiones posteriores de Visual Studio sin problemas.
-
-## Linux
-
-Ver [WIN32 (MinGW)](#win32-mingw-base-para-cualquier-unix), excepto paquetes MinGW y MSYS.
-
-## BeOS
-
-Ver [WIN32 (MinGW)](#win32-mingw-base-para-cualquier-unix), excepto paquetes MinGW y MSYS.
-
-## macOS
-
-Ver [WIN32 (MinGW)](#win32-mingw-base-para-cualquier-unix), excepto paquetes MinGW y MSYS.
-
-## Dreamcast
-
-## GP32
+See [BUILDING.md](BUILDING.md) for Docker outputs, macOS (Homebrew), and native autoconf/`make`.
