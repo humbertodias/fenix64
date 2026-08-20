@@ -51,37 +51,37 @@
 #define COMMAND_HISTORY 128
 
 #define HELPTXT \
-            "\xAC02Process Info\xAC07\n"                                          \
-            "\xAC04INSTANCES      \xAC07  List all running processes\n"           \
-            "\xAC04GLOBALS        \xAC07  Show global vars with values\n"         \
-            "\xAC04LOCALS proc    \xAC07  Show a process's local vars\n"          \
-            "\xAC04PRIVATES proc  \xAC07  Show a process's private vars\n"        \
-            "\xAC04PUBLICS proc   \xAC07  Show a process's public vars\n"         \
+            "\xAC" "02Process Info\xAC" "07\n"                                          \
+            "\xAC" "04INSTANCES      \xAC" "07  List all running processes\n"           \
+            "\xAC" "04GLOBALS        \xAC" "07  Show global vars with values\n"         \
+            "\xAC" "04LOCALS proc    \xAC" "07  Show a process's local vars\n"          \
+            "\xAC" "04PRIVATES proc  \xAC" "07  Show a process's private vars\n"        \
+            "\xAC" "04PUBLICS proc   \xAC" "07  Show a process's public vars\n"         \
             "\n"                                                            \
-            "\xAC02Debugging Commands\xAC07\n"                                    \
-            "\xAC04TRACE          \xAC07  Execute one instruction and Debug\n"    \
-            "\xAC04BREAK          \xAC07  List breakpoints\n"                     \
-            "\xAC04BREAK proc     \xAC07  Add a breakpoint on process execution\n"\
-            "\xAC04DELETE proc    \xAC07  Delete a breakpoint\n"                  \
-            "\xAC04CONTINUE       \xAC07  Continue the execution\n"               \
-            "\xAC04DOFRAME        \xAC07  Continue to next frame\n"               \
+            "\xAC" "02Debugging Commands\xAC" "07\n"                                    \
+            "\xAC" "04TRACE          \xAC" "07  Execute one instruction and Debug\n"    \
+            "\xAC" "04BREAK          \xAC" "07  List breakpoints\n"                     \
+            "\xAC" "04BREAK proc     \xAC" "07  Add a breakpoint on process execution\n"\
+            "\xAC" "04DELETE proc    \xAC" "07  Delete a breakpoint\n"                  \
+            "\xAC" "04CONTINUE       \xAC" "07  Continue the execution\n"               \
+            "\xAC" "04DOFRAME        \xAC" "07  Continue to next frame\n"               \
             "\n"                                                            \
-            "\xAC02Misc\xAC07\n"                                                  \
-            "\xAC04SHOW expression\xAC07  Evaluate and show some expression\n"    \
-            "\xAC04STRINGS        \xAC07  Show all strings in memory\n"           \
-            "\xAC04VARS           \xAC07  Show internals vars\n"                  \
-            "\xAC04QUIT           \xAC07  Kill the program and exit\n\n"          \
+            "\xAC" "02Misc\xAC" "07\n"                                                  \
+            "\xAC" "04SHOW expression\xAC" "07  Evaluate and show some expression\n"    \
+            "\xAC" "04STRINGS        \xAC" "07  Show all strings in memory\n"           \
+            "\xAC" "04VARS           \xAC" "07  Show internals vars\n"                  \
+            "\xAC" "04QUIT           \xAC" "07  Kill the program and exit\n\n"          \
             "\n"                                                            \
-            "\xAC02Process Interaction\xAC07\n"                                   \
-            "\xAC04RUN proc [args]\xAC07  Run a process\n"                        \
-            "\xAC04KILL proc      \xAC07  Kill a process\n"                       \
-            "\xAC04WAKEUP proc    \xAC07  Wakeup a process\n"                     \
-            "\xAC04SLEEP proc     \xAC07  Sleep a process\n"                      \
-            "\xAC04FREEZE proc    \xAC07  Freeze a process\n"                     \
-            "\xAC04KILLALL proc   \xAC07  Kill all process with criteria\n"       \
-            "\xAC04WAKEUPALL proc \xAC07  Wakeup all process with criteria\n"     \
-            "\xAC04SLEEPALL proc  \xAC07  Sleep all process with criteria\n"      \
-            "\xAC04FREEZEALL proc \xAC07  Freeze all process with criteria\n"     \
+            "\xAC" "02Process Interaction\xAC" "07\n"                                   \
+            "\xAC" "04RUN proc [args]\xAC" "07  Run a process\n"                        \
+            "\xAC" "04KILL proc      \xAC" "07  Kill a process\n"                       \
+            "\xAC" "04WAKEUP proc    \xAC" "07  Wakeup a process\n"                     \
+            "\xAC" "04SLEEP proc     \xAC" "07  Sleep a process\n"                      \
+            "\xAC" "04FREEZE proc    \xAC" "07  Freeze a process\n"                     \
+            "\xAC" "04KILLALL proc   \xAC" "07  Kill all process with criteria\n"       \
+            "\xAC" "04WAKEUPALL proc \xAC" "07  Wakeup all process with criteria\n"     \
+            "\xAC" "04SLEEPALL proc  \xAC" "07  Sleep all process with criteria\n"      \
+            "\xAC" "04FREEZEALL proc \xAC" "07  Freeze all process with criteria\n"     \
             "\n"                                                            \
             "You can evaluate free expressions in the console,\n"           \
             "and you can see/change local, public and private vars\n"       \
@@ -205,13 +205,13 @@ void gr_con_printf (const char *fmt, ...)
     if (*text == '[')
     {
         memmove (text+3, text, strlen(text)+1) ;
-        memmove (text, "\xAC08", 3) ;
+        memmove (text, "\xAC" "08", 3) ;
         ptr = strchr(text, ']') ;
         if (ptr)
         {
             ptr++ ;
             memmove (ptr+3, ptr, strlen(ptr)+1) ;
-            memmove (ptr, "\xAC07", 3) ;
+            memmove (ptr, "\xAC" "07", 3) ;
         }
     }
 
@@ -338,7 +338,7 @@ void gr_con_getkey(int key, int sym)
     if (key == 13 && *console_input)
     {
         console_scroll_pos = 0 ;
-        gr_con_printf ("\xAC15> %s", console_input) ;
+        gr_con_printf ("\xAC" "15> %s", console_input) ;
         gr_con_putcommand (console_input);
         gr_con_do (console_input) ;
         *console_input = 0 ;
@@ -1518,7 +1518,7 @@ void gr_con_do (const char * command)
             for (n = 0 ; n < procdef_count; n++) {
                 if (procs[n].breakpoint) {
                     if (!f) {
-                        gr_con_printf("\xAC02Process type breakpoints\xAC07\n");
+                        gr_con_printf("\xAC" "02Process type breakpoints\xAC" "07\n");
                         f = 1;
                     }
                     gr_con_printf("%s\n", procs[n].name);
@@ -1531,7 +1531,7 @@ void gr_con_do (const char * command)
             for (i = first_instance ; i ; i = i->next) {
                 if (i->breakpoint) {
                     if (!f) {
-                            gr_con_printf("\xAC02Process breakpoints\xAC07\n");
+                            gr_con_printf("\xAC" "02Process breakpoints\xAC" "07\n");
                         f = 1;
                     }
                     gr_con_printf("%d\n", LOCDWORD(i, PROCESS_ID));

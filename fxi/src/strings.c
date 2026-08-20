@@ -357,7 +357,7 @@ static int string_getid ()
     }
     // Incremento espacio
     string_alloc (1024) ;
-    gr_con_printf ("[STRING] \xAC12*PANIC\xAC7 Too many strings, allocating more space") ;
+    gr_con_printf ("[STRING] \xAC" "12*PANIC\xAC" "7 Too many strings, allocating more space") ;
 
     // Devuelvo el string_count + 1, ya que ahora tengo 1024 mas que antes
     return string_count++ ;

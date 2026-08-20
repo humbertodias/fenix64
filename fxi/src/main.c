@@ -174,14 +174,14 @@ int main (int argc, char **argv)
 
 	SDL_JoystickEventState (SDL_ENABLE) ;
 
-    gr_con_printf ("\xAC15" FXI_VERSION) ;
+    gr_con_printf ("\xAC" "15" FXI_VERSION) ;
 
 	if (fxi)
 	{
 		/* Standalone interpreter, dump some info */
 
 		sdl_version = SDL_Linked_Version();
-		gr_con_printf ("\xAC14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)",
+		gr_con_printf ("\xAC" "14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)",
 				SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL,
 				sdl_version->major, sdl_version->minor, sdl_version->patch) ;
 	}
