@@ -93,7 +93,7 @@ jobs:
           curl -LO https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz
           tar xzf SDL_mixer-1.2.12.tar.gz
           cd SDL_mixer-1.2.12
-          mixer_opts="--disable-sdltest"
+          mixer_opts="--disable-sdltest --disable-music-native-midi"
           if [ "$LINKAGE" = static ]; then
             mixer_opts="$mixer_opts --disable-shared --enable-static"
           else
