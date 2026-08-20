@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -167,7 +167,7 @@ int fgc_load (const char * filename)
 			break;
 		}
 		grlib_add_map (id, graph);
-		if (graph->depth == 8 && !graph->palette) pal_map_assign(id, graph, pal);
+		if (graph->depth == 8 && !graph->palette) pal_map_assign(id, graph->code, pal);
 	}
 
 	free(offsets);
@@ -206,7 +206,7 @@ int fgc_save (int id, const char * filename)
 	lib = grlib_get(id);
 	if (lib == NULL || !lib->maps)
 	{
-		fgc_error = "Número de librería incorrecta";
+		fgc_error = "NÃºmero de librerÃ­a incorrecta";
 		return 0;
 	}
 
@@ -233,7 +233,7 @@ int fgc_save (int id, const char * filename)
 		}
 		if (header.depth != lib->maps[i]->depth)
 		{
-			fgc_error = "La librería contiene mapas de diferente profundidad";
+			fgc_error = "La librerÃ­a contiene mapas de diferente profundidad";
 			return 0;
 		}
 	}

@@ -6,7 +6,7 @@ Instrucciones para poder compilar el proyecto.
 WIN32 (MinGW) (base para cualquier UNIX)
 ========================================
 
-El proyecto compila como cualquier versi髇 UNIX.
+El proyecto compila como cualquier versi贸n UNIX.
 
 Se necesita los siguientes paquetes (que pueden ser instalados
 en cualquier directorio del sistema MinGW, solo Win32):
@@ -29,10 +29,10 @@ smpeg-0.4.3.tar.gz
 zlib-1.2.3.tar.gz
 
 NOTAS:
-    Si bien estas son las versiones utilizadas en esta compilaci髇,
-cualquier versi髇 de estos paquetes deber韆 funcionar correctamente.
+    Si bien estas son las versiones utilizadas en esta compilaci贸n,
+cualquier versi贸n de estos paquetes deber铆a funcionar correctamente.
     Si tenemos instalado MSVC, en la consola MSYS aseguranos de eliminar
-el seteo de las variables de compilaci髇 del MSVC (INCLUDE, LIB, etc.).
+el seteo de las variables de compilaci贸n del MSVC (INCLUDE, LIB, etc.).
 
 Solo en windows: copiar la SDL.dll en el directorio raiz del fenix antes de correr configure.
 
@@ -41,14 +41,14 @@ Pasos a seguir para compilar:
     ./configure --enable-fpg --enable-map
     make
 
-WIN32 (MSVC) (no actualizado a partir de la versi髇 0.85)
+WIN32 (MSVC) (no actualizado a partir de la versi贸n 0.85)
 =========================================================
 
 El proyecto esta preparado para compilar a partir de una estructura como la siguiente:
 
 /<FENIXROOT>
   |
-  |- FENIX (contenido de este m骴ulo de CVS)
+  |- FENIX (contenido de este m贸dulo de CVS)
   |- SDL (ficheros necesarios de la SDL DEVEL)
   |  |- INCLUDE
   |  |- LIB

@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -44,6 +44,9 @@ extern Sint16 * ghost2;
 
 /* Parameters for hspan_8to8_translucent */
 extern Sint8 (* ghost8)[256][256];
+
+#define HSPAN8_INIT    Uint8  *scr = (Uint8  *)vscr, *tex = (Uint8  *)vtex
+#define HSPAN16_INIT   Uint16 *scr = (Uint16 *)vscr, *tex = (Uint16 *)vtex
 
 /*
  *  FUNCTION : gr_draw_hspan_XXX
@@ -70,8 +73,9 @@ extern Sint8 (* ghost8)[256][256];
  *
  */
 
-void MMX_draw_hspan_8to8_nocolorkey(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void MMX_draw_hspan_8to8_nocolorkey(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
 #ifdef DEBUGMMX
     printf("MMX_draw_hspan_8to8_nocolorkey\n");
     fflush(stdout);
@@ -206,8 +210,9 @@ ending:
   #endif
 }
 
-void MMX_draw_hspan_8to8_translucent(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void MMX_draw_hspan_8to8_translucent(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
 	int counter;
 #ifdef DEBUGMMX
     printf("MMX_draw_hspan_8to8_translucent\n");
@@ -293,8 +298,9 @@ ending:
 #endif
 }
 
-void MMX_draw_hspan_8to8(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void MMX_draw_hspan_8to8(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
 #ifdef DEBUGMMX
     printf( "MMX_draw_hspan_8to8\n");
     fflush(stdout);
@@ -469,8 +475,9 @@ ending:
 	#endif
 }
 
-void MMX_draw_hspan_16to16(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void MMX_draw_hspan_16to16(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
 #ifdef DEBUGMMX
     printf( "MMX_draw_hspan_16to16\n");
     fflush(stdout);
@@ -645,8 +652,9 @@ ending:
 }
 
 
-void MMX_draw_hspan_16to16_translucent(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void MMX_draw_hspan_16to16_translucent(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
 #ifdef DEBUGMMX
     printf("MMX_draw_hspan_16to16_translucent\n");
     fflush(stdout);
@@ -756,8 +764,9 @@ ending:
 #endif
 }
 
-void MMX_draw_hspan_16to16_nocolorkey(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void MMX_draw_hspan_16to16_nocolorkey(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
 #ifdef DEBUGMMX
     printf("MMX_draw_hspan_16to16_nocolorkey\n");
     fflush(stdout);

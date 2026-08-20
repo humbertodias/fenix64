@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -61,7 +61,7 @@ extern int		  instance_exists       (INSTANCE * i) ;
 extern INSTANCE * instance_next_by_priority();
 extern void       instance_dirty        (INSTANCE * i) ;
 
-/* Las siguientes funciones son el punto de entrada del intérprete */
+/* Las siguientes funciones son el punto de entrada del intÃ©rprete */
 
 extern int        instance_go     (INSTANCE * r) ;
 extern void       instance_go_all () ;

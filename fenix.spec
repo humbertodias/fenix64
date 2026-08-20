@@ -1,5 +1,5 @@
 Summary:	Fenix programming language compiler and interpreter
-Summary(es):	Compilador e intérprete para el lenguaje de programación Fenix
+Summary(es):	Compilador e intÃ©rprete para el lenguaje de programaciÃ³n Fenix
 Name:		fenix
 Version:	0.85CVS
 Release:	1
@@ -20,7 +20,7 @@ Fenix is a programming language aimed at games/multimedia
 which greatly simplifies the task of accesing media content.
 
 %description -l es
-Fenix es un lenguage de programación orientado al mundo de los
+Fenix es un lenguage de programaciÃ³n orientado al mundo de los
 videojuegos y del multimedia que simplifica en gran manera el acceso
 a los contenidos multimedia.
 

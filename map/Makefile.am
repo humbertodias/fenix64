@@ -5,7 +5,7 @@ bin_PROGRAMS=map
 
 INCLUDES = $(COMMON_CFLAGS)
 
-map_LDADD=$(COMMON_LIBS) -lz  -lungif -lpng
+map_LDADD=$(COMMON_LIBS) -lz $(GIF_LIB) -lpng
 
 SOURCE_FILES=map.c
 

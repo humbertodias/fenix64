@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -501,7 +501,7 @@ int gr_font_save (int fontid, const char * filename)
 {
 	char     fullname[1024];
 	char *   ptr;
-	gzFile * file;
+	gzFile file;
 	int      n;
 	Uint32   y;
 	long     offset;

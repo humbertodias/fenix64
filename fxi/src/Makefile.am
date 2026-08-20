@@ -3,11 +3,9 @@ bin_PROGRAMS = fxi
 .rc.o:
 	$(WINDRES) $< -I../../include -o $@
 
-INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) -I../../include -I../inc -DDEBUG
+INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I../inc -DDEBUG
 
-fxi_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng -lSDL_mixer
-
-fxi_LDFLAGS = --as-needed
+fxi_LDADD = $(SDL_MIXER_LIBS) $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng -lm
 
 SOURCE_FILES = main.c dcbr.c instance.c strings.c \
               i_main.c i_debug.c i_func.c \
@@ -31,3 +29,6 @@ fxi_SOURCES = $(SOURCE_FILES) fxi.rc
 else
 fxi_SOURCES = $(SOURCE_FILES)
 endif
+
+# Legacy GNU regex 0.12 uses K&R function definitions.
+regex.o regex.obj: CFLAGS += -std=gnu89

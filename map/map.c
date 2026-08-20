@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -71,7 +71,7 @@ int action = AC_LIST ;
 int n_commands ;
 char * commands[256] ;
 
-/* "Traducción" de un color determinado a 0, en PNGs de 16 bits */
+/* "TraducciÃ³n" de un color determinado a 0, en PNGs de 16 bits */
 int do_zeroc = 0 ;
 Uint16 zeroc[2][3] = { { 0, 0, 0 }, { 0, 0, 0 } } ;
 
@@ -91,7 +91,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 	char       * ptr ;
 	const char * fptr ;
 
-	/* Concatena la extensión al nombre de fichero */
+	/* Concatena la extensiÃ³n al nombre de fichero */
 
 	strcpy (buffer, filename) ;
 	ptr = strchr (buffer, '.') ;
@@ -99,7 +99,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 	if (ptr) strcpy (ptr, ext) ;
 	else 	 strcat (buffer, ext) ;
 
-	/* Pone la extensión en mayúsculas si el nombre lo está */
+	/* Pone la extensiÃ³n en mayÃºsculas si el nombre lo estÃ¡ */
 
 	for (fptr = filename ; *fptr ; fptr++)
 		if (*fptr >= 'a' && *fptr <= 'z') break ;
@@ -113,7 +113,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 
 void help ()
 {
-	printf ("MAP Utility v0.75\nCopyright (C) 1999 José Luis Cebrián Pagüe\nCopyright (C) 2002 Fenix Team\n"
+	printf ("MAP Utility v0.75\nCopyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e\nCopyright (C) 2002 Fenix Team\n"
 		"This utility comes with ABSOLUTELY NO WARRANTY; map -h for details\n\n") ;
 
 	printf ("Usage: map [option] file \n"
@@ -184,7 +184,7 @@ MAP ;
 void save_map (const char * filename, MAP * map)
 {
 	long   len ;
-	gzFile * file = gzopen (filename, policy) ;
+	gzFile file = gzopen (filename, policy) ;
 
 	if (!file) fatal_error ("%s: error al crear", filename) ;
 	gzwrite (file, &map->header, sizeof(MAP_HEADER)) ;
@@ -213,7 +213,7 @@ MAP * load_gif (const char * filename)
 	MAP * map ;
 	ColorMapObject * pal ;
 
-	file = DGifOpenFileName (filename) ;
+	file = DGifOpenFileName (filename, NULL) ;
 	if (!file) return NULL ;
 	DGifSlurp (file) ;
 
@@ -236,7 +236,7 @@ MAP * load_gif (const char * filename)
 	if (!pal)
 		fatal_error ("El GIF no contiene una paleta de colores") ;
 	if (pal->ColorCount > 255)
-		fatal_error ("El GIF tiene más de 256 colores") ;
+		fatal_error ("El GIF tiene mÃ¡s de 256 colores") ;
 
 	memset (map->palette, 0, PALETTE_SIZE) ;
 	for (i = 0 ; i < pal->ColorCount ; i++)
@@ -246,7 +246,7 @@ MAP * load_gif (const char * filename)
 		map->palette[i*3+2] = ((pal->Colors[i].Blue >> 2)& 0x3F)  ;
 	}
 
-	/* Tamaño de la imagen */
+	/* TamaÃ±o de la imagen */
 
 	map->header.width = file->SWidth ;
 	map->header.height = file->SHeight ;
@@ -261,7 +261,7 @@ MAP * load_gif (const char * filename)
 		if (h > map->header.height) map->header.height = h ;
 	}
 
-	/* Procesa las imágenes del GIF */
+	/* Procesa las imÃ¡genes del GIF */
 
 	map->data = malloc(map->header.width * map->header.height * map->frames) ;
 	memset (map->data, 0, map->header.width * map->header.height * map->frames) ;
@@ -279,7 +279,7 @@ MAP * load_gif (const char * filename)
 		bw =   file->SavedImages[i].ImageDesc.Width ;
 		bg =   file->SBackGroundColor ;
 
-		/* Busca e interpreta la extensión de control de animaciones */
+		/* Busca e interpreta la extensiÃ³n de control de animaciones */
 
 		for (x = 0 ; x < file->SavedImages[i].ExtensionBlockCount ; x++)
 		{
@@ -329,7 +329,7 @@ MAP * load_gif (const char * filename)
 		}
 	}
 
-	/* Animación */
+	/* AnimaciÃ³n */
 
 	map->animation_length  = 0 ;
 	map->animation = NULL ;
@@ -357,7 +357,7 @@ MAP * load_map (const char * filename)
 	gzread (file, &map->header, sizeof(map->header)) ;
 	strncpy (map->filename, filename, 12) ;
 
-	/* Extensión: ficheros MAP de 16 bits */
+	/* ExtensiÃ³n: ficheros MAP de 16 bits */
 
 	if (strcmp (map->header.magic, M16_MAGIC) == 0)
 	{
@@ -435,7 +435,7 @@ void save_png (const char * filename, MAP * map)
 	    fatal_error ("Sin memoria") ;
 	}
 
-	if (setjmp(png_ptr->jmpbuf))
+	if (setjmp(png_jmpbuf(png_ptr)))
 	{
         free ( rowpointers ) ;
 		fclose (file) ;
@@ -469,8 +469,7 @@ void save_png (const char * filename, MAP * map)
 		for (k = 0 ; k < map->header.height ; k++)
 			rowpointers[k] = (Uint8 *)map->data + map->header.width*k ;
 		png_write_image (png_ptr, rowpointers) ;
-		free (info_ptr->palette) ;
-		info_ptr->palette = NULL ;
+		png_free (png_ptr, (png_voidp) palette) ;
 	}
 	else
 	{
@@ -540,7 +539,7 @@ MAP * load_png (const char * filename)
 	bitmap = load_gif (filename) ;
 	if (bitmap) return bitmap ;
 
-	/* Abre el fichero y se asegura de que screen está inicializada */
+	/* Abre el fichero y se asegura de que screen estÃ¡ inicializada */
 
 	png = fopen (filename, "rb") ;
 	if (!png) fatal_error ("No existe %s\n", filename) ;
@@ -555,14 +554,14 @@ MAP * load_png (const char * filename)
 
 	/* Rutina de error */
 
-	if (setjmp (png_ptr->jmpbuf))
+	if (setjmp (png_jmpbuf (png_ptr)))
 	{
 		png_destroy_read_struct (&png_ptr, &info_ptr, &end_info) ;
 		fclose (png) ;
 		return 0 ;
 	}
 
-	/* Recupera información sobre el PNG */
+	/* Recupera informaciÃ³n sobre el PNG */
 
 	png_init_io (png_ptr, png) ;
 	png_read_info (png_ptr, info_ptr) ;
@@ -698,7 +697,7 @@ MAP * load_png (const char * filename)
 
 	/* Fin */
 
-	png_read_end (png_ptr, 0) ;
+	png_read_end (png_ptr, end_info) ;
 	fclose (png) ;
     free ( rowpointers ) ;
     free ( row ) ;
@@ -803,7 +802,7 @@ void save_pal (const char * filename, char * palette)
 
 char * load_pal (const char * filename)
 {
-	gzFile * file = gzopen (filename, "rb") ;
+	gzFile file = gzopen (filename, "rb") ;
 	char header[8] ;
 	char * here = malloc (PALETTE_SIZE) ;
 
@@ -816,7 +815,7 @@ char * load_pal (const char * filename)
 	else if (strcmp (header, FPG_MAGIC) != 0 &&
 	    strcmp (header, FNT_MAGIC) != 0 &&
 	    strcmp (header, PAL_MAGIC) != 0)
-		fatal_error ("%s: no es un fichero de paleta válido", filename) ;
+		fatal_error ("%s: no es un fichero de paleta vÃ¡lido", filename) ;
 
 	gzread (file, here, PALETTE_SIZE) ;
 	gzclose (file) ;
@@ -953,7 +952,7 @@ void parse_animation (char * text, MAP * map)
 	map->animation = (Sint16 *) malloc(n_frames * 2) ;
 	memcpy (map->animation, frames, n_frames * 2) ;
 	if ((map->header.width / map->frames) * map->frames != map->header.width)
-		fatal_error ("El ancho no es múltiplo de %d\n", map->frames) ;
+		fatal_error ("El ancho no es mÃºltiplo de %d\n", map->frames) ;
 	map->header.width /= map->frames ;
 }
 
@@ -1073,7 +1072,7 @@ int main (int argc, char ** argv)
 					while (*ptr) ptr++ ;
 					break ;
 				default:
-					fatal_error ("Error: opción -%c no reconocida\n", *ptr) ;
+					fatal_error ("Error: opciÃ³n -%c no reconocida\n", *ptr) ;
 			}
 
 			if (argc > i)

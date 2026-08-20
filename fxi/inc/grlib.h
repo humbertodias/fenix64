@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -33,7 +33,7 @@
 #define MAX_JOYS    32
 
 /* -------------------------------------------------------------------- */
-/* Librería gráfica                                                     */
+/* LibrerÃ­a grÃ¡fica                                                     */
 /* -------------------------------------------------------------------- */
 
 extern int              scr_initialized ;
@@ -83,7 +83,7 @@ extern FONT * fonts[256] ;
 extern int    font_count ;
 
 
-/* Inicialización y control de tiempo */
+/* InicializaciÃ³n y control de tiempo */
 /* ---------------------------------- */
 
 extern void gr_init           (int w, int h) ;
@@ -126,23 +126,28 @@ extern int          background_is_black ;
 
 extern Uint8        trans_table[256][256] ; /* Tabla de transparencias 8 bits        */
 extern int          trans_table_updated ;   /* 1 = La tabla es utilizable            */
-extern Uint8        nearest_table[64][64][64] ; /* Conversión color -> paleta        */
+extern Uint8        nearest_table[64][64][64] ; /* ConversiÃ³n color -> paleta        */
 
 extern void         gr_make_trans_table() ;
 extern void         gr_fill_nearest_table() ;
 
-extern int          palette_loaded ;        /* ¿Se ha cargado ya la paleta inicial ? */
+extern int          palette_loaded ;        /* Â¿Se ha cargado ya la paleta inicial ? */
 extern int          palette_changed ;       /* Poner a 1 cuando se cambien colores   */
-extern int          fade_on ;               /* ¿Hay un fade activo?                  */
-extern int          fade_set ;              /* ¿Hay un fade seteado pero inactivo?   */
-extern int          fade_step ;             /* Si lo hay, posición (0=off)           */
+extern int          fade_on ;               /* Â¿Hay un fade activo?                  */
+extern int          fade_set ;              /* Â¿Hay un fade seteado pero inactivo?   */
+extern int          fade_step ;             /* Si lo hay, posiciÃ³n (0=off)           */
 
 
 extern PALETTE * pal_new(PALETTE * basepal);
-extern PALETTE * pal_new2(unsigned char * datapal);
+extern PALETTE * pal_new2(void * datapal);
 
 extern void pal_destroy(PALETTE * pal);
 extern void pal_refresh(PALETTE * pal);
+extern void pal_use(PALETTE * pal);
+extern int  pal_get (PALETTE * spal, int color, int num, Uint8 * pal);
+extern int  pal_set (PALETTE * spal, int color, int num, Uint8 * pal);
+extern int  pal_map_assign (int libid, int mapcode, PALETTE * palid);
+extern int  pal_map_remove (int libid, int mapcode);
 
 extern PALETTE    * gr_read_pal             (file * fp) ;
 extern PALETTE    * gr_read_pal_with_gamma  (file * fp);
@@ -162,7 +167,7 @@ extern void         gr_get_colors           (int color, int num, Uint8 * pal) ;
 /* --------- */
 
 extern Sint16 * blend_create       () ;
-extern void     blend_free         () ;
+extern void     blend_free         (Sint16 * blend) ;
 extern void     blend_init         (Sint16 * blend) ;
 extern void     blend_translucency (Sint16 * blend, float ammount) ;
 extern void     blend_intensity    (Sint16 * blend, float ammount) ;
@@ -192,7 +197,7 @@ extern const char * fgc_error;
 extern const char * fpl_error;
 
 
-/* Gestión de bitmaps y librerías de gráficos */
+/* GestiÃ³n de bitmaps y librerÃ­as de grÃ¡ficos */
 /* ------------------------------------------ */
 
 extern int      gr_load_map      (const char * filename) ;
@@ -241,7 +246,7 @@ extern REGION * region_get      (int n);
 /* ---------- */
 
 extern void    draw_instance_at (INSTANCE * i, REGION * r, int x, int y) ;
-extern void    draw_instance    (INSTANCE * i, REGION * clip) ;
+extern void    draw_instance    (void * i, REGION * clip) ;
 extern void    instance_update_bbox(INSTANCE * i) ;
 extern GRAPH * instance_graph   (INSTANCE * i) ;
 extern int     instance_visible (INSTANCE * i);
@@ -293,7 +298,7 @@ extern GRAPH  * gr_text_bitmap     (int fontid, const char * text, int centered)
 /* Bajo nivel */
 /* ---------- */
 
-/* Las funciones gráficas admiten dest=0 para referirse a la pantalla.
+/* Las funciones grÃ¡ficas admiten dest=0 para referirse a la pantalla.
  * Para poder usar esta funcionalidad, debe estar bloqueada antes */
 
 extern int  gr_lock_screen   () ;
@@ -301,10 +306,11 @@ extern void gr_unlock_screen () ;
 extern void gr_mark_rect (int x, int y, int width, int height);
 extern void gr_mark_instance (INSTANCE *);
 
-/* Primitivas gráficas */
+/* Primitivas grÃ¡ficas */
 
 extern void gr_clear     (GRAPH * dest) ;
 extern void gr_clear_as  (GRAPH * dest, int color) ;
+extern void gr_clear_region (GRAPH * dest, REGION * region) ;
 extern void gr_put_pixel (GRAPH * dest, int x, int y, int color) ;
 extern int  gr_get_pixel (GRAPH * dest, int x, int y) ;
 
@@ -323,8 +329,8 @@ extern int  gr_drawing_new     (DRAWING_OBJECT drawing, int z) ;
 extern void gr_drawing_destroy (int id) ;
 extern void gr_drawing_move    (int id, int x, int y) ;
 
-extern void draw_object (DRAWING_OBJECT * dr, REGION * clip) ;
-extern int info_object (DRAWING_OBJECT * dr, REGION * clip) ;
+extern void draw_object (void * dr, REGION * clip) ;
+extern int info_object (void * dr, REGION * clip) ;
 
 /* Bitmaps */
 
@@ -393,15 +399,15 @@ extern void gprof_toggle();
 extern int  MMX_available;
 
 extern void MMX_init();
-extern void MMX_draw_hspan_8to8_nocolorkey (Uint8 * scr, Uint8 * tex, int pixels, int incs);
-extern void MMX_draw_hspan_8to8_translucent	(Uint8 * scr, Uint8 * tex, int pixels, int incs);
-extern void MMX_draw_hspan_8to8 (Uint8 * scr, Uint8 * tex, int pixels, int incs);
-extern void MMX_draw_hspan_16to16 (Uint16 * scr, Uint16 * tex, int pixels, int incs);
-extern void MMX_draw_hspan_16to16_translucent (Uint16 * scr, Uint16 * tex, int pixels, int incs);
-extern void MMX_draw_hspan_16to16_nocolorkey (Uint16 * scr, Uint16 * tex, int pixels, int incs);
+extern void MMX_draw_hspan_8to8_nocolorkey (void * scr, void * tex, int pixels, int incs);
+extern void MMX_draw_hspan_8to8_translucent	(void * scr, void * tex, int pixels, int incs);
+extern void MMX_draw_hspan_8to8 (void * scr, void * tex, int pixels, int incs);
+extern void MMX_draw_hspan_16to16 (void * scr, void * tex, int pixels, int incs);
+extern void MMX_draw_hspan_16to16_translucent (void * scr, void * tex, int pixels, int incs);
+extern void MMX_draw_hspan_16to16_nocolorkey (void * scr, void * tex, int pixels, int incs);
 #endif
 
-/* Rutinas de conversión entre formatos */
+/* Rutinas de conversiÃ³n entre formatos */
 
 extern void     gr_convert16_ScreenTo565 (Uint16 * ptr, int len);
 extern void     gr_convert16_565ToScreen (Uint16 * ptr, int len);

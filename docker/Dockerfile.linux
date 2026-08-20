@@ -1,0 +1,30 @@
+# Linux x86_64 toolchain (Ubuntu 22.04 still ships SDL 1.2).
+#   docker build --platform linux/amd64 -t fenix-linux -f docker/Dockerfile.linux docker/
+#   bash scripts/docker-build.sh linux
+
+FROM ubuntu:22.04
+
+ARG TARGETPLATFORM
+ENV DEBIAN_FRONTEND=noninteractive \
+    PLATFORM=linux
+
+RUN echo "fenix-linux ${TARGETPLATFORM}" \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        file \
+        git \
+        pkg-config \
+        libsdl1.2-dev \
+        libsdl-mixer1.2-dev \
+        libpng-dev \
+        zlib1g-dev \
+        libgif-dev \
+        libx11-dev \
+        libxext-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && git config --system --add safe.directory '*'
+
+WORKDIR /src
+CMD ["bash"]

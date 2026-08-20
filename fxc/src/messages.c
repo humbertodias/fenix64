@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -111,7 +111,7 @@
 
 #define MSG_FILE_NOT_FOUND      "%s: fichero no encontrado"
 #define MSG_FILE_TOO_BIG        "%s: fichero demasiado grande"
-#define MSG_FILE_EMPTY			"%s: fichero vacÌo"
+#define MSG_FILE_EMPTY			"%s: fichero vac√≠o"
 #define MSG_READ_ERROR          "%s: error de lectura"
 #define MSG_DIRECTORY_MISSING   "Debe especificar un directorio"
 #define MSG_TOO_MANY_FILES      "Especifico demasiados ficheros"
@@ -144,7 +144,7 @@
 #define MSG_PROGRAM_NAME_EXP    "Se esperaba nombre del programa"
 #define MSG_PROCESS_NAME_EXP    "Se esperaba nombre del programa"
 #define MSG_INVALID_TYPE        "Tipo de dato invalido"
-#define MSG_UNEXPECTED_TOKEN    "Simbolo o instruccion inesperada aqui (ødemasiados END?)"
+#define MSG_UNEXPECTED_TOKEN    "Simbolo o instruccion inesperada aqui (¬ødemasiados END?)"
 #define MSG_UNEXPECTED_TOKEN_GENERIC    "Simbolo o instruccion inesperada aqui"
 #define MSG_NO_MAIN             "Proceso principal no definido"
 #define MSG_INTEGER_REQUIRED    "Se requiere un dato entero"
@@ -153,7 +153,7 @@
 #define MSG_INCOMP_TYPE         "El tipo de dato no es valido ahi"
 #define MSG_UNKNOWN_IDENTIFIER  "Identificador desconocido"
 #define MSG_NOT_AN_ARRAY        "No es un array o estructura multiple"
-#define MSG_BOUND               "Õndice fuera de rango"
+#define MSG_BOUND               "√çndice fuera de rango"
 #define MSG_IDENTIFIER_EXP      "Se esperaba identificador"
 #define MSG_NOT_AN_LVALUE       "Solo se puede extraer la direccion de una variable"
 #define MSG_NOT_A_POINTER       "Se requiere un puntero"
@@ -179,13 +179,13 @@
 #define MSG_UNDEFINED_PROC      "Procedimiento no definido"
 #define MSG_NO_COMPATIBLE_DLL	"La libreria no es compatible Fenix"
 #define MSG_TOO_MANY_SYSPROCS	"Demasiadas funciones del sistema"
-#define MSG_INCORRECT_PTR_INIT	"Un puntero sÛlo puede inicializarse a 0"
+#define MSG_INCORRECT_PTR_INIT	"Un puntero s√≥lo puede inicializarse a 0"
 #define MSG_NOT_ENOUGH_INIT		"No hay suficientes inicializadores"
 #define MSG_MULTIPLE_PROCS_FOUND "Hay disponibles varias versiones de %s en conflicto"
 #define MSG_QUESTION_INC		"Tipos incompatibles a los lados del operador ?"
 #define MSG_UNKNOWN_PREP		"Directiva de preprocesador desconocida"
-#define MSG_PTR_CONVERSION		"ConversiÛn inv·lida de no puntero a puntero"
-#define MSG_CONVERSION			"ConversiÛn de tipo de dato no soportada"
+#define MSG_PTR_CONVERSION		"Conversi√≥n inv√°lida de no puntero a puntero"
+#define MSG_CONVERSION			"Conversi√≥n de tipo de dato no soportada"
 #define MSG_PROC_ALREADY_DEFINED "Proceso ya definido"
 #define MSG_FRAME_REQUIRES_INT  "FRAME requiere que el proceso devuelva un tipo INT"
 #define MSG_VARIABLE_ERROR      "Variable definida como proceso, se espera tipo o nombre de variable"

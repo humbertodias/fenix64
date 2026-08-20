@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -64,10 +64,10 @@
 #define B_NOCOLORKEY        0x0080
 
 /* --------------------- */
-/* Flags para mnemónicos */
+/* Flags para mnemÃ³nicos */
 /* --------------------- */
 
-/* Número de parámetros */
+/* NÃºmero de parÃ¡metros */
 
 #define MN_0_PARAMS     (0x00)
 #define MN_1_PARAMS     (0x80)
@@ -89,7 +89,7 @@
 #define MN_TYPEOF(code) ((code) & 0xF00)
 
 /* -------------------- */
-/* Códigos de mnemónico */
+/* CÃ³digos de mnemÃ³nico */
 /* -------------------- */
 
 /* Salidas */
@@ -147,12 +147,12 @@
 #define MN_JTTRUE               (0x1F| MN_1_PARAMS)
 #define MN_JNOCASE              (0x20| MN_1_PARAMS)
 
-/* Operaciones unarias - aceptan tipos de dato numéricos */
+/* Operaciones unarias - aceptan tipos de dato numÃ©ricos */
 
 #define MN_NEG                  (0x21| MN_0_PARAMS)
 #define MN_NOT                  (0x22| MN_0_PARAMS)
 
-/* Operaciones binarias - Aceptan tipos de dato numéricos */
+/* Operaciones binarias - Aceptan tipos de dato numÃ©ricos */
 
 #define MN_MUL                  (0x23| MN_0_PARAMS)
 #define MN_DIV                  (0x24| MN_0_PARAMS)
@@ -181,7 +181,7 @@
 #define MN_INC                  (0x35| MN_1_PARAMS)
 #define MN_DEC                  (0x36| MN_1_PARAMS)
 
-/* Alteración directa de variables */
+/* AlteraciÃ³n directa de variables */
 
 #define MN_LET                  (0x37| MN_0_PARAMS)
 #define MN_VARADD               (0x38| MN_0_PARAMS)
@@ -214,7 +214,7 @@
 #define MN_BOR                  (0x4A| MN_0_PARAMS)
 #define MN_BXOR                 (0x4B| MN_0_PARAMS)
 
-/* Funciones de conversión */
+/* Funciones de conversiÃ³n */
 
 #define MN_INT2FLOAT            (0x50| MN_1_PARAMS)
 #define MN_FLOAT2INT            (0x51| MN_1_PARAMS)
@@ -225,7 +225,7 @@
 #define MN_INT2WORD             (0x63| MN_1_PARAMS)
 #define MN_INT2BYTE             (0x64| MN_1_PARAMS)
 
-/* Mnemónicos inexistentes - usados por el compilador internamente */
+/* MnemÃ³nicos inexistentes - usados por el compilador internamente */
 
 #define MN_REPEAT               (0x70| MN_1_PARAMS)
 #define MN_BREAK                (0x71| MN_1_PARAMS)

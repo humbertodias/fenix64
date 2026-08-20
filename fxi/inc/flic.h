@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -29,7 +29,7 @@
 
 #include <flic_st.h>
 
-/* Reproducción de FLI */
+/* ReproducciÃ³n de FLI */
 /* ------------------- */
 
 extern FLIC * flic_open     (const char * filename) ;

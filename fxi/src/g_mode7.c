@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -109,7 +109,7 @@ void gr_mode7_start (int n, int fileid, int inid, int outid, int region, int hor
 
 }
 
-/* Funciones generales de rotaciÛn en 2D
+/* Funciones generales de rotaci√≥n en 2D
  *
  *  x1  =  x * cos(angulo)  -  y * sin(angulo)
  *
@@ -117,11 +117,11 @@ void gr_mode7_start (int n, int fileid, int inid, int outid, int region, int hor
  *
  * */
 
-#define ROTATEDX(x,y,sina,cosa) (fmul(x,cosa) - fmul(y,sina))
-#define ROTATEDY(x,y,sina,cosa) (fmul(x,sina) + fmul(y,cosa))
+#define ROTATEDX(x,y,sina,cosa) (fxmul(x,cosa) - fxmul(y,sina))
+#define ROTATEDY(x,y,sina,cosa) (fxmul(x,sina) + fxmul(y,cosa))
 
-/* Esta estructura guarda informaciÛn que se recalcula a cada frame.
- * Quiz· no serÌa necesario recalcularlo todo. El incremento podrÌa
+/* Esta estructura guarda informaci√≥n que se recalcula a cada frame.
+ * Quiz√° no ser√≠a necesario recalcularlo todo. El incremento podr√≠a
  * quedar constante mientras no variara la altura, p.ej. */
 
 typedef struct _lineinfo
@@ -182,17 +182,17 @@ void gr_mode7_draw (int n)
 
     if (!cos_table_initialized) init_cos_tables() ;
 
-    /* Averigua la posiciÛn inicial de dibujo */
+    /* Averigua la posici√≥n inicial de dibujo */
 
     camera = instance_get (dat->camera_id) ;
     if (!camera) return ;
 
     angle = LOCDWORD(camera, ANGLE) ;
 
-    cosa = fcos (-angle) ;
-    sina = fsin (-angle) ;
+    cosa = fxcos (-angle) ;
+    sina = fxsin (-angle) ;
 
-    /* Averigua la posiciÛn de inicio */
+    /* Averigua la posici√≥n de inicio */
 
     camera_x = itofix(LOCDWORD (camera, COORDX)) ;
     camera_y = itofix(LOCDWORD (camera, COORDY)) ;
@@ -205,7 +205,7 @@ void gr_mode7_draw (int n)
 
     if (dat->flags & B_VMIRROR) camera_z = -camera_z ;
 
-    /* Bucle para sacar las sub-posiciones de cada lÌnea */
+    /* Bucle para sacar las sub-posiciones de cada l√≠nea */
 
     width  = mode7->region->x2 - mode7->region->x + 1 ;
     height = mode7->region->y2 - mode7->region->y + 1 ;
@@ -222,13 +222,13 @@ void gr_mode7_draw (int n)
         base_y = -itofix(dat->focus/2) ;
         base_z = itofix(dat->focus/2) - itofix(y * dat->focus / height) ;
 
-        /* Rota dicho punto seg˙n el ·ngulo del proceso */
+        /* Rota dicho punto seg√∫n el √°ngulo del proceso */
 
         point_x = ROTATEDX (base_x, base_y, sina, cosa) + camera_x ;
         point_y = ROTATEDY (base_x, base_y, sina, cosa) + camera_y ;
         point_z = base_z + camera_z ;
 
-        /* Aplica la fÛrmula (ver mode7.txt) */
+        /* Aplica la f√≥rmula (ver mode7.txt) */
 
         if (point_z == camera_z)
         {
@@ -237,8 +237,8 @@ void gr_mode7_draw (int n)
         }
         //if (point_z >= camera_z) break ;
 
-        lines[y].left_bmp_x = fdiv( fmul((point_x - camera_x), -camera_z), (point_z - camera_z) ) + camera_x ;
-        lines[y].left_bmp_y = fdiv( fmul((point_y - camera_y), -camera_z), (point_z - camera_z) ) + camera_y ;
+        lines[y].left_bmp_x = fxdiv( fxmul((point_x - camera_x), -camera_z), (point_z - camera_z) ) + camera_x ;
+        lines[y].left_bmp_y = fxdiv( fxmul((point_y - camera_y), -camera_z), (point_z - camera_z) ) + camera_y ;
 
         /* Lo mismo para el punto (width,y) */
 
@@ -252,10 +252,10 @@ void gr_mode7_draw (int n)
 
         //if (point_z >= camera_z) break ;
 
-        lines[y].right_bmp_x = fdiv(fmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
-        lines[y].right_bmp_y = fdiv(fmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
+        lines[y].right_bmp_x = fxdiv(fxmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
+        lines[y].right_bmp_y = fxdiv(fxmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
 
-        /* Averigua el incremento necesario para cada paso de la lÌnea */
+        /* Averigua el incremento necesario para cada paso de la l√≠nea */
 
         lines[y].hinc = (lines[y].right_bmp_x - lines[y].left_bmp_x) / width ;
         lines[y].vinc = (lines[y].right_bmp_y - lines[y].left_bmp_y) / width ;
@@ -400,7 +400,7 @@ void gr_mode7_draw (int n)
                 proclist = (INSTANCE **) realloc (proclist, sizeof(INSTANCE *) * proclist_reserved) ;
             }
 
-            /* Averigua la distancia a la c·mara */
+            /* Averigua la distancia a la c√°mara */
 
             x = LOCDWORD(i, COORDX) ;
             y = LOCDWORD(i, COORDY) ;

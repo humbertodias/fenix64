@@ -1,0 +1,191 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.artifact }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            artifact: linux
+            dist_static: dist/linux-static
+            dist_shared: dist/linux-shared
+          - platform: windows
+            artifact: windows-mingw
+            dist_static: dist/windows-static
+            dist_shared: dist/windows-shared
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build toolchain image
+        uses: docker/build-push-action@v6
+        with:
+          context: docker
+          file: docker/Dockerfile.${{ matrix.platform }}
+          platforms: linux/amd64
+          tags: fenix-${{ matrix.platform }}
+          load: true
+          provenance: false
+          cache-from: type=gha,scope=fenix-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=fenix-${{ matrix.platform }}
+
+      - name: Build static
+        env:
+          SKIP_DOCKER_BUILD: "1"
+        run: bash scripts/docker-build.sh ${{ matrix.platform }} static
+
+      - name: Build shared
+        env:
+          SKIP_DOCKER_BUILD: "1"
+        run: bash scripts/docker-build.sh ${{ matrix.platform }} shared
+
+      - name: Upload static
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-${{ matrix.artifact }}-static
+          path: ${{ matrix.dist_static }}/
+          if-no-files-found: error
+
+      - name: Upload shared
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-${{ matrix.artifact }}-shared
+          path: ${{ matrix.dist_shared }}/
+          if-no-files-found: error
+
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    timeout-minutes: 90
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Homebrew dependencies
+        run: |
+          brew install sdl12-compat libpng giflib pkg-config
+          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
+          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:${PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
+
+      - name: Build SDL_mixer 1.2
+        run: |
+          mkdir -p deps
+          cd deps
+          curl -LO https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz
+          tar xzf SDL_mixer-1.2.12.tar.gz
+          cd SDL_mixer-1.2.12
+          ./configure --prefix="$PWD/../local" \
+              --disable-sdltest --disable-music-native-midi \
+              --enable-shared --enable-static \
+              CPPFLAGS="$(pkg-config --cflags sdl)" \
+              LDFLAGS="$(pkg-config --libs-only-L sdl)" \
+              LIBS="$(pkg-config --libs-only-l sdl)"
+          make -j"$(sysctl -n hw.ncpu)"
+          make install
+
+      - name: Build static
+        run: |
+          set -euo pipefail
+          if [[ -f Makefile ]]; then make distclean || true; fi
+          export LDFLAGS="${LDFLAGS:-} -Wl,-search_paths_first"
+          ./configure --enable-fpg --enable-map
+          make -j"$(sysctl -n hw.ncpu)"
+          mkdir -p dist/macos-static
+          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/macos-static/
+          file dist/macos-static/fxc dist/macos-static/fxi
+          ./dist/macos-static/fxc -h || true
+
+      - name: Build shared
+        run: |
+          set -euo pipefail
+          if [[ -f Makefile ]]; then make distclean || true; fi
+          ./configure --enable-fpg --enable-map
+          make -j"$(sysctl -n hw.ncpu)"
+          mkdir -p dist/macos-shared
+          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/macos-shared/
+          cp -a deps/local/lib/*.dylib dist/macos-shared/ 2>/dev/null || true
+          file dist/macos-shared/fxc dist/macos-shared/fxi
+          ./dist/macos-shared/fxc -h || true
+
+      - name: Upload static
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-macos-static
+          path: dist/macos-static/
+          if-no-files-found: error
+
+      - name: Upload shared
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-macos-shared
+          path: dist/macos-shared/
+          if-no-files-found: error
+
+  release:
+    name: GitHub Release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    needs: [build, macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Pack platform archives
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y zip
+          mkdir -p release
+          tag="${GITHUB_REF_NAME}"
+          for dir in artifacts/fenix-*; do
+            name="$(basename "$dir")"
+            flat="$(mktemp -d)"
+            find "$dir" -type f -exec cp {} "$flat/" \;
+            (cd "$flat" && zip -r "$GITHUB_WORKSPACE/release/${name}-${tag}.zip" .)
+          done
+          ls -la release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
+          files: release/*
+          body: |
+            Builds of `fxc`, `fxi`, `map`, and `fpg` for Linux, Windows, and macOS.
+
+            Archives are named `fenix-<os>[-mingw]-<static|shared>-<tag>.zip`, with the executables at the zip root:
+            - **static** — libraries linked into the binaries where possible (`-static-libgcc` on Linux, `-static` on Windows, `-search_paths_first` on macOS)
+            - **shared** — dynamic SDL/png; Windows includes MinGW DLLs, macOS includes SDL_mixer dylibs
+            - **fenix-linux-*** — x86_64 ELF from `docker/Dockerfile.linux` (Ubuntu 22.04, SDL 1.2)
+            - **fenix-windows-mingw-*** — x86_64 PE from `docker/Dockerfile.windows` (MinGW-w64, SDL 1.2 / png / zlib / gif)
+            - **fenix-macos-*** — native Homebrew `sdl12-compat` plus SDL_mixer 1.2 built from source
+
+            Linux and Windows CI images come from `docker/Dockerfile.linux` and `docker/Dockerfile.windows`.
+            OS graphics/audio libraries may still be required at runtime.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

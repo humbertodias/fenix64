@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -45,7 +45,7 @@ extern int procdef_count ;
 extern int identifier_count ;
 extern PROCDEF ** procs ;
 
-/* Gestión de la lista de ficheros a incluir en el DCB */
+/* GestiÃ³n de la lista de ficheros a incluir en el DCB */
 
 DCB_FILE * dcb_files = 0 ;
 int        dcb_ef_alloc = 0 ;
@@ -97,7 +97,7 @@ void dcb_add_file (const char * filename)
 		return ;
 	}
 
-    /* Comprueba que el fichero no haya sido ya añadido */
+    /* Comprueba que el fichero no haya sido ya aÃ±adido */
 
     for (i = 0 ; i < dcb_filecount ; i++)
         if (strcmp(ptr, dcb_files[i].Name) == 0)
@@ -163,7 +163,7 @@ void dcb_settype (DCB_TYPEDEF * d, TYPEDEF * t)
 	}
 }
 
-/* Función principal que crea el fichero DCB
+/* FunciÃ³n principal que crea el fichero DCB
  * (ver dcb.h con la estructura del mismo) */
 
 DCB_HEADER dcb ;
@@ -359,7 +359,7 @@ int dcb_save (const char * filename, int options, const char * stubname)
 
 	dcb.file = dcb_files ;
 
-	/* 4. Cálculo de offsets */
+	/* 4. CÃ¡lculo de offsets */
 
 	offset = sizeof(DCB_HEADER_DATA) ;
 
@@ -510,7 +510,7 @@ int dcb_save (const char * filename, int options, const char * stubname)
 
 	file_close (fp) ;
 
-	/* 6. Mostrar estadísticas */
+	/* 6. Mostrar estadÃ­sticas */
 
 	printf ("\nFichero %s grabado (%ld bytes):\n\n", filename, offset) ;
 	printf ("          Procesos:   %8d procesos\n", dcb.data.NProcs) ;

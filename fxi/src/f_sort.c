@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -40,14 +40,14 @@ int keyoffset = 0;
  *	Comparison functions used by sort_variables
  */
 
-int compare_int		(const Sint32 * a, const Sint32 * b)	{ return *(Sint32 *)((Uint8 *)a + keyoffset) - *(Sint32 *)((Uint8 *)b + keyoffset); }
-int compare_dword	(const Uint32 * a, const Uint32 * b)	{ return *(Uint32 *)((Uint8 *)a + keyoffset) - *(Uint32 *)((Uint8 *)b + keyoffset); }
-int compare_word	(const Uint16 * a, const Uint16 * b)	{ return *(Uint16 *)((Uint8 *)a + keyoffset) - *(Uint16 *)((Uint8 *)b + keyoffset); }
-int compare_short   (const Sint16 * a, const Sint16 * b)	{ return *(Sint16 *)((Uint8 *)a + keyoffset) - *(Sint16 *)((Uint8 *)b + keyoffset); }
-int compare_byte    (const Uint8  * a, const Uint8  * b)	{ return *(Uint8  *)((Uint8 *)a + keyoffset) - *(Uint8  *)((Uint8 *)b + keyoffset); }
-int compare_sbyte   (const Sint8  * a, const Sint8  * b)	{ return *(Sint8  *)((Uint8 *)a + keyoffset) - *(Sint8  *)((Uint8 *)b + keyoffset); }
-int compare_float   (const float  * a, const float  * b)	{ return *(float  *)((Uint8 *)a + keyoffset) - *(float  *)((Uint8 *)b + keyoffset); }
-int compare_string  (const int    * a, const int    * b)	{ return strcmp(string_get(*(int *)((Uint8 *)a + keyoffset)), string_get(*(int *)((Uint8 *)b + keyoffset))); }
+int compare_int		(const void * a, const void * b)	{ return *(Sint32 *)((Uint8 *)a + keyoffset) - *(Sint32 *)((Uint8 *)b + keyoffset); }
+int compare_dword	(const void * a, const void * b)	{ return *(Uint32 *)((Uint8 *)a + keyoffset) - *(Uint32 *)((Uint8 *)b + keyoffset); }
+int compare_word	(const void * a, const void * b)	{ return *(Uint16 *)((Uint8 *)a + keyoffset) - *(Uint16 *)((Uint8 *)b + keyoffset); }
+int compare_short   (const void * a, const void * b)	{ return *(Sint16 *)((Uint8 *)a + keyoffset) - *(Sint16 *)((Uint8 *)b + keyoffset); }
+int compare_byte    (const void * a, const void * b)	{ return *(Uint8  *)((Uint8 *)a + keyoffset) - *(Uint8  *)((Uint8 *)b + keyoffset); }
+int compare_sbyte   (const void * a, const void * b)	{ return *(Sint8  *)((Uint8 *)a + keyoffset) - *(Sint8  *)((Uint8 *)b + keyoffset); }
+int compare_float   (const void * a, const void * b)	{ return *(float  *)((Uint8 *)a + keyoffset) - *(float  *)((Uint8 *)b + keyoffset); }
+int compare_string  (const void * a, const void * b)	{ return strcmp(string_get(*(int *)((Uint8 *)a + keyoffset)), string_get(*(int *)((Uint8 *)b + keyoffset))); }
 
 /*
  *  FUNCTION : dcb_typedef_reduce
@@ -173,7 +173,7 @@ static int dcb_typedef_size (const DCB_TYPEDEF * type)
 			}
 			if (maxvar == NULL)
 			{
-				gr_con_printf ("Estructura vacía");
+				gr_con_printf ("Estructura vacÃ­a");
 				return 0;
 			}
 
@@ -239,7 +239,7 @@ static int sort_variables (void * data, int key_offset, int key_type, int elemen
 			compare = compare_float;
 			break;
 		default:
-			gr_con_printf ("Tipo de dato usado como clave de ordenación inválido");
+			gr_con_printf ("Tipo de dato usado como clave de ordenaciÃ³n invÃ¡lido");
 			return 0;
 	}
 
@@ -267,17 +267,17 @@ int fxi_sort (INSTANCE * my, int * params)
 
 	if (type->BaseType[0] != TYPE_ARRAY)
 	{
-		gr_con_printf ("Sólo se permite ordenar un array de estructuras o valores");
+		gr_con_printf ("SÃ³lo se permite ordenar un array de estructuras o valores");
 		return 0;
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 	if (type->Count[0] < 2)
 	{
-		gr_con_printf ("Intento de ordenar un array con un sólo elemento");
+		gr_con_printf ("Intento de ordenar un array con un sÃ³lo elemento");
 		return 0;
 	}
 
@@ -326,17 +326,17 @@ int fxi_ksort (INSTANCE * my, int * params)
 
 	if (type->BaseType[0] != TYPE_ARRAY)
 	{
-		gr_con_printf ("Sólo se permite ordenar un array de estructuras o valores");
+		gr_con_printf ("SÃ³lo se permite ordenar un array de estructuras o valores");
 		return 0;
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 	if (type->Count[0] < 2)
 	{
-		gr_con_printf ("Intento de ordenar un array con un sólo elemento");
+		gr_con_printf ("Intento de ordenar un array con un sÃ³lo elemento");
 		return 0;
 	}
 
@@ -402,7 +402,7 @@ int fxi_sort_n (INSTANCE * my, int * params)
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 
@@ -467,7 +467,7 @@ int fxi_ksort_n (INSTANCE * my, int * params)
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 

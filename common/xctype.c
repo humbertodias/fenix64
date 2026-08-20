@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -31,7 +31,7 @@
 
 #include "xctype.h"
 
-/* Tabla de conversión de caracteres MS-DOS a Windows */
+/* Tabla de conversiÃ³n de caracteres MS-DOS a Windows */
 
 int dos_chars = 0 ;
 
@@ -54,7 +54,7 @@ unsigned char dos_to_win[256] = {
 173, 177,  61, 190, 182, 167, 247, 184, 176, 168, 183, 185, 179, 178, 166, 160
 } ;
 
-/* Tabla de conversión de caracteres Windows a MS-DOS */
+/* Tabla de conversiÃ³n de caracteres Windows a MS-DOS */
 
 unsigned char win_to_dos[256] =
 {
@@ -147,15 +147,15 @@ void init_c_type ()
 	set_c_lower  ("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		      "abcdefghijklmnopqrstuvwxyz") ;
 #ifdef RESPETAR_ACENTOS
-	set_c_upper  ("áéíóúñçàèìòùäëïöüıâêîôûæãåõ", 
-	              "ÁÉÍÓÚÑÇÀÈÌÒÙÄËÏÖÜİÂÊÎÔÛÆÃÅÕ") ;
-	set_c_lower  ("ÁÉÍÓÚÑÇÀÈÌÒÙÄËÏÖÜİÂÊÎÔÛÆÃÅÕ",
-		      "áéíóúñçàèìòùäëïöüıâêîôûæãåõ") ;
+	set_c_upper  ("\xE1\xE9\xED\xF3\xFA\xF1\xE7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5", 
+	              "\xC1\xC9\xCD\xD3\xDA\xD1\xC7\xC0\xC8\xCC\xD2\xD9\xC4\xCB\xCF\xD6\xDC\xDD\xC2\xCA\xCE\xD4\xDB\xC6\xC3\xC5\xD5") ;
+	set_c_lower  ("\xC1\xC9\xCD\xD3\xDA\xD1\xC7\xC0\xC8\xCC\xD2\xD9\xC4\xCB\xCF\xD6\xDC\xDD\xC2\xCA\xCE\xD4\xDB\xC6\xC3\xC5\xD5",
+		      "\xE1\xE9\xED\xF3\xFA\xF1\xE7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5") ;
 #else
-	set_c_upper  ("áéíóúñÑçÇàèìòùäëïöüıâêîôûæãåõÁÉÍÓÚ", 
-	              "AEIOUNNCCAEIOUAEIOUYAEIOUÆAAOAEIOU") ;
-	set_c_lower  ("áéíóúñÑçÇàèìòùäëïöüıâêîôûæãåõÁÉÍÓÚ", 
-	              "aeiounnccaeiouaeiouyaeiouÆaaoaeiou") ;
+	set_c_upper  ("\xE1\xE9\xED\xF3\xFA\xF1\xD1\xE7\xC7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5\xC1\xC9\xCD\xD3\xDA", 
+	              "AEIOUNNCCAEIOUAEIOUYAEIOU\xC6" "AAOAEIOU") ;
+	set_c_lower  ("\xE1\xE9\xED\xF3\xFA\xF1\xD1\xE7\xC7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5\xC1\xC9\xCD\xD3\xDA", 
+	              "aeiounnccaeiouaeiouyaeiou\xC6" "aaoaeiou") ;
 #endif
 
 	set_c_from  (" \t\n\r", CTYPE_SPACE) ;
@@ -168,8 +168,8 @@ void init_c_type ()
 	
 	set_c_range ('A', 'Z', CTYPE_ALPHA) ;
 	set_c_range ('a', 'z', CTYPE_ALPHA) ;
-	set_c_from  ("áéíóúÁÉÍÓÚñÑçÇàèìòùÀÈÌÒÙäëïöüÄËÏÖÜÿıâêîôûÂÊÎÔÛ"
-		     "æÆãåğõªºÃÅĞÕØ", CTYPE_ALPHA) ;
+	set_c_from  ("\xE1\xE9\xED\xF3\xFA\xC1\xC9\xCD\xD3\xDA\xF1\xD1\xE7\xC7\xE0\xE8\xEC\xF2\xF9\xC0\xC8\xCC\xD2\xD9\xE4\xEB\xEF\xF6\xFC\xC4\xCB\xCF\xD6\xDC\xFF\xFD\xE2\xEA\xEE\xF4\xFB\xC2\xCA\xCE\xD4\xDB"
+		     "\xE6\xC6\xE3\xE5\xF0\xF5\xAA\xBA\xC3\xC5\xD0\xD5\xD8", CTYPE_ALPHA) ;
 
 	set_c_as    (CTYPE_ALPHA, CTYPE_WORDCHAR) ;
 	set_c_from  ("_",         CTYPE_WORDCHAR) ;

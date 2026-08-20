@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -33,8 +33,8 @@
 #include "messages.c"
 
 /* ---------------------------------------------------------------------- */
-/* Tokenizador. La función token_next, ampliamente utilizada, recoge el   */
-/* siguiente token (identificador, operador, etc) del código fuente, y    */
+/* Tokenizador. La funciÃ³n token_next, ampliamente utilizada, recoge el   */
+/* siguiente token (identificador, operador, etc) del cÃ³digo fuente, y    */
 /* rellena la estructura global "token" con los datos del mismo.          */
 /* ---------------------------------------------------------------------- */
 
@@ -674,7 +674,7 @@ void token_next ()
 			return ;
 		}
 
-		/* Operadores de más de un caracter */
+		/* Operadores de mÃ¡s de un caracter */
 
 		len = 0 ;
 

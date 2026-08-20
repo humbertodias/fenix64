@@ -22,8 +22,8 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA */
 /*                                                                          */
 /****************************************************************************/
-/* Copyright © 1999 José Luis Cebrián Pagüe                                 */
-/* Copyright © 2002 FENIX PROJECT 1.0 TEAM                                  */
+/* Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e                                 */
+/* Copyright Â© 2002 FENIX PROJECT 1.0 TEAM                                  */
 /****************************************************************************/
 
 /****************************************************************************/
@@ -357,7 +357,7 @@ static int string_getid ()
     }
     // Incremento espacio
     string_alloc (1024) ;
-    gr_con_printf ("[STRING] ¬12*PANIC¬7 Too many strings, allocating more space") ;
+    gr_con_printf ("[STRING] \xAC" "12*PANIC\xAC" "7 Too many strings, allocating more space") ;
 
     // Devuelvo el string_count + 1, ya que ahora tengo 1024 mas que antes
     return string_count++ ;

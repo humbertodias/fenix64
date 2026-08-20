@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -40,7 +40,7 @@
 #include <math.h>
 #include <limits.h>
 
-/* Matemáticas de punto fijo, basadas en Allegro */
+/* MatemÃ¡ticas de punto fijo, basadas en Allegro */
 
 #include "fmath.h"
 #include <math.h>
@@ -73,6 +73,10 @@ typedef _POINTF VECTOR;
 typedef void (DRAW_SPAN) (GRAPH*,GRAPH*,int,int,int,int,int,int,int);
 typedef void (DRAW_HSPAN)(void *,void *,int,int);
 typedef Uint16 (ADDITIVE_BLEND)(Uint16,Uint16);
+
+#define HSPAN8_INIT    Uint8  *scr = (Uint8  *)vscr, *tex = (Uint8  *)vtex
+#define HSPAN816_INIT  Uint16 *scr = (Uint16 *)vscr; Uint8 *tex = (Uint8 *)vtex
+#define HSPAN16_INIT   Uint16 *scr = (Uint16 *)vscr, *tex = (Uint16 *)vtex
 
 
 /* Conversion tables used by transparency/blending
@@ -205,12 +209,15 @@ Uint16 additive_blend(Uint16 A, Uint16 B){
 
 
 /* Routine to sort vertexes in y, x order */
-static int compare_vertex_y (const VERTEX * a, const VERTEX * b)
+static int compare_vertex_y (const void * a, const void * b)
 {
-    if (a->y == b->y)
-        return a->x - b->x;
+    const VERTEX * va = a;
+    const VERTEX * vb = b;
 
-    return a->y - b->y;
+    if (va->y == vb->y)
+        return va->x - vb->x;
+
+    return va->y - vb->y;
 }
 
 
@@ -558,8 +565,9 @@ void draw_span_16to16_nocolorkey(GRAPH * dest, GRAPH * orig, int x, int y, int p
 /* Parameter for 1to8 and 16to8 */
 static int posx;
 
-void draw_hspan_1to8 (Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_1to8 (void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
     int i;
     int mask = (0x80 >> (posx & 7));
 
@@ -571,8 +579,9 @@ void draw_hspan_1to8 (Uint8 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to8_nocolorkey(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to8_nocolorkey(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -582,8 +591,9 @@ void draw_hspan_8to8_nocolorkey(Uint8 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to8_translucent(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to8_translucent(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -594,8 +604,9 @@ void draw_hspan_8to8_translucent(Uint8 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to8_tablend(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to8_tablend(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -606,8 +617,9 @@ void draw_hspan_8to8_tablend(Uint8 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to8_ablend(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to8_ablend(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -618,8 +630,9 @@ void draw_hspan_8to8_ablend(Uint8 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to8(Uint8 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to8(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN8_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -630,8 +643,9 @@ void draw_hspan_8to8(Uint8 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_1to16(Uint16 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_1to16(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN816_INIT;
     int i;
     int mask = (0x80 >> (posx & 7));
 
@@ -643,8 +657,9 @@ void draw_hspan_1to16(Uint16 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to16(Uint16 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to16(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN816_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -655,8 +670,9 @@ void draw_hspan_8to16(Uint16 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to16_ablend(Uint16 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to16_ablend(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN816_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -667,8 +683,9 @@ void draw_hspan_8to16_ablend(Uint16 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to16_tablend(Uint16 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to16_tablend(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN816_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -679,8 +696,9 @@ void draw_hspan_8to16_tablend(Uint16 * scr, Uint8 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_8to16_translucent(Uint16 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to16_translucent(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN816_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -691,8 +709,9 @@ void draw_hspan_8to16_translucent(Uint16 * scr, Uint8 * tex, int pixels, int inc
     }
 }
 
-void draw_hspan_8to16_nocolorkey(Uint16 * scr, Uint8 * tex, int pixels, int incs)
+void draw_hspan_8to16_nocolorkey(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN816_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -702,8 +721,9 @@ void draw_hspan_8to16_nocolorkey(Uint16 * scr, Uint8 * tex, int pixels, int incs
     }
 }
 
-void draw_hspan_16to16(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void draw_hspan_16to16(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -714,8 +734,9 @@ void draw_hspan_16to16(Uint16 * scr, Uint16 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_16to16_ablend(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void draw_hspan_16to16_ablend(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -726,8 +747,9 @@ void draw_hspan_16to16_ablend(Uint16 * scr, Uint16 * tex, int pixels, int incs)
     }
 }
 
-void draw_hspan_16to16_tablend(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void draw_hspan_16to16_tablend(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -739,8 +761,9 @@ void draw_hspan_16to16_tablend(Uint16 * scr, Uint16 * tex, int pixels, int incs)
 }
 
 
-void draw_hspan_16to16_translucent(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void draw_hspan_16to16_translucent(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)
@@ -751,8 +774,9 @@ void draw_hspan_16to16_translucent(Uint16 * scr, Uint16 * tex, int pixels, int i
     }
 }
 
-void draw_hspan_16to16_nocolorkey(Uint16 * scr, Uint16 * tex, int pixels, int incs)
+void draw_hspan_16to16_nocolorkey(void * vscr, void * vtex, int pixels, int incs)
 {
+    HSPAN16_INIT;
     int i;
 
     for (i = 0 ; i < pixels ; i++)

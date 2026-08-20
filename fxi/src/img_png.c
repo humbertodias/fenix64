@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -79,7 +79,7 @@ GRAPH * gr_read_png (const char * filename)
     png_uint_32 width, height, rowbytes;
     int depth, color ;
 
-    /* Abre el fichero y se asegura de que screen está inicializada */
+    /* Abre el fichero y se asegura de que screen estÃ¡ inicializada */
 
     png = file_open (filename, "rb") ;
     if (!png) gr_error ("No existe %s\n", filename) ;
@@ -95,13 +95,13 @@ GRAPH * gr_read_png (const char * filename)
 
     /* Rutina de error */
 
-    if (setjmp (png_ptr->jmpbuf)) {
+    if (setjmp (png_jmpbuf (png_ptr))) {
         png_destroy_read_struct (&png_ptr, &info_ptr, &end_info) ;
         file_close (png) ;
         return 0 ;
     }
 
-    /* Recupera información sobre el PNG */
+    /* Recupera informaciÃ³n sobre el PNG */
 
     png_set_read_fn (png_ptr, 0, user_read_data) ;
     png_read_info (png_ptr, info_ptr) ;
@@ -269,7 +269,7 @@ GRAPH * gr_read_png (const char * filename)
 
     /* Fin */
 
-    if (!setjmp (png_ptr->jmpbuf)) png_read_end (png_ptr, 0) ;
+    if (!setjmp (png_jmpbuf (png_ptr))) png_read_end (png_ptr, end_info) ;
     file_close (png) ;
     bitmap->modified = 1 ;
 
@@ -325,7 +325,7 @@ int gr_save_png (GRAPH * gr, const char * filename)
 
     /* Error handling... */
 
-    if (setjmp(png_ptr->jmpbuf)) {
+    if (setjmp(png_jmpbuf(png_ptr))) {
         fclose (file) ;
         png_destroy_write_struct (&png_ptr, NULL) ;
         free ( rowpointers ) ;
@@ -369,7 +369,6 @@ int gr_save_png (GRAPH * gr, const char * filename)
 
         /* Free allocated palette... */
         png_free (png_ptr, (png_voidp) pal) ;
-        info_ptr->palette = NULL ;
     } else {
         png_set_IHDR (png_ptr, info_ptr, gr->width,
                       gr->height, 8, PNG_COLOR_TYPE_RGB_ALPHA,

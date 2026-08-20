@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -147,8 +147,10 @@ static int gprof_allocate (int count)
  *		> 1 if sample b should be drawn first
  */
 
-static int gprof_compare (const int * a, const int * b)
+static int gprof_compare (const void * va, const void * vb)
 {
+	const int * a = va;
+	const int * b = vb;
 	if (samples[*b].parent == samples[*a].parent)
 	{
 		int timediff;
@@ -398,7 +400,7 @@ void gprof_end (const char * name)
 	}
 	if (i == gprof_sample_count)
 	{
-//		gr_con_printf ("gprof_end: no se encontró el bloque %s", name);
+//		gr_con_printf ("gprof_end: no se encontrÃ³ el bloque %s", name);
 		return;
 	}
 

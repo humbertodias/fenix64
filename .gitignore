@@ -1,0 +1,25 @@
+# tmp files
+*.dSYM
+*.o
+*.log
+/deps/SDL_mixer-*/
+/deps/local/
+/deps/*.tar.gz
+/dist/
+**/.deps
+autom4te.cache/
+/Makefile
+/config.status
+/configure.bak
+/erro.txt
+/erro.rxt
+
+# executable
+/map/map
+/map/map.exe
+/fxc/src/fxc
+/fxc/src/fxc.exe
+/fxi/src/fxi
+/fxi/src/fxi.exe
+/fpg/fpg
+/fpg/fpg.exe

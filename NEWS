@@ -1,5 +1,5 @@
 0.93
-- Se corrige convesion a negativo de números unsigned.
+- Se corrige convesion a negativo de nÃºmeros unsigned.
 - Ahora no es necesario declarar las privadas en el declare, se pueden declarar junto a la funcion.
 - Posicionamiento del mouse en mitad de pantalla al hacer set_mode.
 - Se mejora la performance en el uso de dirty. En algunos casos hasta un 800%.
@@ -320,7 +320,7 @@ esta esperando retorno de otro proceso.
     LOAD_FPL
     UNLOAD_FGC
     UNLOAD_FBM
-- Posibilidad de cambiar tamaño de la consola de debug
+- Posibilidad de cambiar tamaÃ±o de la consola de debug
   (Variables de debug: CONSOLE_LINES, CONSOLE_COLUMNS)
 - Correccion en actualizacion menores de pantalla en 8bits de profundidad
 - Ahora la consola debug congela toda actualizacion y procesamiento fenix
@@ -494,33 +494,33 @@ esta esperando retorno de otro proceso.
 
 0.86
 - Fix de orden de codigos de instrucciones (sysprocs.h, cambio temporal).
-  Caídas si se cargaban dlls con muchas funciones.
-- Compile_varspace, se eliminó parámetros collision1 y collision2,
-  se agregó collision como array, para de esta forma poder incluir X spaces de colisión.
-- Concepto de variables "públicas" (locales) por proceso.
+  CaÃ­das si se cargaban dlls con muchas funciones.
+- Compile_varspace, se eliminÃ³ parÃ¡metros collision1 y collision2,
+  se agregÃ³ collision como array, para de esta forma poder incluir X spaces de colisiÃ³n.
+- Concepto de variables "pÃºblicas" (locales) por proceso.
   Esto hace que se puedan definir variables locales para un solo proceso determinado
   y no para todos los procesos.
 - Declaracion LOCAL, PUBLIC y PRIVATE, en cualquier orden dentro de un Process
   y dentro del cuerpo del programa.
 - Se incorpora nombre de proceso como tipo de dato.
-  Esto sirve para referenciar variables públicas (y locales), dentro de un proceso
-  de tipo específico. Es necesario para poder usar la nueva funcionalidad
-  de variables públicas. El tipo de dato finalmente termina siendo un "int"
+  Esto sirve para referenciar variables pÃºblicas (y locales), dentro de un proceso
+  de tipo especÃ­fico. Es necesario para poder usar la nueva funcionalidad
+  de variables pÃºblicas. El tipo de dato finalmente termina siendo un "int"
   para mantener compatibilidad.
 - Se mantiene compatibilidad con LOCAL global. Se pueden definir variables locales
   comunes a todos los procesos y otras locales por proceso.
-- Redefinición de prototipos de funciones en pathfind.c por conflicto con funciones en C
+- RedefiniciÃ³n de prototipos de funciones en pathfind.c por conflicto con funciones en C
 - Enable funciones MMX en GNUC
 - Nuevo formato dcb, se hacen uso de sizeof de las estructuras utilizadas
-  (antes se usaba tamaño sumado a mano, muy problemático)
-  y se agrega las secciones de datos públicas.
+  (antes se usaba tamaÃ±o sumado a mano, muy problemÃ¡tico)
+  y se agrega las secciones de datos pÃºblicas.
 - Algunos free de memoria ante ciertos errores en funciones de runtime
 - Se normaliza el configure, se corrije y se le da soporte para windows
-- Limpieza en compilación, se agrego carpetas "obj", donde se compilan los .o
+- Limpieza en compilaciÃ³n, se agrego carpetas "obj", donde se compilan los .o
   y los binarios se dejan en la carpeta "bin"
-- Más información de debug
-- Se agrega claúsula PUBLICS en la consola de debug
-- Mejoras varias en el código
+- MÃ¡s informaciÃ³n de debug
+- Se agrega claÃºsula PUBLICS en la consola de debug
+- Mejoras varias en el cÃ³digo
 - Otros bugs menores, que actualmente no recuerdo... :P
 
 Limitaciones:

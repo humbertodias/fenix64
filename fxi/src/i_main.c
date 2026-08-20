@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -45,7 +45,7 @@
 void mnemonic_dump (int i, int param);
 
 /* ---------------------------------------------------------------------- */
-/* MÛdulo principal del intÈrprete: funciÛn de ejecuciÛn de bloques       */
+/* M√≥dulo principal del int√©rprete: funci√≥n de ejecuci√≥n de bloques       */
 /* ---------------------------------------------------------------------- */
 
 int must_exit = 0 ;
@@ -250,7 +250,7 @@ void instance_go_all ()
 
             if (must_exit) break ;
 
-            /* Si no se ejecutÛ nada: Dibujar, actualizar variables, etc. */
+            /* Si no se ejecut√≥ nada: Dibujar, actualizar variables, etc. */
 
             if (!i_count && !force_debug)
             {
@@ -305,7 +305,7 @@ void instance_go_all ()
                 continue ;
             }
 
-            /* NOTA: los procesos pueden haberse autodestruido tras su ejecuciÛn */
+            /* NOTA: los procesos pueden haberse autodestruido tras su ejecuci√≥n */
         }
     }
 
@@ -416,7 +416,7 @@ int instance_go (INSTANCE * r)
 
         switch (*ptr)
         {
-            /* ManipulaciÛn de la pila */
+            /* Manipulaci√≥n de la pila */
 
             case MN_DUP:
                 *stack_ptr = *(stack_ptr-1) ;
@@ -574,7 +574,7 @@ int instance_go (INSTANCE * r)
 
             case MN_SYSCALL:
                 p = sysproc_get (ptr[1]) ;
-                if (!p) gr_error ("Error: FunciÛn del sistema desconocida\n") ;
+                if (!p) gr_error ("Error: Funci√≥n del sistema desconocida\n") ;
                 stack_ptr -= p->params ;
                 *stack_ptr = (*p->func) (r, stack_ptr) ;
                 stack_ptr++ ;
@@ -962,7 +962,7 @@ int instance_go (INSTANCE * r)
                 ptr++ ;
                 break ; */
 
-            /* Operaciones matem·ticas  en coma floatante */
+            /* Operaciones matem√°ticas  en coma floatante */
 
             case MN_FLOAT | MN_NEG:
                 *(float *)&stack_ptr[-1] = -*((float *)&stack_ptr[-1]) ;
@@ -1021,7 +1021,7 @@ int instance_go (INSTANCE * r)
                 ptr += 2;
                 break;
 
-            /* Operaciones matem·ticas */
+            /* Operaciones matem√°ticas */
 
             case MN_NEG:
             case MN_NEG | MN_UNSIGNED:

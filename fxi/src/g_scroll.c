@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -102,7 +102,7 @@ static int scroll_fills_region (REGION r)
                 if (!graph) continue ;
 		if (flags & B_TRANSLUCENT) continue ;
 
-		// Descarta el scroll si puede verse a través
+		// Descarta el scroll si puede verse a travÃ©s
 
 		if (!(flags & B_NOCOLORKEY))
 		{
@@ -272,7 +272,7 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 			}
 		}
 
-		/* Forzar a que esté en el centro de la ventana */
+		/* Forzar a que estÃ© en el centro de la ventana */
 
 		cx = LOCDWORD(scrolls[n].camera,COORDX) ;
 		cy = LOCDWORD(scrolls[n].camera,COORDY) ;
@@ -288,7 +288,7 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 		if (data->y0 > cy) data->y0 = MAX(data->y0-speed, cy) ;
     }
 
-    /* Scrolls no cíclicos y posición del background */
+    /* Scrolls no cÃ­clicos y posiciÃ³n del background */
 
     if (scrolls[n].graph)
     {
@@ -312,7 +312,7 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 			data->y1 = MAX (0, MIN (data->y1, (int)scrolls[n].back->height - h)) ;
 	}
 
-	/* Actualiza la posición del scroll según las variables globales */
+	/* Actualiza la posiciÃ³n del scroll segÃºn las variables globales */
 
 	scrolls[n].posx0 = data->x0 ;
 	scrolls[n].posy0 = data->y0 ;

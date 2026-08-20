@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -87,28 +87,49 @@ static void arrange_keyframes (GRAPH * graph)
 
 
 
-int fbm_insert_frame(gr, frame, where)
+int fbm_insert_frame(GRAPH * gr, int frame, int where)
 {
+	(void)gr;
+	(void)frame;
+	(void)where;
+	return 0;
 }
 
-int fbm_remove_frame(gr, frame)
+int fbm_remove_frame(GRAPH * gr, int frame)
 {
+	(void)gr;
+	(void)frame;
+	return 0;
 }
 
-int fbm_insert_keyframe(gr, keyframe, where)
+int fbm_insert_keyframe(GRAPH * gr, int keyframe, int where)
 {
+	(void)gr;
+	(void)keyframe;
+	(void)where;
+	return 0;
 }
 
-int fbm_remove_keyframe(gr, keyframe)
+int fbm_remove_keyframe(GRAPH * gr, int keyframe)
 {
+	(void)gr;
+	(void)keyframe;
+	return 0;
 }
 
-int fbm_insert_sequence(gr, seq, where)
+int fbm_insert_sequence(GRAPH * gr, int seq, int where)
 {
+	(void)gr;
+	(void)seq;
+	(void)where;
+	return 0;
 }
 
-int fbm_remove_sequence(gr, seq)
+int fbm_remove_sequence(GRAPH * gr, int seq)
 {
+	(void)gr;
+	(void)seq;
+	return 0;
 }
 
 
@@ -167,12 +188,12 @@ GRAPH * fbm_load_from (file * fp, int fgc_depth)
 
 		if (strcmp (file_header.magic, FBM_MAGIC) != 0)
 		{
-			fbm_error = "El fichero no es un FBM válido";
+			fbm_error = "El fichero no es un FBM vÃ¡lido";
 			return NULL;
 		}
 		if ((file_header.version & 0xFF00) != 0x0100)
 		{
-			fbm_error = "El fichero FBM es de una versión posterior incompatible";
+			fbm_error = "El fichero FBM es de una versiÃ³n posterior incompatible";
 			return NULL;
 		}
 	}
@@ -231,7 +252,7 @@ GRAPH * fbm_load_from (file * fp, int fgc_depth)
 		graph = bitmap_new (header.code, header.width, header.height, file_header.depth, header.max_frame+1);
 		if (graph == NULL)
 		{
-			fbm_error = "Error al crear el gráfico en memoria";
+			fbm_error = "Error al crear el grÃ¡fico en memoria";
 			error = 1;
 		}
 		else

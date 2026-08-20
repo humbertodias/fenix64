@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intÈrprete de videojuegos
- * Copyright (C) 1999 JosÈ Luis Cebri·n Pag¸e
+/* Fenix - Compilador/int√©rprete de videojuegos
+ * Copyright (C) 1999 Jos√© Luis Cebri√°n Pag√ºe
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ extern int procdef_count ;
 extern int identifier_count ;
 extern PROCDEF * * procs ;
 
-/* GestiÛn de la lista de ficheros a incluir en el DCB */
+/* Gesti√≥n de la lista de ficheros a incluir en el DCB */
 
 DCB_FILE * dcb_files = 0 ;
 int        dcb_ef_alloc = 0 ;
@@ -90,7 +90,7 @@ void dcb_add_file (const char * filename)
 		return ;
 	}
 
-        /* Comprueba que el fichero no haya sido ya aÒadido */
+        /* Comprueba que el fichero no haya sido ya a√±adido */
 
         for (i = 0 ; i < dcb_filecount ; i++)
                 if (strcmp(ptr, dcb_files[i].Name) == 0)
@@ -154,7 +154,7 @@ static void dcb_settype (DCB_TYPEDEF * d, TYPEDEF * t)
 		d->Members = NO_MEMBERS ;
 }
 
-/* FunciÛn principal que crea el fichero DCB 
+/* Funci√≥n principal que crea el fichero DCB 
  * (ver dcb.h con la estructura del mismo) */
 
 DCB_HEADER dcb ;
@@ -179,7 +179,7 @@ int dcb_save (const char * filename, int options)
 		return 0 ;
 	}
 
-	/* Los varspace se van rellenando autom·ticamente */
+	/* Los varspace se van rellenando autom√°ticamente */
 
 	dcb.varspace = 0 ;
 
@@ -296,7 +296,7 @@ int dcb_save (const char * filename, int options)
 
 	dcb.file = dcb_files ;
 
-	/* 4. C·lculo de offsets */
+	/* 4. C√°lculo de offsets */
 
 	offset = DCB_HEADER_SIZE ;
 
@@ -413,14 +413,14 @@ int dcb_save (const char * filename, int options)
 
 	file_close (fp) ;
 
-	/* 6. Mostrar estadÌsticas */
+	/* 6. Mostrar estad√≠sticas */
 
 	printf ("\nFichero %s grabado (%ld bytes):\n\n", filename, offset) ;
 	printf ("          Procesos:   %8d procesos\n", dcb.NProcs) ;
 	printf ("    Datos globales:   %8d bytes \n", dcb.SGlobal) ;
 	printf ("     Datos locales:   %8d bytes\n", dcb.SLocal) ;
 	printf ("    Datos privados:   %8d bytes\n", SPrivate) ;
-	printf ("            CÛdigo:   %8d bytes\n", SCode) ;
+	printf ("            C√≥digo:   %8d bytes\n", SCode) ;
 
 	if (options & DCB_DEBUG)
 	{

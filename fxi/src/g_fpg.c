@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -359,7 +359,7 @@ static int gr_read_lib (file * fp)
 		ARRANGE_DWORD (&chunk.height) ;
 		ARRANGE_DWORD (&chunk.flags) ;
 
-		/* Cabecera del gráfico */
+		/* Cabecera del grÃ¡fico */
 
 		gr = bitmap_new (chunk.code, chunk.width, chunk.height, bpp, 1) ;
 		if (!gr) {
@@ -400,7 +400,7 @@ static int gr_read_lib (file * fp)
 		}
 		else	gr->cpoints = 0 ;
 
-		/* Datos del gráfico */
+		/* Datos del grÃ¡fico */
 
 		len = gr->widthb;
 
@@ -421,7 +421,7 @@ static int gr_read_lib (file * fp)
 		}
 
 		grlib_add_map (libid, gr) ;
-        pal_map_assign (libid, gr, pal) ;
+        pal_map_assign (libid, gr->code, pal) ;
 	}
 
     pal_destroy (pal) ; // Elimino la instancia inicial

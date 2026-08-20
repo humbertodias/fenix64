@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -207,9 +207,10 @@ PALETTE * pal_new(PALETTE * basepal)
     return pal;
 }
 
-PALETTE * pal_new2(unsigned char * datapal)
+PALETTE * pal_new2(void * paldata)
 {
     PALETTE * pal = malloc(sizeof(PALETTE));
+    unsigned char * datapal = paldata;
     int n;
 
     if (!pal) return NULL ;
@@ -540,21 +541,23 @@ int gr_load_pal (const char * filename)
     char header[8], headerEx[16] ;
     FGC_HEADER  fgcHeader;
     FBM_FILE_HEADER fbmHeader;
+    PALETTE * pal ;
     int r = 0 ;
-    int i = 0 ;
 
     if (!fp) return 0 ;
     file_read (fp, header, 8) ;
     if (strcmp (header, "map\x1A\x0D\x0A") == 0)
     {
         file_seek (fp, 48, SEEK_SET) ;
-        r = gr_read_pal_with_gamma (fp) ;
+        pal = gr_read_pal_with_gamma (fp) ;
+        r = (pal != NULL) ;
     }
     else if (strcmp (header, "fpg\x1A\x0D\x0A") == 0 ||
         strcmp (header, "fnt\x1A\x0D\x0A") == 0 ||
         strcmp (header, "pal\x1A\x0D\x0A") == 0)
     {
-        r = gr_read_pal_with_gamma (fp) ;
+        pal = gr_read_pal_with_gamma (fp) ;
+        r = (pal != NULL) ;
     }
     else if (memcmp (header, "\x89PNG", 4) == 0)
     {
@@ -564,8 +567,8 @@ int gr_load_pal (const char * filename)
         palette_loaded = 0;
         graph = gr_read_png(filename);
         if (graph) {
-            r = (int) graph->palette;
             pal_use(graph->palette);
+            r = 1;
             bitmap_destroy(graph);
         }
     }
@@ -589,7 +592,8 @@ int gr_load_pal (const char * filename)
             if (fgcHeader.depth == 8) {
 
                 file_seek (fp, fgcHeader.palette, SEEK_SET) ;
-                r = gr_read_pal (fp);
+                pal = gr_read_pal (fp);
+                r = (pal != NULL) ;
 
 /*
                 if (file_read(fp, colors, 768) != 768) {
@@ -609,7 +613,7 @@ int gr_load_pal (const char * filename)
                 r = 1 ;
 */
             } else {
-                fgc_error = "Fichero FGC no contiene informaciÛn de paleta";
+                fgc_error = "Fichero FGC no contiene informaci√≥n de paleta";
                 file_close(fp);
                 return 0;
             }
@@ -635,7 +639,8 @@ int gr_load_pal (const char * filename)
 
             file_seek (fp, sizeof(FBM_FILE_HEADER)+sizeof(FBM_HEADER), SEEK_SET) ;
 
-            r = gr_read_pal (fp);
+            pal = gr_read_pal (fp);
+            r = (pal != NULL) ;
 /*
             if (file_read(fp, colors, 768) != 768) {
                 fbm_error = "PALETA - Fichero FGC truncado";
@@ -704,10 +709,10 @@ void gr_get_rgb (int color, int *r, int *g, int *b)
     (*b) <<= screen->format->Bloss ;
 }
 
-/* Busca el color m·s cercano en la paleta a uno determinado */
+/* Busca el color m√°s cercano en la paleta a uno determinado */
 
-/* Emplea una cachÈ interna que acelera considerablemente el proceso,
- * a cambio de perder una parte de precisiÛn */
+/* Emplea una cach√© interna que acelera considerablemente el proceso,
+ * a cambio de perder una parte de precisi√≥n */
 
 Uint8 nearest_table[64][64][64] ;
 
@@ -760,7 +765,7 @@ Uint16 gr_get_color (int r, int g, int b)
 }
 
 /* ----------------------------------------------------------------------
- * FunciÛn que rellena la tabla de color m·s cercano (nearest_table)
+ * Funci√≥n que rellena la tabla de color m√°s cercano (nearest_table)
  * ---------------------------------------------------------------------- */
 
 #define DUP 1

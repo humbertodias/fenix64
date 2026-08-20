@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -70,7 +70,7 @@ int fpl_load_from (file * fp)
 	}
 
     if (strncmp(header.magic, FPL_MAGIC, strlen(FPL_MAGIC)) == 0) {
-		fpl_error = "Fichero FPL inválido" ;
+		fpl_error = "Fichero FPL invÃ¡lido" ;
 		return 0 ;
     }
 
@@ -78,12 +78,12 @@ int fpl_load_from (file * fp)
 	ARRANGE_DWORD(&file_header.version);
 
 	if (!FPL_VALID_DEPTH(header.depth)) {
-		fpl_error = "Profundidad de color no válida en el fichero FPL" ;
+		fpl_error = "Profundidad de color no vÃ¡lida en el fichero FPL" ;
 		return 0 ;
 	}
 
 	if ((header.version & 0xFF00) != 0x0100) {
-		fpl_error = "El fichero FPL es de una versión posterior incompatible";
+		fpl_error = "El fichero FPL es de una versiÃ³n posterior incompatible";
 		return 0;
 	}
 
