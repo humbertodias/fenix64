@@ -121,7 +121,7 @@ if test "$fxc" = yes || test "$fxi" = yes; then
 	)
 	case "$target_os" in
 	    mingw*)
-	        SDL_LIBS="$SDL_LIBS -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi"
+	        SDL_LIBS="$SDL_LIBS -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi -ldxguid -ldinput8 -lshell32"
 	        ;;
 	esac
 

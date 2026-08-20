@@ -186,7 +186,8 @@ jobs:
             fi
             ./configure --host="$HOST" --prefix="$MINGW_PREFIX" \
               --disable-shared --enable-static \
-              --disable-video-x11 --disable-video-opengl --disable-nasm
+              --disable-video-x11 --disable-video-opengl --disable-nasm \
+              --disable-directx --disable-video-directx --enable-video-windib
             make -j"$(nproc)"
             make install
             cd ..
