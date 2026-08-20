@@ -1,0 +1,64 @@
+name: GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Doxygen image
+        uses: docker/build-push-action@v6
+        with:
+          context: docker
+          file: docker/Dockerfile.doxygen
+          tags: fenix-doxygen
+          load: true
+          provenance: false
+          cache-from: type=gha,scope=fenix-doxygen
+          cache-to: type=gha,mode=max,scope=fenix-doxygen
+
+      - name: Stage Pages site
+        env:
+          USE_DOCKER: "1"
+          SKIP_DOCKER_BUILD: "1"
+        run: bash doc/stage-site.sh dist/pages
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

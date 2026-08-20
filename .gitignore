@@ -6,6 +6,8 @@
 /deps/local/
 /deps/*.tar.gz
 /dist/
+/doc/.doxygen-extra
+/doc/html/
 **/.deps
 autom4te.cache/
 /Makefile
@@ -13,6 +15,7 @@ autom4te.cache/
 /configure.bak
 /erro.txt
 /erro.rxt
+.DS_Store
 
 # executable
 /map/map

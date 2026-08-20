@@ -1,0 +1,33 @@
+# GitHub Pages site layout for Fenix.
+# Consumed by doc/stage-site.sh and .github/workflows/pages.yml.
+
+site:
+  nojekyll: true
+
+sections:
+  home:
+    description: Project landing page and historical HTML docs
+    source: tree
+    dest: /
+    files:
+      - doc/index.html
+      - doc/site.css
+      - readme.html
+      - info.html
+
+  formats:
+    description: File-format notes from debian/doc
+    source: tree
+    dest: /formats/
+    files:
+      - debian/doc/*.txt
+
+  api:
+    description: Doxygen API reference (generated from C sources on deploy)
+    source: doxygen
+    generator: doc/generate.sh
+    docker_image: fenix-doxygen
+    dockerfile: docker/Dockerfile.doxygen
+    doxyfile: doc/Doxyfile
+    output_dir: doc/html
+    dest: /docs/
