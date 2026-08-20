@@ -139,7 +139,7 @@ extern int          fade_step ;             /* Si lo hay, posiciùn (0=off)      
 
 
 extern PALETTE * pal_new(PALETTE * basepal);
-extern PALETTE * pal_new2(unsigned char * datapal);
+extern PALETTE * pal_new2(void * datapal);
 
 extern void pal_destroy(PALETTE * pal);
 extern void pal_refresh(PALETTE * pal);

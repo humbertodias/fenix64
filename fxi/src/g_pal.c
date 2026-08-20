@@ -207,9 +207,10 @@ PALETTE * pal_new(PALETTE * basepal)
     return pal;
 }
 
-PALETTE * pal_new2(unsigned char * datapal)
+PALETTE * pal_new2(void * paldata)
 {
     PALETTE * pal = malloc(sizeof(PALETTE));
+    unsigned char * datapal = paldata;
     int n;
 
     if (!pal) return NULL ;
