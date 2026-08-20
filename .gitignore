@@ -8,7 +8,6 @@
 **/.deps
 autom4te.cache/
 /Makefile
-/compile
 /config.status
 /configure.bak
 /erro.txt
