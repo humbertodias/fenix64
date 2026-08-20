@@ -261,7 +261,9 @@ jobs:
           tag="${GITHUB_REF_NAME}"
           for dir in artifacts/fenix-*; do
             name="$(basename "$dir")"
-            (cd "$dir" && zip -r "$GITHUB_WORKSPACE/release/${name}-${tag}.zip" .)
+            flat="$(mktemp -d)"
+            find "$dir" -type f -exec cp {} "$flat/" \;
+            (cd "$flat" && zip -r "$GITHUB_WORKSPACE/release/${name}-${tag}.zip" .)
           done
           ls -la release
 
