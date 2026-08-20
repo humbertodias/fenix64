@@ -117,8 +117,8 @@ void gr_mode7_start (int n, int fileid, int inid, int outid, int region, int hor
  *
  * */
 
-#define ROTATEDX(x,y,sina,cosa) (fmul(x,cosa) - fmul(y,sina))
-#define ROTATEDY(x,y,sina,cosa) (fmul(x,sina) + fmul(y,cosa))
+#define ROTATEDX(x,y,sina,cosa) (fxmul(x,cosa) - fxmul(y,sina))
+#define ROTATEDY(x,y,sina,cosa) (fxmul(x,sina) + fxmul(y,cosa))
 
 /* Esta estructura guarda información que se recalcula a cada frame.
  * Quizá no sería necesario recalcularlo todo. El incremento podría
@@ -189,8 +189,8 @@ void gr_mode7_draw (int n)
 
     angle = LOCDWORD(camera, ANGLE) ;
 
-    cosa = fcos (-angle) ;
-    sina = fsin (-angle) ;
+    cosa = fxcos (-angle) ;
+    sina = fxsin (-angle) ;
 
     /* Averigua la posición de inicio */
 
@@ -237,8 +237,8 @@ void gr_mode7_draw (int n)
         }
         //if (point_z >= camera_z) break ;
 
-        lines[y].left_bmp_x = fdiv( fmul((point_x - camera_x), -camera_z), (point_z - camera_z) ) + camera_x ;
-        lines[y].left_bmp_y = fdiv( fmul((point_y - camera_y), -camera_z), (point_z - camera_z) ) + camera_y ;
+        lines[y].left_bmp_x = fxdiv( fxmul((point_x - camera_x), -camera_z), (point_z - camera_z) ) + camera_x ;
+        lines[y].left_bmp_y = fxdiv( fxmul((point_y - camera_y), -camera_z), (point_z - camera_z) ) + camera_y ;
 
         /* Lo mismo para el punto (width,y) */
 
@@ -252,8 +252,8 @@ void gr_mode7_draw (int n)
 
         //if (point_z >= camera_z) break ;
 
-        lines[y].right_bmp_x = fdiv(fmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
-        lines[y].right_bmp_y = fdiv(fmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
+        lines[y].right_bmp_x = fxdiv(fxmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
+        lines[y].right_bmp_y = fxdiv(fxmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
 
         /* Averigua el incremento necesario para cada paso de la línea */
 

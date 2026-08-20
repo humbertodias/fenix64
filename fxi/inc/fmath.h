@@ -101,7 +101,7 @@
     	return x / FIXED_PREC ;
     }
 
-    __INLINE fixed fcos(int x)
+    __INLINE fixed fxcos(int x)
     {
     if (x < 0) x = -x ;
     if (x >= 360000) x %= 360000 ;
@@ -111,9 +111,9 @@
     return cos_table[x] ;
     }
 
-    __INLINE fixed fsin(int x)
+    __INLINE fixed fxsin(int x)
     {
-    if (x < 0) return -fsin(-x) ;
+    if (x < 0) return -fxsin(-x) ;
     if (x >= 360000) x %= 360000 ;
     if (x >= 270000) return -cos_table[x - 270000] ;
     if (x >= 180000) return -cos_table[270000 - x] ;
@@ -121,12 +121,12 @@
     return cos_table[90000 - x] ;
     }
 
-    __INLINE fixed fmul(int x, int y)
+    __INLINE fixed fxmul(int x, int y)
     {
     	return ftofix (fixtof(x) * fixtof(y)) ;
     }
 
-    __INLINE fixed fdiv(int x, int y)
+    __INLINE fixed fxdiv(int x, int y)
     {
     	return ftofix (fixtof(x) / fixtof(y)) ;
     }
