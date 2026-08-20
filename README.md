@@ -4,7 +4,11 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/humbertodias/fenix64/total)
 
 
-# Fenix Project 1.0
+# Fenix64
+
+A fork of [Fenix](https://fenix.divsite.net/) adapted to run on modern 64-bit architectures.
+
+## Overview
 
 Interpreted script language for 2D games: compiler `fxc`, interpreter `fxi`, and the `map` / `fpg` graphic tools.
 
