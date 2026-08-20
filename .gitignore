@@ -9,9 +9,7 @@
 **/.deps
 autom4te.cache/
 /Makefile
-**/config.status
-**/config.sub
-**/config.guess
+/config.status
 /configure.bak
 /erro.txt
 /erro.rxt
