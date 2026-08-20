@@ -184,7 +184,7 @@ MAP ;
 void save_map (const char * filename, MAP * map)
 {
 	long   len ;
-	gzFile * file = gzopen (filename, policy) ;
+	gzFile file = gzopen (filename, policy) ;
 
 	if (!file) fatal_error ("%s: error al crear", filename) ;
 	gzwrite (file, &map->header, sizeof(MAP_HEADER)) ;
@@ -802,7 +802,7 @@ void save_pal (const char * filename, char * palette)
 
 char * load_pal (const char * filename)
 {
-	gzFile * file = gzopen (filename, "rb") ;
+	gzFile file = gzopen (filename, "rb") ;
 	char header[8] ;
 	char * here = malloc (PALETTE_SIZE) ;
 

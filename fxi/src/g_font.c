@@ -501,7 +501,7 @@ int gr_font_save (int fontid, const char * filename)
 {
 	char     fullname[1024];
 	char *   ptr;
-	gzFile * file;
+	gzFile file;
 	int      n;
 	Uint32   y;
 	long     offset;
