@@ -79,51 +79,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install Homebrew dependencies
-        run: |
-          brew install sdl12-compat libpng giflib pkg-config
-          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
-          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:${PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
-
-      - name: Build SDL_mixer 1.2
-        run: |
-          mkdir -p deps
-          cd deps
-          curl -LO https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz
-          tar xzf SDL_mixer-1.2.12.tar.gz
-          cd SDL_mixer-1.2.12
-          ./configure --prefix="$PWD/../local" \
-              --disable-sdltest --disable-music-native-midi \
-              --enable-shared --enable-static \
-              CPPFLAGS="$(pkg-config --cflags sdl)" \
-              LDFLAGS="$(pkg-config --libs-only-L sdl)" \
-              LIBS="$(pkg-config --libs-only-l sdl)"
-          make -j"$(sysctl -n hw.ncpu)"
-          make install
-
       - name: Build static
-        run: |
-          set -euo pipefail
-          if [[ -f Makefile ]]; then make distclean || true; fi
-          export LDFLAGS="${LDFLAGS:-} -Wl,-search_paths_first"
-          ./configure --enable-fpg --enable-map
-          make -j"$(sysctl -n hw.ncpu)"
-          mkdir -p dist/macos-static
-          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/macos-static/
-          file dist/macos-static/fxc dist/macos-static/fxi
-          ./dist/macos-static/fxc -h || true
+        run: bash scripts/macos-build.sh static
 
       - name: Build shared
-        run: |
-          set -euo pipefail
-          if [[ -f Makefile ]]; then make distclean || true; fi
-          ./configure --enable-fpg --enable-map
-          make -j"$(sysctl -n hw.ncpu)"
-          mkdir -p dist/macos-shared
-          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/macos-shared/
-          cp -a deps/local/lib/*.dylib dist/macos-shared/ 2>/dev/null || true
-          file dist/macos-shared/fxc dist/macos-shared/fxi
-          ./dist/macos-shared/fxc -h || true
+        run: bash scripts/macos-build.sh shared
 
       - name: Upload static
         uses: actions/upload-artifact@v7

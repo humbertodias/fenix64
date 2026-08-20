@@ -23,20 +23,21 @@ bash scripts/docker-build.sh linux shell
 bash scripts/docker-build.sh windows shell
 ```
 
-macOS binaries cannot be produced from Linux containers (Apple SDK). Use a Mac or the `macos-latest` GitHub Actions job.
+## macOS
 
-## macOS (native)
-
-Needs Homebrew (`sdl12-compat`, `libpng`, `giflib`, `pkg-config`) and SDL_mixer 1.2 built from source (CI uses `--disable-music-native-midi`).
+Apple SDK cannot run in Linux containers. On a Mac:
 
 ```shell
-brew install sdl12-compat libpng giflib pkg-config
-# then build SDL_mixer 1.2.12 into deps/local, as in .github/workflows/ci.yml
-./configure --enable-fpg --enable-map
-make
+bash scripts/macos-build.sh
+bash scripts/macos-build.sh shared
 ```
 
-Static: `LDFLAGS=-Wl,-search_paths_first`. Shared copies `deps/local/lib/*.dylib` next to the binaries. Staged output: `dist/macos-{static,shared}/`.
+| Command | Output |
+|---------|--------|
+| `static` (default) | `dist/macos-static/` |
+| `shared` | `dist/macos-shared/` |
+
+Needs Homebrew (`sdl12-compat`, `sdl2`, `sdl3`, `libpng`, `giflib`, `pkg-config`). Current Homebrew `sdl12-compat` dlopens SDL2, and `sdl2` is often `sdl2-compat` which dlopens SDL3 — those dylibs are not in `otool -L`, so the bundler follows `LC_RPATH` to copy them. The script builds SDL_mixer 1.2.12 into `deps/local` on the first run (`SKIP_BREW=1` / `SKIP_MIXER=1` skip those steps). Static uses `LDFLAGS=-Wl,-search_paths_first`. After linking, `scripts/macos-bundle-dylibs.sh` copies SDL (and other Homebrew dylibs) next to the binaries with `@executable_path`, so the zip runs without Homebrew. GitHub Actions calls the same wrapper.
 
 ## Native autoconf
 
@@ -71,6 +72,6 @@ API HTML lands in `doc/html/` (copied to `dist/pages/docs/`). GitHub Pages deplo
 GitHub Actions (`.github/workflows/ci.yml`):
 
 - Linux x86_64 and Windows x86_64 — one toolchain image per OS, then static + shared (`scripts/docker-build.sh`)
-- macOS — native runner (static + shared in one job)
+- macOS — native runner, static + shared via `scripts/macos-build.sh`
 - Tags — zip each `fenix-<os>[-mingw]-<static|shared>` artifact with binaries at the zip root
 - Pages — `.github/workflows/pages.yml` after a successful `CI` run on `main`
