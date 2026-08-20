@@ -149,6 +149,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with:
+          pattern: fenix-*
           path: artifacts
 
       - name: Pack platform archives
