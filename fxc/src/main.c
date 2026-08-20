@@ -35,7 +35,7 @@
 	#include <windows.h>
 	#include <windef.h>
 	#include <winnls.h>
-	#include "Shlwapi.h"
+	#include <shlwapi.h>
 #endif
 
 #include "fxc.h"
