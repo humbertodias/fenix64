@@ -4,81 +4,80 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-    inputs:
-      linkage:
-        description: Library linkage
-        type: choice
-        options:
-          - static
-          - shared
-        default: static
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.linkage || 'static' }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  LINKAGE: ${{ github.event.inputs.linkage || 'static' }}
-
 jobs:
-  linux:
-    name: Linux (${{ inputs.linkage || 'static' }})
-    runs-on: ubuntu-latest
+  build:
+    name: ${{ matrix.artifact }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            artifact: linux
+            dist_static: dist/linux-static
+            dist_shared: dist/linux-shared
+          - platform: windows
+            artifact: windows-mingw
+            dist_static: dist/windows-static
+            dist_shared: dist/windows-shared
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            libsdl1.2-dev \
-            libsdl-mixer1.2-dev \
-            libpng-dev \
-            zlib1g-dev \
-            libgif-dev \
-            libx11-dev \
-            libxext-dev \
-            pkg-config
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Configure
-        run: |
-          if [ "$LINKAGE" = static ]; then
-            # Full -static fails with glibc + X11. Prefer archives and static libgcc.
-            export PKG_CONFIG="pkg-config --static"
-            export LDFLAGS="${LDFLAGS:-} -static-libgcc"
-          fi
-          ./configure --enable-fpg --enable-map
-
-      - name: Build
-        run: make -j"$(nproc)"
-
-      - name: Check binaries
-        run: |
-          test -x fxc/src/fxc
-          test -x fxi/src/fxi
-          test -x map/map
-          test -x fpg/fpg
-          ./fxc/src/fxc -h || true
-          file fxc/src/fxc fxi/src/fxi
-
-      - uses: actions/upload-artifact@v4
+      - name: Build toolchain image
+        uses: docker/build-push-action@v6
         with:
-          name: fenix-linux-${{ env.LINKAGE }}
-          path: |
-            fxc/src/fxc
-            fxi/src/fxi
-            map/map
-            fpg/fpg
+          context: docker
+          file: docker/Dockerfile.${{ matrix.platform }}
+          platforms: linux/amd64
+          tags: fenix-${{ matrix.platform }}
+          load: true
+          provenance: false
+          cache-from: type=gha,scope=fenix-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=fenix-${{ matrix.platform }}
+
+      - name: Build static
+        env:
+          SKIP_DOCKER_BUILD: "1"
+        run: bash scripts/docker-build.sh ${{ matrix.platform }} static
+
+      - name: Build shared
+        env:
+          SKIP_DOCKER_BUILD: "1"
+        run: bash scripts/docker-build.sh ${{ matrix.platform }} shared
+
+      - name: Upload static
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-${{ matrix.artifact }}-static
+          path: ${{ matrix.dist_static }}/
+          if-no-files-found: error
+
+      - name: Upload shared
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-${{ matrix.artifact }}-shared
+          path: ${{ matrix.dist_shared }}/
+          if-no-files-found: error
 
   macos:
-    name: macOS (${{ inputs.linkage || 'static' }})
+    name: macOS
     runs-on: macos-latest
+    timeout-minutes: 90
     env:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Homebrew dependencies
         run: |
@@ -93,196 +92,62 @@ jobs:
           curl -LO https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz
           tar xzf SDL_mixer-1.2.12.tar.gz
           cd SDL_mixer-1.2.12
-          mixer_opts="--disable-sdltest --disable-music-native-midi"
-          if [ "$LINKAGE" = static ]; then
-            mixer_opts="$mixer_opts --disable-shared --enable-static"
-          else
-            mixer_opts="$mixer_opts --enable-shared --disable-static"
-          fi
-          ./configure --prefix="$PWD/../local" $mixer_opts \
+          ./configure --prefix="$PWD/../local" \
+              --disable-sdltest --disable-music-native-midi \
+              --enable-shared --enable-static \
               CPPFLAGS="$(pkg-config --cflags sdl)" \
               LDFLAGS="$(pkg-config --libs-only-L sdl)" \
               LIBS="$(pkg-config --libs-only-l sdl)"
           make -j"$(sysctl -n hw.ncpu)"
           make install
 
-      - name: Configure
-        run: |
-          if [ "$LINKAGE" = static ]; then
-            export LDFLAGS="${LDFLAGS:-} -Wl,-search_paths_first"
-          fi
-          ./configure --enable-fpg --enable-map
-
-      - name: Build
-        run: make -j"$(sysctl -n hw.ncpu)"
-
-      - name: Stage binaries
-        run: |
-          mkdir -p dist
-          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/
-          if [ "$LINKAGE" = shared ]; then
-            cp -a deps/local/lib/*.dylib dist/ 2>/dev/null || true
-          fi
-          file dist/fxc dist/fxi
-          ./dist/fxc -h || true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fenix-macos-${{ env.LINKAGE }}
-          path: dist/*
-
-  windows-mingw:
-    name: Windows (MinGW, ${{ inputs.linkage || 'static' }})
-    runs-on: ubuntu-latest
-    env:
-      HOST: x86_64-w64-mingw32
-      MINGW_PREFIX: ${{ github.workspace }}/.mingw
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install MinGW cross toolchain
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            gcc-mingw-w64-x86-64 \
-            g++-mingw-w64-x86-64 \
-            mingw-w64-x86-64-dev \
-            mingw-w64-tools \
-            make \
-            pkg-config
-
-      - name: Build MinGW dependencies
+      - name: Build static
         run: |
           set -euo pipefail
-          mkdir -p "$MINGW_PREFIX"/{bin,include,lib/pkgconfig}
-          export PATH="$MINGW_PREFIX/bin:$PATH"
-          export CC="${HOST}-gcc"
-          export AR="${HOST}-ar"
-          export RANLIB="${HOST}-ranlib"
-          export STRIP="${HOST}-strip"
-          export WINDRES="${HOST}-windres"
-          export PKG_CONFIG_LIBDIR="$MINGW_PREFIX/lib/pkgconfig"
-          export CPPFLAGS="-I$MINGW_PREFIX/include"
-          export LDFLAGS="-L$MINGW_PREFIX/lib"
-          DEPS="$GITHUB_WORKSPACE/.mingw-src"
-          mkdir -p "$DEPS"
-          cd "$DEPS"
+          if [[ -f Makefile ]]; then make distclean || true; fi
+          export LDFLAGS="${LDFLAGS:-} -Wl,-search_paths_first"
+          ./configure --enable-fpg --enable-map
+          make -j"$(sysctl -n hw.ncpu)"
+          mkdir -p dist/macos-static
+          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/macos-static/
+          file dist/macos-static/fxc dist/macos-static/fxi
+          ./dist/macos-static/fxc -h || true
 
-          if [ "$LINKAGE" = static ]; then
-            SHARED_FLAG="--disable-shared --enable-static"
-            ZLIB_SHARED=0
-          else
-            SHARED_FLAG="--enable-shared --enable-static"
-            ZLIB_SHARED=1
-          fi
-
-          fetch() {
-            echo "Downloading $1"
-            curl -fL --retry 5 --retry-all-errors -o "$2" "$1"
-          }
-
-          if [ ! -f "$MINGW_PREFIX/lib/libz.a" ]; then
-            fetch https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz zlib.tar.gz \
-              || fetch https://zlib.net/fossils/zlib-1.3.1.tar.gz zlib.tar.gz
-            tar xzf zlib.tar.gz
-            make -C zlib-1.3.1 -f win32/Makefile.gcc PREFIX="${HOST}-" \
-              BINARY_PATH="$MINGW_PREFIX/bin" \
-              INCLUDE_PATH="$MINGW_PREFIX/include" \
-              LIBRARY_PATH="$MINGW_PREFIX/lib" \
-              SHARED_MODE="$ZLIB_SHARED" install
-          fi
-
-          if [ ! -f "$MINGW_PREFIX/lib/libpng.a" ]; then
-            fetch https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz libpng.tar.gz
-            tar xzf libpng.tar.gz
-            cd libpng-1.6.43
-            ./configure --host="$HOST" --prefix="$MINGW_PREFIX" $SHARED_FLAG
-            make -j"$(nproc)"
-            make install
-            cd ..
-          fi
-
-          if [ ! -f "$MINGW_PREFIX/lib/libgif.a" ]; then
-            fetch https://sourceforge.net/projects/giflib/files/giflib-5.2.2.tar.gz/download giflib.tar.gz
-            tar xzf giflib.tar.gz
-            make -C giflib-5.2.2 libgif.a CC="${HOST}-gcc" AR="${HOST}-ar"
-            cp giflib-5.2.2/libgif.a "$MINGW_PREFIX/lib/"
-            cp giflib-5.2.2/gif_lib.h "$MINGW_PREFIX/include/"
-          fi
-
-          if [ ! -x "$MINGW_PREFIX/bin/sdl-config" ]; then
-            fetch https://www.libsdl.org/release/SDL-1.2.15.tar.gz sdl.tar.gz \
-              || fetch https://github.com/libsdl-org/SDL-1.2/releases/download/release-1.2.15/SDL-1.2.15.tar.gz sdl.tar.gz
-            tar xzf sdl.tar.gz
-            cd SDL-1.2.15
-            if [ ! -f configure ]; then
-              sudo apt-get install -y autoconf automake libtool
-              ./autogen.sh
-            fi
-            ./configure --host="$HOST" --prefix="$MINGW_PREFIX" $SHARED_FLAG \
-              --disable-video-x11 --disable-video-opengl --disable-nasm \
-              --disable-directx --disable-video-directx --enable-video-windib
-            make -j"$(nproc)"
-            make install
-            cd ..
-          fi
-
-          if [ ! -f "$MINGW_PREFIX/lib/libSDL_mixer.a" ] && [ ! -f "$MINGW_PREFIX/bin/SDL_mixer.dll" ]; then
-            fetch https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz sdl_mixer.tar.gz
-            tar xzf sdl_mixer.tar.gz
-            cd SDL_mixer-1.2.12
-            ./configure --host="$HOST" --prefix="$MINGW_PREFIX" $SHARED_FLAG \
-              --disable-sdltest \
-              --disable-music-mp3 --disable-music-mod \
-              --disable-music-ogg --disable-music-flac \
-              SDL_CONFIG="$MINGW_PREFIX/bin/sdl-config"
-            make -j"$(nproc)"
-            make install
-            cd ..
-          fi
-          test -f "$MINGW_PREFIX/lib/libSDL.a" || test -f "$MINGW_PREFIX/bin/SDL.dll"
-          test -f "$MINGW_PREFIX/lib/libSDL_mixer.a" || test -f "$MINGW_PREFIX/bin/SDL_mixer.dll"
-
-      - name: Configure
+      - name: Build shared
         run: |
-          export PATH="$MINGW_PREFIX/bin:$PATH"
-          export MINGW_PREFIX
-          export PKG_CONFIG_LIBDIR="$MINGW_PREFIX/lib/pkgconfig"
-          export CPPFLAGS="-I$MINGW_PREFIX/include"
-          export LDFLAGS="-L$MINGW_PREFIX/lib"
-          if [ "$LINKAGE" = static ]; then
-            export LDFLAGS="$LDFLAGS -static"
-          fi
-          export SDL_CONFIG="$MINGW_PREFIX/bin/sdl-config"
-          ./configure --host="$HOST" --enable-fpg --enable-map --disable-sdltest \
-            || { echo '===== SDL_mixer / config.log ====='; ls -l "$MINGW_PREFIX/include/SDL" || true; grep -A 40 'SDL_mixer' config.log || tail -n 120 config.log; exit 1; }
+          set -euo pipefail
+          if [[ -f Makefile ]]; then make distclean || true; fi
+          ./configure --enable-fpg --enable-map
+          make -j"$(sysctl -n hw.ncpu)"
+          mkdir -p dist/macos-shared
+          cp fxc/src/fxc fxi/src/fxi map/map fpg/fpg dist/macos-shared/
+          cp -a deps/local/lib/*.dylib dist/macos-shared/ 2>/dev/null || true
+          file dist/macos-shared/fxc dist/macos-shared/fxi
+          ./dist/macos-shared/fxc -h || true
 
-      - name: Build
-        run: make -j"$(nproc)"
-
-      - name: Stage binaries
-        run: |
-          mkdir -p dist
-          cp fxc/src/fxc.exe fxi/src/fxi.exe map/map.exe fpg/fpg.exe dist/
-          if [ "$LINKAGE" = shared ]; then
-            cp "$MINGW_PREFIX/bin"/*.dll dist/ || true
-          fi
-          file dist/fxc.exe
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload static
+        uses: actions/upload-artifact@v7
         with:
-          name: fenix-windows-mingw-${{ env.LINKAGE }}
-          path: dist/*
+          name: fenix-macos-static
+          path: dist/macos-static/
+          if-no-files-found: error
+
+      - name: Upload shared
+        uses: actions/upload-artifact@v7
+        with:
+          name: fenix-macos-shared
+          path: dist/macos-shared/
+          if-no-files-found: error
 
   release:
     name: GitHub Release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-    needs: [linux, macos, windows-mingw]
+    needs: [build, macos]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: artifacts
 
@@ -301,7 +166,26 @@ jobs:
           done
           ls -la release
 
-      - uses: softprops/action-gh-release@v2
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
         with:
-          files: release/*
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
           generate_release_notes: true
+          files: release/*
+          body: |
+            Builds of `fxc`, `fxi`, `map`, and `fpg` for Linux, Windows, and macOS.
+
+            Archives are named `fenix-<os>[-mingw]-<static|shared>-<tag>.zip`, with the executables at the zip root:
+            - **static** — libraries linked into the binaries where possible (`-static-libgcc` on Linux, `-static` on Windows, `-search_paths_first` on macOS)
+            - **shared** — dynamic SDL/png; Windows includes MinGW DLLs, macOS includes SDL_mixer dylibs
+            - **fenix-linux-*** — x86_64 ELF from `docker/Dockerfile.linux` (Ubuntu 22.04, SDL 1.2)
+            - **fenix-windows-mingw-*** — x86_64 PE from `docker/Dockerfile.windows` (MinGW-w64, SDL 1.2 / png / zlib / gif)
+            - **fenix-macos-*** — native Homebrew `sdl12-compat` plus SDL_mixer 1.2 built from source
+
+            Linux and Windows CI images come from `docker/Dockerfile.linux` and `docker/Dockerfile.windows`.
+            OS graphics/audio libraries may still be required at runtime.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

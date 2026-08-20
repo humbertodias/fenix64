@@ -5,10 +5,13 @@
 /deps/SDL_mixer-*/
 /deps/local/
 /deps/*.tar.gz
+/dist/
 **/.deps
 autom4te.cache/
 /Makefile
-/config.status
+**/config.status
+**/config.sub
+**/config.guess
 /configure.bak
 /erro.txt
 /erro.rxt

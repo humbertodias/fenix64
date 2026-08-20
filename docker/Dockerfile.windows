@@ -1,0 +1,33 @@
+# MinGW-w64 toolchain plus static SDL 1.2 / png / zlib / gif.
+#   docker build -t fenix-windows -f docker/Dockerfile.windows docker/
+#   bash scripts/docker-build.sh windows
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PLATFORM=windows \
+    HOST=x86_64-w64-mingw32 \
+    MINGW_PREFIX=/opt/mingw
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        file \
+        gcc \
+        git \
+        make \
+        pkg-config \
+        gcc-mingw-w64-x86-64 \
+        g++-mingw-w64-x86-64 \
+        mingw-w64-x86-64-dev \
+        mingw-w64-tools \
+    && rm -rf /var/lib/apt/lists/* \
+    && git config --system --add safe.directory '*' \
+    && (update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix || true) \
+    && (update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix || true)
+
+COPY mingw-deps.sh config.guess config.sub /tmp/
+RUN bash /tmp/mingw-deps.sh && rm -f /tmp/mingw-deps.sh
+
+WORKDIR /src
+CMD ["bash"]
