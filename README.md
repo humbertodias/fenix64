@@ -1,5 +1,8 @@
 [![CI](https://github.com/humbertodias/fenix64/actions/workflows/ci.yml/badge.svg)](https://github.com/humbertodias/fenix64/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/humbertodias/fenix64/actions/workflows/pages.yml/badge.svg)](https://github.com/humbertodias/fenix64/actions/workflows/pages.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/humbertodias/fenix64)
+![GitHub all releases](https://img.shields.io/github/downloads/humbertodias/fenix64/total)
+
 
 # Fenix Project 1.0
 
