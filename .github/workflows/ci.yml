@@ -179,8 +179,7 @@ jobs:
             fetch https://www.libsdl.org/release/SDL-1.2.15.tar.gz sdl.tar.gz \
               || fetch https://github.com/libsdl-org/SDL-1.2/releases/download/release-1.2.15/SDL-1.2.15.tar.gz sdl.tar.gz
             tar xzf sdl.tar.gz
-            sdl_dir=$(tar tzf sdl.tar.gz | head -1 | cut -d/ -f1)
-            cd "$sdl_dir"
+            cd SDL-1.2.15
             if [ ! -f configure ]; then
               sudo apt-get install -y autoconf automake libtool
               ./autogen.sh
