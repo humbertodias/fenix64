@@ -5942,6 +5942,12 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 
   rm -f conf.sdltest
 
+  case "$target_os" in
+    mingw*)
+      SDL_LIBS="$SDL_LIBS -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi"
+      ;;
+  esac
+
 
 fi
 
@@ -5963,7 +5969,7 @@ then :
   printf %s "(cached) " >&6
 else case e in #(
   e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lSDL_mixer -lSDL $LIBS $LIBS"
+LIBS="-lSDL_mixer $SDL_LIBS $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6006,23 +6012,7 @@ then :
 
 else case e in #(
   e)
-        as_fn_error $? "
-
-*** SDL_mixer 1.2 not found (SDL3_mixer and SDL2_mixer are not compatible).
-
-Fenix uses SDL 1.2 and requires SDL_mixer 1.2. Build it into deps/local:
-
-  mkdir -p deps && cd deps
-  curl -LO https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz
-  tar xzf SDL_mixer-1.2.12.tar.gz && cd SDL_mixer-1.2.12
-  ./configure --prefix=$PWD/../local \\
-      CPPFLAGS=\"\\`pkg-config --cflags sdl\\`\" \\
-      LDFLAGS=\"\\`pkg-config --libs-only-L sdl\\`\" \\
-      LIBS=\"\\`pkg-config --libs-only-l sdl\\`\"
-  make && make install
-
-Then re-run ./configure.
-        " "$LINENO" 5
+        as_fn_error $? "*** SDL_mixer 1.2 not found (need SDL_mixer 1.2, not SDL2/SDL3_mixer)" "$LINENO" 5
      ;;
 esac
 fi

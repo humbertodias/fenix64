@@ -193,7 +193,7 @@ jobs:
           fi
 
           if [ ! -f "$MINGW_PREFIX/lib/libSDL_mixer.a" ]; then
-            curl -fsSL -o sdl_mixer.tar.gz https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz
+            fetch https://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz sdl_mixer.tar.gz
             tar xzf sdl_mixer.tar.gz
             cd SDL_mixer-1.2.12
             ./configure --host="$HOST" --prefix="$MINGW_PREFIX" \
@@ -205,6 +205,8 @@ jobs:
             make install
             cd ..
           fi
+          test -f "$MINGW_PREFIX/lib/libSDL.a"
+          test -f "$MINGW_PREFIX/lib/libSDL_mixer.a"
 
       - name: Configure
         run: |
