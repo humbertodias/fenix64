@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intùrprete de videojuegos
- * Copyright (C) 1999 Josù Luis Cebriùn Pagùe
+/* Fenix - Compilador/int√©rprete de videojuegos
+ * Copyright (C) 1999 Jos√© Luis Cebri√°n Pag√ºe
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,14 +111,14 @@ void fatal_error (char * fmt, ...)
 }
 
 /* Rutina de utilidad para crear un nombre de fichero a partir de otro,
- * cambiùndole la extensiùn en el proceso */
+ * cambi√°ndole la extensi√≥n en el proceso */
 
 void set_extension (const char * filename, const char * ext, char * buffer)
 {
 	char       * ptr ;
 	const char * fptr ;
 
-	/* Concatena la extensiùn al nombre de fichero */
+	/* Concatena la extensi√≥n al nombre de fichero */
 
 	strcpy (buffer, filename) ;
 	ptr = strchr (buffer, '.') ;
@@ -126,7 +126,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 	if (ptr) strcpy (ptr, ext) ;
 	else 	 strcat (buffer, ext) ;
 
-	/* Pone la extensiùn en mayùsculas si el nombre lo estù */
+	/* Pone la extensi√≥n en may√∫sculas si el nombre lo est√° */
 
 	for (fptr = filename ; *fptr ; fptr++)
 		if (*fptr >= 'a' && *fptr <= 'z') break ;
@@ -158,7 +158,7 @@ MAP * png_load (const char * filename)
 	png_uint_32    	width, height, rowbytes;
 	int		depth, color ;
 
-	/* Opciùn de especificar un nùmero de cùdigo */
+	/* Opci√≥n de especificar un n√∫mero de c√≥digo */
 
 	if (strchr(filename, ':') && isdigit(*filename))
 	{
@@ -166,7 +166,7 @@ MAP * png_load (const char * filename)
 		filename = strchr(filename, ':')+1 ;
 	}
 
-	/* Abre el fichero y se asegura de que screen estù inicializada */
+	/* Abre el fichero y se asegura de que screen est√° inicializada */
 
 	png = fopen (filename, "rb") ;
 	if (!png) fatal_error ("No existe %s\n", filename) ;
@@ -188,7 +188,7 @@ MAP * png_load (const char * filename)
 		return 0 ;
 	}
 
-	/* Recupera informaciùn sobre el PNG */
+	/* Recupera informaci√≥n sobre el PNG */
 
 	png_init_io (png_ptr, png) ;
 	png_read_info (png_ptr, info_ptr) ;
@@ -331,7 +331,7 @@ MAP * load_map (const char * filename)
 	gzread (file, &map->header, sizeof(map->header)) ;
 	strncpy (map->filename, filename, 12) ;
 
-	/* Extensiùn: ficheros MAP de 16 bits */
+	/* Extensi√≥n: ficheros MAP de 16 bits */
 
 	if (strcmp (map->header.magic, "m16\x1A\x0D\x0A") == 0)
 	{
@@ -542,8 +542,8 @@ void fpg_list (const char * filename)
 	gzclose (file) ;
 }
 
-/* Rutina que comprueba si un cùdigo de grùfico entra dentro de los
- * especificados en la lùnea de comandos */
+/* Rutina que comprueba si un c√≥digo de gr√°fico entra dentro de los
+ * especificados en la l√≠nea de comandos */
 
 int matches (FPG_MAPHEADER * map, char * param)
 {
@@ -566,7 +566,7 @@ int matches (FPG_MAPHEADER * map, char * param)
 	return 0 ;
 }
 
-/* Creaciùn de un nuevo FPG */
+/* Creaci√≥n de un nuevo FPG */
 
 void load_pal (void * here, const char * filename)
 {
@@ -589,7 +589,7 @@ void load_pal (void * here, const char * filename)
 	else if (strcmp (header, "fpg\x1A\x0D\x0A") != 0 &&
 	    strcmp (header, "fnt\x1A\x0D\x0A") != 0 &&
 	    strcmp (header, "pal\x1A\x0D\x0A") != 0)
-		fatal_error ("%s: no es un fichero de paleta vùlido", filename) ;
+		fatal_error ("%s: no es un fichero de paleta v√°lido", filename) ;
 
 	gzread (file, here, PALETTE_SIZE) ;
 	gzclose (file) ;
@@ -616,14 +616,14 @@ void fpg_new (const char * filename, const char * palfile, int depth)
 	fclose (file) ;
 }
 
-/* Estados de los 1000 cùdigos de MAP disponibles */
+/* Estados de los 1000 c√≥digos de MAP disponibles */
 
 #define ST_PRESENT	1
 #define ST_TO_ADD	2
 #define ST_DELETE	2
 
-/* Funciùn principal, que procesa un FPG creando una copia del mismo
- * que va alterando en funciùn de la acciùn a realizar */
+/* Funci√≥n principal, que procesa un FPG creando una copia del mismo
+ * que va alterando en funci√≥n de la acci√≥n a realizar */
 
 void fpg_process(const char * filename, int * nfile)
 {
@@ -682,13 +682,13 @@ void fpg_process(const char * filename, int * nfile)
 				if (is_16bits && maps[n_maps]->depth == 8)
 					map_8to16 (maps[n_maps]) ;
 				if (!is_16bits && maps[n_maps]->depth == 16)
-					fatal_error ("Error: intento de aùadir un grùfico de 16 bits a un FPG de 8\n") ;
+					fatal_error ("Error: intento de a√±adir un gr√°fico de 16 bits a un FPG de 8\n") ;
 				n_maps++ ;
 			}
 		}
 		*nfile = n_files ;
 		if (n_maps == 0 && action == AC_ADD)
-			printf ("Aviso: el fichero FPG se crearù vacùo\n") ;
+			printf ("Aviso: el fichero FPG se crear√° vac√≠o\n") ;
 	}
 
 	/* Recupera la paleta de colores */
@@ -705,7 +705,7 @@ void fpg_process(const char * filename, int * nfile)
 		}
 	}
 
-	/* Graba la paleta y acaba si es eso lo que se solicitù */
+	/* Graba la paleta y acaba si es eso lo que se solicit√≥ */
 
 	if (action == AC_PALETTE)
 	{
@@ -731,7 +731,7 @@ void fpg_process(const char * filename, int * nfile)
 		}
 	}
 
-	/* Crea un nuevo FPG a partir de ùste */
+	/* Crea un nuevo FPG a partir de √©ste */
 
 	set_extension (filename, ".$$$", output_filename) ;
 
@@ -759,7 +759,7 @@ void fpg_process(const char * filename, int * nfile)
 		gzwrite (ofile, "f16\x1A\x0D\x0A", 8) ;
 	}
 
-	/* Grùficos incluùdos */
+	/* Gr√°ficos inclu√≠dos */
 
 	printf ("%s:\n\n", filename) ;
 
@@ -773,7 +773,7 @@ mainloop:
 
 		if (map.code < 0 || map.code >= 1000)
 		{
-			fatal_error ("Aviso: cùdigo %d errùneo\n", map.code) ;
+			fatal_error ("Aviso: c√≥digo %d err√≥neo\n", map.code) ;
 			map.code = 0 ;
 		}
 
@@ -782,7 +782,7 @@ mainloop:
 		name[32] = 0 ;
 		fname[12] = 0 ;
 
-		/* Extrae grùficos */
+		/* Extrae gr√°ficos */
 
 		if (action == AC_EXTRACT)
 		for (n = (*nfile)+1 ; n_files < 2 || n < n_files ; n++)
@@ -881,7 +881,7 @@ mainloop:
 			if (n_files < 2) break ;
 		}
 
-		/* Borra grùficos */
+		/* Borra gr√°ficos */
 
 		if (action == AC_DELETE)
 		{
@@ -913,7 +913,7 @@ mainloop:
 		}
 		else 	status[map.code] = ST_PRESENT ;
 
-		/* Pasa los grùficos al nuevo fichero */
+		/* Pasa los gr√°ficos al nuevo fichero */
 
 		if (gzwrite (ofile, &map, sizeof(map))
 				< (int)sizeof(map))
@@ -944,7 +944,7 @@ mainloop:
 			}
 		}
 
-		/* Animaciùn */
+		/* Animaci√≥n */
 
 		frames = 1 ;
 		if (map.n_flags & F_ANIMATION)
@@ -966,7 +966,7 @@ mainloop:
 			gzwrite (ofile, buffer, len) ;
 		}
 
-		/* Datos del grùfico */
+		/* Datos del gr√°fico */
 
 		len = map.width * map.height * frames ;
 		if (is_16bits) len *= 2 ;
@@ -1005,7 +1005,7 @@ mainloop:
 		}
 	}
 
-	/* Aùade grùficos al fpg */
+	/* A√±ade gr√°ficos al fpg */
 
 	if (action == AC_ADD)
 	{
@@ -1043,7 +1043,7 @@ mainloop:
 			}
 			len = map.width * map.height * bitmap->frames * (is_16bits ? 2:1) ;
 			gzwrite (ofile, bitmap->data, len) ;
-			printf ("  %03d: %-32s AùADIDO\n", map.code, map.name) ;
+			printf ("  %03d: %-32s A√ëADIDO\n", map.code, map.name) ;
 		}
 		*nfile = n_files ;
 	}
@@ -1066,25 +1066,25 @@ mainloop:
 
 void help ()
 {
-	printf ("FPG Utility - Copyright (C) 1999 Josù Luis Cebriùn Pagùe\n"
+	printf ("FPG Utility - Copyright (C) 1999 Jos√© Luis Cebri√°n Pag√ºe\n"
 		"This utility comes with ABSOLUTELY NO WARRANTY; fpg -h for details\n\n") ;
 
-	printf ("Uso: fpg [opcion] fichero [grùfico ...]\n"
+	printf ("Uso: fpg [opcion] fichero [gr√°fico ...]\n"
 		"\n"
-		"    -l      Describe el FPG (opciùn por defecto): -v mùs extenso\n"
-		"    -n      Crea un nuevo FPG, opcionalmente aùadiendo MAPs\n"
-		"    -o      Crea un nuevo FPG de 8 bits, opcionalmente aùadiendo MAPs\n"
-		"    -d      Elimina los grùficos indicados del FPG\n"
+		"    -l      Describe el FPG (opci√≥n por defecto): -v m√°s extenso\n"
+		"    -n      Crea un nuevo FPG, opcionalmente a√±adiendo MAPs\n"
+		"    -o      Crea un nuevo FPG de 8 bits, opcionalmente a√±adiendo MAPs\n"
+		"    -d      Elimina los gr√°ficos indicados del FPG\n"
 		"    -p      Extrae la paleta (.PAL) del fichero\n"
-		"    -e      Extrae grùficos (.MAP) del FPG y los borra del mismo\n"
-		"    -x      Extrae grùficos (.MAP) del FPG\n"
-		"    -a      Aùade  grùficos (.MAP) al FPG\n"
+		"    -e      Extrae gr√°ficos (.MAP) del FPG y los borra del mismo\n"
+		"    -x      Extrae gr√°ficos (.MAP) del FPG\n"
+		"    -a      A√±ade  gr√°ficos (.MAP) al FPG\n"
 		"    -c      Convierte el .FPG a 16 bits\n"
-		"    -#      Nivel de compresiùn (0 a 9)\n"
+		"    -#      Nivel de compresi√≥n (0 a 9)\n"
 		"\n"
-		"Las opciones -x y -e admiten indicar los grùficos mediante su cùdigo.\n"
-		"Se pueden utilizar rangos a-b y varios grùficos separados por comas.\n"
-		"Las opciones -p y -l admiten mùltiples ficheros fpg\n\n") ;
+		"Las opciones -x y -e admiten indicar los gr√°ficos mediante su c√≥digo.\n"
+		"Se pueden utilizar rangos a-b y varios gr√°ficos separados por comas.\n"
+		"Las opciones -p y -l admiten m√∫ltiples ficheros fpg\n\n") ;
 }
 
 int main (int argc, char ** argv)
@@ -1155,7 +1155,7 @@ int main (int argc, char ** argv)
 						help() ;
 						return -1 ;
 					default:
-						fatal_error ("Error: opciùn -%c no reconocida\n", *ptr) ;
+						fatal_error ("Error: opci√≥n -%c no reconocida\n", *ptr) ;
 				}
 				ptr++ ;
 			}
@@ -1190,7 +1190,7 @@ int main (int argc, char ** argv)
 				fpg_process (files[i], &i) ;
 				break ;
 			default:
-				fatal_error ("Error: Acciùn no disponible\n") ;
+				fatal_error ("Error: Acci√≥n no disponible\n") ;
 		}
 	}
 

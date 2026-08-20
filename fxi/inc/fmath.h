@@ -19,15 +19,15 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
 #ifndef _FMATH_H
     #define _FMATH_H
 
-    /* Rutinas matemáticas de punto fijo, basadas en Allegro */
+    /* Rutinas matemÃ¡ticas de punto fijo, basadas en Allegro */
 
     #ifndef M_PI
     #define M_PI           3.14159265358979323846  /* pi */

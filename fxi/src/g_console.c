@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -51,37 +51,37 @@
 #define COMMAND_HISTORY 128
 
 #define HELPTXT \
-            "¬02Process Info¬07\n"                                          \
-            "¬04INSTANCES      ¬07  List all running processes\n"           \
-            "¬04GLOBALS        ¬07  Show global vars with values\n"         \
-            "¬04LOCALS proc    ¬07  Show a process's local vars\n"          \
-            "¬04PRIVATES proc  ¬07  Show a process's private vars\n"        \
-            "¬04PUBLICS proc   ¬07  Show a process's public vars\n"         \
+            "\xAC02Process Info\xAC07\n"                                          \
+            "\xAC04INSTANCES      \xAC07  List all running processes\n"           \
+            "\xAC04GLOBALS        \xAC07  Show global vars with values\n"         \
+            "\xAC04LOCALS proc    \xAC07  Show a process's local vars\n"          \
+            "\xAC04PRIVATES proc  \xAC07  Show a process's private vars\n"        \
+            "\xAC04PUBLICS proc   \xAC07  Show a process's public vars\n"         \
             "\n"                                                            \
-            "¬02Debugging Commands¬07\n"                                    \
-            "¬04TRACE          ¬07  Execute one instruction and Debug\n"    \
-            "¬04BREAK          ¬07  List breakpoints\n"                     \
-            "¬04BREAK proc     ¬07  Add a breakpoint on process execution\n"\
-            "¬04DELETE proc    ¬07  Delete a breakpoint\n"                  \
-            "¬04CONTINUE       ¬07  Continue the execution\n"               \
-            "¬04DOFRAME        ¬07  Continue to next frame\n"               \
+            "\xAC02Debugging Commands\xAC07\n"                                    \
+            "\xAC04TRACE          \xAC07  Execute one instruction and Debug\n"    \
+            "\xAC04BREAK          \xAC07  List breakpoints\n"                     \
+            "\xAC04BREAK proc     \xAC07  Add a breakpoint on process execution\n"\
+            "\xAC04DELETE proc    \xAC07  Delete a breakpoint\n"                  \
+            "\xAC04CONTINUE       \xAC07  Continue the execution\n"               \
+            "\xAC04DOFRAME        \xAC07  Continue to next frame\n"               \
             "\n"                                                            \
-            "¬02Misc¬07\n"                                                  \
-            "¬04SHOW expression¬07  Evaluate and show some expression\n"    \
-            "¬04STRINGS        ¬07  Show all strings in memory\n"           \
-            "¬04VARS           ¬07  Show internals vars\n"                  \
-            "¬04QUIT           ¬07  Kill the program and exit\n\n"          \
+            "\xAC02Misc\xAC07\n"                                                  \
+            "\xAC04SHOW expression\xAC07  Evaluate and show some expression\n"    \
+            "\xAC04STRINGS        \xAC07  Show all strings in memory\n"           \
+            "\xAC04VARS           \xAC07  Show internals vars\n"                  \
+            "\xAC04QUIT           \xAC07  Kill the program and exit\n\n"          \
             "\n"                                                            \
-            "¬02Process Interaction¬07\n"                                   \
-            "¬04RUN proc [args]¬07  Run a process\n"                        \
-            "¬04KILL proc      ¬07  Kill a process\n"                       \
-            "¬04WAKEUP proc    ¬07  Wakeup a process\n"                     \
-            "¬04SLEEP proc     ¬07  Sleep a process\n"                      \
-            "¬04FREEZE proc    ¬07  Freeze a process\n"                     \
-            "¬04KILLALL proc   ¬07  Kill all process with criteria\n"       \
-            "¬04WAKEUPALL proc ¬07  Wakeup all process with criteria\n"     \
-            "¬04SLEEPALL proc  ¬07  Sleep all process with criteria\n"      \
-            "¬04FREEZEALL proc ¬07  Freeze all process with criteria\n"     \
+            "\xAC02Process Interaction\xAC07\n"                                   \
+            "\xAC04RUN proc [args]\xAC07  Run a process\n"                        \
+            "\xAC04KILL proc      \xAC07  Kill a process\n"                       \
+            "\xAC04WAKEUP proc    \xAC07  Wakeup a process\n"                     \
+            "\xAC04SLEEP proc     \xAC07  Sleep a process\n"                      \
+            "\xAC04FREEZE proc    \xAC07  Freeze a process\n"                     \
+            "\xAC04KILLALL proc   \xAC07  Kill all process with criteria\n"       \
+            "\xAC04WAKEUPALL proc \xAC07  Wakeup all process with criteria\n"     \
+            "\xAC04SLEEPALL proc  \xAC07  Sleep all process with criteria\n"      \
+            "\xAC04FREEZEALL proc \xAC07  Freeze all process with criteria\n"     \
             "\n"                                                            \
             "You can evaluate free expressions in the console,\n"           \
             "and you can see/change local, public and private vars\n"       \
@@ -205,13 +205,13 @@ void gr_con_printf (const char *fmt, ...)
     if (*text == '[')
     {
         memmove (text+3, text, strlen(text)+1) ;
-        memmove (text, "¬08", 3) ;
+        memmove (text, "\xAC08", 3) ;
         ptr = strchr(text, ']') ;
         if (ptr)
         {
             ptr++ ;
             memmove (ptr+3, ptr, strlen(ptr)+1) ;
-            memmove (ptr, "¬07", 3) ;
+            memmove (ptr, "\xAC07", 3) ;
         }
     }
 
@@ -226,7 +226,7 @@ void gr_con_printf (const char *fmt, ...)
             gr_con_putline(iptr) ;
             iptr = ptr+1 ;
         }
-        if (*ptr == '¬')
+        if (*ptr == '\xAC')
         {
             ptr++ ;
             if (isdigit(*ptr)) ptr++ ;
@@ -338,7 +338,7 @@ void gr_con_getkey(int key, int sym)
     if (key == 13 && *console_input)
     {
         console_scroll_pos = 0 ;
-        gr_con_printf ("¬15> %s", console_input) ;
+        gr_con_printf ("\xAC15> %s", console_input) ;
         gr_con_putcommand (console_input);
         gr_con_do (console_input) ;
         *console_input = 0 ;
@@ -354,7 +354,7 @@ void gr_con_getkey(int key, int sym)
 
 void gr_con_show(int doit)
 {
-    /* Sólo se puede mostrar la consola si hay información de debug */
+    /* SÃ³lo se puede mostrar la consola si hay informaciÃ³n de debug */
     if (dcb.data.NID > 0) {
         console_showing = doit ;
     }
@@ -445,14 +445,14 @@ void gr_con_draw()
             int off = 0;
 
             do {
-                if (console[line][pos] == '¬') {
+                if (console[line][pos] == '\xAC') {
                     off += 3;
                 }
                 pos++;
             } while (pos-off<console_scroll_lateral_pos) ;
 
             do {
-                if (console[line][pos] == '¬') {
+                if (console[line][pos] == '\xAC') {
                     gr_sys_puts (scrbitmap, x, y, console[line]+pos, 3) ;
                     break;
                 }
@@ -1518,7 +1518,7 @@ void gr_con_do (const char * command)
             for (n = 0 ; n < procdef_count; n++) {
                 if (procs[n].breakpoint) {
                     if (!f) {
-                        gr_con_printf("¬02Process type breakpoints¬07\n");
+                        gr_con_printf("\xAC02Process type breakpoints\xAC07\n");
                         f = 1;
                     }
                     gr_con_printf("%s\n", procs[n].name);
@@ -1531,7 +1531,7 @@ void gr_con_do (const char * command)
             for (i = first_instance ; i ; i = i->next) {
                 if (i->breakpoint) {
                     if (!f) {
-                            gr_con_printf("¬02Process breakpoints¬07\n");
+                            gr_con_printf("\xAC02Process breakpoints\xAC07\n");
                         f = 1;
                     }
                     gr_con_printf("%d\n", LOCDWORD(i, PROCESS_ID));

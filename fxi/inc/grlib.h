@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
- *  Copyright ù 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -33,7 +33,7 @@
 #define MAX_JOYS    32
 
 /* -------------------------------------------------------------------- */
-/* Librerùa grùfica                                                     */
+/* Librer√≠a gr√°fica                                                     */
 /* -------------------------------------------------------------------- */
 
 extern int              scr_initialized ;
@@ -83,7 +83,7 @@ extern FONT * fonts[256] ;
 extern int    font_count ;
 
 
-/* Inicializaciùn y control de tiempo */
+/* Inicializaci√≥n y control de tiempo */
 /* ---------------------------------- */
 
 extern void gr_init           (int w, int h) ;
@@ -126,16 +126,16 @@ extern int          background_is_black ;
 
 extern Uint8        trans_table[256][256] ; /* Tabla de transparencias 8 bits        */
 extern int          trans_table_updated ;   /* 1 = La tabla es utilizable            */
-extern Uint8        nearest_table[64][64][64] ; /* Conversiùn color -> paleta        */
+extern Uint8        nearest_table[64][64][64] ; /* Conversi√≥n color -> paleta        */
 
 extern void         gr_make_trans_table() ;
 extern void         gr_fill_nearest_table() ;
 
-extern int          palette_loaded ;        /* ùSe ha cargado ya la paleta inicial ? */
+extern int          palette_loaded ;        /* ¬øSe ha cargado ya la paleta inicial ? */
 extern int          palette_changed ;       /* Poner a 1 cuando se cambien colores   */
-extern int          fade_on ;               /* ùHay un fade activo?                  */
-extern int          fade_set ;              /* ùHay un fade seteado pero inactivo?   */
-extern int          fade_step ;             /* Si lo hay, posiciùn (0=off)           */
+extern int          fade_on ;               /* ¬øHay un fade activo?                  */
+extern int          fade_set ;              /* ¬øHay un fade seteado pero inactivo?   */
+extern int          fade_step ;             /* Si lo hay, posici√≥n (0=off)           */
 
 
 extern PALETTE * pal_new(PALETTE * basepal);
@@ -197,7 +197,7 @@ extern const char * fgc_error;
 extern const char * fpl_error;
 
 
-/* Gestiùn de bitmaps y librerùas de grùficos */
+/* Gesti√≥n de bitmaps y librer√≠as de gr√°ficos */
 /* ------------------------------------------ */
 
 extern int      gr_load_map      (const char * filename) ;
@@ -298,7 +298,7 @@ extern GRAPH  * gr_text_bitmap     (int fontid, const char * text, int centered)
 /* Bajo nivel */
 /* ---------- */
 
-/* Las funciones grùficas admiten dest=0 para referirse a la pantalla.
+/* Las funciones gr√°ficas admiten dest=0 para referirse a la pantalla.
  * Para poder usar esta funcionalidad, debe estar bloqueada antes */
 
 extern int  gr_lock_screen   () ;
@@ -306,7 +306,7 @@ extern void gr_unlock_screen () ;
 extern void gr_mark_rect (int x, int y, int width, int height);
 extern void gr_mark_instance (INSTANCE *);
 
-/* Primitivas grùficas */
+/* Primitivas gr√°ficas */
 
 extern void gr_clear     (GRAPH * dest) ;
 extern void gr_clear_as  (GRAPH * dest, int color) ;
@@ -407,7 +407,7 @@ extern void MMX_draw_hspan_16to16_translucent (void * scr, void * tex, int pixel
 extern void MMX_draw_hspan_16to16_nocolorkey (void * scr, void * tex, int pixels, int incs);
 #endif
 
-/* Rutinas de conversiùn entre formatos */
+/* Rutinas de conversi√≥n entre formatos */
 
 extern void     gr_convert16_ScreenTo565 (Uint16 * ptr, int len);
 extern void     gr_convert16_565ToScreen (Uint16 * ptr, int len);

@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -44,15 +44,15 @@ static void strdelchars (char * str, char * chars);
 int reduce_arrays = 1;
 
 /* ---------------------------------------------------------------------- */
-/* Compilador de expresiones y sentencias. En este mÛdulo est·n todas las */
-/* funciones de compilado que generan cÛdigo efectivo.                    */
+/* Compilador de expresiones y sentencias. En este m√≥dulo est√°n todas las */
+/* funciones de compilado que generan c√≥digo efectivo.                    */
 /* ---------------------------------------------------------------------- */
 
 PROCDEF * proc ;
 CODEBLOCK * code ;
 
-/* Comprueba que los par·metros de una expresiÛn binaria sean datos
- * numÈricos. Devuelve el tipo de operaciÛn (MN_FLOAT o MN_DWORD) */
+/* Comprueba que los par√°metros de una expresi√≥n binaria sean datos
+ * num√©ricos. Devuelve el tipo de operaci√≥n (MN_FLOAT o MN_DWORD) */
 
 static int check_integer_type (expresion_result *exp)
 {
@@ -170,8 +170,8 @@ static int check_numeric_types (expresion_result *left, expresion_result *right)
     return 0 ;
 }
 
-/* Comprueba que los par·metros de una expresiÛn binaria sean cadenas
- * o datos numÈricos. Devuelve MN_STRING o el tipo de dato numÈrico */
+/* Comprueba que los par√°metros de una expresi√≥n binaria sean cadenas
+ * o datos num√©ricos. Devuelve MN_STRING o el tipo de dato num√©rico */
 
 static int check_numeric_or_string_types (expresion_result * left,
         expresion_result * right)
@@ -209,7 +209,7 @@ static int check_numeric_or_string_types (expresion_result * left,
     return check_numeric_types (left, right) ;
 }
 
-/* Devuelve el cÛdigo que hay que adjuntar a un mnemÛnico para producir
+/* Devuelve el c√≥digo que hay que adjuntar a un mnem√≥nico para producir
  * una variante del mismo, adecuada al tipo de dato concreto */
 
 int mntype(TYPEDEF type, int accept_structs)
@@ -238,7 +238,7 @@ int mntype(TYPEDEF type, int accept_structs)
     return 0;
 }
 
-/* Compila el tamaÒo de una VARIABLE o estructura local, global o privada
+/* Compila el tama√±o de una VARIABLE o estructura local, global o privada
 Se agrega local al proceso, (Splinter)
 */
 
@@ -482,7 +482,7 @@ expresion_result compile_sublvalue (VARSPACE * from, int base_offset, VARSPACE *
     res.call       = 0 ;
     res.value      = 0 ;
 
-    /* Indexado vÌa [...] */
+    /* Indexado v√≠a [...] */
 
     while (token.type == IDENTIFIER && token.code == identifier_leftb) /* "[" */
     {
@@ -784,7 +784,7 @@ static void strdelchars (char * str, char * chars)
     }
 }
 
-/* Compila una lista de par·metros */
+/* Compila una lista de par√°metros */
 
 int compile_paramlist (BASETYPE * types, const char * paramtypes)
 {
@@ -1083,7 +1083,7 @@ expresion_result compile_cast ()
     }
     else if (typedef_is_string(type))
     {
-        // ConversiÛn de puntero, float, entero o cadena de ancho fijo a cadena
+        // Conversi√≥n de puntero, float, entero o cadena de ancho fijo a cadena
 
         if (typedef_is_array(res.type) && res.type.chunk[1].type == TYPE_CHAR)
         {
@@ -1139,7 +1139,7 @@ expresion_result compile_cast ()
     return res;
 }
 
-/* Compila un valor (elemento m·s pequeÒo del lenguaje) */
+/* Compila un valor (elemento m√°s peque√±o del lenguaje) */
 
 expresion_result compile_value ()
 {
@@ -1339,7 +1339,7 @@ expresion_result compile_value ()
         return res ;
     }
 
-    /* Llamada a un procedimiento o funciÛn del sistema */
+    /* Llamada a un procedimiento o funci√≥n del sistema */
 
     id = token.code ;
 
@@ -1583,7 +1583,7 @@ expresion_result compile_factor ()
             continue ;
         }
 
-        /* Indexado vÌa [...] */
+        /* Indexado v√≠a [...] */
 
         if (token.type == IDENTIFIER && token.code == identifier_leftb) /* "[" */
         {
@@ -1769,7 +1769,7 @@ expresion_result compile_operation ()
             left.type = typedef_new(TYPE_STRING) ;
         }
 
-        /* Suma/resta de valores numÈricos */
+        /* Suma/resta de valores num√©ricos */
 
         if (token.type == IDENTIFIER && (token.code == identifier_plus || token.code == identifier_minus)) /* "+" or "-" */
         {
@@ -1777,7 +1777,7 @@ expresion_result compile_operation ()
             if (left.lvalue) codeblock_add (code, mntype(left.type, 0) | MN_PTR, 0) ;
             right = compile_operand() ;
 
-            /* ConcatenaciÛn de cadenas */
+            /* Concatenaci√≥n de cadenas */
 
             if ((typedef_is_string(left.type) || typedef_is_string(right.type)) && op == MN_ADD)
             {
@@ -2340,7 +2340,7 @@ expresion_result compile_subexpresion ()
             return res ;
         }
 
-        /* Otra posible combinaciÛn */
+        /* Otra posible combinaci√≥n */
 
         if (     token.code == identifier_plusequal     /* "+=" */
              ||  token.code == identifier_minusequal    /* "-=" */
@@ -2522,7 +2522,7 @@ expresion_result compile_expresion (int need_constant, int need_lvalue, BASETYPE
     if (t != TYPE_UNDEFINED)
         res = convert_result_type (res, t) ;
 
-    /* OptimizaciÛn de datos constantes */
+    /* Optimizaci√≥n de datos constantes */
 
     if (res.constant)
     {

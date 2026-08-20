@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -36,9 +36,9 @@
 #include "fxc.h"
 
 /* ---------------------------------------------------------------------- */
-/* Gestor de procesos y bloques de código. Este módulo contiene funciones */
-/* de utilidad para crear procesos y bloques de código así como otras que */
-/* se emplean durante y después del compilado.                            */
+/* Gestor de procesos y bloques de cÃ³digo. Este mÃ³dulo contiene funciones */
+/* de utilidad para crear procesos y bloques de cÃ³digo asÃ­ como otras que */
+/* se emplean durante y despuÃ©s del compilado.                            */
 /* ---------------------------------------------------------------------- */
 
 PROCDEF * mainproc = 0 ;
@@ -141,8 +141,8 @@ void procdef_destroy (PROCDEF * proc)
 }
 
 
-/* Realiza acciones posteriores al compilado sobre el código:
- * - Convierte saltos de código de etiqueta a offset
+/* Realiza acciones posteriores al compilado sobre el cÃ³digo:
+ * - Convierte saltos de cÃ³digo de etiqueta a offset
  * - Convierte identificador de procesos en CALL o TYPE a typeid */
 
 void program_postprocess ()

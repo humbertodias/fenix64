@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -31,8 +31,8 @@
 #include "fxc.h"
 
 /* ----------------------------------------------------------------------- */
-/* Este módulo contiene las definiciones de constantes, locales y globales */
-/* predefinidos, así como el código que los carga y define cada una de las */
+/* Este mÃ³dulo contiene las definiciones de constantes, locales y globales */
+/* predefinidos, asÃ­ como el cÃ³digo que los carga y define cada una de las */
 /* funciones del sistema (es llamado antes de empezar a compilar).         */
 /* ----------------------------------------------------------------------- */
 
@@ -240,7 +240,7 @@ char * globals_def =
 "       flags1 ; \n"
 "       flags2 ; \n"
 "       follow = -1 ; \n"
-"       reserved[6] ;       // Tamaño: 20 dwords  \n"
+"       reserved[6] ;       // TamaÃ±o: 20 dwords  \n"
 "   END \n"
 " \n"
 "   STRUCT joy \n"

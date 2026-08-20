@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -45,7 +45,7 @@
 
 #define SCROLLS			4*14
 
-			/* Siguen 10 estructuras scroll de tamaño 20 */
+			/* Siguen 10 estructuras scroll de tamaÃ±o 20 */
 
 #define JOYLEFT			4*214
 #define JOYRIGHT		4*215
@@ -80,7 +80,7 @@
 
 #define M7STRUCTS		4*250
 
-			/* Siguen 10 estructuras de tamaño 10 */
+			/* Siguen 10 estructuras de tamaÃ±o 10 */
 
 /* Extras */
 

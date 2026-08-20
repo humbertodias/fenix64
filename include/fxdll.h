@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
- *  Copyright ù 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -220,7 +220,7 @@ FXEXTERN int          (*_string_concat  )(int code1, char * str2) ;
  * xctype.h
  *****************************************************/
 
-FXEXTERN int           * _dos_chars ;		/* 1 = Cùdigo fuente en caracteres MS-DOS */
+FXEXTERN int           * _dos_chars ;		/* 1 = C√≥digo fuente en caracteres MS-DOS */
 FXEXTERN char          ** _c_type ;
 FXEXTERN unsigned char ** _c_upper ;
 FXEXTERN unsigned char ** _c_lower ;
@@ -344,7 +344,7 @@ FXEXTERN void (*_gr_fill_nearest_table)();
 #define nearest_table (*_nearest_table)
 #define gr_fill_nearest_table (*_gr_fill_nearest_table)
 
-/* Inicializaciùn y control de tiempo */
+/* Inicializaci√≥n y control de tiempo */
 /* ---------------------------------- */
 
 FXEXTERN void (*_gr_init           )(int w, int h) ;
@@ -399,10 +399,10 @@ FXEXTERN int          * _trans_table_updated ;   /* 1 = La tabla es utilizable  
 FXEXTERN void  (*_gr_make_trans_table)() ;
 #define gr_make_trans_table (*_gr_make_trans_table)
 
-FXEXTERN int          * _palette_loaded ;        /* ùSe ha cargado ya la paleta inicial ? */
+FXEXTERN int          * _palette_loaded ;        /* ¬øSe ha cargado ya la paleta inicial ? */
 FXEXTERN int          * _palette_changed ;       /* Poner a 1 cuando se cambien colores   */
-FXEXTERN int          * _fade_on ;               /* ùHay un fade activo?                  */
-FXEXTERN int          * _fade_step ;             /* Si lo hay, posiciùn (0=off)           */
+FXEXTERN int          * _fade_on ;               /* ¬øHay un fade activo?                  */
+FXEXTERN int          * _fade_step ;             /* Si lo hay, posici√≥n (0=off)           */
 
 FXEXTERN PALETTE *  (*_gr_read_pal           )(file * file) ;
 FXEXTERN PALETTE *  (*_gr_read_pal_with_gamma)(file * file) ;
@@ -469,7 +469,7 @@ FXEXTERN void     (*_blend_grayscale    )(Sint16 * blend, int method) ;
 #define blend_apply			(*_blend_apply)
 #define blend_grayscale     (*_blend_grayscale)
 
-/* Gestiùn de bitmaps y librerùas de grùficos */
+/* Gesti√≥n de bitmaps y librer√≠as de gr√°ficos */
 /* ------------------------------------------ */
 
 FXEXTERN int      (*_gr_load_map      )(const char * filename) ;
@@ -615,7 +615,7 @@ FXEXTERN GRAPH  * (*_gr_text_bitmap     )(int fontid, const char * text, int cen
 /* Bajo nivel */
 /* ---------- */
 
-/* Las funciones grùficas admiten dest=0 para referirse a la pantalla.
+/* Las funciones gr√°ficas admiten dest=0 para referirse a la pantalla.
 * Para poder usar esta funcionalidad, debe estar bloqueada antes */
 
 FXEXTERN int  (*_gr_lock_screen   )() ;
@@ -624,7 +624,7 @@ FXEXTERN void (*_gr_unlock_screen )() ;
 #define gr_lock_screen		(*_gr_lock_screen)
 #define gr_unlock_screen	(*_gr_unlock_screen)
 
-/* Primitivas grùficas */
+/* Primitivas gr√°ficas */
 
 FXEXTERN void (*_gr_clear     )(GRAPH * dest) ;
 FXEXTERN void (*_gr_clear_as  )(GRAPH * dest, int color) ;
@@ -916,7 +916,7 @@ FXEXTERN void       (*_instance_dump_all    )() ;
 #define instance_poschanged     (*_instance_poschanged)
 #define instance_posupdate      (*_instance_posupdate)
 
-/* Las siguientes funciones son el punto de entrada del intùrprete */
+/* Las siguientes funciones son el punto de entrada del int√©rprete */
 FXEXTERN int        (*_instance_go          )(INSTANCE * r) ;
 FXEXTERN void       (*_instance_go_all      )() ;
 

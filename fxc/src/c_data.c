@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -37,8 +37,8 @@
 #include "messages.c"
 
 /* ---------------------------------------------------------------------- */
-/* Este módulo contiene las funciones que compilan definiciones de datos: */
-/* declaraciones de variables e inicialziación de las mismas              */
+/* Este mÃ³dulo contiene las funciones que compilan definiciones de datos: */
+/* declaraciones de variables e inicialziaciÃ³n de las mismas              */
 /* ---------------------------------------------------------------------- */
 
 int compile_array_data (VARSPACE * n, segment * data, int size, int subsize, BASETYPE *t)
@@ -486,7 +486,7 @@ int compile_varspace (VARSPACE * n, segment * data, int additive, int copies, in
             token_next();
         }
 
-        /* Tipos de datos básicos */
+        /* Tipos de datos bÃ¡sicos */
 
         if (token.code == identifier_dword) {
             basetype = signed_prefix ? TYPE_INT : TYPE_DWORD ;
@@ -647,7 +647,7 @@ int compile_varspace (VARSPACE * n, segment * data, int additive, int copies, in
             }
             token_back() ;
 
-            // Da la vuelta a los índices ([3][2] -> [2][3])
+            // Da la vuelta a los Ã­ndices ([3][2] -> [2][3])
 
             for (i = 0 ; i < type.depth ; i++) {
                 if (type.chunk[i].type != TYPE_ARRAY) {
@@ -729,7 +729,7 @@ int compile_varspace (VARSPACE * n, segment * data, int additive, int copies, in
                 token_next() ;
             }
 
-            // Da la vuelta a los índices [10][5] -> [5][10]
+            // Da la vuelta a los Ã­ndices [10][5] -> [5][10]
 
             for (i = 0 ; i < type.depth ; i++) {
                 if (type.chunk[i].type != TYPE_ARRAY) {
@@ -805,7 +805,7 @@ int compile_varspace (VARSPACE * n, segment * data, int additive, int copies, in
                 }
                 token_back() ;
             }
-        } else if (s && token.type == IDENTIFIER && token.code == identifier_equal) { /* Compila una asignación de valores por defecto */
+        } else if (s && token.type == IDENTIFIER && token.code == identifier_equal) { /* Compila una asignaciÃ³n de valores por defecto */
             segment_add_from (data, s) ;
             i = data->current ;
             data->current = n->vars[n->count].offset ;

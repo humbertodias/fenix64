@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
- *  Copyright ù 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -79,7 +79,7 @@ GRAPH * gr_read_png (const char * filename)
     png_uint_32 width, height, rowbytes;
     int depth, color ;
 
-    /* Abre el fichero y se asegura de que screen estù inicializada */
+    /* Abre el fichero y se asegura de que screen est√° inicializada */
 
     png = file_open (filename, "rb") ;
     if (!png) gr_error ("No existe %s\n", filename) ;
@@ -101,7 +101,7 @@ GRAPH * gr_read_png (const char * filename)
         return 0 ;
     }
 
-    /* Recupera informaciùn sobre el PNG */
+    /* Recupera informaci√≥n sobre el PNG */
 
     png_set_read_fn (png_ptr, 0, user_read_data) ;
     png_read_info (png_ptr, info_ptr) ;

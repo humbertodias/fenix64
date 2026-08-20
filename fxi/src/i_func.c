@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -147,7 +147,7 @@ static int fxi_say (INSTANCE * my, int * params)
     return 1 ;
 }
 
-/* Funciones matem·ticas */
+/* Funciones matem√°ticas */
 
 static int fxi_rand (INSTANCE * my, int * params)
 {
@@ -253,7 +253,7 @@ static int fxi_sqrt (INSTANCE * my, int * params)
     return *(int *)&res ;
 }
 
-/* Funciones matem·ticas con floats */
+/* Funciones matem√°ticas con floats */
 
 static int fxi_cos (INSTANCE * my, int * params)
 {
@@ -292,7 +292,7 @@ static int fxi_atan (INSTANCE * my, int * params)
     return *(int *)&result ;
 }
 
-/* InteracciÛn entre procesos */
+/* Interacci√≥n entre procesos */
 
 /** EXIT ()
  *  Leaves the program at next frame (two parameters accepted for compatibility)
@@ -394,7 +394,7 @@ static int fxi_signal (INSTANCE * my, int * params)
                     break ;
 
                 default:
-                    gr_error ("Tipo de seÒal desconocida") ;
+                    gr_error ("Tipo de se√±al desconocida") ;
             }
 
             if (instance_visible(i))
@@ -977,13 +977,13 @@ static int fxi_key (INSTANCE * my, int * params)
 }
 
 
-/* Funciones de inicializaciÛn y carga */
+/* Funciones de inicializaci√≥n y carga */
 
 static int
 fxi_set_mode (INSTANCE * my, int * params)
 {
     if (params[0] < 3200200 || params[0] > 16001400)
-        gr_error ("Modo gr·fico no soportado") ;
+        gr_error ("Modo gr√°fico no soportado") ;
 
     gr_init(params[0]/10000, params[0]%10000) ;
     return 1 ;
@@ -993,7 +993,7 @@ static int
 fxi_set_mode_2 (INSTANCE * my, int * params)
 {
     if (params[0]>1600 || params[1]>1400)
-        gr_error ("Modo gr·fico no soportado") ;
+        gr_error ("Modo gr√°fico no soportado") ;
 
     gr_init(params[0], params[1]) ;
     return 1 ;
@@ -1004,7 +1004,7 @@ fxi_set_mode_3 (INSTANCE * my, int * params)
 {
 
     if (params[0]>1600 || params[1]>1400)
-        gr_error ("Modo gr·fico no soportado");
+        gr_error ("Modo gr√°fico no soportado");
 
     GLODWORD(GRAPH_MODE) = ((GLODWORD(GRAPH_MODE) & 0xFF00) | params[2]);
     gr_init(params[0], params[1]) ;
@@ -1016,7 +1016,7 @@ fxi_set_mode_4 (INSTANCE * my, int * params)
 {
 
     if (params[0]>1600 || params[1]>1400)
-        gr_error ("Modo gr·fico no soportado");
+        gr_error ("Modo gr√°fico no soportado");
 
     GLODWORD(GRAPH_MODE) = (params[2] | params[3]);
     gr_init(params[0], params[1]) ;
@@ -1245,7 +1245,7 @@ static int fxi_convert_palette (INSTANCE * my, int * params)
     if (!map) return -1 ;
     if (map->depth != 8)
     {
-        gr_error ("Intento de usar convert_palette con un gr·fico de 16 bits") ;
+        gr_error ("Intento de usar convert_palette con un gr√°fico de 16 bits") ;
         return 0;
     }
 
@@ -1589,7 +1589,7 @@ static int fxi_bezier (INSTANCE * my, int * params)
     }
 }
 
-/* Funciones gr·ficas */
+/* Funciones gr√°ficas */
 
 static int fxi_get_pixel (INSTANCE * my, int * params)
 {
@@ -1863,8 +1863,8 @@ static int fxi_map_put (INSTANCE * my, int * params)
     GRAPH * dest = bitmap_get (params[0], params[1]) ;
     GRAPH * orig = bitmap_get (params[0], params[2]) ;
 
-    if (!dest) gr_error ("map_put: mapa de destino no v·lido") ;
-    if (!orig) gr_error ("map_put: mapa de origen no v·lido") ;
+    if (!dest) gr_error ("map_put: mapa de destino no v√°lido") ;
+    if (!orig) gr_error ("map_put: mapa de origen no v√°lido") ;
 
     gr_blit (dest, 0, params[3], params[4], 0, orig) ;
     return 1 ;
@@ -2062,7 +2062,7 @@ static int fxi_fpg_new (INSTANCE * my, int * params)
     return grlib_new();
 }
 
-/* Funciones de b˙squeda de caminos */
+/* Funciones de b√∫squeda de caminos */
 
 static int fxi_path_find (INSTANCE * my, int * params)
 {
@@ -2081,7 +2081,7 @@ static int fxi_path_wall (INSTANCE * my, int * params)
     return path_set_wall (params[0]) ;
 }
 
-/* Funciones de visualziaciÛn de textos */
+/* Funciones de visualziaci√≥n de textos */
 
 /** LOAD_FNT (STRING FILENAME)
  *  Load a .FNT font from disk (returns the font ID)
@@ -2207,7 +2207,7 @@ static int fxi_save_fnt (INSTANCE * my, int * params)
     return r ;
 }
 
-/* Funciones de visualizaciÛn de textos */
+/* Funciones de visualizaci√≥n de textos */
 
 static int fxi_write (INSTANCE * my, int * params)
 {
@@ -2288,7 +2288,7 @@ static int fxi_write_var (INSTANCE * my, int * params)
             t = TEXT_INT;
             break;
         default:
-            gr_error ("No es un tipo de dato v·lido");
+            gr_error ("No es un tipo de dato v√°lido");
             break ;
     }
     return gr_text_new_var (params[0], params[1], params[2], params[3], (void *)params[4], t) ;
@@ -3140,7 +3140,7 @@ static int fxi_move_scroll (INSTANCE * my, int * params)
     return 1 ;
 }
 
-/* ReproducciÛn de FLI */
+/* Reproducci√≥n de FLI */
 
 FLIC * current_fli = 0 ;
 int    current_fli_x = 0 ;
@@ -3673,7 +3673,7 @@ static int fxi_get_timer (INSTANCE * my, int * params)
     return SDL_GetTicks() ;
 }
 
-/* Hora del dÌa */
+/* Hora del d√≠a */
 
 static int fxi_time (INSTANCE * my, int * params)
 {
@@ -3976,7 +3976,7 @@ void QuickSort(Uint8 *Data,int inf, int sup, int *params)
  */
 
 static int fxi_quicksort(INSTANCE *my, int *params)
-{ //punteroalarray,tamaÒodato,numdatos,offsetadatoordenador,tamaÒodatoaordenar,tipodato(int=0,float=1)
+{ //punteroalarray,tama√±odato,numdatos,offsetadatoordenador,tama√±odatoaordenar,tipodato(int=0,float=1)
     Uint8 *Data=(Uint8 *)params[0];
     QuickSort(Data,0,params[2]-1,params);
     return 1 ;
@@ -3995,7 +3995,7 @@ static int fxi_filter (INSTANCE *my, int *params)
     if (!map) return 0;
 
     if (map->depth != 16) {
-        gr_con_printf ("Intento de usar filter con un gr·fico de 8 bits") ;
+        gr_con_printf ("Intento de usar filter con un gr√°fico de 8 bits") ;
         return 0;
     }
 
@@ -4066,7 +4066,7 @@ static int fxi_blur (INSTANCE *my, int *params) // fpg,map,tipo
     if (!map) return 0;
 
     if (map->depth != 16) {
-        gr_con_printf ("Intento de usar blur con un gr·fico de 8 bits") ;
+        gr_con_printf ("Intento de usar blur con un gr√°fico de 8 bits") ;
         return 0;
     }
 
@@ -4199,7 +4199,7 @@ static int fxi_grayscale (INSTANCE *my, int *params) //fpg,map,tipo
     if (!map) return -1 ;
 
     if (map->depth != 16) {
-        gr_con_printf ("Intento de usar grayscale con un gr·fico de 8 bits") ;
+        gr_con_printf ("Intento de usar grayscale con un gr√°fico de 8 bits") ;
         return -1 ;
     }
 
@@ -4247,7 +4247,7 @@ static int fxi_rgbscale (INSTANCE *my, int *params) //fpg, map, r, g, b
 
     if (!map) return -1 ;
     if (map->depth != 16)
-        gr_error ("Intento de usar rgbscale con un gr·fico de 8 bits") ;
+        gr_error ("Intento de usar rgbscale con un gr√°fico de 8 bits") ;
 
     for(i=0;i<map->height;i++)
         for(j=0;j<map->width;j++){
@@ -4978,7 +4978,7 @@ fxi_save_fbm (INSTANCE * my, int * params)
 
     if (graph == NULL)
     {
-        gr_error("Intento de grabar un gr·fico inexistente\n(LibrarÌa %d, gr·fico %d)", params[0], params[1]);
+        gr_error("Intento de grabar un gr√°fico inexistente\n(Librar√≠a %d, gr√°fico %d)", params[0], params[1]);
     }
     else
     {
@@ -5162,7 +5162,7 @@ void sysproc_init()
     fnc_show_information();
 }
 
-/* Rutinas matem·ticas de punto fijo, basadas en Allegro */
+/* Rutinas matem√°ticas de punto fijo, basadas en Allegro */
 
 void init_cos_tables()
 {

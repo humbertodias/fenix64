@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -65,7 +65,7 @@ XFILE x_file[MAX_X_FILES] ;
 
 int x_files_count = 0 ;
 
-/* AÒade un nuevo archivo al PATH */
+/* A√±ade un nuevo archivo al PATH */
 
 void file_add_xfile (file * fp, long offset, char * name, int size)
 {
@@ -400,7 +400,7 @@ int file_write (file * fp, void * buffer, int len)
 	return fwrite (buffer, 1, len, fp->fp) ;
 }
 
-/* Devuelve el tamaÒo de un fichero */
+/* Devuelve el tama√±o de un fichero */
 
 int file_size (file * fp)
 {
@@ -411,7 +411,7 @@ int file_size (file * fp)
 
 	if (fp->type == F_GZFILE)
 	{
-		fprintf (stderr, "file_size: inv·lida en ficheros comprimidos\n") ;
+		fprintf (stderr, "file_size: inv√°lida en ficheros comprimidos\n") ;
 		return 0 ;
 	}
 
@@ -422,7 +422,7 @@ int file_size (file * fp)
 	return size ;
 }
 
-/* Devuelve la posiciÛn actual de un fichero */
+/* Devuelve la posici√≥n actual de un fichero */
 
 int file_pos (file * fp)
 {
@@ -558,7 +558,7 @@ file * file_open (const char * filename, char * mode)
     	}
     }
 
-	/* Busca por el directorio de la extensiÛn (directorio FPG para FPG) */
+	/* Busca por el directorio de la extensi√≥n (directorio FPG para FPG) */
 	if (strchr(name,'.'))
 	{
 		strcpy (here, strchr(name,'.') + 1) ;
@@ -611,7 +611,7 @@ void file_close (file * fp)
 	free(fp) ;
 }
 
-/* AÒade un nuevo directorio al PATH */
+/* A√±ade un nuevo directorio al PATH */
 
 void file_addp  (const char * path)
 {
@@ -646,7 +646,7 @@ int file_exists (const char * filename)
 	return 0 ;
 }
 
-/* Devuelve cierto si se leyÛ m·s all· del fin del fichero */
+/* Devuelve cierto si se ley√≥ m√°s all√° del fin del fichero */
 
 int file_eof (file * fp)
 {

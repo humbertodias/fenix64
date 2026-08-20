@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -334,7 +334,7 @@ static GRAPH * gr_read_map (file * fp)
 
     len = gr->widthb;
 
-    /* Datos del gr·fico */
+    /* Datos del gr√°fico */
 
     for (y = 0 ; y < gr->height ; y++)
     {
@@ -425,7 +425,7 @@ GRAPH * bitmap_new_syslib (int w, int h, int depth, int frames)
     return gr ;
 }
 
-/* An·lisis */
+/* An√°lisis */
 
 void bitmap_analize (GRAPH * bitmap)
 {
@@ -463,7 +463,7 @@ void bitmap_analize (GRAPH * bitmap)
     }
 }
 
-/* AnimaciÛn */
+/* Animaci√≥n */
 
 void bitmap_animate_to (GRAPH * bitmap, int pos, int speed)
 {

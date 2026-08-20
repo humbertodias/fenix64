@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 JosÈ Luis Cebri·n Pag¸e
- *  Copyright © 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -41,9 +41,9 @@
 
 
 /* ---------------------------------------------------------------------- */
-/* MÛdulo principal del compilador. Contiene cÛdigo que inicializa los    */
-/* identificadores conocidos, asÌ como las funciones de compilado de      */
-/* nivel m·s alto                                                         */
+/* M√≥dulo principal del compilador. Contiene c√≥digo que inicializa los    */
+/* identificadores conocidos, as√≠ como las funciones de compilado de      */
+/* nivel m√°s alto                                                         */
 /* ---------------------------------------------------------------------- */
 
 /* Tipos */
@@ -619,7 +619,7 @@ void compile_process ()
 
     token_next() ;
 
-    /* Recoge los par·metros y su tipo */
+    /* Recoge los par√°metros y su tipo */
 
     params = 0 ;
     type = TYPE_INT;
@@ -727,7 +727,7 @@ void compile_process ()
         if (!proc->declared) {
             var = varspace_search (&local, token.code) ;
             if (var) {
-                /* El par·metro es en realidad un local */
+                /* El par√°metro es en realidad un local */
                 if (type_implicit) {
                     type = typedef_base(var->type);
                     ctype = var->type;
@@ -769,7 +769,7 @@ void compile_process ()
                 var = varspace_search (&global, token.code);
                 if (var)
                 {
-                    /* El par·metro es en realidad un global */
+                    /* El par√°metro es en realidad un global */
                     if (type_implicit)
                     {
                         type = typedef_base(var->type);
@@ -862,9 +862,9 @@ void compile_process ()
     if (token.type == IDENTIFIER && token.code == identifier_semicolon)
         token_next () ;
 
-    /* Se admite una secciÛn interna de datos locales; sin embargo,
-       los datos declarados aquÌ tienen el mismo efecto que si son
-       declarados externamente y afectar·n a todos los procesos (Ya no va mas esto, ahora los datos locales son locales, Splinter) */
+    /* Se admite una secci√≥n interna de datos locales; sin embargo,
+       los datos declarados aqu√≠ tienen el mismo efecto que si son
+       declarados externamente y afectar√°n a todos los procesos (Ya no va mas esto, ahora los datos locales son locales, Splinter) */
 
     while ( token.type == IDENTIFIER && ( token.code == identifier_local  ||
                                           token.code == identifier_public ||
@@ -886,7 +886,7 @@ void compile_process ()
         token_next () ;
     }
 
-    /* Gestiona procesos cuyos par·metros son variables locales */
+    /* Gestiona procesos cuyos par√°metros son variables locales */
 
     if (!is_declare) {
         if (token.type != IDENTIFIER || token.code != identifier_begin) {
@@ -1018,7 +1018,7 @@ void compile_program ()
                                     (token.code == identifier_process  ||
                                      token.code == identifier_function ||
                                      token.code == identifier_declare  ||
-                                     identifier_is_basic_type(token.type))) { /* DefiniciÛn de proceso */
+                                     identifier_is_basic_type(token.type))) { /* Definici√≥n de proceso */
             compile_process() ;
 
         } else if (segment_by_name(token.code)) {

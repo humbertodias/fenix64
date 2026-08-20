@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 #include <stdio.h>
@@ -289,7 +289,7 @@ void codeblock_add (CODEBLOCK * c, int code, int param)
 
 	if (MN_PARAMS(code) == 0 && param)
 	{
-		printf ("Aviso: mnemónico 0x%02X no recibe parámetros\n", code) ;
+		printf ("Aviso: mnemÃ³nico 0x%02X no recibe parÃ¡metros\n", code) ;
 	}
 
 	if (c->current > 0)

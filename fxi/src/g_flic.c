@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -38,7 +38,7 @@
 extern SDL_Color palette[256] ;
 
 /* --------------------------------------------------------------------- */
-/* Librería para reproducir ficheros FLI directamente desde el disco     */
+/* LibrerÃ­a para reproducir ficheros FLI directamente desde el disco     */
 /* --------------------------------------------------------------------- */
 
 void flic_destroy (FLIC * flic)
@@ -91,7 +91,7 @@ FLIC * flic_open (const char * filename)
 	flic->bitmap = bitmap_new (0, flic->header.width, flic->header.height, 8, 1) ;
 	if (!flic->bitmap)
 	{
-		/* Tamaño incorrecto */
+		/* TamaÃ±o incorrecto */
 		flic_destroy (flic) ;
 		return 0 ;
 	}
@@ -364,7 +364,7 @@ FLIC * flic_do_frame (FLIC * flic)
 	} else {
     	do
     	{
-    		/* Recupera información del siguiente chunk del fichero */
+    		/* Recupera informaciÃ³n del siguiente chunk del fichero */
 
     		if (!file_read (flic->fp, flic->frame, sizeof(FLIC_FRAME))) {
     			flic_destroy (flic) ;

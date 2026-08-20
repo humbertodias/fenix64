@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -173,7 +173,7 @@ static int dcb_typedef_size (const DCB_TYPEDEF * type)
 			}
 			if (maxvar == NULL)
 			{
-				gr_con_printf ("Estructura vacía");
+				gr_con_printf ("Estructura vacÃ­a");
 				return 0;
 			}
 
@@ -239,7 +239,7 @@ static int sort_variables (void * data, int key_offset, int key_type, int elemen
 			compare = compare_float;
 			break;
 		default:
-			gr_con_printf ("Tipo de dato usado como clave de ordenación inválido");
+			gr_con_printf ("Tipo de dato usado como clave de ordenaciÃ³n invÃ¡lido");
 			return 0;
 	}
 
@@ -267,17 +267,17 @@ int fxi_sort (INSTANCE * my, int * params)
 
 	if (type->BaseType[0] != TYPE_ARRAY)
 	{
-		gr_con_printf ("Sólo se permite ordenar un array de estructuras o valores");
+		gr_con_printf ("SÃ³lo se permite ordenar un array de estructuras o valores");
 		return 0;
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 	if (type->Count[0] < 2)
 	{
-		gr_con_printf ("Intento de ordenar un array con un sólo elemento");
+		gr_con_printf ("Intento de ordenar un array con un sÃ³lo elemento");
 		return 0;
 	}
 
@@ -326,17 +326,17 @@ int fxi_ksort (INSTANCE * my, int * params)
 
 	if (type->BaseType[0] != TYPE_ARRAY)
 	{
-		gr_con_printf ("Sólo se permite ordenar un array de estructuras o valores");
+		gr_con_printf ("SÃ³lo se permite ordenar un array de estructuras o valores");
 		return 0;
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 	if (type->Count[0] < 2)
 	{
-		gr_con_printf ("Intento de ordenar un array con un sólo elemento");
+		gr_con_printf ("Intento de ordenar un array con un sÃ³lo elemento");
 		return 0;
 	}
 
@@ -402,7 +402,7 @@ int fxi_sort_n (INSTANCE * my, int * params)
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 
@@ -467,7 +467,7 @@ int fxi_ksort_n (INSTANCE * my, int * params)
 	}
 	if (vars > 1)
 	{
-		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 		return 0;
 	}
 

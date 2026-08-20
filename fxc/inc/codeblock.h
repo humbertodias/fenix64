@@ -19,17 +19,17 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
 #ifndef __CODEBLOCK_H
 #define __CODEBLOCK_H
 
-/* Bloques de código compilado. Contienen estructuras que sólo se emplean
- * durante el compilado: la función program_postprocess() independiza los
- * datos (CODEBLOCK.data[]) de dichas estructuras, que el intérprete
+/* Bloques de cÃ³digo compilado. Contienen estructuras que sÃ³lo se emplean
+ * durante el compilado: la funciÃ³n program_postprocess() independiza los
+ * datos (CODEBLOCK.data[]) de dichas estructuras, que el intÃ©rprete
  * no necesita */
 
 typedef struct _codeblock

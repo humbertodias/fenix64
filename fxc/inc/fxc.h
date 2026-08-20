@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -46,7 +46,7 @@
 #include "xctype.h"
 
 /* ---------------------------------------------------------------------- */
-/* Módulos generales de mantenimiento de datos                            */
+/* MÃ³dulos generales de mantenimiento de datos                            */
 /* ---------------------------------------------------------------------- */
 
 #include "typedef.h"
@@ -102,9 +102,9 @@
 #include "procdef.h"
 #include "compiler.h"
 
-extern int autoinclude ;	/* Incluye ficheros en el DCB automáticamente */
-extern int imports[] ;		/* Códigos de cadena con nombres de imports */
-extern int nimports ;		/* Número de imports */
+extern int autoinclude ;	/* Incluye ficheros en el DCB automÃ¡ticamente */
+extern int imports[] ;		/* CÃ³digos de cadena con nombres de imports */
+extern int nimports ;		/* NÃºmero de imports */
 
 extern char langinfo[64] ;	/* language setting */
 

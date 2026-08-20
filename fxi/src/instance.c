@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -49,8 +49,8 @@
 #define PRIORITIES		(MAX_PRIORITY - MIN_PRIORITY + 1)
 
 /* ---------------------------------------------------------------------- */
-/* Módulo de gestión de instancias, con las funciones de incialización y  */
-/* destrucción, duplicado, etc.                                           */
+/* MÃ³dulo de gestiÃ³n de instancias, con las funciones de incializaciÃ³n y  */
+/* destrucciÃ³n, duplicado, etc.                                           */
 /* ---------------------------------------------------------------------- */
 
 INSTANCE * first_instance = NULL ;
@@ -150,8 +150,8 @@ INSTANCE * instance_duplicate (INSTANCE * father)
 
 	/* Inicializa datos DIV */
 
-	/* Crea el proceso clónico como si lo hubiera llamado el padre */
-	/* No sé si es eso lo que hace DIV */
+	/* Crea el proceso clÃ³nico como si lo hubiera llamado el padre */
+	/* No sÃ© si es eso lo que hace DIV */
 
 	LOCDWORD(r, PROCESS_ID)   = instance_getid() ;
     LOCDWORD(r, PROCESS_TYPE) = LOCDWORD(father, PROCESS_TYPE) ;
@@ -179,7 +179,7 @@ INSTANCE * instance_duplicate (INSTANCE * father)
 	for (n = 0 ; n < local_strings ; n++)
 		string_use (LOCDWORD(r, localstr[n])) ;
 
-	/* Añade la instancia al final de la lista */
+	/* AÃ±ade la instancia al final de la lista */
 
 	r->next    = 0 ;
 	r->prev    = last_instance ;
@@ -300,7 +300,7 @@ INSTANCE * instance_new (PROCDEF * proc, INSTANCE * father)
 	for (n = 0 ; n < local_strings ; n++)
 		string_use (LOCDWORD(r, localstr[n])) ;
 
-	/* Añade la instancia al final de la lista */
+	/* AÃ±ade la instancia al final de la lista */
 
 	r->next    = 0 ;
 	r->prev    = last_instance ;
@@ -441,7 +441,7 @@ void instance_destroy (INSTANCE * r)
 	for (n = 0 ; n < local_strings ; n++)
 		string_discard (LOCDWORD(r, localstr[n])) ;
 
-	/* Actualiza árbol DIV */
+	/* Actualiza Ã¡rbol DIV */
 
     /* Si tengo hermano mayor */
 	bigbro = instance_get(LOCDWORD(r,BIGBRO)) ;
@@ -476,7 +476,7 @@ void instance_destroy (INSTANCE * r)
 	smallson = instance_get(LOCDWORD(r,SON)) ;
 	if (smallson)
 	{
-		/* Busca el primer y el último hijo */
+		/* Busca el primer y el Ãºltimo hijo */
 
 		bigson = smallson ;
         /* Asignar los procesos huerfanos al padre, si es que tengo padre */

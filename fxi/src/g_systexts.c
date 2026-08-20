@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -881,7 +881,7 @@ static char sysfont[][8][16] = {
 }
 };
 
-static Uint8 * letters = " ABCDEFGHIJKLMÑNOPQRSTUVWXYZ0123456789.:=%abcdefghijklmñnopqrstuvwxyz[](){}-><_,\\/+*!¡?¿\"'\x01\x02\x03" ;
+static Uint8 * letters = " ABCDEFGHIJKLM\xD1NOPQRSTUVWXYZ0123456789.:=%abcdefghijklm\xF1nopqrstuvwxyz[](){}-><_,\\/+*!\xA1?\xBF\"'\x01\x02\x03" ;
 
 static int fg, bg ;
 
@@ -960,7 +960,7 @@ void gr_sys_puts (GRAPH * map, int x, int y, Uint8 * str, int len)
 
 	while (*str && len--)
 	{
-		if (*str == (Uint8)'¬')
+		if (*str == (Uint8)'\xAC')
 		{
 			Uint8 color = 0 ;
 			str++ ;

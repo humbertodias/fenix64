@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
- *  Copyright ù 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -928,7 +928,7 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
 
     dest->modified = 1 ;
 
-    /* Clipping de la lùnea - INCORRECTO pero funcional */
+    /* Clipping de la l√≠nea - INCORRECTO pero funcional */
 
 /* TODO: SE NECESITA CORREGIR CLIPPING EN LINE */
 #if 0
@@ -998,7 +998,7 @@ void gr_line (GRAPH * dest, REGION * clip, int x, int y, int w, int h)
     vinc = (h > 0) ? dest->pitch : -(int)dest->pitch ;
     if (dest->depth == 16) vinc /= 2;
 
-    /* Aquù va una implementaciùn deprisa y corriendo de Bresenham */
+    /* Aqu√≠ va una implementaci√≥n deprisa y corriendo de Bresenham */
 
     w = ABS(w) ;
     h = ABS(h) ;

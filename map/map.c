@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
- *  Copyright ù 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -71,7 +71,7 @@ int action = AC_LIST ;
 int n_commands ;
 char * commands[256] ;
 
-/* "Traducciùn" de un color determinado a 0, en PNGs de 16 bits */
+/* "Traducci√≥n" de un color determinado a 0, en PNGs de 16 bits */
 int do_zeroc = 0 ;
 Uint16 zeroc[2][3] = { { 0, 0, 0 }, { 0, 0, 0 } } ;
 
@@ -91,7 +91,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 	char       * ptr ;
 	const char * fptr ;
 
-	/* Concatena la extensiùn al nombre de fichero */
+	/* Concatena la extensi√≥n al nombre de fichero */
 
 	strcpy (buffer, filename) ;
 	ptr = strchr (buffer, '.') ;
@@ -99,7 +99,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 	if (ptr) strcpy (ptr, ext) ;
 	else 	 strcat (buffer, ext) ;
 
-	/* Pone la extensiùn en mayùsculas si el nombre lo estù */
+	/* Pone la extensi√≥n en may√∫sculas si el nombre lo est√° */
 
 	for (fptr = filename ; *fptr ; fptr++)
 		if (*fptr >= 'a' && *fptr <= 'z') break ;
@@ -113,7 +113,7 @@ void set_extension (const char * filename, const char * ext, char * buffer)
 
 void help ()
 {
-	printf ("MAP Utility v0.75\nCopyright (C) 1999 Josù Luis Cebriùn Pagùe\nCopyright (C) 2002 Fenix Team\n"
+	printf ("MAP Utility v0.75\nCopyright (C) 1999 Jos√© Luis Cebri√°n Pag√ºe\nCopyright (C) 2002 Fenix Team\n"
 		"This utility comes with ABSOLUTELY NO WARRANTY; map -h for details\n\n") ;
 
 	printf ("Usage: map [option] file \n"
@@ -236,7 +236,7 @@ MAP * load_gif (const char * filename)
 	if (!pal)
 		fatal_error ("El GIF no contiene una paleta de colores") ;
 	if (pal->ColorCount > 255)
-		fatal_error ("El GIF tiene mùs de 256 colores") ;
+		fatal_error ("El GIF tiene m√°s de 256 colores") ;
 
 	memset (map->palette, 0, PALETTE_SIZE) ;
 	for (i = 0 ; i < pal->ColorCount ; i++)
@@ -246,7 +246,7 @@ MAP * load_gif (const char * filename)
 		map->palette[i*3+2] = ((pal->Colors[i].Blue >> 2)& 0x3F)  ;
 	}
 
-	/* Tamaùo de la imagen */
+	/* Tama√±o de la imagen */
 
 	map->header.width = file->SWidth ;
 	map->header.height = file->SHeight ;
@@ -261,7 +261,7 @@ MAP * load_gif (const char * filename)
 		if (h > map->header.height) map->header.height = h ;
 	}
 
-	/* Procesa las imùgenes del GIF */
+	/* Procesa las im√°genes del GIF */
 
 	map->data = malloc(map->header.width * map->header.height * map->frames) ;
 	memset (map->data, 0, map->header.width * map->header.height * map->frames) ;
@@ -279,7 +279,7 @@ MAP * load_gif (const char * filename)
 		bw =   file->SavedImages[i].ImageDesc.Width ;
 		bg =   file->SBackGroundColor ;
 
-		/* Busca e interpreta la extensiùn de control de animaciones */
+		/* Busca e interpreta la extensi√≥n de control de animaciones */
 
 		for (x = 0 ; x < file->SavedImages[i].ExtensionBlockCount ; x++)
 		{
@@ -329,7 +329,7 @@ MAP * load_gif (const char * filename)
 		}
 	}
 
-	/* Animaciùn */
+	/* Animaci√≥n */
 
 	map->animation_length  = 0 ;
 	map->animation = NULL ;
@@ -357,7 +357,7 @@ MAP * load_map (const char * filename)
 	gzread (file, &map->header, sizeof(map->header)) ;
 	strncpy (map->filename, filename, 12) ;
 
-	/* Extensiùn: ficheros MAP de 16 bits */
+	/* Extensi√≥n: ficheros MAP de 16 bits */
 
 	if (strcmp (map->header.magic, M16_MAGIC) == 0)
 	{
@@ -539,7 +539,7 @@ MAP * load_png (const char * filename)
 	bitmap = load_gif (filename) ;
 	if (bitmap) return bitmap ;
 
-	/* Abre el fichero y se asegura de que screen estù inicializada */
+	/* Abre el fichero y se asegura de que screen est√° inicializada */
 
 	png = fopen (filename, "rb") ;
 	if (!png) fatal_error ("No existe %s\n", filename) ;
@@ -561,7 +561,7 @@ MAP * load_png (const char * filename)
 		return 0 ;
 	}
 
-	/* Recupera informaciùn sobre el PNG */
+	/* Recupera informaci√≥n sobre el PNG */
 
 	png_init_io (png_ptr, png) ;
 	png_read_info (png_ptr, info_ptr) ;
@@ -815,7 +815,7 @@ char * load_pal (const char * filename)
 	else if (strcmp (header, FPG_MAGIC) != 0 &&
 	    strcmp (header, FNT_MAGIC) != 0 &&
 	    strcmp (header, PAL_MAGIC) != 0)
-		fatal_error ("%s: no es un fichero de paleta vùlido", filename) ;
+		fatal_error ("%s: no es un fichero de paleta v√°lido", filename) ;
 
 	gzread (file, here, PALETTE_SIZE) ;
 	gzclose (file) ;
@@ -952,7 +952,7 @@ void parse_animation (char * text, MAP * map)
 	map->animation = (Sint16 *) malloc(n_frames * 2) ;
 	memcpy (map->animation, frames, n_frames * 2) ;
 	if ((map->header.width / map->frames) * map->frames != map->header.width)
-		fatal_error ("El ancho no es mùltiplo de %d\n", map->frames) ;
+		fatal_error ("El ancho no es m√∫ltiplo de %d\n", map->frames) ;
 	map->header.width /= map->frames ;
 }
 
@@ -1072,7 +1072,7 @@ int main (int argc, char ** argv)
 					while (*ptr) ptr++ ;
 					break ;
 				default:
-					fatal_error ("Error: opciùn -%c no reconocida\n", *ptr) ;
+					fatal_error ("Error: opci√≥n -%c no reconocida\n", *ptr) ;
 			}
 
 			if (argc > i)

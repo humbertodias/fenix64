@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -50,7 +50,7 @@
 #pragma pack(push, 1)
 #endif
 
-/* Opción del GNU C para que la estructura ocupe el mínimo de memoria */
+/* OpciÃ³n del GNU C para que la estructura ocupe el mÃ­nimo de memoria */
 
 #ifdef __GNUC__
 #define __PACKED __attribute__ ((packed))
@@ -170,7 +170,7 @@ DCB_PROC ;
 typedef struct          /* Cabecera general del fichero */
 {
     Uint8           Header[8] ; /* "DCB"            */
-    Uint32          Version ;   /* 0x0100 para versión 1.0  */
+    Uint32          Version ;   /* 0x0100 para versiÃ³n 1.0  */
 
     Uint32          NProcs ;
     Uint32          NFiles ;

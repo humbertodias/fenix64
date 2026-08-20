@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -174,14 +174,14 @@ int main (int argc, char **argv)
 
 	SDL_JoystickEventState (SDL_ENABLE) ;
 
-    gr_con_printf ("¬15" FXI_VERSION) ;
+    gr_con_printf ("\xAC15" FXI_VERSION) ;
 
 	if (fxi)
 	{
 		/* Standalone interpreter, dump some info */
 
 		sdl_version = SDL_Linked_Version();
-		gr_con_printf ("¬14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)",
+		gr_con_printf ("\xAC14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)",
 				SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL,
 				sdl_version->major, sdl_version->minor, sdl_version->patch) ;
 	}

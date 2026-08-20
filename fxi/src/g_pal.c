@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright ù 1999 Josù Luis Cebriùn Pagùe
- *  Copyright ù 2002 Fenix Team
+ *  Copyright ¬© 1999 Jos√© Luis Cebri√°n Pag√ºe
+ *  Copyright ¬© 2002 Fenix Team
  *
  */
 
@@ -613,7 +613,7 @@ int gr_load_pal (const char * filename)
                 r = 1 ;
 */
             } else {
-                fgc_error = "Fichero FGC no contiene informaciùn de paleta";
+                fgc_error = "Fichero FGC no contiene informaci√≥n de paleta";
                 file_close(fp);
                 return 0;
             }
@@ -709,10 +709,10 @@ void gr_get_rgb (int color, int *r, int *g, int *b)
     (*b) <<= screen->format->Bloss ;
 }
 
-/* Busca el color mùs cercano en la paleta a uno determinado */
+/* Busca el color m√°s cercano en la paleta a uno determinado */
 
-/* Emplea una cachù interna que acelera considerablemente el proceso,
- * a cambio de perder una parte de precisiùn */
+/* Emplea una cach√© interna que acelera considerablemente el proceso,
+ * a cambio de perder una parte de precisi√≥n */
 
 Uint8 nearest_table[64][64][64] ;
 
@@ -765,7 +765,7 @@ Uint16 gr_get_color (int r, int g, int b)
 }
 
 /* ----------------------------------------------------------------------
- * Funciùn que rellena la tabla de color mùs cercano (nearest_table)
+ * Funci√≥n que rellena la tabla de color m√°s cercano (nearest_table)
  * ---------------------------------------------------------------------- */
 
 #define DUP 1
