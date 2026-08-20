@@ -133,13 +133,11 @@ am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
 	scaler_hq2x.$(OBJEXT) scaler_scale2x.$(OBJEXT) \
 	mmx_main.$(OBJEXT) mmx_hspan.$(OBJEXT)
 @HAVE_WINDRES_FALSE@am_fxi_OBJECTS = $(am__objects_1)
-@HAVE_WINDRES_TRUE@am_fxi_OBJECTS = $(am__objects_1) fxi.$(OBJEXT)
+@HAVE_WINDRES_TRUE@am_fxi_OBJECTS = $(am__objects_1) FXI.$(OBJEXT)
 fxi_OBJECTS = $(am_fxi_OBJECTS)
 am__DEPENDENCIES_1 =
 fxi_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-fxi_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(fxi_LDFLAGS) $(LDFLAGS) -o \
-	$@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -442,7 +440,7 @@ clean-binPROGRAMS:
 
 fxi$(EXEEXT): $(fxi_OBJECTS) $(fxi_DEPENDENCIES) $(EXTRA_fxi_DEPENDENCIES) 
 	@rm -f fxi$(EXEEXT)
-	$(AM_V_CCLD)$(fxi_LINK) $(fxi_OBJECTS) $(fxi_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(fxi_OBJECTS) $(fxi_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

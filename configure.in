@@ -38,11 +38,11 @@ AM_CONDITIONAL(DO_FPG, test "x$fpg" = "xyes")
 AC_CHECK_TOOL(WINDRES, windres, )
 AM_CONDITIONAL(HAVE_WINDRES, test "$WINDRES" != "")
 
-GIF_LIB="-lungif"
+GIF_LIB="-lgif"
 
 dnl Aqui es donde se chequeara el SO, pero solo hay una opcion xD
 case "$target_os" in
-    linux-gnu)
+    linux-gnu*|kfreebsd-gnu*)
         case "$target_cpu" in
             powerpc*)
 	            COMMON_CFLAGS="-Wall -DTARGET_LinuxPPC -DTARGET_Linux"
@@ -50,17 +50,23 @@ case "$target_os" in
 
             *)
 	            COMMON_CFLAGS="-Wall -DTARGET_Linux"
-	            COMMON_LIBS="$COMMON_LIBS -Wl,-Bdynamic -lc -Wl,--dynamic-linker /lib/ld-linux.so.2"
+	            COMMON_LIBS="$COMMON_LIBS -Wl,-Bdynamic -lc"
                 ;;
         esac
 	    ;;
 
-    mingw32)
-        INCLUDES="-I/usr/local/include"
-	    LIBS="-L/usr/local/lib"
-	    COMMON_CFLAGS="$INCLUDES -DTARGET_Win32 -DWIN32 -D_WIN32"
-	    COMMON_LIBS="$LIBS -lz -lshlwapi"
-	    ;;
+    mingw*)
+        if test -n "$MINGW_PREFIX"; then
+            INCLUDES="-I$MINGW_PREFIX/include"
+            LIBS="-L$MINGW_PREFIX/lib"
+        else
+            INCLUDES="-I/usr/local/include"
+            LIBS="-L/usr/local/lib"
+        fi
+        COMMON_CFLAGS="$INCLUDES -DTARGET_Win32 -DWIN32 -D_WIN32"
+        COMMON_LIBS="$LIBS -lz -lshlwapi"
+        GIF_LIB="-lgif"
+        ;;
 
     dragonfly*)
         INCLUDES="-I/usr/local/include"
@@ -117,18 +123,20 @@ if test "$fxc" = yes || test "$fxi" = yes; then
 fi
 
 if test "$fxi" = yes; then
-    case "$target_os" in
-        darwin*)
-            FENIX_DEPS="`cd \"$srcdir\" && pwd`/deps/local"
-            if test -d "$FENIX_DEPS/lib"; then
-                SDL_MIXER_CFLAGS="-I$FENIX_DEPS/include"
-                LIBS="-L$FENIX_DEPS/lib $LIBS"
+    FENIX_DEPS="`cd \"$srcdir\" && pwd`/deps/local"
+    if test -d "$FENIX_DEPS/lib"; then
+        SDL_MIXER_CFLAGS="-I$FENIX_DEPS/include -I$FENIX_DEPS/include/SDL"
+        LIBS="-L$FENIX_DEPS/lib $LIBS"
+        case "$target_os" in
+            darwin*)
                 COMMON_LIBS="$COMMON_LIBS -Wl,-rpath,$FENIX_DEPS/lib"
-            fi
-            AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, [
-                SDL_MIXER_LIBS="-lSDL_mixer"
-            ], [
-                AC_MSG_ERROR([
+                ;;
+        esac
+    fi
+    AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, [
+        SDL_MIXER_LIBS="-lSDL_mixer"
+    ], [
+        AC_MSG_ERROR([
 
 *** SDL_mixer 1.2 not found (SDL3_mixer and SDL2_mixer are not compatible).
 
@@ -144,13 +152,10 @@ Fenix uses SDL 1.2 and requires SDL_mixer 1.2. Build it into deps/local:
   make && make install
 
 Then re-run ./configure.
-                ])
-            ], [-lSDL $LIBS])
-            ;;
-        *)
-            AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, [
-                SDL_MIXER_LIBS="-lSDL_mixer"
-            ], AC_MSG_ERROR([*** SDL_mixer library not found!]), [-lSDL $LIBS])
+        ])
+    ], [-lSDL $LIBS])
+    case "$target_os" in
+        linux-gnu*|kfreebsd-gnu*)
             AC_CHECK_LIB(X11, [XQueryTree,XMoveWindow],,)
             ;;
     esac
@@ -158,14 +163,13 @@ fi
 
 dnl para map e fpg
 if test "$map" = yes || test "$fpg" = yes; then
-    case "$target_os" in
-        darwin*)
-            AC_CHECK_LIB(gif,DGifOpenFileName,LIBS="$LIBS",AC_MSG_ERROR(libgif library not found))
-            ;;
-        *)
-            AC_CHECK_LIB(ungif,DGifOpenFileName,LIBS="$LIBS",AC_MSG_ERROR(lungif library not found))
-            ;;
-    esac
+    AC_CHECK_LIB(gif, DGifOpenFileName, [
+        GIF_LIB="-lgif"
+    ], [
+        AC_CHECK_LIB(ungif, DGifOpenFileName, [
+            GIF_LIB="-lungif"
+        ], AC_MSG_ERROR(libgif library not found))
+    ])
 fi
 
 dnl make these visible to all Makefiles

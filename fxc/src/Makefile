@@ -244,7 +244,7 @@ PKG_CONFIG_PATH =
 SDL_CFLAGS = -I/opt/homebrew/include/SDL -D_THREAD_SAFE
 SDL_CONFIG = /opt/homebrew/bin/pkg-config sdl
 SDL_LIBS = -L/opt/homebrew/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
-SDL_MIXER_CFLAGS = -I/Users/cex/dev/repository/personal/fenix/deps/local/include
+SDL_MIXER_CFLAGS = -I/Users/cex/dev/repository/personal/fenix/deps/local/include -I/Users/cex/dev/repository/personal/fenix/deps/local/include/SDL
 SDL_MIXER_LIBS = -lSDL_mixer
 SET_MAKE = 
 SHELL = /bin/sh
@@ -262,7 +262,7 @@ am__quote =
 am__rm_f_notfound = 
 am__tar = tar --format=ustar -chf - "$$tardir"
 am__untar = tar -xf -
-am__xargs_n = xargs -n
+am__xargs_n = am__xargs_n () { shift; sed "s/ /\\n/g" | while read am__xargs_n_arg; do "" "$am__xargs_n_arg"; done; }
 bindir = ${exec_prefix}/bin
 build = aarch64-apple-darwin25.6.0
 build_alias = 

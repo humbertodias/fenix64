@@ -133,13 +133,11 @@ am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
 	scaler_hq2x.$(OBJEXT) scaler_scale2x.$(OBJEXT) \
 	mmx_main.$(OBJEXT) mmx_hspan.$(OBJEXT)
 am_fxi_OBJECTS = $(am__objects_1)
-#am_fxi_OBJECTS = $(am__objects_1) fxi.$(OBJEXT)
+#am_fxi_OBJECTS = $(am__objects_1) FXI.$(OBJEXT)
 fxi_OBJECTS = $(am_fxi_OBJECTS)
 am__DEPENDENCIES_1 =
 fxi_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-fxi_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(fxi_LDFLAGS) $(LDFLAGS) -o \
-	$@
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -278,7 +276,7 @@ PKG_CONFIG_PATH =
 SDL_CFLAGS = -I/opt/homebrew/include/SDL -D_THREAD_SAFE
 SDL_CONFIG = /opt/homebrew/bin/pkg-config sdl
 SDL_LIBS = -L/opt/homebrew/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
-SDL_MIXER_CFLAGS = -I/Users/cex/dev/repository/personal/fenix/deps/local/include
+SDL_MIXER_CFLAGS = -I/Users/cex/dev/repository/personal/fenix/deps/local/include -I/Users/cex/dev/repository/personal/fenix/deps/local/include/SDL
 SDL_MIXER_LIBS = -lSDL_mixer
 SET_MAKE = 
 SHELL = /bin/sh
@@ -296,7 +294,7 @@ am__quote =
 am__rm_f_notfound = 
 am__tar = tar --format=ustar -chf - "$$tardir"
 am__untar = tar -xf -
-am__xargs_n = xargs -n
+am__xargs_n = am__xargs_n () { shift; sed "s/ /\\n/g" | while read am__xargs_n_arg; do "" "$am__xargs_n_arg"; done; }
 bindir = ${exec_prefix}/bin
 build = aarch64-apple-darwin25.6.0
 build_alias = 
@@ -442,7 +440,7 @@ clean-binPROGRAMS:
 
 fxi$(EXEEXT): $(fxi_OBJECTS) $(fxi_DEPENDENCIES) $(EXTRA_fxi_DEPENDENCIES) 
 	@rm -f fxi$(EXEEXT)
-	$(AM_V_CCLD)$(fxi_LINK) $(fxi_OBJECTS) $(fxi_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(fxi_OBJECTS) $(fxi_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

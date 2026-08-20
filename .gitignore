@@ -16,6 +16,10 @@ autom4te.cache/
 
 # executable
 /map/map
+/map/map.exe
 /fxc/src/fxc
+/fxc/src/fxc.exe
 /fxi/src/fxi
+/fxi/src/fxi.exe
 /fpg/fpg
+/fpg/fpg.exe
