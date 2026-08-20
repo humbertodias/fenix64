@@ -176,13 +176,15 @@ jobs:
           fi
 
           if [ ! -x "$MINGW_PREFIX/bin/sdl-config" ]; then
-            curl -fL --retry 5 --retry-all-errors -o sdl.tar.gz https://github.com/libsdl-org/SDL-1.2/archive/refs/tags/release-1.2.15.tar.gz \
-              || curl -fL --retry 5 --retry-all-errors -o sdl.tar.gz https://www.libsdl.org/release/SDL-1.2.15.tar.gz
+            fetch https://www.libsdl.org/release/SDL-1.2.15.tar.gz sdl.tar.gz \
+              || fetch https://github.com/libsdl-org/SDL-1.2/releases/download/release-1.2.15/SDL-1.2.15.tar.gz sdl.tar.gz
             tar xzf sdl.tar.gz
-            if [ -d SDL-1.2-release-1.2.15 ]; then
-              mv SDL-1.2-release-1.2.15 SDL-1.2.15
+            sdl_dir=$(tar tzf sdl.tar.gz | head -1 | cut -d/ -f1)
+            cd "$sdl_dir"
+            if [ ! -f configure ]; then
+              sudo apt-get install -y autoconf automake libtool
+              ./autogen.sh
             fi
-            cd SDL-1.2.15
             ./configure --host="$HOST" --prefix="$MINGW_PREFIX" \
               --disable-shared --enable-static \
               --disable-video-x11 --disable-video-opengl --disable-nasm
