@@ -5962,6 +5962,14 @@ if test "$fxi" = yes; then
                 ;;
         esac
     fi
+    case "$target_os" in
+        mingw*)
+            SDL_MIXER_CHECK_LIBS="-lSDL -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi"
+            ;;
+        *)
+            SDL_MIXER_CHECK_LIBS="-lSDL"
+            ;;
+    esac
     { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for Mix_OpenAudio in -lSDL_mixer" >&5
 printf %s "checking for Mix_OpenAudio in -lSDL_mixer... " >&6; }
 if test ${ac_cv_lib_SDL_mixer_Mix_OpenAudio+y}
@@ -5969,7 +5977,7 @@ then :
   printf %s "(cached) " >&6
 else case e in #(
   e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lSDL_mixer $SDL_LIBS $LIBS"
+LIBS="-lSDL_mixer $SDL_MIXER_CHECK_LIBS $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 

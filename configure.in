@@ -138,11 +138,20 @@ if test "$fxi" = yes; then
                 ;;
         esac
     fi
+    case "$target_os" in
+        mingw*)
+            dnl AC_CHECK_LIB uses main(); -lSDLmain/-mwindows expect SDL_main/WinMain.
+            SDL_MIXER_CHECK_LIBS="-lSDL -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi"
+            ;;
+        *)
+            SDL_MIXER_CHECK_LIBS="-lSDL"
+            ;;
+    esac
     AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, [
         SDL_MIXER_LIBS="-lSDL_mixer"
     ], [
         AC_MSG_ERROR([*** SDL_mixer 1.2 not found (need SDL_mixer 1.2, not SDL2/SDL3_mixer)])
-    ], [$SDL_LIBS])
+    ], [$SDL_MIXER_CHECK_LIBS])
     case "$target_os" in
         linux-gnu*|kfreebsd-gnu*)
             AC_CHECK_LIB(X11, [XQueryTree,XMoveWindow],,)
