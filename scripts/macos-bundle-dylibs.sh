@@ -29,12 +29,27 @@ rpaths_of() {
   otool -l "$1" 2>/dev/null | awk '/cmd LC_RPATH/{c=1} c && /path /{print $2; c=0}'
 }
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
 should_bundle() {
   case "$1" in
     /System/*|/usr/lib/*|/Library/Apple/*|@executable_path/*|@loader_path/*|@rpath/*) return 1 ;;
-    /opt/homebrew/*|/usr/local/*|/opt/local/*|*/deps/local/*) return 0 ;;
+    /*) return 0 ;;
     *) return 1 ;;
   esac
+}
+
+find_dylib() {
+  local base="$1" dep="${2:-}" d
+  [[ -n "$dep" && -f "$dep" ]] && { printf '%s\n' "$dep"; return 0; }
+  for d in \
+      "$DEST/$base" \
+      "$ROOT/deps/local/lib/$base" \
+      /opt/homebrew/lib/"$base" \
+      /usr/local/lib/"$base"; do
+    [[ -f "$d" ]] && { printf '%s\n' "$d"; return 0; }
+  done
+  return 1
 }
 
 load_dylibs() {
@@ -113,20 +128,23 @@ seed_rpath_dylibs() {
 }
 
 bundle_one() {
-  local bin="$1" dep base dest_lib
+  local bin="$1" dep base dest_lib src
   while IFS= read -r dep; do
     [[ -n "$dep" ]] || continue
     should_bundle "$dep" || continue
-    [[ -f "$dep" ]] || continue
     base="$(basename "$dep")"
     dest_lib="$DEST/$base"
-    if [[ ! -e "$dest_lib" ]]; then
-      cp -L "$dep" "$dest_lib"
+    src="$(find_dylib "$base" "$dep" || true)"
+    if [[ -n "$src" && -f "$src" && ! -e "$dest_lib" ]]; then
+      cp -L "$src" "$dest_lib"
+      seed_rpath_dylibs "$src"
+    fi
+    if [[ -f "$dest_lib" ]]; then
       chmod u+w "$dest_lib"
       install_name_tool -id "@executable_path/$base" "$dest_lib"
       rewrite_rpaths "$dest_lib"
-      seed_rpath_dylibs "$dep"
     fi
+    # Rewrite even if the original prefix path is gone (moved clone / SKIP_MIXER).
     install_name_tool -change "$dep" "@executable_path/$base" "$bin"
   done < <(load_dylibs "$bin")
 }

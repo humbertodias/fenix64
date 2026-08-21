@@ -80,9 +80,16 @@ fi
   exit 1
 }
 
+# Autotools records an absolute install name; rewrite so linkage survives a moved tree.
+if [[ -f "${MIXER_PREFIX}/lib/libSDL_mixer-1.2.0.dylib" ]]; then
+  chmod u+w "${MIXER_PREFIX}/lib/libSDL_mixer-1.2.0.dylib"
+  install_name_tool -id "@rpath/libSDL_mixer-1.2.0.dylib" \
+      "${MIXER_PREFIX}/lib/libSDL_mixer-1.2.0.dylib"
+fi
+
 export PKG_CONFIG_PATH="${MIXER_PREFIX}/lib/pkgconfig:${BREW_PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}"
 export CPPFLAGS="-I${MIXER_PREFIX}/include ${CPPFLAGS:-}"
-export LDFLAGS="-L${MIXER_PREFIX}/lib ${LDFLAGS:-}"
+export LDFLAGS="-L${MIXER_PREFIX}/lib -Wl,-rpath,@executable_path ${LDFLAGS:-}"
 if [[ "${LINKAGE}" == "static" ]]; then
   export LDFLAGS="${LDFLAGS} -Wl,-search_paths_first"
 fi
@@ -105,8 +112,8 @@ cp "${BINS[@]}" "${STAGE}/"
 bash "${ROOT}/scripts/macos-bundle-dylibs.sh" "${STAGE}"
 
 otool -L "${STAGE}/fxc" "${STAGE}/fxi"
-if otool -L "${STAGE}"/* | grep -E '/opt/homebrew/|/usr/local/opt/'; then
-  echo "${LINKAGE} artifact still references Homebrew" >&2
+if otool -L "${STAGE}"/* | grep -E '/opt/homebrew/|/usr/local/opt/|/deps/local/'; then
+  echo "${LINKAGE} artifact still references Homebrew or deps/local" >&2
   exit 1
 fi
 file "${STAGE}"/*
