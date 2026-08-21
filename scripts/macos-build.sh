@@ -41,7 +41,7 @@ MIXER_VERSION="${MIXER_VERSION:-1.2.12}"
 STAGE="${ROOT}/dist/macos-${LINKAGE}"
 
 if [[ "${SKIP_BREW:-}" != "1" ]]; then
-  brew install sdl12-compat sdl2 sdl3 libpng giflib pkg-config
+  brew install sdl12-compat sdl2 sdl3 libpng giflib pkg-config libogg libvorbis
 fi
 
 command -v pkg-config >/dev/null 2>&1 || {
@@ -53,7 +53,12 @@ pkg-config --exists sdl || {
   exit 1
 }
 
-if [[ "${SKIP_MIXER:-}" != "1" && ! -f "${MIXER_PREFIX}/lib/pkgconfig/SDL_mixer.pc" ]]; then
+mixer_dylib="${MIXER_PREFIX}/lib/libSDL_mixer-1.2.0.dylib"
+mixer_needs_ogg=0
+if [[ -f "${mixer_dylib}" ]] && ! otool -L "${mixer_dylib}" | grep -q vorbis; then
+  mixer_needs_ogg=1
+fi
+if [[ "${SKIP_MIXER:-}" != "1" && ( ! -f "${MIXER_PREFIX}/lib/pkgconfig/SDL_mixer.pc" || "${mixer_needs_ogg}" = 1 ) ]]; then
   mkdir -p "${ROOT}/deps"
   (
     cd "${ROOT}/deps"
@@ -64,11 +69,17 @@ if [[ "${SKIP_MIXER:-}" != "1" && ! -f "${MIXER_PREFIX}/lib/pkgconfig/SDL_mixer.
     rm -rf "SDL_mixer-${MIXER_VERSION}"
     tar xzf "${TARBALL}"
     cd "SDL_mixer-${MIXER_VERSION}"
+    # pkg-config sdl only adds .../include/SDL, so vorbis/vorbisfile.h is missed
+    # unless Homebrew's include dir is on the path. HFF and other 0.84 games
+    # load .ogg music through SDL_mixer.
     ./configure --prefix="${MIXER_PREFIX}" \
         --disable-sdltest --disable-music-native-midi \
+        --disable-music-fluidsynth-midi --disable-music-flac \
+        --enable-music-ogg --disable-music-ogg-shared \
         --enable-shared --enable-static \
-        CPPFLAGS="$(pkg-config --cflags sdl)" \
-        LDFLAGS="$(pkg-config --libs-only-L sdl)" \
+        CPPFLAGS="$(pkg-config --cflags sdl) -I${BREW_PREFIX}/include" \
+        CFLAGS="-g -O2 -Wno-incompatible-function-pointer-types" \
+        LDFLAGS="$(pkg-config --libs-only-L sdl) -L${BREW_PREFIX}/lib" \
         LIBS="$(pkg-config --libs-only-l sdl)"
     make -j"${NCPU}"
     make install

@@ -105,7 +105,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
+am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c offsets_rt.c i_main.c \
 	i_debug.c i_func.c g_main.c g_maps.c g_blit.c g_texts.c \
 	g_pal.c g_draw.c g_systexts.c g_console.c g_scroll.c g_flic.c \
 	g_mode7.c img_png.c img_pcx.c sound.c pathfind.c fnc_exports.c \
@@ -116,7 +116,7 @@ am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
 	scaler_scanline.c scaler_normal.c scaler_hq2x.c \
 	scaler_scale2x.c mmx_main.c mmx_hspan.c fxi.rc
 am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
-	strings.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
+	strings.$(OBJEXT) offsets_rt.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
 	i_func.$(OBJEXT) g_main.$(OBJEXT) g_maps.$(OBJEXT) \
 	g_blit.$(OBJEXT) g_texts.$(OBJEXT) g_pal.$(OBJEXT) \
 	g_draw.$(OBJEXT) g_systexts.$(OBJEXT) g_console.$(OBJEXT) \
@@ -221,19 +221,19 @@ am__define_uniq_tagged_files = \
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp \
 	$(top_srcdir)/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} '/Users/humberto/dev/repository/personal/fenix/missing' aclocal-1.18
+ACLOCAL = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' aclocal-1.18
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} '/Users/humberto/dev/repository/personal/fenix/missing' autoconf
-AUTOHEADER = ${SHELL} '/Users/humberto/dev/repository/personal/fenix/missing' autoheader
-AUTOMAKE = ${SHELL} '/Users/humberto/dev/repository/personal/fenix/missing' automake-1.18
+AUTOCONF = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' autoconf
+AUTOHEADER = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' autoheader
+AUTOMAKE = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' automake-1.18
 AWK = awk
 CC = gcc -std=gnu23
 CCDEPMODE = depmode=gcc3
 CFLAGS = -O3 -finline-functions -ffast-math -I/opt/homebrew/include
 COMMON_CFLAGS = -Wall -DTARGET_MAC
-COMMON_LIBS =  -Wl,-rpath,/Users/humberto/dev/repository/personal/fenix/deps/local/lib
-CPPFLAGS = -I/Users/humberto/dev/repository/personal/fenix/deps/local/include 
+COMMON_LIBS =  -Wl,-rpath,/Users/humberto/dev/repository/personal/fenix64/deps/local/lib
+CPPFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include 
 CSCOPE = cscope
 CTAGS = ctags
 CYGPATH_W = echo
@@ -254,12 +254,12 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LDFLAGS = -L/Users/humberto/dev/repository/personal/fenix/deps/local/lib  -Wl,-search_paths_first
+LDFLAGS = -L/Users/humberto/dev/repository/personal/fenix64/deps/local/lib -Wl,-rpath,@executable_path  -Wl,-search_paths_first
 LIBOBJS = 
-LIBS = -L/Users/humberto/dev/repository/personal/fenix/deps/local/lib -L/opt/homebrew/lib
+LIBS = -L/Users/humberto/dev/repository/personal/fenix64/deps/local/lib -L/opt/homebrew/lib
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} '/Users/humberto/dev/repository/personal/fenix/missing' makeinfo
+MAKEINFO = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' makeinfo
 MKDIR_P = mkdir -p
 OBJEXT = o
 PACKAGE = fenix
@@ -272,21 +272,21 @@ PACKAGE_VERSION = 0.93
 PATH_SEPARATOR = :
 PKG_CONFIG = /opt/homebrew/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = /Users/humberto/dev/repository/personal/fenix/deps/local/lib/pkgconfig:/opt/homebrew/lib/pkgconfig
+PKG_CONFIG_PATH = /Users/humberto/dev/repository/personal/fenix64/deps/local/lib/pkgconfig:/opt/homebrew/lib/pkgconfig
 SDL_CFLAGS = -I/opt/homebrew/include/SDL -D_THREAD_SAFE
 SDL_CONFIG = /opt/homebrew/bin/pkg-config sdl
 SDL_LIBS = -L/opt/homebrew/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
-SDL_MIXER_CFLAGS = -I/Users/humberto/dev/repository/personal/fenix/deps/local/include -I/Users/humberto/dev/repository/personal/fenix/deps/local/include/SDL
+SDL_MIXER_CFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include/SDL
 SDL_MIXER_LIBS = -lSDL_mixer
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
 VERSION = 0.93
 WINDRES = 
-abs_builddir = /Users/humberto/dev/repository/personal/fenix/fxi/src
-abs_srcdir = /Users/humberto/dev/repository/personal/fenix/fxi/src
-abs_top_builddir = /Users/humberto/dev/repository/personal/fenix
-abs_top_srcdir = /Users/humberto/dev/repository/personal/fenix
+abs_builddir = /Users/humberto/dev/repository/personal/fenix64/fxi/src
+abs_srcdir = /Users/humberto/dev/repository/personal/fenix64/fxi/src
+abs_top_builddir = /Users/humberto/dev/repository/personal/fenix64
+abs_top_srcdir = /Users/humberto/dev/repository/personal/fenix64
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -315,7 +315,7 @@ host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Users/humberto/dev/repository/personal/fenix/install-sh
+install_sh = ${SHELL} /Users/humberto/dev/repository/personal/fenix64/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -342,7 +342,7 @@ top_builddir = ../..
 top_srcdir = ../..
 INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I../inc -DDEBUG
 fxi_LDADD = $(SDL_MIXER_LIBS) $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng -lm
-SOURCE_FILES = main.c dcbr.c instance.c strings.c \
+SOURCE_FILES = main.c dcbr.c instance.c strings.c offsets_rt.c \
               i_main.c i_debug.c i_func.c \
 	          g_main.c g_maps.c g_blit.c g_texts.c g_pal.c g_draw.c \
 		      g_systexts.c g_console.c g_scroll.c g_flic.c g_mode7.c \
