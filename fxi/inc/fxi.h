@@ -138,6 +138,7 @@ extern int report_string ;
 extern int report_graphics ;
 
 #include "xstrings.h"
+#define FENIX_RUNTIME_OFFSETS 1
 #include "offsets.h"
 #include "pslang.h"
 #include "instance.h"
@@ -149,6 +150,7 @@ extern int report_graphics ;
 extern void   do_exit       (int n) ;
 extern int    dcb_load      (const char * filename) ;
 extern int    dcb_load_from (file * fp, int offset) ;
+extern int    dcb_is_v1     (void) ;
 extern void * vm_malloc     (size_t n) ;
 extern void   vm_arena_init (void) ;
 extern void * vm_ptr        (INSTANCE * my, int p32) ;

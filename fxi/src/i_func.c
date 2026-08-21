@@ -1064,6 +1064,42 @@ fxi_save_png (INSTANCE * my, int * params)
 }
 
 static int
+fxi_save_map (INSTANCE * my, int * params)
+{
+    /* 0.84 SAVE_MAP; 0.93 dropped .map writing — keep the PNG path. */
+    return fxi_save_png (my, params) ;
+}
+
+static int fxi_fpg_save (INSTANCE * my, int * params)
+{
+    string_discard (params[1]) ;
+    return 0 ;
+}
+
+static int fxi_play_cd_084 (INSTANCE * my, int * params)
+{
+    int p[2] ;
+
+    p[0] = 0 ;
+    p[1] = params[0] ;
+    return fxi_cd_play (my, p) ;
+}
+
+static int fxi_stop_cd_084 (INSTANCE * my, int * params)
+{
+    int p[1] = { 0 } ;
+    (void) params ;
+    return fxi_cd_stop (my, p) ;
+}
+
+static int fxi_is_playing_cd_084 (INSTANCE * my, int * params)
+{
+    int p[1] = { 0 } ;
+    (void) params ;
+    return fxi_cd_status (my, p) == CD_PLAYING ;
+}
+
+static int
 fxi_load_map (INSTANCE * my, int * params)
 {
     int r;
@@ -2482,6 +2518,46 @@ static int fxi_fgets (INSTANCE * my, int * params)
     int len, sigue ;
     file * fp = vm_file (params[0]) ;
 
+    /* 0.84: keep CR, strip LF only. Games then SUBSTR(..., -2) to drop the CR.
+     * 0.93 fgets also stripped CR, which made those names fail to match. */
+    if (dcb_is_v1 ())
+    {
+        for (;;)
+        {
+            if (!fp)
+                buffer[0] = 0 ;
+            else
+                file_gets (fp, buffer, 1024) ;
+            len = (int) strlen (buffer) ;
+            if (len > 0 && buffer[len-1] == '\n')
+            {
+                buffer[--len] = 0 ;
+            }
+            if (len > 1 && buffer[len-1] == '\\')
+            {
+                buffer[len-1] = 0 ;
+                sigue = 1 ;
+            }
+            else
+                sigue = 0 ;
+
+            str = string_new (buffer) ;
+            if (str2)
+            {
+                str3 = string_add (str2, str) ;
+                string_discard (str) ;
+                string_discard (str2) ;
+                str2 = str3 ;
+            }
+            else
+                str2 = str ;
+
+            if (!sigue) break ;
+        }
+        string_use (str2) ;
+        return str2 ;
+    }
+
     sigue = 1 ;
     while(sigue)
     {
@@ -3327,7 +3403,35 @@ static int fxi_strcasecmp (INSTANCE * my, int * params)
 
 static int fxi_substr (INSTANCE * my, int * params)
 {
-    int r = string_substr(params[0],params[1],(params[2]<0)?(params[2]-1):params[2]) ;
+    int r ;
+
+    if (dcb_is_v1 ())
+    {
+        /* 0.84 SUBSTR third arg is an inclusive last index, not a length.
+         * SUBSTR(s, 0, -2) therefore drops only the last character (the CR). */
+        int first = params[1] ;
+        int last = params[2] > 0 ? params[1] + params[2] - 1 :
+                   params[2] < 0 ? params[2] : -1 ;
+        const char * s = string_get (params[0]) ;
+        int slen = s ? (int) strlen (s) : 0 ;
+        if (first < 0) first = slen + first ;
+        if (last  < 0) last  = slen + last ;
+        if (first < 0) first = 0 ;
+        if (last  < 0)
+            r = string_new ("") ;
+        else
+        {
+            if (first > slen) first = slen ;
+            if (last  > slen) last  = slen ;
+            if (first > last)
+            {
+                int t = first ; first = last ; last = t ;
+            }
+            r = string_substr (params[0], first, last - first + 1) ;
+        }
+    }
+    else
+        r = string_substr(params[0],params[1],(params[2]<0)?(params[2]-1):params[2]) ;
     string_discard (params[0]) ;
     string_use     (r) ;
     return r ;
@@ -5082,8 +5186,16 @@ static int fxi_getenv (INSTANCE * my, int * params)
 /* ---------------------------------------------------------------------- */
 
 #include "sysprocs.h"
+#include "sysprocs_v1.h"
 
 static SYSPROC * sysproc_tab[256+MAX_SYSPROCS] ;
+
+static SYSPROC * sysproc_table (void)
+{
+    if ((dcb.data.Version & 0xFF00) == (DCB_VERSION_084 & 0xFF00))
+        return sysprocs_v1 ;
+    return sysprocs ;
+}
 
 int sysproc_add (char * name, char * paramtypes, int type, void * func)
 {
@@ -5092,7 +5204,7 @@ int sysproc_add (char * name, char * paramtypes, int type, void * func)
 
     if (!last)
     {
-        last = sysprocs ;
+        last = sysproc_table () ;
         sysproc_count++ ;
         while (last[1].func) last++, sysproc_count++ ;
     }
@@ -5118,7 +5230,7 @@ SYSPROC * sysproc_get (int code)
 
 void sysproc_init()
 {
-    SYSPROC       * proc = sysprocs ;
+    SYSPROC       * proc = sysproc_table () ;
     void          * library ;
     dlfunc          RegisterFunctions ;
     const char    * filename;

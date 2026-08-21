@@ -61,7 +61,10 @@
 /* Estructura del fichero .dcb */
 
 /* Please update the version's high-number between Fenix versions */
-#define DCB_VERSION 0x0600
+#define DCB_VERSION      0x0600
+#define DCB_VERSION_084  0x0100
+#define DCB_HEADER_SIZE_V1 280
+#define DCB_PROC_SIZE_V1   48
 
 typedef struct
 {
@@ -121,6 +124,25 @@ typedef struct
 }
 __PACKED
 DCB_VARSPACE ;
+
+/* On-disk process header for DCB 0.84 (version 0x0100), 48 bytes */
+typedef struct
+{
+    Uint32  ID ;
+    Uint32  NParams ;
+    Uint32  NPriVars ;
+    Uint32  NPriStrings ;
+    Uint32  NSentences ;
+    Uint32  SPrivate ;
+    Uint32  SCode ;
+    Uint32  OPrivate ;
+    Uint32  OPriVars ;
+    Uint32  OPriStrings ;
+    Uint32  OCode ;
+    Uint32  OSentences ;
+}
+__PACKED
+DCB_PROC_DATA_V1 ;
 
 typedef struct          /* Cabecera de cada proceso     */
 {
