@@ -105,7 +105,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
+am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c offsets_rt.c i_main.c \
 	i_debug.c i_func.c g_main.c g_maps.c g_blit.c g_texts.c \
 	g_pal.c g_draw.c g_systexts.c g_console.c g_scroll.c g_flic.c \
 	g_mode7.c img_png.c img_pcx.c sound.c pathfind.c fnc_exports.c \
@@ -116,7 +116,7 @@ am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
 	scaler_scanline.c scaler_normal.c scaler_hq2x.c \
 	scaler_scale2x.c mmx_main.c mmx_hspan.c fxi.rc
 am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
-	strings.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
+	strings.$(OBJEXT) offsets_rt.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
 	i_func.$(OBJEXT) g_main.$(OBJEXT) g_maps.$(OBJEXT) \
 	g_blit.$(OBJEXT) g_texts.$(OBJEXT) g_pal.$(OBJEXT) \
 	g_draw.$(OBJEXT) g_systexts.$(OBJEXT) g_console.$(OBJEXT) \
@@ -342,7 +342,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I../inc -DDEBUG
 fxi_LDADD = $(SDL_MIXER_LIBS) $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng -lm
-SOURCE_FILES = main.c dcbr.c instance.c strings.c \
+SOURCE_FILES = main.c dcbr.c instance.c strings.c offsets_rt.c \
               i_main.c i_debug.c i_func.c \
 	          g_main.c g_maps.c g_blit.c g_texts.c g_pal.c g_draw.c \
 		      g_systexts.c g_console.c g_scroll.c g_flic.c g_mode7.c \

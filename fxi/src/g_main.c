@@ -1048,7 +1048,7 @@ void draw_instance_at (INSTANCE * proc_ptr, REGION * region, int x, int y)
     if (LOCDWORD(i,BLENDOP) != 0)
     {
         blend_table = map->blend_table;
-        map->blend_table = (Sint16 *)LOCDWORD(i,BLENDOP);
+        map->blend_table = (Sint16 *)vm_ptr (i, LOCDWORD(i,BLENDOP));
     }
 
     // PATCH - XGRAPH DOES NOT ROTATE DESTINATION GRAPHIC
@@ -1110,7 +1110,7 @@ void draw_instance (void * proc_ptr, REGION * clip)
     if (LOCDWORD(i,BLENDOP) != 0)
     {
         blend_table = map->blend_table;
-        map->blend_table = (Sint16 *)LOCDWORD(i,BLENDOP);
+        map->blend_table = (Sint16 *)vm_ptr (i, LOCDWORD(i,BLENDOP));
     }
 
     fclip = regions[r];

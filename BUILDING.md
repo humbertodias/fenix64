@@ -16,7 +16,7 @@ bash scripts/docker-build.sh windows shared
 | `linux` / `linux shared` | `docker/Dockerfile.linux` | `dist/linux-{static,shared}/` |
 | `windows` / `windows shared` | `docker/Dockerfile.windows` | `dist/windows-{static,shared}/` |
 
-Default linkage is **static**. Images are toolchains only (Ubuntu 22.04, SDL 1.2). `scripts/docker-build.sh` builds the image, then `docker run` with the repo mounted at `/src` and autoconf/`make`. GitHub Actions uses the same Dockerfiles (`docker/build-push-action` + the same wrapper). Linux artifacts are **x86_64** (`--platform linux/amd64`).
+Default linkage is **static**. Images are toolchains only (Ubuntu 22.04, SDL 1.2 with Ogg/Vorbis in SDL_mixer). Linux uses the distro mixer; Windows cross-builds libogg, libvorbis, and SDL_mixer 1.2 in `docker/mingw-deps.sh`. `scripts/docker-build.sh` builds the image, then `docker run` with the repo mounted at `/src` and autoconf/`make`. GitHub Actions uses the same Dockerfiles (`docker/build-push-action` + the same wrapper). Linux artifacts are **x86_64** (`--platform linux/amd64`).
 
 ```shell
 bash scripts/docker-build.sh linux shell
@@ -37,7 +37,7 @@ bash scripts/macos-build.sh shared
 | `static` (default) | `dist/macos-static/` |
 | `shared` | `dist/macos-shared/` |
 
-Needs Homebrew (`sdl12-compat`, `sdl2`, `sdl3`, `libpng`, `giflib`, `pkg-config`). Current Homebrew `sdl12-compat` dlopens SDL2, and `sdl2` is often `sdl2-compat` which dlopens SDL3 — those dylibs are not in `otool -L`, so the bundler follows `LC_RPATH` to copy them. The script builds SDL_mixer 1.2.12 into `deps/local` on the first run (`SKIP_BREW=1` / `SKIP_MIXER=1` skip those steps). Static uses `LDFLAGS=-Wl,-search_paths_first`. After linking, `scripts/macos-bundle-dylibs.sh` copies SDL (and other Homebrew dylibs) next to the binaries with `@executable_path`, so the zip runs without Homebrew. GitHub Actions calls the same wrapper.
+Needs Homebrew (`sdl12-compat`, `sdl2`, `sdl3`, `libpng`, `giflib`, `pkg-config`, `libogg`, `libvorbis`). Current Homebrew `sdl12-compat` dlopens SDL2, and `sdl2` is often `sdl2-compat` which dlopens SDL3 — those dylibs are not in `otool -L`, so the bundler follows `LC_RPATH` to copy them. The script builds SDL_mixer 1.2.12 into `deps/local` with Ogg linked in (`SKIP_BREW=1` / `SKIP_MIXER=1` skip those steps). Static uses `LDFLAGS=-Wl,-search_paths_first`. After linking, `scripts/macos-bundle-dylibs.sh` copies SDL (and other Homebrew dylibs) next to the binaries with `@executable_path`, so the zip runs without Homebrew. GitHub Actions calls the same wrapper.
 
 ## Native autoconf
 

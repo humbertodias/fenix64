@@ -5996,6 +5996,10 @@ printf '%s\n' "no" >&6; }
     fi
 
     case "$target_os" in
+        mingw*)
+            # --disable-music-ogg-shared leaves ov_* unresolved in libSDL_mixer.a
+            SDL_MIXER_LIBS="$SDL_MIXER_LIBS -lvorbisfile -lvorbis -logg"
+            ;;
         linux-gnu*|kfreebsd-gnu*)
             { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for XQueryTree,XMoveWindow in -lX11" >&5
 printf %s "checking for XQueryTree,XMoveWindow in -lX11... " >&6; }

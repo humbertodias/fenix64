@@ -76,6 +76,15 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
     if [[ -f Makefile ]]; then
       make distclean || true
     fi
+    # distclean uses the leftover Makefile. A macOS Makefile often fails
+    # inside this image, so .o files stay and MinGW ld rejects them
+    # ("file format not recognized", e.g. fxc/src/messages.o).
+    # Do not combine -prune with -delete: -delete implies -depth and find
+    # treats that as an error (GNU find 4.8+).
+    find . -type f \( -name "*.o" -o -name "*.obj" -o -name "*.lo" -o -name "*.exe" \) \
+      ! -path "./.git/*" ! -path "./deps/*" ! -path "./dist/*" -delete
+    find . -type d \( -name .deps -o -name .libs \) \
+      ! -path "./.git/*" ! -path "./deps/*" ! -path "./dist/*" -print0 | xargs -0r rm -rf
 
     if [[ "${PLATFORM}" == "windows" ]]; then
       HOST="${HOST:-x86_64-w64-mingw32}"

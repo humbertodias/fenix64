@@ -1,4 +1,4 @@
-# MinGW-w64 toolchain plus static SDL 1.2 / png / zlib / gif.
+# MinGW-w64 toolchain plus SDL 1.2 / png / zlib / gif / ogg / vorbis.
 #   docker build -t fenix-windows -f docker/Dockerfile.windows docker/
 #   bash scripts/docker-build.sh windows
 

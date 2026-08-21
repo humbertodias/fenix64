@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #ifdef TARGET_BEOS
 #include <posix/assert.h>
 #else
@@ -47,6 +48,96 @@
 #define MIN_PRIORITY	-2048
 #define MAX_PRIORITY	 2048
 #define PRIORITIES		(MAX_PRIORITY - MIN_PRIORITY + 1)
+
+static uint8_t * vm_base = NULL ;
+static size_t    vm_arena_size = 64 * 1024 * 1024 ;
+static size_t    vm_used = 0 ;
+
+void vm_arena_init (void)
+{
+	if (!vm_base)
+		vm_base = (uint8_t *) malloc (vm_arena_size) ;
+	assert (vm_base != 0) ;
+	vm_used = 16 ;
+	memset (vm_base, 0, 16) ;
+}
+
+void * vm_malloc (size_t n)
+{
+	size_t * hdr ;
+
+	if (!vm_base) vm_arena_init () ;
+	n = (n + 15) & ~(size_t)15 ;
+	if (vm_used + 16 + n > vm_arena_size)
+		gr_error ("vm_malloc: arena llena") ;
+	hdr = (size_t *)(vm_base + vm_used) ;
+	*hdr = n ;
+	vm_used += 16 + n ;
+	return (uint8_t *)hdr + 16 ;
+}
+
+int vm_in_arena (const void * p)
+{
+	const uint8_t * q = (const uint8_t *) p ;
+	return vm_base && q >= vm_base && q < vm_base + vm_arena_size ;
+}
+
+size_t vm_alloc_size (const void * p)
+{
+	if (!vm_in_arena (p) || (const uint8_t *)p < vm_base + 16)
+		return 0 ;
+	return *(const size_t *)((const uint8_t *)p - 16) ;
+}
+
+static void * vm_from_base (const void * base, size_t size, uint32_t t)
+{
+	uintptr_t b, full, high ;
+	uint32_t low ;
+
+	if (!base || size == 0) return NULL ;
+	b = (uintptr_t) base ;
+	high = b & ~(uintptr_t)0xFFFFFFFFULL ;
+	low = (uint32_t) b ;
+	full = high | t ;
+	if (t < low)
+		full += (uintptr_t)1 << 32 ;
+	if (full >= b && full < b + size)
+		return (void *) full ;
+	return NULL ;
+}
+
+void * vm_ptr (INSTANCE * my, int p32)
+{
+	uint32_t t = (uint32_t) p32 ;
+	void * p ;
+
+	if (!p32) return NULL ;
+
+	if (vm_base) {
+		p = vm_from_base (vm_base, vm_arena_size, t) ;
+		if (p) return p ;
+	}
+
+	p = vm_from_base (stack, sizeof(stack), t) ;
+	if (p) return p ;
+
+	if (my) {
+		if (my->pridata) {
+			p = vm_from_base (my->pridata, (size_t)my->private_size + 4, t) ;
+			if (p) return p ;
+		}
+		if (my->locdata) {
+			p = vm_from_base (my->locdata, (size_t)local_size + 4, t) ;
+			if (p) return p ;
+		}
+		if (my->pubdata) {
+			p = vm_from_base (my->pubdata, (size_t)my->public_size + 4, t) ;
+			if (p) return p ;
+		}
+	}
+
+	return (void *)(uintptr_t) t ;
+}
 
 /* ---------------------------------------------------------------------- */
 /* Módulo de gestión de instancias, con las funciones de incialización y  */
@@ -117,9 +208,9 @@ INSTANCE * instance_duplicate (INSTANCE * father)
 	r = (INSTANCE *) malloc (sizeof(INSTANCE)) ;
 	assert (r != 0) ;
 
-	r->pridata      = (int *) malloc (father->private_size + 4) ;
-	r->pubdata      = (int *) malloc (father->public_size + 4) ;
-	r->locdata      = (int *) malloc (local_size + 4) ;
+	r->pridata      = (int *) vm_malloc (father->private_size + 4) ;
+	r->pubdata      = (int *) vm_malloc (father->public_size + 4) ;
+	r->locdata      = (int *) vm_malloc (local_size + 4) ;
 	r->code         = father->code ;
 	r->codeptr      = father->codeptr ;
 	r->exitcode     = father->exitcode ;
@@ -235,9 +326,9 @@ INSTANCE * instance_new (PROCDEF * proc, INSTANCE * father)
 	r = (INSTANCE *) malloc (sizeof(INSTANCE)) ;
 	assert (r != 0) ;
 
-	r->pridata      = (int *) malloc (proc->private_size + 4) ;
-	r->pubdata      = (int *) malloc (proc->public_size + 4) ;
-	r->locdata      = (int *) malloc (local_size + 4) ;
+	r->pridata      = (int *) vm_malloc (proc->private_size + 4) ;
+	r->pubdata      = (int *) vm_malloc (proc->public_size + 4) ;
+	r->locdata      = (int *) vm_malloc (local_size + 4) ;
 	r->code         = proc->code ;
 	r->codeptr      = proc->code ;
 	r->exitcode     = proc->exitcode ;
@@ -540,9 +631,7 @@ void instance_destroy (INSTANCE * r)
 
 	if (r->stack) free (r->stack) ;
 
-	if (r->locdata) free (r->locdata) ;
-	if (r->pubdata) free (r->pubdata) ;
-	if (r->pridata) free (r->pridata) ;
+	/* loc/pub/pri live in the VM arena; do not pass them to libc free */
 	free (r) ;
 }
 
@@ -717,7 +806,8 @@ GRAPH * instance_graph (INSTANCE * i)
 
 	if (LOCDWORD(i,XGRAPH))
 	{
-		xgraph = (int *) LOCDWORD(i,XGRAPH) ;
+		xgraph = (int *) vm_ptr (i, LOCDWORD(i,XGRAPH)) ;
+		if (!xgraph) return 0 ;
 		c = *xgraph++;
 		if (c)
 		{
@@ -821,6 +911,21 @@ INSTANCE * instance_next_by_priority()
 
 			while (j) {
 				if (LOCDWORD(j, PRIORITY) == LOCDWORD(i, PRIORITY)) {
+					if (dcb_is_v1 ()) {
+						/* 0.84 DCBs: run newly scheduled instances before
+						 * older ones of the same priority. HFF's menu does
+						 * delete_text(0) on END; if main runs first it
+						 * PROC's the options screen and the dying menu
+						 * then wipes those texts. */
+						i->next_by_priority = j;
+						i->prev_by_priority = j->prev_by_priority;
+						j->prev_by_priority = i;
+						if (i->prev_by_priority)
+							i->prev_by_priority->next_by_priority = i;
+						else
+							first_by_priority = i;
+						break;
+					}
 					i->prev_by_priority = j;
 					i->next_by_priority = j->next_by_priority;
 					j->next_by_priority = i;

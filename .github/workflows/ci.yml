@@ -143,7 +143,7 @@ jobs:
             - **static** — libraries linked into the binaries where possible (`-static-libgcc` on Linux, `-static` on Windows, `-search_paths_first` on macOS)
             - **shared** — dynamic SDL/png; Windows includes MinGW DLLs, macOS includes SDL_mixer dylibs
             - **fenix-linux-*** — x86_64 ELF from `docker/Dockerfile.linux` (Ubuntu 22.04, SDL 1.2)
-            - **fenix-windows-mingw-*** — x86_64 PE from `docker/Dockerfile.windows` (MinGW-w64, SDL 1.2 / png / zlib / gif)
+            - **fenix-windows-mingw-*** — x86_64 PE from `docker/Dockerfile.windows` (MinGW-w64, SDL 1.2 / png / zlib / gif / ogg / vorbis)
             - **fenix-macos-*** — native Homebrew `sdl12-compat` plus SDL_mixer 1.2 built from source
 
             Linux and Windows CI images come from `docker/Dockerfile.linux` and `docker/Dockerfile.windows`.

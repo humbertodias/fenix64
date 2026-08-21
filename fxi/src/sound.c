@@ -46,6 +46,39 @@
 
 int sound_active=0;     //variable para comprobar si el sonido está activado.
 
+static Mix_Chunk * wav_tab[256] ;
+static Mix_Music * song_tab[256] ;
+
+static int wav_add (Mix_Chunk * c)
+{
+	int i ;
+	if (!c) return 0 ;
+	for (i = 1 ; i < 256 ; i++)
+		if (!wav_tab[i]) { wav_tab[i] = c ; return i ; }
+	return 0 ;
+}
+
+static Mix_Chunk * wav_get (int id)
+{
+	if (id > 0 && id < 256) return wav_tab[id] ;
+	return NULL ;
+}
+
+static int song_add (Mix_Music * m)
+{
+	int i ;
+	if (!m) return 0 ;
+	for (i = 1 ; i < 256 ; i++)
+		if (!song_tab[i]) { song_tab[i] = m ; return i ; }
+	return 0 ;
+}
+
+static Mix_Music * song_get (int id)
+{
+	if (id > 0 && id < 256) return song_tab[id] ;
+	return NULL ;
+}
+
 /* ------------------------------------- */
 /* Interfaz SDL_RWops Fenix              */
 /* ------------------------------------- */
@@ -145,6 +178,10 @@ void sound_init ()
 
     	audio_format = AUDIO_S16;
     	audio_channels = GLODWORD(SOUND_MODE)+1;
+    	if (audio_channels < 1)
+    		audio_channels = 1;
+    	else if (audio_channels > 2)
+    		audio_channels = 2;
     	audio_buffers = 1024*audio_rate/22050;
 
     	/* Open the audio device */
@@ -153,7 +190,14 @@ void sound_init ()
     		sound_active=0;
     		return;
     	} else {
-    		GLODWORD(SOUND_CHANNELS)<=32?Mix_AllocateChannels(GLODWORD(SOUND_CHANNELS)):Mix_AllocateChannels(32) ;
+    		/* 0.84 DCBs have no sound_channels global (0.93 default is 8).
+    		 * Mix_AllocateChannels(0) would mute every WAV. */
+    		audio_mix_channels = GLODWORD(SOUND_CHANNELS);
+    		if (audio_mix_channels <= 0)
+    			audio_mix_channels = 8;
+    		if (audio_mix_channels > 32)
+    			audio_mix_channels = 32;
+    		Mix_AllocateChannels(audio_mix_channels);
     		Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
     		audio_mix_channels = Mix_AllocateChannels(-1) ;
     		GLODWORD(SOUND_CHANNELS) = audio_mix_channels ;
@@ -231,18 +275,25 @@ int load_song (const char * filename)
 		sound_init();
 	if (sound_active==0) return(-1);
 
+	/* Loose files: same path as Fenix 0.84 (needed for OGG via libvorbis). */
+	music = Mix_LoadMUS(filename);
+	if (music)
+		return song_add (music);
+
     fp=file_open(filename, "rb0");
-    if (!fp)
+    if (!fp) {
+		gr_con_printf("Couldn't load %s: %s\n",filename, Mix_GetError());
         return (-1);
+	}
 
     music = Mix_LoadMUS_RW(SDL_RWFromFenixFP(fp));
 
 	if ( music == NULL ) {
 	    file_close(fp);
-		gr_con_printf("Couldn't load %s: %s\n",filename, SDL_GetError());
+		gr_con_printf("Couldn't load %s: %s\n",filename, Mix_GetError());
 		return(-1);
 	} else {
-		return ((int)music);
+		return song_add (music);
 	}
 
 }
@@ -275,8 +326,8 @@ int play_song (int id, int loops)
 		return (-1);
 	}
 
-	if (((Mix_Music *)id!=NULL)){
-		int result = Mix_PlayMusic((Mix_Music *)id,loops);
+	if (song_get (id)){
+		int result = Mix_PlayMusic(song_get (id),loops);
 		if (result == -1) {
 			gr_error ("%s", Mix_GetError());
 		}
@@ -313,8 +364,8 @@ int fade_music_in (int id, int loops, int ms)
 		sound_init();
 	if (sound_active==0) return (-1);
 
-	if (((Mix_Music *)id!=NULL)){
-		return(Mix_FadeInMusic((Mix_Music *)id,loops, ms));
+	if (song_get (id)){
+		return(Mix_FadeInMusic(song_get (id),loops, ms));
 	} else {
 		return(-1);
 	}
@@ -368,8 +419,9 @@ int unload_song (int id)
 		sound_init();
 	if (sound_active==0) return (-1);
 
-	if ((Mix_Music *)id!=NULL) {
-		Mix_FreeMusic((Mix_Music *)id);
+	if (song_get (id)) {
+		Mix_FreeMusic(song_get (id));
+		if (id > 0 && id < 256) song_tab[id] = NULL ;
 		return (0) ;
 	} else {
 		return (-1);
@@ -568,6 +620,10 @@ int load_wav (const char * filename)
 		sound_init();
 	if (sound_active==0) return(-1);
 
+	music = Mix_LoadWAV(filename);
+	if (music)
+		return wav_add (music);
+
     fp=file_open(filename, "rb0");
     if (!fp)
         return (-1);
@@ -575,10 +631,10 @@ int load_wav (const char * filename)
 	music = Mix_LoadWAV_RW(SDL_RWFromFenixFP(fp),1);
 
 	if ( music == NULL ) {
- 		gr_con_printf("Couldn't load %s: %s\n",filename, SDL_GetError());
+ 		gr_con_printf("Couldn't load %s: %s\n",filename, Mix_GetError());
 		return(0);
 	} else {
-		return ((int)music);
+		return wav_add (music);
 	}
 
 }
@@ -610,8 +666,8 @@ int play_wav (int id, int loops, int channel)
 		sound_init();
 	if (sound_active==0) return (-1);
 
-	if ((Mix_Chunk *)id!=NULL) {
-		canal=Mix_PlayChannel(channel,(Mix_Chunk *)id,loops);
+	if (wav_get (id)) {
+		canal=Mix_PlayChannel(channel,wav_get (id),loops);
 		return(canal);
 	}
 	else {
@@ -646,8 +702,9 @@ int unload_wav (int id)
 		sound_init();
 	if (sound_active==0) return (-1);
 
-	if ((Mix_Chunk *)id!=NULL) {
-		Mix_FreeChunk((Mix_Chunk *)id);
+	if (wav_get (id)) {
+		Mix_FreeChunk(wav_get (id));
+		if (id > 0 && id < 256) wav_tab[id] = NULL ;
 		return (0) ;
 	} else return (-1);
 
@@ -802,8 +859,8 @@ int	 set_wav_volume	(int sample,int volume)
 	if (volume<0) volume=0;
 	if (volume>128) volume=128;
 
-	if ((Mix_Chunk *)sample!=NULL)
-		return(Mix_VolumeChunk((Mix_Chunk *)sample,volume));
+	if (wav_get (sample))
+		return(Mix_VolumeChunk(wav_get (sample),volume));
 	else
 		return -1 ;
 }

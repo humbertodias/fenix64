@@ -168,6 +168,10 @@ if test "$fxi" = yes; then
         AC_MSG_ERROR([*** SDL_mixer 1.2 not found (need SDL_mixer 1.2, not SDL2/SDL3_mixer)])
     fi
     case "$target_os" in
+        mingw*)
+            # --disable-music-ogg-shared leaves ov_* unresolved in libSDL_mixer.a
+            SDL_MIXER_LIBS="$SDL_MIXER_LIBS -lvorbisfile -lvorbis -logg"
+            ;;
         linux-gnu*|kfreebsd-gnu*)
             AC_CHECK_LIB(X11, [XQueryTree,XMoveWindow],,)
             ;;

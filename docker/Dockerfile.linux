@@ -1,4 +1,5 @@
 # Linux x86_64 toolchain (Ubuntu 22.04 still ships SDL 1.2).
+# libsdl-mixer1.2 is built with Ogg/Vorbis; no extra libogg/libvorbis packages.
 #   docker build --platform linux/amd64 -t fenix-linux -f docker/Dockerfile.linux docker/
 #   bash scripts/docker-build.sh linux
 

@@ -321,7 +321,7 @@ int main (int argc, char **argv)
 
 				if (!dcb_load(dcbname))
 				{
-					gr_error ("%s: no existe o no es un DCB version %d o compatible", filename, DCB_VERSION >> 8) ;
+					gr_error ("%s: no existe o no es un DCB version 0.84/0.93 o compatible", filename) ;
 					return -1 ;
 				}
 			}
