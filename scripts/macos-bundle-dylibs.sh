@@ -33,8 +33,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 should_bundle() {
   case "$1" in
-    /System/*|/usr/lib/*|/Library/Apple/*|@executable_path/*|@loader_path/*|@rpath/*) return 1 ;;
-    /*) return 0 ;;
+    /System/*|/usr/lib/*|/Library/Apple/*|@executable_path/*|@loader_path/*) return 1 ;;
+    # macos-build.sh sets SDL_mixer id to @rpath/...; that must be copied
+    # and rewritten. Skipping @rpath left mixer out of the release zip.
+    @rpath/*|/*) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -149,6 +151,32 @@ bundle_one() {
   done < <(load_dylibs "$bin")
 }
 
+has_mixer() {
+  local f
+  for f in "$DEST"/libSDL_mixer*.dylib; do
+    [[ -e "$f" ]] && return 0
+  done
+  return 1
+}
+
+# fxi links SDL_mixer via @rpath; otool -L does not give an absolute path
+# the Homebrew/keg walk can follow, so copy it from deps/local explicitly.
+ensure_mixer() {
+  has_mixer && return 0
+  local candidate
+  for candidate in \
+      "$ROOT/deps/local/lib/libSDL_mixer-1.2.0.dylib" \
+      /opt/homebrew/lib/libSDL_mixer-1.2.0.dylib \
+      /usr/local/lib/libSDL_mixer-1.2.0.dylib; do
+    if [[ -f "$candidate" ]]; then
+      copy_keg_dylib "$candidate"
+      return 0
+    fi
+  done
+  echo "fxi needs libSDL_mixer next to the binary (deps/local or Homebrew)." >&2
+  exit 1
+}
+
 has_sdl1() {
   local f
   for f in "$DEST"/libSDL-1.2*.dylib; do
@@ -217,6 +245,11 @@ done
 
 if has_sdl1 && ! has_sdl2; then
   echo "bundled SDL 1.2 without SDL2; sdl12-compat will fail at runtime" >&2
+  exit 1
+fi
+
+if ! has_mixer; then
+  echo "bundled binaries without SDL_mixer; fxi will fail at runtime" >&2
   exit 1
 fi
 
