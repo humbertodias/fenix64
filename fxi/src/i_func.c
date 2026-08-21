@@ -127,6 +127,8 @@
 
 #include "dcb.h"
 
+#define VP(p) vm_ptr (my, (int)(p))
+
 fixed cos_table[90001] ;
 int cos_table_initialized = 0 ;
 
@@ -562,8 +564,8 @@ static int fxi_get_point (INSTANCE * my, int * params)
     /* Use the center as control point if it is not there */
     if (params[2] == 0 && (bmp->ncpoints == 0 || bmp->cpoints[0].x == CPOINT_UNDEFINED))
     {
-        *(int *)params[3] = bmp->width/2;
-        *(int *)params[4] = bmp->height/2;
+        *(int *)VP(params[3]) = bmp->width/2;
+        *(int *)VP(params[4]) = bmp->height/2;
         return 1 ;
     }
 
@@ -572,8 +574,8 @@ static int fxi_get_point (INSTANCE * my, int * params)
     if (bmp->cpoints[params[2]].x == CPOINT_UNDEFINED && bmp->cpoints[params[2]].y == CPOINT_UNDEFINED)
         return 0;
 
-    *(int *)params[3] = bmp->cpoints[params[2]].x ;
-    *(int *)params[4] = bmp->cpoints[params[2]].y ;
+    *(int *)VP(params[3]) = bmp->cpoints[params[2]].x ;
+    *(int *)VP(params[4]) = bmp->cpoints[params[2]].y ;
     return 1 ;
 }
 
@@ -673,8 +675,8 @@ static int fxi_get_real_point (INSTANCE * my, int * params)
         ry /= -LOCDWORD(my, RESOLUTION);
     }
 
-    *(int *)params[1] = rx ;
-    *(int *)params[2] = ry ;
+    *(int *)VP(params[1]) = rx ;
+    *(int *)VP(params[2]) = ry ;
     return 1 ;
 }
 
@@ -1186,12 +1188,12 @@ static int fxi_pal_map_getid (INSTANCE * my, int * params)
 
 static int fxi_pal_set (INSTANCE * my, int * params)
 {
-    return (pal_set ((PALETTE *)(params[0]), params[1], params[2], (Uint8 *)params[3])) ;
+    return (pal_set ((PALETTE *)VP(params[0]), params[1], params[2], (Uint8 *)VP(params[3]))) ;
 }
 
 static int fxi_pal_get (INSTANCE * my, int * params)
 {
-    return (pal_get ((PALETTE *)(params[0]), params[1], params[2], (Uint8 *)params[3])) ;
+    return (pal_get ((PALETTE *)VP(params[0]), params[1], params[2], (Uint8 *)VP(params[3]))) ;
 }
 
 
@@ -1263,14 +1265,14 @@ static int fxi_convert_palette (INSTANCE * my, int * params)
 static int fxi_set_colors (INSTANCE * my, int * params)
 {
     if (!scr_initialized) gr_init (320, 200) ;
-    gr_set_colors (params[0], params[1], (Uint8 *)params[2]) ;
+    gr_set_colors (params[0], params[1], (Uint8 *)VP(params[2])) ;
     return 1 ;
 }
 
 static int fxi_get_colors (INSTANCE * my, int * params)
 {
     if (!scr_initialized) gr_init (320, 200) ;
-    gr_get_colors (params[0], params[1], (Uint8 *)params[2]) ;
+    gr_get_colors (params[0], params[1], (Uint8 *)VP(params[2])) ;
     return 1 ;
 }
 
@@ -1317,7 +1319,7 @@ static int fxi_find_color (INSTANCE * my, int * params)
 static int fxi_get_rgb (INSTANCE * my, int * params)
 {
     if (!scr_initialized) gr_init (320, 200) ;
-    gr_get_rgb (params[0], (int *)params[1], (int *)params[2], (int *)params[3]) ;
+    gr_get_rgb (params[0], (int *)VP(params[1]), (int *)VP(params[2]), (int *)VP(params[3])) ;
     return 1 ;
 }
 
@@ -1334,62 +1336,62 @@ extern int fade_step ;
 
 static int fxi_create_blendop (INSTANCE * my, int * params)
 {
-        return (int) blend_create() ;
+        return (int)(intptr_t) blend_create() ;
 }
 
 static int fxi_blendop_apply (INSTANCE * my, int * params)
 {
     GRAPH * graph = bitmap_get (params[0], params[1]) ;
-    if (graph) blend_apply(graph, (Sint16 *)params[2]) ;
+    if (graph) blend_apply(graph, (Sint16 *)VP(params[2])) ;
     return 1 ;
 }
 
 static int fxi_blendop_assign (INSTANCE * my, int * params)
 {
     GRAPH * graph = bitmap_get (params[0], params[1]) ;
-    if (graph) blend_assign(graph, (Sint16 *)params[2]) ;
+    if (graph) blend_assign(graph, (Sint16 *)VP(params[2])) ;
     return 1 ;
 }
 
 static int fxi_destroy_blendop (INSTANCE * my, int * params)
 {
-    blend_free((Sint16 *)params[0]) ;
+    blend_free((Sint16 *)VP(params[0])) ;
     return 1 ;
 }
 
 static int fxi_blendop_identity (INSTANCE * my, int * params)
 {
-    blend_init ((Sint16 *)params[0]) ;
+    blend_init ((Sint16 *)VP(params[0])) ;
     return 1 ;
 }
 
 static int fxi_blendop_grayscale (INSTANCE * my, int * params)
 {
-    blend_grayscale((Sint16 *)params[0], params[1]) ;
+    blend_grayscale((Sint16 *)VP(params[0]), params[1]) ;
     return 1 ;
 }
 
 static int fxi_blendop_translucency (INSTANCE * my, int * params)
 {
-    blend_translucency ((Sint16 *)params[0], *(float *)(&params[1])) ;
+    blend_translucency ((Sint16 *)VP(params[0]), *(float *)(&params[1])) ;
     return 1 ;
 }
 
 static int fxi_blendop_intensity (INSTANCE * my, int * params)
 {
-    blend_intensity ((Sint16 *)params[0], *(float *)(&params[1])) ;
+    blend_intensity ((Sint16 *)VP(params[0]), *(float *)(&params[1])) ;
     return 1 ;
 }
 
 static int fxi_blendop_swap (INSTANCE * my, int * params)
 {
-    blend_swap ((Sint16 *)params[0]) ;
+    blend_swap ((Sint16 *)VP(params[0])) ;
     return 1 ;
 }
 
 static int fxi_blendop_tint (INSTANCE * my, int * params)
 {
-    blend_tint ((Sint16 *)params[0],
+    blend_tint ((Sint16 *)VP(params[0]),
                *(float *)(&params[1]),
                 (Uint8) params[2],
                 (Uint8) params[3],
@@ -2073,7 +2075,7 @@ static int fxi_path_find (INSTANCE * my, int * params)
 
 static int fxi_path_getxy (INSTANCE * my, int * params)
 {
-    return path_get ((int *)params[0], (int *)params[1]) ;
+    return path_get ((int *)VP(params[0]), (int *)VP(params[1])) ;
 }
 
 static int fxi_path_wall (INSTANCE * my, int * params)
@@ -2249,7 +2251,7 @@ static int fxi_write_in_map (INSTANCE * my, int * params)
 
 static int fxi_write_var (INSTANCE * my, int * params)
 {
-    DCB_TYPEDEF * var = (DCB_TYPEDEF *)params[5] ;
+    DCB_TYPEDEF * var = (DCB_TYPEDEF *)VP(params[5]) ;
     int t = 0 ;
 
     switch (var->BaseType[0])
@@ -2291,7 +2293,7 @@ static int fxi_write_var (INSTANCE * my, int * params)
             gr_error ("No es un tipo de dato válido");
             break ;
     }
-    return gr_text_new_var (params[0], params[1], params[2], params[3], (void *)params[4], t) ;
+    return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), t) ;
 }
 
 /*
@@ -2300,7 +2302,7 @@ static int fxi_write_var (INSTANCE * my, int * params)
 
 static int fxi_write_string (INSTANCE * my, int * params)
 {
-    return gr_text_new_var (params[0], params[1], params[2], params[3], (void *)params[4], 2) ;
+    return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 2) ;
 }
 
 /*
@@ -2309,7 +2311,7 @@ static int fxi_write_string (INSTANCE * my, int * params)
 
 static int fxi_write_int (INSTANCE * my, int * params)
 {
-    return gr_text_new_var (params[0], params[1], params[2], params[3], (void *)params[4], 3) ;
+    return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 3) ;
 }
 
 /*
@@ -2318,7 +2320,7 @@ static int fxi_write_int (INSTANCE * my, int * params)
 
 static int fxi_write_float (INSTANCE * my, int * params)
 {
-    return gr_text_new_var (params[0], params[1], params[2], params[3], (void *)params[4], 4) ;
+    return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 4) ;
 }
 
 static int fxi_move_text (INSTANCE * my, int * params)
@@ -2363,7 +2365,7 @@ static int fxi_save (INSTANCE * my, int * params)
     fp = file_open (filename, "wb0") ;
     if (fp)
     {
-        result = savetypes (fp, (void *)params[1], (void *)params[2], params[3]);
+        result = savetypes (fp, vm_ptr (my, params[1]), vm_ptr (my, params[2]), params[3]);
         file_close (fp) ;
     }
     string_discard (params[0]) ;
@@ -2382,62 +2384,92 @@ static int fxi_load (INSTANCE * my, int * params)
     fp = file_open (filename, "rb0") ;
     if (fp)
     {
-        result = loadtypes (fp, (void *)params[1], (void *)params[2], params[3]);
+        result = loadtypes (fp, vm_ptr (my, params[1]), vm_ptr (my, params[2]), params[3]);
         file_close (fp) ;
     }
     string_discard(params[0]) ;
     return result ;
 }
 
+static file * vm_files[256] ;
+
+static int vm_file_add (file * fp)
+{
+    int i ;
+
+    if (!fp) return 0 ;
+    for (i = 1 ; i < 256 ; i++)
+    {
+        if (!vm_files[i])
+        {
+            vm_files[i] = fp ;
+            return i ;
+        }
+    }
+    return 0 ;
+}
+
+static file * vm_file (int h)
+{
+    if (h > 0 && h < 256) return vm_files[h] ;
+    return NULL ;
+}
+
 static int fxi_fopen (INSTANCE * my, int * params)
 {
     static char * ops[] = { "rb0", "r+b0", "wb0", "rb", "wb6" } ;
-    int r ;
+    file * fp ;
 
     if (params[1] < 0 || params[1] > 4)
         params[0] = 0 ;
 
-    r = (int) file_open (string_get(params[0]), ops[params[1]]) ;
+    fp = file_open (string_get(params[0]), ops[params[1]]) ;
     string_discard (params[0]) ;
-    return r ;
+    return vm_file_add (fp) ;
 }
 
 static int fxi_fclose (INSTANCE * my, int * params)
 {
-    file_close ((file *)params[0]) ;
+    file * fp = vm_file (params[0]) ;
+    if (fp)
+    {
+        file_close (fp) ;
+        if (params[0] > 0 && params[0] < 256)
+            vm_files[params[0]] = NULL ;
+    }
     return 1 ;
 }
 
 static int fxi_fread (INSTANCE * my, int * params)
 {
-    return loadtypes ((file *)params[0], (void *)params[1], (void *)params[2], params[3]);
+    return loadtypes (vm_file (params[0]), vm_ptr (my, params[1]), vm_ptr (my, params[2]), params[3]);
 }
 
 static int fxi_fwrite (INSTANCE * my, int * params)
 {
-    return savetypes ((file *)params[0], (void *)params[1], (void *)params[2], params[3]);
+    return savetypes (vm_file (params[0]), vm_ptr (my, params[1]), vm_ptr (my, params[2]), params[3]);
 }
 
 static int fxi_fseek (INSTANCE * my, int * params)
 {
-    return file_seek ((file *)params[0], params[1], params[2]) ;
+    return file_seek (vm_file (params[0]), params[1], params[2]) ;
 }
 
 static int fxi_ftell (INSTANCE * my, int * params)
 {
-    return file_pos ((file *)params[0]) ;
+    return file_pos (vm_file (params[0])) ;
 }
 
 static int fxi_filelength (INSTANCE * my, int * params)
 {
-    return file_size ((file *)params[0]) ;
+    return file_size (vm_file (params[0])) ;
 }
 
 static int fxi_fputs (INSTANCE * my, int * params)
 {
     char *str = string_get(params[1]);
-    int r = file_puts ((file *)params[0], str) ;
-    if (str[strlen(str)-1] != '\n') file_puts ((file *)params[0], "\r\n") ;
+    int r = file_puts (vm_file (params[0]), str) ;
+    if (str[strlen(str)-1] != '\n') file_puts (vm_file (params[0]), "\r\n") ;
 /*    int r = file_puts ((file *)params[0], string_get(params[1])) ; */
     string_discard(params[1]) ;
     return r ;
@@ -2445,13 +2477,15 @@ static int fxi_fputs (INSTANCE * my, int * params)
 
 static int fxi_fgets (INSTANCE * my, int * params)
 {
-    char buffer[1024] ;
+    char buffer[1030] ;
     int str, str2 = 0, str3 ;
-    int len, sigue = 1 ;
+    int len, sigue ;
+    file * fp = vm_file (params[0]) ;
 
+    sigue = 1 ;
     while(sigue)
     {
-        len = file_gets ((file *)params[0], buffer, sizeof(buffer)) ;
+        len = file_gets (fp, buffer, sizeof(buffer)) ;
         if (len < 1)
             sigue = 0 ;
         else {
@@ -2461,7 +2495,7 @@ static int fxi_fgets (INSTANCE * my, int * params)
                 buffer[len] = '\0' ;
                 sigue = 0 ;
             }
-            if (buffer[len-1] == '\r') buffer[len-1] = '\0' ;
+            if (len > 0 && buffer[len-1] == '\r') buffer[len-1] = '\0' ;
         }
         str = string_new (buffer) ;
         if (str2)
@@ -2504,7 +2538,7 @@ static int fxi_file (INSTANCE * my, int * params)
 
 static int fxi_feof (INSTANCE * my, int * params)
 {
-    return file_eof ((file *)params[0]) ;
+    return file_eof (vm_file (params[0])) ;
 }
 
 static int fxi_file_exists (INSTANCE * my, int * params)
@@ -3623,24 +3657,24 @@ static int fxi_memory_total (INSTANCE * my, int * params)
 
 static int fxi_memcmp (INSTANCE * my, int * params)
 {
-    return (memcmp ((void *)params[0], (void *)params[1], params[2])) ;
+    return (memcmp (VP(params[0]), VP(params[1]), params[2])) ;
 }
 
 static int fxi_memcopy (INSTANCE * my, int * params)
 {
-    memmove ((void *)params[0], (void *)params[1], params[2]) ;
+    memmove (VP(params[0]), VP(params[1]), params[2]) ;
     return 1 ;
 }
 
 static int fxi_memset (INSTANCE * my, int * params)
 {
-    memset ((void *)params[0], params[1], params[2]) ;
+    memset (VP(params[0]), params[1], params[2]) ;
     return 1 ;
 }
 
 static int fxi_memsetw (INSTANCE * my, int * params)
 {
-    Uint16 * ptr = (Uint16 *)params[0] ;
+    Uint16 * ptr = (Uint16 *)VP(params[0]) ;
     const Uint16 b = params[1] ;
     int n ;
 
@@ -3650,21 +3684,27 @@ static int fxi_memsetw (INSTANCE * my, int * params)
 
 static int fxi_alloc (INSTANCE * my, int * params)
 {
-    void * ptr = malloc (params[0]) ;
+    void * ptr = vm_malloc (params[0] ? params[0] : 1) ;
     if (!ptr) gr_error ("ALLOC: no hay memoria libre suficiente") ;
-    return (int)ptr ;
+    return (int)(intptr_t)ptr ;
 }
 
 static int fxi_realloc (INSTANCE * my, int * params)
 {
-    void * ptr = realloc ((void *)params[0], params[1]) ;
+    void * old = VP(params[0]) ;
+    size_t n = params[1] ? (size_t)params[1] : 1 ;
+    size_t oldsz = vm_alloc_size (old) ;
+    void * ptr = vm_malloc (n) ;
     if (!ptr) gr_error ("REALLOC: no hay memoria libre suficiente") ;
-    return (int)ptr ;
+    if (old && oldsz)
+        memcpy (ptr, old, oldsz < n ? oldsz : n) ;
+    return (int)(intptr_t)ptr ;
 }
 
 static int fxi_free (INSTANCE * my, int * params)
 {
-    free ((void *)params[0]) ;
+    (void) my ;
+    (void) params ;
     return 1 ;
 }
 
@@ -3977,7 +4017,7 @@ void QuickSort(Uint8 *Data,int inf, int sup, int *params)
 
 static int fxi_quicksort(INSTANCE *my, int *params)
 { //punteroalarray,tamañodato,numdatos,offsetadatoordenador,tamañodatoaordenar,tipodato(int=0,float=1)
-    Uint8 *Data=(Uint8 *)params[0];
+    Uint8 *Data=(Uint8 *)VP(params[0]);
     QuickSort(Data,0,params[2]-1,params);
     return 1 ;
 }
@@ -3986,7 +4026,7 @@ static int fxi_filter (INSTANCE *my, int *params)
 { //fpg,map,tabla10
 
     GRAPH * map = bitmap_get (params[0], params[1]), * map2;
-    int *tabla=(int*)params[2];
+    int *tabla=(int*)VP(params[2]);
     int x,y,i,j;
     int r,g,b,r2,g2,b2,c;
     float r1,g1,b1;
@@ -4514,7 +4554,7 @@ int fxi_split (INSTANCE * my, int * params)
 {
     const char * reg = string_get(params[0]);
     const char * str = string_get(params[1]);
-    int * result_array = (int *)params[2];
+    int * result_array = (int *)VP(params[2]);
     int result_array_size = params[3];
     int count = 0;
     int pos, lastpos = 0;
@@ -4581,7 +4621,7 @@ int fxi_split (INSTANCE * my, int * params)
 int fxi_join (INSTANCE * my, int * params)
 {
     const char * sep = string_get(params[0]);
-    int * string_array = (int *)params[1];
+    int * string_array = (int *)VP(params[1]);
     int count = params[2] ;
     int total_length = 0;
     int sep_len = strlen(sep);
@@ -4937,7 +4977,7 @@ static int fxi_glob (INSTANCE * my, int * params)
 static int
 fxi_copy_struct (INSTANCE * my, int * params)
 {
-    return (int) copytypes ((void *)params[0], (void *)params[1], (DCB_TYPEDEF *)params[2], params[3], params[4]);
+    return (int) copytypes (VP(params[0]), VP(params[1]), (DCB_TYPEDEF *)VP(params[2]), params[3], params[4]);
 }
 
 /**

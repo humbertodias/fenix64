@@ -42,6 +42,8 @@
 #include "fxi.h"
 #include "dcb.h"
 
+#define VA(p) vm_ptr(r, (int)(p))
+
 void mnemonic_dump (int i, int param);
 
 /* ---------------------------------------------------------------------- */
@@ -726,7 +728,7 @@ int instance_go (INSTANCE * r)
             case MN_PTR:
             case MN_PTR | MN_UNSIGNED:
             case MN_PTR | MN_FLOAT:
-                stack_ptr[-1] = *(Sint32 *)stack_ptr[-1] ;
+                stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) ;
                 ptr++ ;
                 break ;
 
@@ -783,7 +785,7 @@ int instance_go (INSTANCE * r)
                 break ;
 
             case MN_STRING | MN_PTR:
-                stack_ptr[-1] = *(Sint32 *)stack_ptr[-1] ;
+                stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) ;
                 string_use     ( stack_ptr[-1] ) ;
                 ptr++ ;
                 break ;
@@ -858,7 +860,7 @@ int instance_go (INSTANCE * r)
 
             case MN_WORD | MN_PTR:
             case MN_WORD | MN_PTR | MN_UNSIGNED:
-                stack_ptr[-1] = *(Sint16 *)stack_ptr[-1] ;
+                stack_ptr[-1] = *(Sint16 *)VA(stack_ptr[-1]) ;
                 ptr++ ;
                 break ;
 
@@ -947,12 +949,12 @@ int instance_go (INSTANCE * r)
                 break ;
 
             case MN_BYTE | MN_PTR:
-                stack_ptr[-1] = *((Sint8 *)stack_ptr[-1]) ;
+                stack_ptr[-1] = *((Sint8 *)VA(stack_ptr[-1])) ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_PTR | MN_UNSIGNED:
-                stack_ptr[-1] = *((Uint8 *)stack_ptr[-1]) ;
+                stack_ptr[-1] = *((Uint8 *)VA(stack_ptr[-1])) ;
                 ptr++ ;
                 break ;
 
@@ -1380,9 +1382,9 @@ int instance_go (INSTANCE * r)
             /* Operaciones con cadenas */
 
             case MN_VARADD | MN_STRING:
-                n = *(Sint32 *)(stack_ptr[-2]) ;
-                *(Sint32 *)(stack_ptr[-2]) = string_add (n, stack_ptr[-1]) ;
-                string_use ( *(Sint32 *)(stack_ptr[-2]) ) ;
+                n = *(Sint32 *)VA(stack_ptr[-2]) ;
+                *(Sint32 *)VA(stack_ptr[-2]) = string_add (n, stack_ptr[-1]) ;
+                string_use ( *(Sint32 *)VA(stack_ptr[-2]) ) ;
                 string_discard (n) ;
                 string_discard (stack_ptr[-1]) ;
                 stack_ptr-- ;
@@ -1390,15 +1392,15 @@ int instance_go (INSTANCE * r)
                 break ;
 
             case MN_LETNP | MN_STRING:
-                string_discard ( *(Sint32 *)(stack_ptr[-2]) ) ;
-                (*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                string_discard ( *(Sint32 *)VA(stack_ptr[-2]) ) ;
+                (*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-=2 ;
                 ptr++ ;
                 break ;
 
             case MN_LET | MN_STRING:
-                string_discard ( *(Sint32 *)(stack_ptr[-2]) ) ;
-                (*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                string_discard ( *(Sint32 *)VA(stack_ptr[-2]) ) ;
+                (*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1533,61 +1535,61 @@ int instance_go (INSTANCE * r)
 
             case MN_LETNP:
             case MN_LETNP | MN_UNSIGNED:
-                (*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                (*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-=2 ;
                 ptr++ ;
                 break ;
 
             case MN_LET:
             case MN_LET | MN_UNSIGNED:
-                (*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                (*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_INC:
             case MN_INC | MN_UNSIGNED:
-                (*(Sint32 *)(stack_ptr[-1])) += ptr[1] ;
+                (*(Sint32 *)VA(stack_ptr[-1])) += ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_DEC:
             case MN_DEC | MN_UNSIGNED:
-                (*(Sint32 *)(stack_ptr[-1])) -= ptr[1] ;
+                (*(Sint32 *)VA(stack_ptr[-1])) -= ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_POSTDEC:
             case MN_POSTDEC | MN_UNSIGNED:
-                (*(Sint32 *)(stack_ptr[-1])) -= ptr[1] ;
-                stack_ptr[-1] = *(Sint32 *)(stack_ptr[-1]) + ptr[1] ;
+                (*(Sint32 *)VA(stack_ptr[-1])) -= ptr[1] ;
+                stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) + ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_POSTINC:
             case MN_POSTINC | MN_UNSIGNED:
-                *((Sint32 *)(stack_ptr[-1])) += ptr[1] ;
-                stack_ptr[-1] = *(Sint32 *)(stack_ptr[-1]) - ptr[1] ;
+                *((Sint32 *)VA(stack_ptr[-1])) += ptr[1] ;
+                stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) - ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_VARADD:
             case MN_VARADD | MN_UNSIGNED:
-                *(Sint32 *)(stack_ptr[-2]) += stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) += stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARSUB:
             case MN_VARSUB | MN_UNSIGNED:
-                *(Sint32 *)(stack_ptr[-2]) -= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) -= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARMUL:
             case MN_VARMUL | MN_UNSIGNED:
-                *(Sint32 *)(stack_ptr[-2]) *= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) *= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1595,7 +1597,7 @@ int instance_go (INSTANCE * r)
             case MN_VARDIV:
             case MN_VARDIV | MN_UNSIGNED:
                 if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
-                *(Sint32 *)(stack_ptr[-2]) /= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) /= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1603,52 +1605,52 @@ int instance_go (INSTANCE * r)
             case MN_VARMOD:
             case MN_VARMOD | MN_UNSIGNED:
                 if (stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
-                *(Sint32 *)(stack_ptr[-2]) %= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) %= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VAROR:
             case MN_VAROR | MN_UNSIGNED:
-                *(Sint32 *)(stack_ptr[-2]) |= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) |= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARXOR:
             case MN_VARXOR | MN_UNSIGNED:
-                *(Sint32 *)(stack_ptr[-2]) ^= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) ^= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARAND:
             case MN_VARAND | MN_UNSIGNED:
-                *(Sint32 *)(stack_ptr[-2]) &= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) &= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARROR:
-                *(Sint32 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARROR | MN_UNSIGNED:
-                *(Uint32 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+                *(Uint32 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARROL:
-                *(Sint32 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+                *(Sint32 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_VARROL | MN_UNSIGNED:
-                *(Uint32 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+                *(Uint32 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1657,61 +1659,61 @@ int instance_go (INSTANCE * r)
 
             case MN_WORD | MN_LETNP:
             case MN_WORD | MN_LETNP | MN_UNSIGNED:
-                (*(Sint16 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                (*(Sint16 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-=2 ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_LET:
             case MN_WORD | MN_LET | MN_UNSIGNED:
-                (*(Sint16 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                (*(Sint16 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_INC:
             case MN_WORD | MN_INC | MN_UNSIGNED:
-                (*(Sint16 *)(stack_ptr[-1])) += ptr[1] ;
+                (*(Sint16 *)VA(stack_ptr[-1])) += ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_WORD | MN_DEC:
             case MN_WORD | MN_DEC | MN_UNSIGNED:
-                (*(Sint16 *)(stack_ptr[-1])) -= ptr[1] ;
+                (*(Sint16 *)VA(stack_ptr[-1])) -= ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_WORD | MN_POSTDEC:
             case MN_WORD | MN_POSTDEC | MN_UNSIGNED:
-                (*(Sint16 *)(stack_ptr[-1])) -= ptr[1] ;
-                stack_ptr[-1] = *(Sint16 *)(stack_ptr[-1]) + ptr[1] ;
+                (*(Sint16 *)VA(stack_ptr[-1])) -= ptr[1] ;
+                stack_ptr[-1] = *(Sint16 *)VA(stack_ptr[-1]) + ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_WORD | MN_POSTINC:
             case MN_WORD | MN_POSTINC | MN_UNSIGNED:
-                *((Sint16 *)(stack_ptr[-1])) += ptr[1] ;
-                stack_ptr[-1] = *(Sint16 *)(stack_ptr[-1]) - ptr[1] ;
+                *((Sint16 *)VA(stack_ptr[-1])) += ptr[1] ;
+                stack_ptr[-1] = *(Sint16 *)VA(stack_ptr[-1]) - ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_WORD | MN_VARADD:
             case MN_WORD | MN_VARADD | MN_UNSIGNED:
-                *(Sint16 *)(stack_ptr[-2]) += stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) += stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARSUB:
             case MN_WORD | MN_VARSUB | MN_UNSIGNED:
-                *(Sint16 *)(stack_ptr[-2]) -= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) -= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARMUL:
             case MN_WORD | MN_VARMUL | MN_UNSIGNED:
-                *(Sint16 *)(stack_ptr[-2]) *= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) *= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1719,7 +1721,7 @@ int instance_go (INSTANCE * r)
             case MN_WORD | MN_VARDIV:
             case MN_WORD | MN_VARDIV | MN_UNSIGNED:
                 if ((Sint16)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
-                *(Sint16 *)(stack_ptr[-2]) /= (Sint16)stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) /= (Sint16)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1727,52 +1729,52 @@ int instance_go (INSTANCE * r)
             case MN_WORD | MN_VARMOD:
             case MN_WORD | MN_VARMOD | MN_UNSIGNED:
                 if ((Sint16)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
-                *(Sint16 *)(stack_ptr[-2]) %= (Sint16)stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) %= (Sint16)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VAROR:
             case MN_WORD | MN_VAROR | MN_UNSIGNED:
-                *(Sint16 *)(stack_ptr[-2]) |= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) |= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARXOR:
             case MN_WORD | MN_VARXOR | MN_UNSIGNED:
-                *(Sint16 *)(stack_ptr[-2]) ^= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) ^= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARAND:
             case MN_WORD | MN_VARAND | MN_UNSIGNED:
-                *(Sint16 *)(stack_ptr[-2]) &= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) &= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARROR:
-                *(Sint16 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARROR | MN_UNSIGNED:
-                *(Uint16 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+                *(Uint16 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARROL:
-                *(Sint16 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+                *(Sint16 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_WORD | MN_VARROL | MN_UNSIGNED:
-                *(Uint16 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+                *(Uint16 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1781,61 +1783,61 @@ int instance_go (INSTANCE * r)
 
             case MN_BYTE | MN_LETNP:
             case MN_BYTE | MN_LETNP | MN_UNSIGNED:
-                (*(Uint8 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                (*(Uint8 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-=2 ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_LET:
             case MN_BYTE | MN_LET | MN_UNSIGNED:
-                (*(Uint8 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+                (*(Uint8 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_INC:
             case MN_BYTE | MN_INC | MN_UNSIGNED:
-                (*(Uint8 *)(stack_ptr[-1])) += ptr[1] ;
+                (*(Uint8 *)VA(stack_ptr[-1])) += ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_BYTE | MN_DEC:
             case MN_BYTE | MN_DEC | MN_UNSIGNED:
-                (*(Uint8 *)(stack_ptr[-1])) -= ptr[1] ;
+                (*(Uint8 *)VA(stack_ptr[-1])) -= ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_BYTE | MN_POSTDEC:
             case MN_BYTE | MN_POSTDEC | MN_UNSIGNED:
-                (*(Uint8 *)(stack_ptr[-1])) -= ptr[1] ;
-                stack_ptr[-1] = *(Uint8 *)(stack_ptr[-1]) + ptr[1] ;
+                (*(Uint8 *)VA(stack_ptr[-1])) -= ptr[1] ;
+                stack_ptr[-1] = *(Uint8 *)VA(stack_ptr[-1]) + ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_BYTE | MN_POSTINC:
             case MN_BYTE | MN_POSTINC | MN_UNSIGNED:
-                *((Uint8 *)(stack_ptr[-1])) += ptr[1] ;
-                stack_ptr[-1] = *(Uint8 *)(stack_ptr[-1]) - ptr[1] ;
+                *((Uint8 *)VA(stack_ptr[-1])) += ptr[1] ;
+                stack_ptr[-1] = *(Uint8 *)VA(stack_ptr[-1]) - ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_BYTE | MN_VARADD:
             case MN_BYTE | MN_VARADD | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) += stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) += stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARSUB:
             case MN_BYTE | MN_VARSUB | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) -= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) -= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARMUL:
             case MN_BYTE | MN_VARMUL | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) *= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) *= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1843,7 +1845,7 @@ int instance_go (INSTANCE * r)
             case MN_BYTE | MN_VARDIV:
             case MN_BYTE | MN_VARDIV | MN_UNSIGNED:
                 if ((Uint8)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
-                *(Uint8 *)(stack_ptr[-2]) /= (Uint8)stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) /= (Uint8)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
@@ -1851,112 +1853,112 @@ int instance_go (INSTANCE * r)
             case MN_BYTE | MN_VARMOD:
             case MN_BYTE | MN_VARMOD | MN_UNSIGNED:
                 if ((Uint8)stack_ptr[-1] == 0) gr_error ("Error: Division por cero\n") ;
-                *(Uint8 *)(stack_ptr[-2]) %= (Uint8)stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) %= (Uint8)stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VAROR:
             case MN_BYTE | MN_VAROR | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) |= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) |= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARXOR:
             case MN_BYTE | MN_VARXOR | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) ^= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) ^= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARAND:
             case MN_BYTE | MN_VARAND | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) &= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) &= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARROR:
-                *(Sint8 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+                *(Sint8 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARROR | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARROL:
-                *(Sint8 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+                *(Sint8 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_BYTE | MN_VARROL | MN_UNSIGNED:
-                *(Uint8 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+                *(Uint8 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             /* Operaciones directas con variables tipo FLOAT */
             case MN_FLOAT | MN_LETNP:
-                (*(float *)(stack_ptr[-2])) = *(float *)&stack_ptr[-1] ;
+                (*(float *)VA(stack_ptr[-2])) = *(float *)&stack_ptr[-1] ;
                 stack_ptr-=2 ;
                 ptr++ ;
                 break ;
 
             case MN_FLOAT | MN_LET :
-                (*(float *)(stack_ptr[-2])) = *(float *)&stack_ptr[-1] ;
+                (*(float *)VA(stack_ptr[-2])) = *(float *)&stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_FLOAT | MN_INC:
-                (*(float *)(stack_ptr[-1])) += ptr[1] ;
+                (*(float *)VA(stack_ptr[-1])) += ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_FLOAT | MN_DEC:
-                (*(float *)(stack_ptr[-1])) -= ptr[1] ;
+                (*(float *)VA(stack_ptr[-1])) -= ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_FLOAT | MN_POSTDEC:
-                (*(float *)(stack_ptr[-1])) -= ptr[1] ;
-                stack_ptr[-1] = *(Uint32 *)(stack_ptr[-1]) + ptr[1] ;
+                (*(float *)VA(stack_ptr[-1])) -= ptr[1] ;
+                stack_ptr[-1] = *(Uint32 *)VA(stack_ptr[-1]) + ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_FLOAT | MN_POSTINC:
-                *((float *)(stack_ptr[-1])) += ptr[1] ;
-                stack_ptr[-1] = *(Uint32 *)(stack_ptr[-1]) - ptr[1] ;
+                *((float *)VA(stack_ptr[-1])) += ptr[1] ;
+                stack_ptr[-1] = *(Uint32 *)VA(stack_ptr[-1]) - ptr[1] ;
                 ptr+=2 ;
                 break ;
 
             case MN_FLOAT | MN_VARADD:
-                *(float *)(stack_ptr[-2]) += *(float *)&stack_ptr[-1] ;
+                *(float *)VA(stack_ptr[-2]) += *(float *)&stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_FLOAT | MN_VARSUB:
-                *(float *)(stack_ptr[-2]) -= *(float *)&stack_ptr[-1] ;
+                *(float *)VA(stack_ptr[-2]) -= *(float *)&stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_FLOAT | MN_VARMUL:
-                *(float *)(stack_ptr[-2]) *= *(float *)&stack_ptr[-1] ;
+                *(float *)VA(stack_ptr[-2]) *= *(float *)&stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;
 
             case MN_FLOAT | MN_VARDIV:
                 if (*(float *)&stack_ptr[-1] == 0.0) gr_error ("Error: Division por cero\n") ;
-                *(float *)(stack_ptr[-2]) /= *(float *)&stack_ptr[-1] ;
+                *(float *)VA(stack_ptr[-2]) /= *(float *)&stack_ptr[-1] ;
                 stack_ptr-- ;
                 ptr++ ;
                 break ;

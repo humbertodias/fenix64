@@ -91,7 +91,7 @@ Sint16 * blend_create ()
 
     if (!scr_initialized) return NULL;
 
-	blend = malloc(65536*2*sizeof(Sint16)) ;
+	blend = vm_malloc(65536*2*sizeof(Sint16)) ;
 	if (!blend) {
 	    gr_con_printf ("blend_create: sin memoria") ;
 	    return NULL;
@@ -115,7 +115,7 @@ Sint16 * blend_create ()
 
 void blend_free (Sint16 * blend)
 {
-	if (blend) free (blend) ;
+	if (blend && !vm_in_arena (blend)) free (blend) ;
     background_dirty = 1 ; // Temporal, hasta buscar una solucion mejor
 }
 

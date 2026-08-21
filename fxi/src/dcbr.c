@@ -185,8 +185,9 @@ int dcb_load_from (file * fp, int offset)
 		return 0 ;
 	}
 
-	globaldata = malloc (dcb.data.SGlobal + 4) ;
-	localdata  = malloc (dcb.data.SLocal + 4) ;
+	vm_arena_init () ;
+	globaldata = vm_malloc (dcb.data.SGlobal + 4) ;
+	localdata  = vm_malloc (dcb.data.SLocal + 4) ;
 	localstr   = (int *) malloc (4 * dcb.data.NLocStrings + 4) ;
 	dcb.proc   = (DCB_PROC *) malloc (sizeof(DCB_PROC) * (1+dcb.data.NProcs)) ;
 	procs      = (PROCDEF *) malloc (sizeof(PROCDEF) * (1+dcb.data.NProcs)) ;

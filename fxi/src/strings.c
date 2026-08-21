@@ -246,6 +246,10 @@ void string_load (file * fp)
 
 void string_use (int code)
 {
+    if (code < 0 || code > string_count || !string_ptr[code]) {
+        return;
+    }
+
     string_uct[code]++ ;
     if (report_string) {
         gr_con_printf ("[STRING] String %d used (count: %d)\n", code, string_uct[code]) ;

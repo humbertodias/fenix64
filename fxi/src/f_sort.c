@@ -34,6 +34,8 @@
 
 #include "fxi.h"
 
+#define VP(p) vm_ptr (my, (int)(p))
+
 int keyoffset = 0;
 
 /*
@@ -257,8 +259,8 @@ int fxi_sort (INSTANCE * my, int * params)
 {
 	// Get the description of the data to be sorted
 
-	void *			data = (void *)params[0];
-	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)params[1];
+	void *			data = VP(params[0]);
+	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)VP(params[1]);
 	DCB_TYPEDEF     copy = *type;
 	int				vars = params[2];
 	int				element_size;
@@ -312,14 +314,14 @@ int fxi_ksort (INSTANCE * my, int * params)
 {
 	// Get the description of the data to be sorted
 
-	void *			data = (void *)params[0];
-	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)params[1];
+	void *			data = VP(params[0]);
+	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)VP(params[1]);
 	DCB_TYPEDEF     copy = *type;
 	int				vars = params[2];
 	int				element_size;
 
-	void *			key_data = (void *)params[3];
-	DCB_TYPEDEF *	key_type = (DCB_TYPEDEF *)params[4];
+	void *			key_data = VP(params[3]);
+	DCB_TYPEDEF *	key_type = (DCB_TYPEDEF *)VP(params[4]);
 	int				key_vars = params[5];
 
 	// Is it valid?
@@ -381,8 +383,8 @@ int fxi_sort_n (INSTANCE * my, int * params)
 {
 	// Get the description of the data to be sorted
 
-	void *			data = (void *)params[0];
-	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)params[1];
+	void *			data = VP(params[0]);
+	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)VP(params[1]);
 	DCB_TYPEDEF     copy = *type;
 	int				vars = params[2];
 	int				element_size;
@@ -439,14 +441,14 @@ int fxi_ksort_n (INSTANCE * my, int * params)
 {
 	// Get the description of the data to be sorted
 
-	void *			data = (void *)params[0];
-	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)params[1];
+	void *			data = VP(params[0]);
+	DCB_TYPEDEF *	type = (DCB_TYPEDEF *)VP(params[1]);
 	DCB_TYPEDEF     copy = *type;
 	int				vars = params[2];
 	int				element_size;
 
-	void *			key_data = (void *)params[3];
-	DCB_TYPEDEF *	key_type = (DCB_TYPEDEF *)params[4];
+	void *			key_data = VP(params[3]);
+	DCB_TYPEDEF *	key_type = (DCB_TYPEDEF *)VP(params[4]);
 	int				key_vars = params[5];
 
 	// Is it valid?
