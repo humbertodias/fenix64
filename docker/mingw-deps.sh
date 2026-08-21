@@ -110,6 +110,8 @@ grep -q -- '-lvorbisfile' Makefile || {
   echo "SDL_mixer configured without Ogg/Vorbis" >&2
   exit 1
 }
+# libSDL_mixer.a does not contain vorbis objects; Fenix links
+# -lvorbisfile -lvorbis -logg (see configure.in).
 # playwave/playmus fail to link against SDL.dll (undefined WinMain).
 # 1.2.12 uses a `build` directory target, not `build/.created`.
 mkdir -p build
