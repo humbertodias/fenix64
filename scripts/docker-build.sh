@@ -120,7 +120,9 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
         export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}"
         export CPPFLAGS="-I${PREFIX}/include -I${PREFIX}/include/SDL $(pkg-config --cflags libpng zlib) ${CPPFLAGS:-}"
         export LDFLAGS="-L${PREFIX}/lib -static-libgcc ${LDFLAGS:-}"
-        export LIBS="$(pkg-config --libs libpng zlib) ${LIBS:-}"
+        # Do not put -lpng/-lz in LIBS: they would be linked after
+        # -Wl,-Bdynamic and pull libpng16.so.16 / libz.so.1.
+        export LIBS="${LIBS:-}"
       else
         export CPPFLAGS="$(pkg-config --cflags libpng zlib) ${CPPFLAGS:-}"
         export LIBS="$(pkg-config --libs libpng zlib) ${LIBS:-}"
@@ -139,7 +141,16 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
       BINS=(fxc/src/fxc fxi/src/fxi map/map fpg/fpg)
       if [[ "${LINKAGE}" == "static" ]]; then
         # sdl-config --libs omits X11/ALSA/Pulse needed by libSDL.a.
-        MAKE_ARGS=(SDL_LIBS="$("${SDL_CONFIG}" --static-libs | sed "s/-Wl,-rpath,[^ ]*//g")")
+        # fxi_LDADD puts -lpng after COMMON_LIBS (-Bdynamic -lc); wrap png/z/gif.
+        sdl_libs="$("${SDL_CONFIG}" --static-libs | sed "s/-Wl,-rpath,[^ ]*//g")"
+        png_z="-Wl,-Bstatic -lpng16 -lz -lgif -Wl,-Bdynamic -lm"
+        MAKE_ARGS=(
+          "SDL_LIBS=${sdl_libs}"
+          "fxi_LDADD=\$(SDL_MIXER_LIBS) \$(SDL_LIBS) ${png_z}"
+          "fxc_LDADD=\$(SDL_LIBS) -Wl,-Bstatic -lz -Wl,-Bdynamic"
+          "map_LDADD=${png_z}"
+          "fpg_LDADD=${png_z}"
+        )
       else
         MAKE_ARGS=()
       fi
@@ -160,8 +171,8 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
       "${STAGE}/fxc" -h || true
       if [[ "${LINKAGE}" == "static" ]]; then
         for bin in "${STAGE}"/*; do
-          if ldd "$bin" | grep -E "libSDL(-1\\.2|2)|libSDL_mixer"; then
-            echo "static $(basename "$bin") still needs SDL shared libraries:" >&2
+          if ldd "$bin" | grep -E "libSDL(-1\\.2|2)|libSDL_mixer|libpng|libz\\.so|libgif"; then
+            echo "static $(basename "$bin") still needs bundled shared libraries:" >&2
             ldd "$bin" >&2
             exit 1
           fi
