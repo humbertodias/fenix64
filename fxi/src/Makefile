@@ -89,9 +89,9 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = aarch64-apple-darwin25.6.0
-host_triplet = aarch64-apple-darwin25.6.0
-target_triplet = aarch64-apple-darwin25.6.0
+build_triplet = x86_64-pc-linux-gnu
+host_triplet = x86_64-pc-linux-gnu
+target_triplet = x86_64-pc-linux-gnu
 bin_PROGRAMS = fxi$(EXEEXT)
 subdir = fxi/src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -105,7 +105,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c offsets_rt.c i_main.c \
+am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
 	i_debug.c i_func.c g_main.c g_maps.c g_blit.c g_texts.c \
 	g_pal.c g_draw.c g_systexts.c g_console.c g_scroll.c g_flic.c \
 	g_mode7.c img_png.c img_pcx.c sound.c pathfind.c fnc_exports.c \
@@ -116,7 +116,7 @@ am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c offsets_rt.c i_main.c 
 	scaler_scanline.c scaler_normal.c scaler_hq2x.c \
 	scaler_scale2x.c mmx_main.c mmx_hspan.c fxi.rc
 am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
-	strings.$(OBJEXT) offsets_rt.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
+	strings.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
 	i_func.$(OBJEXT) g_main.$(OBJEXT) g_maps.$(OBJEXT) \
 	g_blit.$(OBJEXT) g_texts.$(OBJEXT) g_pal.$(OBJEXT) \
 	g_draw.$(OBJEXT) g_systexts.$(OBJEXT) g_console.$(OBJEXT) \
@@ -221,37 +221,30 @@ am__define_uniq_tagged_files = \
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp \
 	$(top_srcdir)/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' aclocal-1.18
+ACLOCAL = ${SHELL} '/src/missing' aclocal-1.18
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' autoconf
-AUTOHEADER = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' autoheader
-AUTOMAKE = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' automake-1.18
-AWK = awk
-CC = gcc -std=gnu23
+AUTOCONF = ${SHELL} '/src/missing' autoconf
+AUTOHEADER = ${SHELL} '/src/missing' autoheader
+AUTOMAKE = ${SHELL} '/src/missing' automake-1.18
+AWK = mawk
+CC = gcc
 CCDEPMODE = depmode=gcc3
-<<<<<<< HEAD
-CFLAGS = -O3 -finline-functions -ffast-math -I/opt/homebrew/include
-COMMON_CFLAGS = -Wall -DTARGET_MAC
-COMMON_LIBS =  -Wl,-rpath,/Users/humberto/dev/repository/personal/fenix64/deps/local/lib
-CPPFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include 
-=======
-CFLAGS = -std=gnu89 -O3 -finline-functions -ffast-math 
+CFLAGS = -O3 -finline-functions -ffast-math 
 COMMON_CFLAGS = -Wall -DTARGET_Linux
 COMMON_LIBS =  -Wl,-Bdynamic -lc
 CPPFLAGS = -I/opt/fenix-static/include -I/opt/fenix-static/include/SDL -I/usr/include/libpng16 
->>>>>>> a023ec8 (fix: statically link SDL 1.2 into Linux fxi and fxc)
 CSCOPE = cscope
 CTAGS = ctags
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"fenix\" -DPACKAGE_TARNAME=\"fenix\" -DPACKAGE_VERSION=\"0.93\" -DPACKAGE_STRING=\"fenix\ 0.93\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"fenix\" -DVERSION=\"0.93\" -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_UNISTD_H=1 -DSTDC_HEADERS=1
+DEFS = -DPACKAGE_NAME=\"fenix\" -DPACKAGE_TARNAME=\"fenix\" -DPACKAGE_VERSION=\"0.93\" -DPACKAGE_STRING=\"fenix\ 0.93\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"fenix\" -DVERSION=\"0.93\" -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_UNISTD_H=1 -DSTDC_HEADERS=1 -DHAVE_LIBX11=1
 DEPDIR = .deps
 DO_FPG = 
 DO_FXC = 
 DO_FXI = 
 DO_MAP = 
-ECHO_C = \c
-ECHO_N = 
+ECHO_C = 
+ECHO_N = -n
 ECHO_T = 
 ETAGS = etags
 EXEEXT = 
@@ -261,17 +254,13 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-<<<<<<< HEAD
-LDFLAGS = -L/Users/humberto/dev/repository/personal/fenix64/deps/local/lib -Wl,-rpath,@executable_path  -Wl,-search_paths_first
-=======
 LDFLAGS = -L/opt/fenix-static/lib -static-libgcc 
->>>>>>> a023ec8 (fix: statically link SDL 1.2 into Linux fxi and fxc)
 LIBOBJS = 
-LIBS = -L/Users/humberto/dev/repository/personal/fenix64/deps/local/lib -L/opt/homebrew/lib
+LIBS = -lX11 -L/src/deps/local/lib 
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' makeinfo
-MKDIR_P = mkdir -p
+MAKEINFO = ${SHELL} '/src/missing' makeinfo
+MKDIR_P = /usr/bin/mkdir -p
 OBJEXT = o
 PACKAGE = fenix
 PACKAGE_BUGREPORT = 
@@ -281,32 +270,23 @@ PACKAGE_TARNAME = fenix
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.93
 PATH_SEPARATOR = :
-PKG_CONFIG = /opt/homebrew/bin/pkg-config
+PKG_CONFIG = pkg-config --static
 PKG_CONFIG_LIBDIR = 
-<<<<<<< HEAD
-PKG_CONFIG_PATH = /Users/humberto/dev/repository/personal/fenix64/deps/local/lib/pkgconfig:/opt/homebrew/lib/pkgconfig
-SDL_CFLAGS = -I/opt/homebrew/include/SDL -D_THREAD_SAFE
-SDL_CONFIG = /opt/homebrew/bin/pkg-config sdl
-SDL_LIBS = -L/opt/homebrew/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
-SDL_MIXER_CFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include/SDL
-SDL_MIXER_LIBS = -lSDL_mixer
-=======
 PKG_CONFIG_PATH = /opt/fenix-static/lib/pkgconfig
 SDL_CFLAGS = -I/opt/fenix-static/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
 SDL_CONFIG = /opt/fenix-static/bin/sdl-config
 SDL_LIBS = -L/opt/fenix-static/lib -Wl,-rpath,/opt/fenix-static/lib -lSDL -lpthread -lm -lpthread
-SDL_MIXER_CFLAGS = 
+SDL_MIXER_CFLAGS = -I/src/deps/local/include -I/src/deps/local/include/SDL
 SDL_MIXER_LIBS = -lSDL_mixer -lvorbisfile -lvorbis -logg
->>>>>>> a023ec8 (fix: statically link SDL 1.2 into Linux fxi and fxc)
 SET_MAKE = 
-SHELL = /bin/sh
+SHELL = /bin/bash
 STRIP = 
 VERSION = 0.93
 WINDRES = 
-abs_builddir = /Users/humberto/dev/repository/personal/fenix64/fxi/src
-abs_srcdir = /Users/humberto/dev/repository/personal/fenix64/fxi/src
-abs_top_builddir = /Users/humberto/dev/repository/personal/fenix64
-abs_top_srcdir = /Users/humberto/dev/repository/personal/fenix64
+abs_builddir = /src/fxi/src
+abs_srcdir = /src/fxi/src
+abs_top_builddir = /src
+abs_top_srcdir = /src
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -316,26 +296,26 @@ am__tar = tar --format=ustar -chf - "$$tardir"
 am__untar = tar -xf -
 am__xargs_n = xargs -n
 bindir = ${exec_prefix}/bin
-build = aarch64-apple-darwin25.6.0
+build = x86_64-pc-linux-gnu
 build_alias = 
-build_cpu = aarch64
-build_os = darwin25.6.0
-build_vendor = apple
+build_cpu = x86_64
+build_os = linux-gnu
+build_vendor = pc
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = aarch64-apple-darwin25.6.0
+host = x86_64-pc-linux-gnu
 host_alias = 
-host_cpu = aarch64
-host_os = darwin25.6.0
-host_vendor = apple
+host_cpu = x86_64
+host_os = linux-gnu
+host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Users/humberto/dev/repository/personal/fenix64/install-sh
+install_sh = ${SHELL} /src/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -352,17 +332,17 @@ sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
 sysconfdir = ${prefix}/etc
-target = aarch64-apple-darwin25.6.0
+target = x86_64-pc-linux-gnu
 target_alias = 
-target_cpu = aarch64
-target_os = darwin25.6.0
-target_vendor = apple
+target_cpu = x86_64
+target_os = linux-gnu
+target_vendor = pc
 top_build_prefix = ../../
 top_builddir = ../..
 top_srcdir = ../..
 INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I../inc -DDEBUG
 fxi_LDADD = $(SDL_MIXER_LIBS) $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng -lm
-SOURCE_FILES = main.c dcbr.c instance.c strings.c offsets_rt.c \
+SOURCE_FILES = main.c dcbr.c instance.c strings.c \
               i_main.c i_debug.c i_func.c \
 	          g_main.c g_maps.c g_blit.c g_texts.c g_pal.c g_draw.c \
 		      g_systexts.c g_console.c g_scroll.c g_flic.c g_mode7.c \
