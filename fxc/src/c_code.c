@@ -1843,7 +1843,7 @@ expresion_result compile_expresion (int need_constant, int need_lvalue, BASETYPE
 {
 	expresion_result res ;
 
-	int pos ;
+	int pos = 0 ;
 	
 	if (code) pos = code->current ;
 
