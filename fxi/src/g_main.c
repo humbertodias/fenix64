@@ -40,7 +40,11 @@
 #include <string.h>
 #include <time.h>
 #include <stdarg.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 
 #include <SDL.h>
 #include <SDL_keysym.h>
@@ -1864,6 +1868,9 @@ void gr_draw_screen (GRAPH * dest, int restore_type, int dump_type)
 
 void gr_draw_frame ()
 {
+#ifdef TARGET_MAC
+	jump = 0 ;
+#endif
 	if (jump)
 	{
 		do_events() ;		/* Recoge teclas y demás     */
@@ -1911,15 +1918,152 @@ void gr_draw_frame ()
 
 static int screen_locked = 0 ;
 
+#ifdef TARGET_MAC
+/* RGB565, same masks as Fenix 16-bit and main's scale path.
+ * Do not use a 32-bit surface with Amask 0: SDL 1.2 then picks an
+ * alpha channel and scrambles R/B (wrong colors on Metal). */
+static SDL_Surface * mac_565 = NULL ;
+static SDL_Surface * mac_565s = NULL ;
+
+static SDL_Surface * mac_rgb565_get (SDL_Surface ** slot, int w, int h)
+{
+	if (*slot && ((*slot)->w != w || (*slot)->h != h))
+	{
+		SDL_FreeSurface (*slot) ;
+		*slot = NULL ;
+	}
+	if (!*slot)
+	{
+		*slot = SDL_CreateRGBSurface (SDL_SWSURFACE, w, h, 16,
+			0xF800, 0x07E0, 0x001F, 0) ;
+		if (*slot)
+			SDL_SetAlpha (*slot, 0, 255) ;
+	}
+	return *slot ;
+}
+
+static void mac_present (void)
+{
+	SDL_Surface * fb, * scaled ;
+	SDL_Color * pal ;
+	SDL_Rect dstrect ;
+	Uint16 mapped[256] ;
+	int n, x, y, row, col, scale ;
+	int src_w, src_h, dst_w, dst_h ;
+
+	if (!screen || !scrbitmap || !scrbitmap->data) return ;
+
+	src_w = scrbitmap->width ;
+	src_h = scrbitmap->height ;
+	if (src_w < 1 || src_h < 1) return ;
+
+	fb = mac_rgb565_get (&mac_565, src_w, src_h) ;
+	if (!fb || !fb->pixels) return ;
+
+	pal = (fade_step < 64) ? vpalette : palette ;
+	for (n = 0 ; n < 256 ; n++)
+		mapped[n] = (Uint16) SDL_MapRGB (fb->format, pal[n].r, pal[n].g, pal[n].b) ;
+
+	for (y = 0 ; y < src_h ; y++)
+	{
+		Uint16 * dst = (Uint16 *) ((Uint8 *) fb->pixels + y * fb->pitch) ;
+		if (scrbitmap->depth == 8)
+		{
+			Uint8 * src = (Uint8 *) scrbitmap->data + y * scrbitmap->pitch ;
+			for (x = 0 ; x < src_w ; x++)
+				dst[x] = mapped[src[x]] ;
+		}
+		else
+		{
+			memcpy (dst, (Uint8 *) scrbitmap->data + y * scrbitmap->pitch,
+				(size_t) src_w * 2) ;
+		}
+	}
+
+	scale = screen->w / src_w ;
+	if (screen->h / src_h < scale)
+		scale = screen->h / src_h ;
+	if (scale < 1) scale = 1 ;
+
+	dst_w = src_w * scale ;
+	dst_h = src_h * scale ;
+
+	if (scale == 1)
+		scaled = fb ;
+	else
+	{
+		scaled = mac_rgb565_get (&mac_565s, dst_w, dst_h) ;
+		if (!scaled || !scaled->pixels) return ;
+		for (y = 0 ; y < src_h ; y++)
+		{
+			Uint16 * src = (Uint16 *) ((Uint8 *) fb->pixels + y * fb->pitch) ;
+			for (row = 0 ; row < scale ; row++)
+			{
+				Uint16 * dst = (Uint16 *) ((Uint8 *) scaled->pixels
+					+ (y * scale + row) * scaled->pitch) ;
+				for (x = 0 ; x < src_w ; x++)
+				{
+					Uint16 p = src[x] ;
+					for (col = 0 ; col < scale ; col++)
+						*dst++ = p ;
+				}
+			}
+		}
+	}
+
+	if (screen->w != dst_w || screen->h != dst_h)
+		SDL_FillRect (screen, NULL, 0) ;
+
+	dstrect.x = (Sint16) ((screen->w - dst_w) / 2) ;
+	dstrect.y = (Sint16) ((screen->h - dst_h) / 2) ;
+	dstrect.w = (Uint16) dst_w ;
+	dstrect.h = (Uint16) dst_h ;
+	SDL_BlitSurface (scaled, NULL, screen, &dstrect) ;
+	SDL_Flip (screen) ;
+	SDL_UpdateRect (screen, 0, 0, 0, 0) ;
+}
+#endif
+
 int gr_lock_screen()
 {
 	if (screen_locked) return 1 ;
+
+#ifdef TARGET_MAC
+	/* Never map the game buffer onto the window surface: sdl12-compat
+	 * (Metal) often has NULL pixels and 8-bit palettes do not present. */
+	screen_locked = 1 ;
+	scrbitmap_is_fake = 0 ;
+	{
+		int w = scr_width ? scr_width : 320 ;
+		int h = scr_height ? scr_height : 200 ;
+		int d = enable_16bits ? 16 : 8 ;
+
+		if (scrbitmap && (scrbitmap->width != w || scrbitmap->height != h
+				|| scrbitmap->depth != d || !scrbitmap->data))
+		{
+			bitmap_destroy (scrbitmap) ;
+			scrbitmap = 0 ;
+		}
+		if (!scrbitmap)
+		{
+			scrbitmap = bitmap_new (0, w, h, d) ;
+			bitmap_add_cpoint (scrbitmap, 0, 0) ;
+			memset (scrbitmap->data, 0, (size_t)scrbitmap->pitch * scrbitmap->height) ;
+		}
+	}
+	return 1 ;
+#else
+
 	screen_locked = 1 ;
 
 	if (SDL_LockSurface (screen) < 0)
+	{
+		screen_locked = 0 ;
 		return -1 ;
+	}
 
-	if (!enable_2xscale && !double_buffer)
+	if (!enable_2xscale && !double_buffer &&
+	    screen->format->BytesPerPixel == (enable_16bits ? 2 : 1))
 	{
 		if (!scrbitmap)
 		{
@@ -1963,6 +2107,7 @@ int gr_lock_screen()
 	}
 
 	return 1 ;
+#endif
 }
 
 void gr_unlock_screen()
@@ -1971,6 +2116,12 @@ void gr_unlock_screen()
 
 	if (!screen_locked) return ;
 	screen_locked = 0 ;
+
+#ifdef TARGET_MAC
+	mac_present () ;
+	return ;
+#endif
+
 	if (screen->pixels == 0) return ;
 
 	if (enable_2xscale)
@@ -2018,12 +2169,14 @@ void gr_unlock_screen()
 	else if (scrbitmap_is_fake)
 	{
 		SDL_UnlockSurface (screen) ;
-
 		scrbitmap->data = 0 ;
 		if (double_buffer)
 			SDL_Flip(screen) ;
 		else
 		{
+#ifdef TARGET_MAC
+			SDL_UpdateRect (screen, 0, 0, 0, 0) ;
+#else
 			if (updaterects_count == 0)
 				/* Nothing to update! */ ;
 			else
@@ -2040,6 +2193,7 @@ void gr_unlock_screen()
 				}
 				SDL_UpdateRects (screen, updaterects_count, rects) ;
 			}
+#endif
 		}
 	}
 	else
@@ -2076,6 +2230,47 @@ void gr_unlock_screen()
 					memcpy (ptr, orig, screen->w * 2) ;
 					orig += scrbitmap->pitch / 2 ;
 					ptr  += screen->pitch / 2 ;
+				}
+			}
+		}
+		else if (!enable_16bits && screen->format->BytesPerPixel > 1)
+		{
+			Uint8 * orig, * dst ;
+			int n, x, bpp ;
+			Uint32 mapped[256] ;
+			SDL_Color * pal ;
+
+			pal = (fade_step < 64) ? vpalette : palette ;
+			bpp = screen->format->BytesPerPixel ;
+			for (n = 0 ; n < 256 ; n++)
+				mapped[n] = SDL_MapRGB (screen->format,
+					pal[n].r, pal[n].g, pal[n].b) ;
+			for (a = 0 ; a < scrbitmap->height && a < screen->h ; a++)
+			{
+				orig = (Uint8 *)scrbitmap->data + scrbitmap->pitch * a ;
+				dst = (Uint8 *)screen->pixels + screen->pitch * a ;
+				if (bpp == 2)
+				{
+					Uint16 * ptr = (Uint16 *) dst ;
+					for (x = 0 ; x < scrbitmap->width && x < screen->w ; x++)
+						ptr[x] = (Uint16) mapped[orig[x]] ;
+				}
+				else if (bpp == 4)
+				{
+					Uint32 * ptr = (Uint32 *) dst ;
+					for (x = 0 ; x < scrbitmap->width && x < screen->w ; x++)
+						ptr[x] = mapped[orig[x]] ;
+				}
+				else
+				{
+					for (x = 0 ; x < scrbitmap->width && x < screen->w ; x++)
+					{
+						Uint32 c = mapped[orig[x]] ;
+						dst[0] = (Uint8) (c) ;
+						dst[1] = (Uint8) (c >> 8) ;
+						dst[2] = (Uint8) (c >> 16) ;
+						dst += 3 ;
+					}
 				}
 			}
 		}
@@ -2151,6 +2346,11 @@ void gr_init(int width, int height)
 		SDL_FreeSurface(ico) ;		
 	}	
 
+#ifdef TARGET_MAC
+	/* mac_present integer-scales the native game buffer; do not also
+	 * double width/height here or scr_width stays at 2x without a restore. */
+	enable_2xscale = 0 ;
+#endif
 	if (width <= 400 && enable_2xscale)
 	{
 		width *= 2;
@@ -2173,8 +2373,44 @@ void gr_init(int width, int height)
 	else
 		sdl_flags |= SDL_SWSURFACE;
 
+#ifdef TARGET_MAC
+	/* Integer-scaled windowed 16-bit, same as main when SCALE is on.
+	 * 8-bit palettes do not present on Metal. */
+	{
+		int scale = 2 ;
+		int try_scale ;
+		const SDL_VideoInfo * vi = SDL_GetVideoInfo () ;
+		int dw = 1920, dh = 1080 ;
+
+		if (vi && vi->current_w >= 320 && vi->current_h >= 200)
+		{
+			dw = vi->current_w ;
+			dh = vi->current_h ;
+		}
+		scale = 1 ;
+		for (try_scale = 2 ; try_scale <= 8 ; try_scale++)
+		{
+			if (width * try_scale <= dw - 64 && height * try_scale <= dh - 80)
+				scale = try_scale ;
+		}
+		if (width <= 400 && scale < 2)
+			scale = 2 ;
+
+		sdl_flags = SDL_SWSURFACE | SDL_DOUBLEBUF ;
+		screen = NULL ;
+		while (scale >= 1 && !screen)
+		{
+			screen = SDL_SetVideoMode (width * scale, height * scale, 16, sdl_flags) ;
+			if (!screen)
+				screen = SDL_SetVideoMode (width * scale, height * scale, 0, sdl_flags) ;
+			if (!screen)
+				scale-- ;
+		}
+	}
+#else
 	screen = SDL_SetVideoMode (width, height, 
 		  ((enable_16bits || enable_2xscale) ? 16:8), sdl_flags);
+#endif
 
 	if (enable_2xscale)
 	{
@@ -2190,13 +2426,24 @@ void gr_init(int width, int height)
 		do_exit(1);
 	}
 
+#ifdef TARGET_MAC
+	fprintf (stderr, "[GRAPH] game %dx%d  window %dx%d %dbpp mask R=%08X G=%08X B=%08X  scale %dx\n",
+		width, height, screen->w, screen->h, screen->format->BitsPerPixel,
+		(unsigned) screen->format->Rmask,
+		(unsigned) screen->format->Gmask,
+		(unsigned) screen->format->Bmask,
+		screen->w / (width ? width : 1)) ;
+#endif
+
 	if (enable_16bits)
 	{
+#ifndef TARGET_MAC
 		if (screen->format->BytesPerPixel != 2)
 		{
 			printf ("Profundidad de color de 16 bits no soportada\n") ;
 			do_exit(1) ;
 		}
+#endif
 		for (n = 0 ; n < 65536 ; n++)
 		{
 			colorghost[n] = 

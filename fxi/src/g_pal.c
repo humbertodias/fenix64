@@ -144,29 +144,35 @@ static void activate_vpalette()
 		for (n = 0 ; n < 256 ; n++)
 			colorequiv[n] = SDL_MapRGB (screen->format,
 				palette[n].r, palette[n].g, palette[n].b) ;
+		return ;
 	}
-	else 
+
+	for (n = 0 ; n < 256 ; n++)
+	{
+		if (fade_pos.r <= 100)
+			vpalette[n].r = palette[n].r * fade_pos.r / 100;
+		else
+			vpalette[n].r = palette[n].r + (255-palette[n].r) * (fade_pos.r-100) / 100;
+
+		if (fade_pos.g <= 100)
+			vpalette[n].g = palette[n].g * fade_pos.g / 100;
+		else
+			vpalette[n].g = palette[n].g + (255-palette[n].g) * (fade_pos.g-100) / 100;
+
+		if (fade_pos.b <= 100)
+			vpalette[n].b = palette[n].b * fade_pos.b / 100;
+		else
+			vpalette[n].b = palette[n].b + (255-palette[n].b) * (fade_pos.b-100) / 100;
+	}
+
+	if (screen->format->BytesPerPixel > 1)
 	{
 		for (n = 0 ; n < 256 ; n++)
-		{
-			if (fade_pos.r <= 100)
-				vpalette[n].r = palette[n].r * fade_pos.r / 100;
-			else
-				vpalette[n].r = palette[n].r + (255-palette[n].r) * (fade_pos.r-100) / 100;
-
-			if (fade_pos.g <= 100)
-				vpalette[n].g = palette[n].g * fade_pos.g / 100;
-			else
-				vpalette[n].g = palette[n].g + (255-palette[n].g) * (fade_pos.g-100) / 100;
-
-			if (fade_pos.b <= 100)
-				vpalette[n].b = palette[n].b * fade_pos.b / 100;
-			else
-				vpalette[n].b = palette[n].b + (255-palette[n].b) * (fade_pos.b-100) / 100;
-		}
-
-		SDL_SetColors (screen, vpalette, 0, 256) ;
+			colorequiv[n] = SDL_MapRGB (screen->format,
+				vpalette[n].r, vpalette[n].g, vpalette[n].b) ;
 	}
+	else
+		SDL_SetColors (screen, vpalette, 0, 256) ;
 }
 
 void gr_roll_palette (int color0, int num, int inc)
@@ -631,7 +637,7 @@ void gr_refresh_palette()
 	}
 	else 
 	{
-		if (enable_16bits)
+		if (enable_16bits || (screen && screen->format->BytesPerPixel > 1))
 			for (n = 0 ; n < 256 ; n++)
 				colorequiv[n] = SDL_MapRGB (screen->format,
 					palette[n].r, palette[n].g, palette[n].b) ;
