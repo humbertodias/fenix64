@@ -105,14 +105,14 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__fxc_SOURCES_DIST = main.c main_div.c token.c identifier.c \
 	segment.c constants.c strings.c varspace.c procedure.c \
-	codeblock.c c_main.c c_data.c c_code.c c_debug.c dcbw.c \
+	codeblock.c c_main.c c_data.c c_code.c c_debug.c c_fixed.c dcbw.c \
 	messages.c error.c sysstub.c typedef.c ../../common/files.c \
 	../../common/xctype.c fxc.rc
 am__objects_1 = main.$(OBJEXT) main_div.$(OBJEXT) token.$(OBJEXT) \
 	identifier.$(OBJEXT) segment.$(OBJEXT) constants.$(OBJEXT) \
 	strings.$(OBJEXT) varspace.$(OBJEXT) procedure.$(OBJEXT) \
 	codeblock.$(OBJEXT) c_main.$(OBJEXT) c_data.$(OBJEXT) \
-	c_code.$(OBJEXT) c_debug.$(OBJEXT) dcbw.$(OBJEXT) \
+	c_code.$(OBJEXT) c_debug.$(OBJEXT) c_fixed.$(OBJEXT) dcbw.$(OBJEXT) \
 	messages.$(OBJEXT) error.$(OBJEXT) sysstub.$(OBJEXT) \
 	typedef.$(OBJEXT) files.$(OBJEXT) xctype.$(OBJEXT)
 @HAVE_WINDRES_FALSE@am_fxc_OBJECTS = $(am__objects_1)
@@ -136,7 +136,7 @@ DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/c_code.Po ./$(DEPDIR)/c_data.Po \
-	./$(DEPDIR)/c_debug.Po ./$(DEPDIR)/c_main.Po \
+	./$(DEPDIR)/c_debug.Po ./$(DEPDIR)/c_fixed.Po ./$(DEPDIR)/c_main.Po \
 	./$(DEPDIR)/codeblock.Po ./$(DEPDIR)/constants.Po \
 	./$(DEPDIR)/dcbw.Po ./$(DEPDIR)/error.Po ./$(DEPDIR)/files.Po \
 	./$(DEPDIR)/identifier.Po ./$(DEPDIR)/main.Po \
@@ -312,7 +312,7 @@ INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) -I../../include -I../inc
 fxc_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz
 SOURCE_FILES = main.c main_div.c token.c identifier.c segment.c \
               constants.c strings.c varspace.c procedure.c codeblock.c \
-              c_main.c c_data.c c_code.c c_debug.c dcbw.c \
+              c_main.c c_data.c c_code.c c_debug.c c_fixed.c dcbw.c \
               messages.c error.c \
               sysstub.c typedef.c ../../common/files.c ../../common/xctype.c
 
@@ -407,6 +407,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/c_code.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/c_data.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/c_debug.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/c_fixed.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/c_main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/codeblock.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/constants.Po@am__quote@ # am--include-marker

@@ -176,7 +176,7 @@ AUTOMAKE = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' au
 AWK = awk
 CC = gcc -std=gnu23
 CCDEPMODE = depmode=gcc3
-CFLAGS = -O3 -finline-functions -ffast-math -I/opt/homebrew/include
+CFLAGS = -std=gnu89 -Wno-incompatible-function-pointer-types -O3 -finline-functions -ffast-math -I/opt/homebrew/include
 COMMON_CFLAGS = -Wall -DTARGET_MAC
 COMMON_LIBS =  -Wl,-rpath,/Users/humberto/dev/repository/personal/fenix64/deps/local/lib
 CPPFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include 

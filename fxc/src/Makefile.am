@@ -9,7 +9,7 @@ fxc_LDADD = $(SDL_LIBS) $(COMMON_LIBS) -lz
 
 SOURCE_FILES = main.c main_div.c token.c identifier.c segment.c \
               constants.c strings.c varspace.c procedure.c codeblock.c \
-              c_main.c c_data.c c_code.c c_debug.c dcbw.c \
+              c_main.c c_data.c c_code.c c_debug.c c_fixed.c dcbw.c \
               messages.c error.c \
               sysstub.c typedef.c ../../common/files.c ../../common/xctype.c
 

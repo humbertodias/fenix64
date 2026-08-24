@@ -109,12 +109,10 @@ am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
 	i_debug.c i_func.c g_main.c g_maps.c g_blit.c g_texts.c \
 	g_pal.c g_draw.c g_systexts.c g_console.c g_scroll.c g_flic.c \
 	g_mode7.c img_png.c img_pcx.c sound.c pathfind.c fnc_exports.c \
-	g_conversion.c g_font.c g_fpg.c g_blendop.c f_bgload.c f_cd.c \
-	f_sort.c fbm.c fgc.c fpl.c f_joystick.c i_copy.c \
+	g_conversion.c g_font.c g_fpg.c g_blendop.c \
 	../../common/dirs.c ../../common/regex.c ../../common/files.c \
 	../../common/xctype.c g_profiler.c i_saveload.c \
-	scaler_scanline.c scaler_normal.c scaler_hq2x.c \
-	scaler_scale2x.c mmx_main.c mmx_hspan.c fxi.rc
+	mmx_main.c mmx_hspan.c fxi.rc
 am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
 	strings.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
 	i_func.$(OBJEXT) g_main.$(OBJEXT) g_maps.$(OBJEXT) \
@@ -124,13 +122,9 @@ am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
 	img_png.$(OBJEXT) img_pcx.$(OBJEXT) sound.$(OBJEXT) \
 	pathfind.$(OBJEXT) fnc_exports.$(OBJEXT) \
 	g_conversion.$(OBJEXT) g_font.$(OBJEXT) g_fpg.$(OBJEXT) \
-	g_blendop.$(OBJEXT) f_bgload.$(OBJEXT) f_cd.$(OBJEXT) \
-	f_sort.$(OBJEXT) fbm.$(OBJEXT) fgc.$(OBJEXT) fpl.$(OBJEXT) \
-	f_joystick.$(OBJEXT) i_copy.$(OBJEXT) dirs.$(OBJEXT) \
+	g_blendop.$(OBJEXT) dirs.$(OBJEXT) \
 	regex.$(OBJEXT) files.$(OBJEXT) xctype.$(OBJEXT) \
 	g_profiler.$(OBJEXT) i_saveload.$(OBJEXT) \
-	scaler_scanline.$(OBJEXT) scaler_normal.$(OBJEXT) \
-	scaler_hq2x.$(OBJEXT) scaler_scale2x.$(OBJEXT) \
 	mmx_main.$(OBJEXT) mmx_hspan.$(OBJEXT)
 @HAVE_WINDRES_FALSE@am_fxi_OBJECTS = $(am__objects_1)
 @HAVE_WINDRES_TRUE@am_fxi_OBJECTS = $(am__objects_1) FXI.$(OBJEXT)
@@ -153,11 +147,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/dcbr.Po ./$(DEPDIR)/dirs.Po \
-	./$(DEPDIR)/f_bgload.Po ./$(DEPDIR)/f_cd.Po \
-	./$(DEPDIR)/f_joystick.Po ./$(DEPDIR)/f_sort.Po \
-	./$(DEPDIR)/fbm.Po ./$(DEPDIR)/fgc.Po ./$(DEPDIR)/files.Po \
-	./$(DEPDIR)/fnc_exports.Po ./$(DEPDIR)/fpl.Po \
+am__depfiles_remade = ./$(DEPDIR)/dcbr.Po ./$(DEPDIR)/dirs.Po \ \ \ ./$(DEPDIR)/files.Po \
+	./$(DEPDIR)/fnc_exports.Po \
 	./$(DEPDIR)/g_blendop.Po ./$(DEPDIR)/g_blit.Po \
 	./$(DEPDIR)/g_console.Po ./$(DEPDIR)/g_conversion.Po \
 	./$(DEPDIR)/g_draw.Po ./$(DEPDIR)/g_flic.Po \
@@ -165,16 +156,13 @@ am__depfiles_remade = ./$(DEPDIR)/dcbr.Po ./$(DEPDIR)/dirs.Po \
 	./$(DEPDIR)/g_main.Po ./$(DEPDIR)/g_maps.Po \
 	./$(DEPDIR)/g_mode7.Po ./$(DEPDIR)/g_pal.Po \
 	./$(DEPDIR)/g_profiler.Po ./$(DEPDIR)/g_scroll.Po \
-	./$(DEPDIR)/g_systexts.Po ./$(DEPDIR)/g_texts.Po \
-	./$(DEPDIR)/i_copy.Po ./$(DEPDIR)/i_debug.Po \
+	./$(DEPDIR)/g_systexts.Po ./$(DEPDIR)/g_texts.Po \ ./$(DEPDIR)/i_debug.Po \
 	./$(DEPDIR)/i_func.Po ./$(DEPDIR)/i_main.Po \
 	./$(DEPDIR)/i_saveload.Po ./$(DEPDIR)/img_pcx.Po \
 	./$(DEPDIR)/img_png.Po ./$(DEPDIR)/instance.Po \
 	./$(DEPDIR)/main.Po ./$(DEPDIR)/mmx_hspan.Po \
 	./$(DEPDIR)/mmx_main.Po ./$(DEPDIR)/pathfind.Po \
-	./$(DEPDIR)/regex.Po ./$(DEPDIR)/scaler_hq2x.Po \
-	./$(DEPDIR)/scaler_normal.Po ./$(DEPDIR)/scaler_scale2x.Po \
-	./$(DEPDIR)/scaler_scanline.Po ./$(DEPDIR)/sound.Po \
+	./$(DEPDIR)/regex.Po \ \ ./$(DEPDIR)/sound.Po \
 	./$(DEPDIR)/strings.Po ./$(DEPDIR)/xctype.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -347,12 +335,10 @@ SOURCE_FILES = main.c dcbr.c instance.c strings.c \
 	          g_main.c g_maps.c g_blit.c g_texts.c g_pal.c g_draw.c \
 		      g_systexts.c g_console.c g_scroll.c g_flic.c g_mode7.c \
 		      img_png.c img_pcx.c sound.c pathfind.c fnc_exports.c \
-		      g_conversion.c g_font.c g_fpg.c g_blendop.c f_bgload.c \
-		      f_cd.c f_sort.c fbm.c fgc.c fpl.c f_joystick.c i_copy.c  \
+		      g_conversion.c g_font.c g_fpg.c g_blendop.c \
 		      ../../common/dirs.c ../../common/regex.c \
 		      ../../common/files.c ../../common/xctype.c \
 		      g_profiler.c i_saveload.c \
-		      scaler_scanline.c scaler_normal.c scaler_hq2x.c scaler_scale2x.c \
 		      mmx_main.c mmx_hspan.c
 
 
@@ -450,15 +436,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcbr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dirs.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/f_bgload.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/f_cd.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/f_joystick.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/f_sort.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbm.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fgc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/files.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fnc_exports.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fpl.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g_blendop.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g_blit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g_console.Po@am__quote@ # am--include-marker
@@ -475,7 +454,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g_scroll.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g_systexts.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g_texts.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/i_copy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/i_debug.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/i_func.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/i_main.Po@am__quote@ # am--include-marker
@@ -488,10 +466,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmx_main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pathfind.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regex.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scaler_hq2x.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scaler_normal.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scaler_scale2x.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scaler_scanline.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sound.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strings.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xctype.Po@am__quote@ # am--include-marker
@@ -701,15 +675,15 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 distclean: distclean-am
 	-rm -f ./$(DEPDIR)/dcbr.Po
 	-rm -f ./$(DEPDIR)/dirs.Po
-	-rm -f ./$(DEPDIR)/f_bgload.Po
-	-rm -f ./$(DEPDIR)/f_cd.Po
-	-rm -f ./$(DEPDIR)/f_joystick.Po
-	-rm -f ./$(DEPDIR)/f_sort.Po
-	-rm -f ./$(DEPDIR)/fbm.Po
-	-rm -f ./$(DEPDIR)/fgc.Po
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
 	-rm -f ./$(DEPDIR)/files.Po
 	-rm -f ./$(DEPDIR)/fnc_exports.Po
-	-rm -f ./$(DEPDIR)/fpl.Po
+	-rm -f
 	-rm -f ./$(DEPDIR)/g_blendop.Po
 	-rm -f ./$(DEPDIR)/g_blit.Po
 	-rm -f ./$(DEPDIR)/g_console.Po
@@ -726,7 +700,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/g_scroll.Po
 	-rm -f ./$(DEPDIR)/g_systexts.Po
 	-rm -f ./$(DEPDIR)/g_texts.Po
-	-rm -f ./$(DEPDIR)/i_copy.Po
+	-rm -f
 	-rm -f ./$(DEPDIR)/i_debug.Po
 	-rm -f ./$(DEPDIR)/i_func.Po
 	-rm -f ./$(DEPDIR)/i_main.Po
@@ -739,10 +713,10 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/mmx_main.Po
 	-rm -f ./$(DEPDIR)/pathfind.Po
 	-rm -f ./$(DEPDIR)/regex.Po
-	-rm -f ./$(DEPDIR)/scaler_hq2x.Po
-	-rm -f ./$(DEPDIR)/scaler_normal.Po
-	-rm -f ./$(DEPDIR)/scaler_scale2x.Po
-	-rm -f ./$(DEPDIR)/scaler_scanline.Po
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
 	-rm -f ./$(DEPDIR)/sound.Po
 	-rm -f ./$(DEPDIR)/strings.Po
 	-rm -f ./$(DEPDIR)/xctype.Po
@@ -793,15 +767,15 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/dcbr.Po
 	-rm -f ./$(DEPDIR)/dirs.Po
-	-rm -f ./$(DEPDIR)/f_bgload.Po
-	-rm -f ./$(DEPDIR)/f_cd.Po
-	-rm -f ./$(DEPDIR)/f_joystick.Po
-	-rm -f ./$(DEPDIR)/f_sort.Po
-	-rm -f ./$(DEPDIR)/fbm.Po
-	-rm -f ./$(DEPDIR)/fgc.Po
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
 	-rm -f ./$(DEPDIR)/files.Po
 	-rm -f ./$(DEPDIR)/fnc_exports.Po
-	-rm -f ./$(DEPDIR)/fpl.Po
+	-rm -f
 	-rm -f ./$(DEPDIR)/g_blendop.Po
 	-rm -f ./$(DEPDIR)/g_blit.Po
 	-rm -f ./$(DEPDIR)/g_console.Po
@@ -818,7 +792,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/g_scroll.Po
 	-rm -f ./$(DEPDIR)/g_systexts.Po
 	-rm -f ./$(DEPDIR)/g_texts.Po
-	-rm -f ./$(DEPDIR)/i_copy.Po
+	-rm -f
 	-rm -f ./$(DEPDIR)/i_debug.Po
 	-rm -f ./$(DEPDIR)/i_func.Po
 	-rm -f ./$(DEPDIR)/i_main.Po
@@ -831,10 +805,10 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/mmx_main.Po
 	-rm -f ./$(DEPDIR)/pathfind.Po
 	-rm -f ./$(DEPDIR)/regex.Po
-	-rm -f ./$(DEPDIR)/scaler_hq2x.Po
-	-rm -f ./$(DEPDIR)/scaler_normal.Po
-	-rm -f ./$(DEPDIR)/scaler_scale2x.Po
-	-rm -f ./$(DEPDIR)/scaler_scanline.Po
+	-rm -f
+	-rm -f
+	-rm -f
+	-rm -f
 	-rm -f ./$(DEPDIR)/sound.Po
 	-rm -f ./$(DEPDIR)/strings.Po
 	-rm -f ./$(DEPDIR)/xctype.Po
