@@ -198,10 +198,17 @@ AUTOMAKE = ${SHELL} '/Users/humberto/dev/repository/personal/fenix64/missing' au
 AWK = awk
 CC = gcc -std=gnu23
 CCDEPMODE = depmode=gcc3
+<<<<<<< HEAD
 CFLAGS = -O3 -finline-functions -ffast-math -I/opt/homebrew/include
 COMMON_CFLAGS = -Wall -DTARGET_MAC
 COMMON_LIBS =  -Wl,-rpath,/Users/humberto/dev/repository/personal/fenix64/deps/local/lib
 CPPFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include 
+=======
+CFLAGS = -std=gnu89 -O3 -finline-functions -ffast-math 
+COMMON_CFLAGS = -Wall -DTARGET_Linux
+COMMON_LIBS =  -Wl,-Bdynamic -lc
+CPPFLAGS = -I/opt/fenix-static/include -I/opt/fenix-static/include/SDL -I/usr/include/libpng16 
+>>>>>>> a023ec8 (fix: statically link SDL 1.2 into Linux fxi and fxc)
 CSCOPE = cscope
 CTAGS = ctags
 CYGPATH_W = echo
@@ -222,7 +229,11 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
+<<<<<<< HEAD
 LDFLAGS = -L/Users/humberto/dev/repository/personal/fenix64/deps/local/lib -Wl,-rpath,@executable_path  -Wl,-search_paths_first
+=======
+LDFLAGS = -L/opt/fenix-static/lib -static-libgcc 
+>>>>>>> a023ec8 (fix: statically link SDL 1.2 into Linux fxi and fxc)
 LIBOBJS = 
 LIBS = -L/Users/humberto/dev/repository/personal/fenix64/deps/local/lib -L/opt/homebrew/lib
 LTLIBOBJS = 
@@ -240,12 +251,21 @@ PACKAGE_VERSION = 0.93
 PATH_SEPARATOR = :
 PKG_CONFIG = /opt/homebrew/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
+<<<<<<< HEAD
 PKG_CONFIG_PATH = /Users/humberto/dev/repository/personal/fenix64/deps/local/lib/pkgconfig:/opt/homebrew/lib/pkgconfig
 SDL_CFLAGS = -I/opt/homebrew/include/SDL -D_THREAD_SAFE
 SDL_CONFIG = /opt/homebrew/bin/pkg-config sdl
 SDL_LIBS = -L/opt/homebrew/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
 SDL_MIXER_CFLAGS = -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include -I/Users/humberto/dev/repository/personal/fenix64/deps/local/include/SDL
 SDL_MIXER_LIBS = -lSDL_mixer
+=======
+PKG_CONFIG_PATH = /opt/fenix-static/lib/pkgconfig
+SDL_CFLAGS = -I/opt/fenix-static/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
+SDL_CONFIG = /opt/fenix-static/bin/sdl-config
+SDL_LIBS = -L/opt/fenix-static/lib -Wl,-rpath,/opt/fenix-static/lib -lSDL -lpthread -lm -lpthread
+SDL_MIXER_CFLAGS = 
+SDL_MIXER_LIBS = -lSDL_mixer -lvorbisfile -lvorbis -logg
+>>>>>>> a023ec8 (fix: statically link SDL 1.2 into Linux fxi and fxc)
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 

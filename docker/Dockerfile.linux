@@ -1,5 +1,6 @@
 # Linux x86_64 toolchain (Ubuntu 22.04 still ships SDL 1.2).
-# libsdl-mixer1.2 is built with Ogg/Vorbis; no extra libogg/libvorbis packages.
+# Distro SDL/mixer -dev are for the shared artifacts. linux-deps.sh installs
+# static SDL 1.2 + Ogg-only SDL_mixer into /opt/fenix-static for linux-static.
 #   docker build --platform linux/amd64 -t fenix-linux -f docker/Dockerfile.linux docker/
 #   bash scripts/docker-build.sh linux
 
@@ -7,7 +8,8 @@ FROM ubuntu:22.04
 
 ARG TARGETPLATFORM
 ENV DEBIAN_FRONTEND=noninteractive \
-    PLATFORM=linux
+    PLATFORM=linux \
+    FENIX_STATIC_PREFIX=/opt/fenix-static
 
 RUN echo "fenix-linux ${TARGETPLATFORM}" \
     && apt-get update && apt-get install -y --no-install-recommends \
@@ -24,8 +26,26 @@ RUN echo "fenix-linux ${TARGETPLATFORM}" \
         libgif-dev \
         libx11-dev \
         libxext-dev \
+        libasound2-dev \
+        libpulse-dev \
+        libogg-dev \
+        libvorbis-dev \
     && rm -rf /var/lib/apt/lists/* \
     && git config --system --add safe.directory '*'
+
+COPY linux-deps.sh config.guess config.sub /tmp/
+RUN bash /tmp/linux-deps.sh && rm -f /tmp/linux-deps.sh
+# linuxdeploy AppImage: extract at image build so CI/Docker need no FUSE.
+RUN curl -fL --retry 5 --retry-all-errors \
+      -o /tmp/linuxdeploy.AppImage \
+      https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
+    && chmod +x /tmp/linuxdeploy.AppImage \
+    && cd /opt \
+    && /tmp/linuxdeploy.AppImage --appimage-extract \
+    && mv squashfs-root linuxdeploy \
+    && rm -f /tmp/linuxdeploy.AppImage
+ENV LINUXDEPLOY=/opt/linuxdeploy/AppRun \
+    PATCHELF=/opt/linuxdeploy/usr/bin/patchelf
 
 WORKDIR /src
 CMD ["bash"]

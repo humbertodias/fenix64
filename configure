@@ -5968,6 +5968,7 @@ printf %s "checking for SDL_mixer.h... " >&6; }
     for d in \
         $MINGW_PREFIX/include/SDL \
         $FENIX_DEPS/include/SDL \
+        /opt/fenix-static/include/SDL \
         /usr/include/SDL \
         /usr/local/include/SDL \
         /opt/homebrew/include/SDL
@@ -5996,10 +5997,12 @@ printf '%s\n' "no" >&6; }
     fi
 
     case "$target_os" in
-        mingw*)
+        mingw*|linux-gnu*|kfreebsd-gnu*)
             # --disable-music-ogg-shared leaves ov_* unresolved in libSDL_mixer.a
             SDL_MIXER_LIBS="$SDL_MIXER_LIBS -lvorbisfile -lvorbis -logg"
             ;;
+    esac
+    case "$target_os" in
         linux-gnu*|kfreebsd-gnu*)
             { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for XQueryTree,XMoveWindow in -lX11" >&5
 printf %s "checking for XQueryTree,XMoveWindow in -lX11... " >&6; }
