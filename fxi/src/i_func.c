@@ -221,8 +221,8 @@ static int fxi_advance (INSTANCE * my, int * params)
 
 	angle = LOCDWORD(my,ANGLE) ;
 	if (!cos_table_initialized) init_cos_tables() ;
-	LOCDWORD(my,COORDX) += fixtoi(fmul(fcos(angle), itofix(params[0]))) ;
-	LOCDWORD(my,COORDY) -= fixtoi(fmul(fsin(angle), itofix(params[0]))) ;
+	LOCDWORD(my,COORDX) += fixtoi(fxmul(fxcos(angle), itofix(params[0]))) ;
+	LOCDWORD(my,COORDY) -= fixtoi(fxmul(fxsin(angle), itofix(params[0]))) ;
 	return 1 ;
 }
 
@@ -232,8 +232,8 @@ static int fxi_xadvance (INSTANCE * my, int * params)
 
 	angle = params[0] ;
 	if (!cos_table_initialized) init_cos_tables() ;
-	LOCDWORD(my,COORDX) += fixtoi(fmul(fcos(angle), itofix(params[1]))) ;
-	LOCDWORD(my,COORDY) -= fixtoi(fmul(fsin(angle), itofix(params[1]))) ;
+	LOCDWORD(my,COORDX) += fixtoi(fxmul(fxcos(angle), itofix(params[1]))) ;
+	LOCDWORD(my,COORDY) -= fixtoi(fxmul(fxsin(angle), itofix(params[1]))) ;
 	return 1 ;
 }
 

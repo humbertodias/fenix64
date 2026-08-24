@@ -89,8 +89,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-pc-linux-gnu
-host_triplet = x86_64-w64-mingw32
-target_triplet = x86_64-w64-mingw32
+host_triplet = x86_64-pc-linux-gnu
+target_triplet = x86_64-pc-linux-gnu
 bin_PROGRAMS = fxc$(EXEEXT)
 subdir = fxc/src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -115,8 +115,8 @@ am__objects_1 = main.$(OBJEXT) main_div.$(OBJEXT) token.$(OBJEXT) \
 	c_code.$(OBJEXT) c_debug.$(OBJEXT) c_fixed.$(OBJEXT) dcbw.$(OBJEXT) \
 	messages.$(OBJEXT) error.$(OBJEXT) sysstub.$(OBJEXT) \
 	typedef.$(OBJEXT) files.$(OBJEXT) xctype.$(OBJEXT)
-#am_fxc_OBJECTS = $(am__objects_1)
-am_fxc_OBJECTS = $(am__objects_1) fxc.$(OBJEXT)
+am_fxc_OBJECTS = $(am__objects_1)
+#am_fxc_OBJECTS = $(am__objects_1) fxc.$(OBJEXT)
 fxc_OBJECTS = $(am_fxc_OBJECTS)
 am__DEPENDENCIES_1 =
 fxc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -196,16 +196,16 @@ AUTOCONF = ${SHELL} '/src/missing' autoconf
 AUTOHEADER = ${SHELL} '/src/missing' autoheader
 AUTOMAKE = ${SHELL} '/src/missing' automake-1.18
 AWK = mawk
-CC = x86_64-w64-mingw32-gcc
+CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -std=gnu89 -O3 -finline-functions -ffast-math -I/opt/mingw/include
-COMMON_CFLAGS = -I/opt/mingw/include -DTARGET_Win32 -DWIN32 -D_WIN32
-COMMON_LIBS = -L/opt/mingw/lib -lz -lshlwapi
-CPPFLAGS = -I/opt/mingw/include
+CFLAGS = -std=gnu89 -O3 -finline-functions -ffast-math 
+COMMON_CFLAGS = -Wall -DTARGET_Linux
+COMMON_LIBS =  -Wl,-Bdynamic -lc
+CPPFLAGS = -I/usr/include/libpng16 
 CSCOPE = cscope
 CTAGS = ctags
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"fenix\" -DPACKAGE_TARNAME=\"fenix\" -DPACKAGE_VERSION=\"0.93\" -DPACKAGE_STRING=\"fenix\ 0.93\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"fenix\" -DVERSION=\"0.93\" -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_UNISTD_H=1 -DSTDC_HEADERS=1
+DEFS = -DPACKAGE_NAME=\"fenix\" -DPACKAGE_TARNAME=\"fenix\" -DPACKAGE_VERSION=\"0.93\" -DPACKAGE_STRING=\"fenix\ 0.93\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"fenix\" -DVERSION=\"0.93\" -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_UNISTD_H=1 -DSTDC_HEADERS=1 -DHAVE_LIBX11=1
 DEPDIR = .deps
 DO_FPG = 
 DO_FXC = 
@@ -215,16 +215,16 @@ ECHO_C =
 ECHO_N = -n
 ECHO_T = 
 ETAGS = etags
-EXEEXT = .exe
+EXEEXT = 
 GIF_LIB = -lgif
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LDFLAGS = -L/opt/mingw/lib -static
+LDFLAGS =  -static-libgcc
 LIBOBJS = 
-LIBS = -L/src/deps/local/lib -L/opt/mingw/lib
+LIBS = -lX11 -L/src/deps/local/lib -lpng16 -lz 
 LTLIBOBJS = 
 MAINT = #
 MAKEINFO = ${SHELL} '/src/missing' makeinfo
@@ -238,24 +238,24 @@ PACKAGE_TARNAME = fenix
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.93
 PATH_SEPARATOR = :
-PKG_CONFIG = /usr/bin/x86_64-w64-mingw32-pkg-config
-PKG_CONFIG_LIBDIR = /opt/mingw/lib/pkgconfig
+PKG_CONFIG = pkg-config --static
+PKG_CONFIG_LIBDIR = 
 PKG_CONFIG_PATH = 
-SDL_CFLAGS = -D_GNU_SOURCE=1 -Dmain=SDL_main -I/opt/mingw/include/SDL
-SDL_CONFIG = /usr/bin/x86_64-w64-mingw32-pkg-config sdl
-SDL_LIBS = -L/opt/mingw/lib -lmingw32 -lSDLmain -lSDL -mwindows -lwinmm -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lversion -luuid -lsetupapi -ldxguid -ldinput8 -lshell32
+SDL_CFLAGS = -D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL
+SDL_CONFIG = pkg-config --static sdl
+SDL_LIBS = -lSDL -lpthread -lm -ldl -lasound -lm -ldl -lpthread -lpulse-simple -lpulse -lX11 -lXext -lcaca -lpthread
 SDL_MIXER_CFLAGS = -I/src/deps/local/include -I/src/deps/local/include/SDL
-SDL_MIXER_LIBS = -lSDL_mixer -lvorbisfile -lvorbis -logg
+SDL_MIXER_LIBS = -lSDL_mixer
 SET_MAKE = 
 SHELL = /bin/bash
-STRIP = x86_64-w64-mingw32-strip
+STRIP = 
 VERSION = 0.93
-WINDRES = x86_64-w64-mingw32-windres
+WINDRES = 
 abs_builddir = /src/fxc/src
 abs_srcdir = /src/fxc/src
 abs_top_builddir = /src
 abs_top_srcdir = /src
-ac_ct_CC = 
+ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
 am__quote = 
@@ -265,7 +265,7 @@ am__untar = tar -xf -
 am__xargs_n = xargs -n
 bindir = ${exec_prefix}/bin
 build = x86_64-pc-linux-gnu
-build_alias = x86_64-linux-gnu
+build_alias = 
 build_cpu = x86_64
 build_os = linux-gnu
 build_vendor = pc
@@ -275,11 +275,11 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-w64-mingw32
-host_alias = x86_64-w64-mingw32
+host = x86_64-pc-linux-gnu
+host_alias = 
 host_cpu = x86_64
-host_os = mingw32
-host_vendor = w64
+host_os = linux-gnu
+host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
@@ -300,11 +300,11 @@ sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
 sysconfdir = ${prefix}/etc
-target = x86_64-w64-mingw32
+target = x86_64-pc-linux-gnu
 target_alias = 
 target_cpu = x86_64
-target_os = mingw32
-target_vendor = w64
+target_os = linux-gnu
+target_vendor = pc
 top_build_prefix = ../../
 top_builddir = ../..
 top_srcdir = ../..
@@ -316,8 +316,8 @@ SOURCE_FILES = main.c main_div.c token.c identifier.c segment.c \
               messages.c error.c \
               sysstub.c typedef.c ../../common/files.c ../../common/xctype.c
 
-#fxc_SOURCES = $(SOURCE_FILES)
-fxc_SOURCES = $(SOURCE_FILES) fxc.rc
+fxc_SOURCES = $(SOURCE_FILES)
+#fxc_SOURCES = $(SOURCE_FILES) fxc.rc
 all: all-am
 
 .SUFFIXES:

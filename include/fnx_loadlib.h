@@ -11,7 +11,7 @@
         #include <unistd.h>
         #define __stdcall
     #endif
-     #ifdef TARGET_linux
+    #if defined(TARGET_Linux) || defined(TARGET_linux) || defined(TARGET_LinuxPPC)
         #include <dlfcn.h>
         #include <unistd.h>
         #define __stdcall
@@ -19,6 +19,11 @@
     #ifdef TARGET_BEOS
         #include <unistd.h>
 		#include <dlfcn.h>
+    #endif
+    #ifdef TARGET_BSD
+    	#include <unistd.h>
+	#include <dlfcn.h>
+	#define __stdcall
     #endif
 
     typedef void (__stdcall  * dlfunc) (void *(*)(const char *), int (*)(char *, char *, int, void *));
