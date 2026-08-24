@@ -26,8 +26,8 @@ Index: fenix-0.92a.dfsg1/fxc/src/c_main.c
  
 -
  /* ---------------------------------------------------------------------- */
- /* Módulo principal del compilador. Contiene código que inicializa los    */
- /* identificadores conocidos, así como las funciones de compilado de      */
+ /* MÃ³dulo principal del compilador. Contiene cÃ³digo que inicializa los    */
+ /* identificadores conocidos, asÃ­ como las funciones de compilado de      */
 @@ -343,8 +352,16 @@
      void        * library = NULL;
      dlfunc      RegisterFunctions ;

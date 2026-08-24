@@ -171,7 +171,7 @@ Index: fenix-0.92a.dfsg1/fxc/src/codeblock.c
  
  	if (MN_PARAMS(code) == 0 && param)
  	{
--		printf ("Aviso: mnem�nico 0x%02X no recibe par�metros\n", code) ;
+-		printf ("Aviso: mnemónico 0x%02X no recibe parámetros\n", code) ;
 +		fprintf (stderr, _("Warning: mnemonic 0x%02X does not receive parameters\n"), code) ;
  	}
  
@@ -278,7 +278,7 @@ Index: fenix-0.92a.dfsg1/fxc/src/dcbw.c
  	}
 @@ -514,27 +522,27 @@
  
- 	/* 6. Mostrar estad�sticas */
+ 	/* 6. Mostrar estadísticas */
  
 -	printf ("\nFichero %s grabado (%ld bytes):\n\n", filename, offset) ;
 -	printf ("          Procesos:   %8d procesos\n", dcb.data.NProcs) ;
@@ -434,7 +434,7 @@ Index: fenix-0.92a.dfsg1/fxc/src/main.c
  	char stubname[256] = "";
  	int i, j ;
  
--	printf (FXC_VERSION " - Copyright (C) 1999 José Luis Cebrián Pagüe\n") ;
+-	printf (FXC_VERSION " - Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e\n") ;
 -	printf ("Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n") ;
 +#ifdef USE_GETTEXT
 +	setlocale (LC_MESSAGES, "");

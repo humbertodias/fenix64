@@ -55,8 +55,8 @@ Last-Update: 2019-01-18
 +#define ROTATEDX(x,y,sina,cosa) (fxmul(x,cosa) - fxmul(y,sina))
 +#define ROTATEDY(x,y,sina,cosa) (fxmul(x,sina) + fxmul(y,cosa))
  
- /* Esta estructura guarda informaciÛn que se recalcula a cada frame.
-  * Quiz· no serÌa necesario recalcularlo todo. El incremento podrÌa
+ /* Esta estructura guarda informaci√≥n que se recalcula a cada frame.
+  * Quiz√° no ser√≠a necesario recalcularlo todo. El incremento podr√≠a
 @@ -189,8 +189,8 @@
  
      angle = LOCDWORD(camera, ANGLE) ;
@@ -66,7 +66,7 @@ Last-Update: 2019-01-18
 +    cosa = fxcos (-angle) ;
 +    sina = fxsin (-angle) ;
  
-     /* Averigua la posiciÛn de inicio */
+     /* Averigua la posici√≥n de inicio */
  
 @@ -237,8 +237,8 @@
          }
@@ -88,7 +88,7 @@ Last-Update: 2019-01-18
 +        lines[y].right_bmp_x = fxdiv(fxmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
 +        lines[y].right_bmp_y = fxdiv(fxmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
  
-         /* Averigua el incremento necesario para cada paso de la lÌnea */
+         /* Averigua el incremento necesario para cada paso de la l√≠nea */
  
 --- a/fxi/src/i_func.c
 +++ b/fxi/src/i_func.c

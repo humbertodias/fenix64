@@ -457,8 +457,8 @@ Last-Update: 2015-12-18
          proc->type = unsigned_prefix ? TYPE_WORD : TYPE_SHORT;
          signed_prefix = unsigned_prefix = 0;
 @@ -920,11 +920,10 @@
-        los datos declarados aquí tienen el mismo efecto que si son
-        declarados externamente y afectarán a todos los procesos (Ya no va mas esto, ahora los datos locales son locales, Splinter) */
+        los datos declarados aquÃ­ tienen el mismo efecto que si son
+        declarados externamente y afectarÃ¡n a todos los procesos (Ya no va mas esto, ahora los datos locales son locales, Splinter) */
  
 -    if (!proc->declared) {
          while ( token.type == IDENTIFIER && ( token.code == identifier_local  ||
@@ -475,7 +475,7 @@ Last-Update: 2015-12-18
          }
 -    }
  
-     /* Gestiona procesos cuyos parámetros son variables locales */
+     /* Gestiona procesos cuyos parÃ¡metros son variables locales */
  
 --- a/fxc/src/dcbw.c
 +++ b/fxc/src/dcbw.c
@@ -591,7 +591,7 @@ Last-Update: 2015-12-18
 +#ifndef _FMATH_H
 +    #define _FMATH_H
 +
- /* Rutinas matemáticas de punto fijo, basadas en Allegro */
+ /* Rutinas matemÃ¡ticas de punto fijo, basadas en Allegro */
  
  #ifndef M_PI
  #define M_PI           3.14159265358979323846  /* pi */
@@ -639,11 +639,11 @@ Last-Update: 2015-12-18
  extern int				syscolor8 ;			 /* Color for drawing primitives	 */
  extern Uint16           fntcolor16 ;
 @@ -132,9 +134,19 @@
- extern int          palette_loaded ;        /* ¿Se ha cargado ya la paleta inicial ? */
+ extern int          palette_loaded ;        /* Â¿Se ha cargado ya la paleta inicial ? */
  extern int          palette_changed ;       /* Poner a 1 cuando se cambien colores   */
- extern int          fade_on ;               /* ¿Hay un fade activo?                  */
-+extern int          fade_set ;              /* ¿Hay un fade seteado pero inactivo?   */
- extern int          fade_step ;             /* Si lo hay, posición (0=off)           */
+ extern int          fade_on ;               /* Â¿Hay un fade activo?                  */
++extern int          fade_set ;              /* Â¿Hay un fade seteado pero inactivo?   */
+ extern int          fade_step ;             /* Si lo hay, posiciÃ³n (0=off)           */
  
 -extern int          gr_read_pal           (file * file) ;
 +
@@ -750,7 +750,7 @@ Last-Update: 2015-12-18
 +++ b/fxi/src/Be_compat/be_compat.cpp
 @@ -0,0 +1,29 @@
 +/*-------------------------------------------------------------------------------------------------------
-+Copyright (c) 2003 Joseba GarcÃ­a Etxebarria, under the GPL, as described
++Copyright (c) 2003 Joseba GarcÃƒÂ­a Etxebarria, under the GPL, as described
 +on copying in the (Fenix)/COPYING file.
 +This file provides a thin BeOS->C compatibility layer, as the BeOS kits are
 +designed for C++.
@@ -1434,20 +1434,20 @@ Last-Update: 2015-12-18
 +#define COMMAND_HISTORY 128
  
  #define HELPTXT _( \
-             "¬02Process Info¬07\n"                                          \
+             "Â¬02Process InfoÂ¬07\n"                                          \
 @@ -82,11 +82,11 @@
-             "¬02Process Interaction¬07\n"                                   \
-             "¬04RUN proc [args]¬07  Run a process\n"                        \
-             "¬04KILL proc      ¬07  Kill a process\n"                       \
--            "¬04WEAKUP proc    ¬07  Weakup a process\n"                     \
-+            "¬04WAKEUP proc    ¬07  Wakeup a process\n"                     \
-             "¬04SLEEP proc     ¬07  Sleep a process\n"                      \
-             "¬04FREEZE proc    ¬07  Freeze a process\n"                     \
-             "¬04KILLALL proc   ¬07  Kill all process with criteria\n"       \
--            "¬04WEAKUPALL proc ¬07  Weakup all process with criteria\n"     \
-+            "¬04WAKEUPALL proc ¬07  Wakeup all process with criteria\n"     \
-             "¬04SLEEPALL proc  ¬07  Sleep all process with criteria\n"      \
-             "¬04FREEZEALL proc ¬07  Freeze all process with criteria\n"     \
+             "Â¬02Process InteractionÂ¬07\n"                                   \
+             "Â¬04RUN proc [args]Â¬07  Run a process\n"                        \
+             "Â¬04KILL proc      Â¬07  Kill a process\n"                       \
+-            "Â¬04WEAKUP proc    Â¬07  Weakup a process\n"                     \
++            "Â¬04WAKEUP proc    Â¬07  Wakeup a process\n"                     \
+             "Â¬04SLEEP proc     Â¬07  Sleep a process\n"                      \
+             "Â¬04FREEZE proc    Â¬07  Freeze a process\n"                     \
+             "Â¬04KILLALL proc   Â¬07  Kill all process with criteria\n"       \
+-            "Â¬04WEAKUPALL proc Â¬07  Weakup all process with criteria\n"     \
++            "Â¬04WAKEUPALL proc Â¬07  Wakeup all process with criteria\n"     \
+             "Â¬04SLEEPALL proc  Â¬07  Sleep all process with criteria\n"      \
+             "Â¬04FREEZEALL proc Â¬07  Freeze all process with criteria\n"     \
              "\n"                                                            \
 @@ -367,6 +367,7 @@
      }
@@ -2326,7 +2326,7 @@ Last-Update: 2015-12-18
          gr_vline (dest, clip, x, y, h) ;
 @@ -764,42 +936,47 @@
  
-     /* Clipping de la línea - INCORRECTO pero funcional */
+     /* Clipping de la lÃ­nea - INCORRECTO pero funcional */
  
 +/* TODO: SE NECESITA CORREGIR CLIPPING EN LINE */
 +#if 0
@@ -2409,7 +2409,7 @@ Last-Update: 2015-12-18
 +    vinc = (h > 0) ? dest->pitch : -(int)dest->pitch ;
      if (dest->depth == 16) vinc /= 2;
  
-     /* Aquí va una implementación deprisa y corriendo de Bresenham */
+     /* AquÃ­ va una implementaciÃ³n deprisa y corriendo de Bresenham */
 @@ -831,17 +1009,10 @@
      w = ABS(w) ;
      h = ABS(h) ;
@@ -2894,7 +2894,7 @@ Last-Update: 2015-12-18
  	while (!file_eof(fp))
  	{
 @@ -387,7 +371,11 @@
- 		/* Cabecera del gráfico */
+ 		/* Cabecera del grÃ¡fico */
  
  		gr = bitmap_new (chunk.code, chunk.width, chunk.height, bpp, 1);
 -		if (!gr) return 0 ;
@@ -3308,8 +3308,8 @@ Last-Update: 2015-12-18
  
  }
  
--/* FUnción de inicialización de la librería gráfica */
-+/* Función de inicialización de la librería gráfica */
+-/* FUnciÃ³n de inicializaciÃ³n de la librerÃ­a grÃ¡fica */
++/* FunciÃ³n de inicializaciÃ³n de la librerÃ­a grÃ¡fica */
  
  static int screen_locked = 0 ;
  
@@ -3654,7 +3654,7 @@ Last-Update: 2015-12-18
 +        lines[y].right_bmp_x = fdiv(fmul((point_x - camera_x), -camera_z), (point_z - camera_z)) + camera_x ;
 +        lines[y].right_bmp_y = fdiv(fmul((point_y - camera_y), -camera_z), (point_z - camera_z)) + camera_y ;
  
-         /* Averigua el incremento necesario para cada paso de la línea */
+         /* Averigua el incremento necesario para cada paso de la lÃ­nea */
  
 @@ -275,27 +271,21 @@
      if (outdoor)
@@ -4914,7 +4914,7 @@ Last-Update: 2015-12-18
  
 +            if (must_exit) break ;
 +
-             /* Si no se ejecutó nada: Dibujar, actualizar variables, etc. */
+             /* Si no se ejecutÃ³ nada: Dibujar, actualizar variables, etc. */
  
              if (!i_count && !force_debug)
 @@ -290,8 +288,7 @@
@@ -5207,7 +5207,7 @@ Last-Update: 2015-12-18
 -                break ;
 +                break ; */
  
-             /* Operaciones matemáticas  en coma floatante */
+             /* Operaciones matemÃ¡ticas  en coma floatante */
  
 @@ -1098,121 +1117,101 @@
              /* Operaciones a nivel de bit */
@@ -5796,7 +5796,7 @@ Last-Update: 2015-12-18
 --- a/fxi/src/instance.c
 +++ b/fxi/src/instance.c
 @@ -53,12 +53,12 @@
- /* destrucción, duplicado, etc.                                           */
+ /* destrucciÃ³n, duplicado, etc.                                           */
  /* ---------------------------------------------------------------------- */
  
 -INSTANCE * first_instance = 0 ;
@@ -6169,8 +6169,8 @@ Last-Update: 2015-12-18
  #define file_pos		(*_file_pos)
  #define file_seek		(*_file_seek)
 @@ -407,7 +412,8 @@
- FXEXTERN int          * _fade_on ;               /* ¿Hay un fade activo?                  */
- FXEXTERN int          * _fade_step ;             /* Si lo hay, posición (0=off)           */
+ FXEXTERN int          * _fade_on ;               /* Â¿Hay un fade activo?                  */
+ FXEXTERN int          * _fade_step ;             /* Si lo hay, posiciÃ³n (0=off)           */
  
 -FXEXTERN int   (*_gr_read_pal           )(file * file) ;
 +FXEXTERN PALETTE *  (*_gr_read_pal           )(file * file) ;
@@ -6271,7 +6271,7 @@ Last-Update: 2015-12-18
      { 0x5B, "JOY_AXES"              , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_joy_axes_specific) },
  
 -
-     /* Inicialización y carga */
+     /* InicializaciÃ³n y carga */
      { 0x60, "SET_MODE"              , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_set_mode) },
      { 0x61, "SET_FPS"               , "II"    , TYPE_DWORD  , 2 , SYSMACRO(fxi_set_fps) },
 @@ -107,6 +106,8 @@
@@ -6480,7 +6480,7 @@ Last-Update: 2015-12-18
 +++ b/NEWS
 @@ -1,3 +1,85 @@
 +0.93
-+- Se corrige convesion a negativo de números unsigned.
++- Se corrige convesion a negativo de nÃºmeros unsigned.
 +- Ahora no es necesario declarar las privadas en el declare, se pueden declarar junto a la funcion.
 +- Posicionamiento del mouse en mitad de pantalla al hacer set_mode.
 +- Se mejora la performance en el uso de dirty. En algunos casos hasta un 800%.

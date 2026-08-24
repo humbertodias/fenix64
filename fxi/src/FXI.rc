@@ -84,7 +84,7 @@ BEGIN
             VALUE "FileDescription", "FXI - Fenix Videogame Interpreter\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
             VALUE "InternalName", "FXI\0"
-            VALUE "LegalCopyright", "Copyright © 2002 - Fenix Team\0"
+            VALUE "LegalCopyright", "Copyright Â© 2002 - Fenix Team\0"
             VALUE "LegalTrademarks", "Distributed under GNU General Public License\0"
             VALUE "OriginalFilename", "FXI.exe\0"
             VALUE "PrivateBuild", "\0"
