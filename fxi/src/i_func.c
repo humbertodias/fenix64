@@ -1897,8 +1897,10 @@ static int fxi_map_xputnp (INSTANCE * my, int * params)
 	GRAPH * dest = bitmap_get (params[0], params[1]) ;
 	GRAPH * orig = bitmap_get (params[2], params[3]) ;
 
+	if (!dest || !orig) return 0 ;
+
 	if (params[6] == 0 && params[7] == 100 && params[8] == 100)
-		gr_blit (dest, 0, params[4], params[5], params[8], orig) ;
+		gr_blit (dest, 0, params[4], params[5], params[9], orig) ;
 	else
 		gr_rotated_blit (dest, 0, params[4], params[5], params[9],
 			 params[6], params[7], params[8], orig) ;

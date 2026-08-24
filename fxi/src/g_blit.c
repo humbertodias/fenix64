@@ -83,6 +83,8 @@ typedef void (DRAW_SPAN) (GRAPH*,GRAPH*,int,int,int,int,int,int,int);
 typedef void (DRAW_HSPAN)(void *,void *,int,int);
 typedef Uint16 (ADDITIVE_BLEND)(Uint16,Uint16);
 
+static Uint8 pixel16_to_index (Uint16 p) ;
+
 
 /* Conversion tables used by transparency/blending
  *
@@ -283,6 +285,23 @@ void draw_span_8to8
 		if (*tex != 0) *ptr = *tex;
 		ptr++;
 		cs += incs, ct += inct;
+	}
+}
+
+void draw_span_16to8
+	(GRAPH * dest, GRAPH * orig, int x, int y, int pixels,
+	 int s, int t, int incs, int inct)
+{
+	Uint8 * ptr = (Uint8 *)dest->data + dest->pitch*y + x;
+	int cs = s, ct = t, i ;
+
+	for (i = 0 ; i < pixels ; i++)
+	{
+		Uint16 * tex = (Uint16 *) ((Uint8 *)orig->data
+			+ orig->pitch * (ct >> 16) + (cs >> 16) * 2) ;
+		if (*tex) *ptr = pixel16_to_index (*tex) ;
+		ptr++ ;
+		cs += incs, ct += inct ;
 	}
 }
 
@@ -520,6 +539,26 @@ void draw_span_16to16_nocolorkey
 /* Parameter for 1to8 and 16to8 */
 static int posx;
 
+static Uint8 pixel16_to_index (Uint16 p)
+{
+	int r, g, b ;
+
+	if (!p) return 0 ;
+	if (screen && screen->format->BytesPerPixel == 2)
+	{
+		r = ((p & screen->format->Rmask) >> screen->format->Rshift) << screen->format->Rloss ;
+		g = ((p & screen->format->Gmask) >> screen->format->Gshift) << screen->format->Gloss ;
+		b = ((p & screen->format->Bmask) >> screen->format->Bshift) << screen->format->Bloss ;
+	}
+	else
+	{
+		r = ((p >> 11) & 31) * 255 / 31 ;
+		g = ((p >> 5) & 63) * 255 / 63 ;
+		b = (p & 31) * 255 / 31 ;
+	}
+	return (Uint8) gr_find_nearest_color (r, g, b) ;
+}
+
 void draw_hspan_1to8
 	(Uint8 * scr, Uint8 * tex, int pixels, int incs)
 {
@@ -531,6 +570,33 @@ void draw_hspan_1to8
  		if (*tex & mask) *scr++ = syscolor8; else scr++;
 		if (incs < 0) { if (mask == 0x80) mask = 0x01, tex--; else mask <<= 1; }
 		else          { if (mask == 0x01) mask = 0x80, tex++; else mask >>= 1; }
+	}
+}
+
+void draw_hspan_16to8
+	(Uint8 * scr, Uint8 * vtex, int pixels, int incs)
+{
+	Uint16 * tex = (Uint16 *) vtex ;
+	int i ;
+
+	for (i = 0 ; i < pixels ; i++)
+	{
+		if (*tex) *scr = pixel16_to_index (*tex) ;
+		scr++ ;
+		tex += incs ;
+	}
+}
+
+void draw_hspan_16to8_nocolorkey
+	(Uint8 * scr, Uint8 * vtex, int pixels, int incs)
+{
+	Uint16 * tex = (Uint16 *) vtex ;
+	int i ;
+
+	for (i = 0 ; i < pixels ; i++)
+	{
+		*scr++ = pixel16_to_index (*tex) ;
+		tex += incs ;
 	}
 }
 
@@ -786,7 +852,7 @@ void gr_calculate_corners (GRAPH * dest, int screen_x, int screen_y, int flags,
 
 	/* Calculate the graphic center */
 
-	if ((dest->flags & F_NCPOINTS) && dest->cpoints[0].x != -1)
+	if ((dest->flags & F_NCPOINTS) && dest->cpoints && dest->cpoints[0].x != -1)
 	{
 		center_x = dest->cpoints[0].x;
 		center_y = dest->cpoints[0].y;
@@ -915,10 +981,10 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
 	VERTEX* right_end;
 
 	/* Pointer to the line drawing function */
-	DRAW_SPAN *draw_span;
+	DRAW_SPAN *draw_span = NULL;
 
 	if (!dest) dest = scrbitmap;
-	if (!dest->data || !gr->data) return;
+	if (!dest || !gr || !dest->data || !gr->data) return;
 	if (scalex <= 0) return;
 	if (scaley <= 0) return;
 
@@ -1017,6 +1083,13 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
 	if ((flags & B_TRANSLUCENT) && !trans_table_updated)
 		gr_make_trans_table() ;
 
+#ifdef MMX_FUNCTIONS
+	if (MMX_available)
+		ablend = MMX_additive_blend ;
+	else
+#endif
+		ablend = additive_blend ;
+
 	/* Choose a line drawing function */
 
 	if (dest->depth == 8 && gr->depth == 8)
@@ -1095,8 +1168,12 @@ void gr_rotated_blit  (GRAPH * dest, REGION * clip,
 		draw_span = draw_span_1to8;
 	else if (dest->depth == 16 && gr->depth == 1)
 		draw_span = draw_span_1to16;
+	else if (dest->depth == 8 && gr->depth == 16)
+		draw_span = draw_span_16to8;
 	else
 		gr_error ("Profundidad de color no soportada \n(gr_rotated_blit)") ;
+
+	if (!draw_span) return ;
 
 	#ifdef MMX_FUNCTIONS
 	if (MMX_available)
@@ -1241,10 +1318,10 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 	int		scr_inc;
 	int		direction;
 
-	DRAW_HSPAN	* draw_hspan;
+	DRAW_HSPAN	* draw_hspan = NULL;
 
 	if (!dest) dest = scrbitmap ;
-	if (!dest->data || !gr->data) return;
+	if (!dest || !gr || !dest->data || !gr->data) return;
 
 	/* Calculate the clipping coordinates */
 
@@ -1298,6 +1375,13 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
     }
 	if ((flags & B_TRANSLUCENT) && !trans_table_updated)
 		gr_make_trans_table() ;
+
+#ifdef MMX_FUNCTIONS
+	if (MMX_available)
+		ablend = MMX_additive_blend ;
+	else
+#endif
+		ablend = additive_blend ;
 
 	/* Choose a line drawing function */
 
@@ -1377,8 +1461,14 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 		draw_hspan = draw_hspan_1to8;
 	else if (dest->depth == 16 && gr->depth == 1)
 		draw_hspan = draw_hspan_1to16;
+	else if (dest->depth == 8 && gr->depth == 16)
+		draw_hspan = (flags & B_NOCOLORKEY)
+			? draw_hspan_16to8_nocolorkey
+			: draw_hspan_16to8 ;
 	else
 		gr_error ("Profundidad de color no soportada \n(gr_rotated_blit)") ;
+
+	if (!draw_hspan) return ;
 
 	/* Choose a MMX version of the routine, if available */
 
@@ -1441,7 +1531,7 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 
 	/* Calculate the graphic center */
 
-	if ((gr->flags & F_NCPOINTS) && gr->cpoints[0].x != -1)
+	if ((gr->flags & F_NCPOINTS) && gr->cpoints && gr->cpoints[0].x != -1)
 	{
 		center.x = gr->cpoints[0].x ;
 		center.y = gr->cpoints[0].y ;
@@ -1509,7 +1599,7 @@ void gr_blit (GRAPH * dest, REGION * clip, int scrx, int scry, int flags, GRAPH 
 	if (flags & B_HMIRROR)
 		direction = -1;
 	
-	if (p > 0) 
+	if (p > 0 && draw_hspan) 
 	{
 		for (i = 0 ; i < l ; i++)
 		{
