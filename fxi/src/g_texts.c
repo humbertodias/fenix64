@@ -292,28 +292,24 @@ void draw_text (void * what, REGION * clip)
 	const char * str = get_text(text);
 	int save8, save16;
 	int x, y, width, height;
-	int fontid;
 	FONT * font;
+	int ret;
 
     // Splinter
     if (!str) return;
 
-	fontid = text->fontid;
-	font = gr_font_get (fontid);
+	font = gr_font_get (text->fontid);
 	if (font == NULL) {
-		fontid = 0;
-		font = gr_font_get (0);
+	    gr_text_destroy(text->id);
+	    return;
 	}
-	/* 0.84 left the text object in place if the font was missing */
-	if (font == NULL)
-		return;
 
 	/* Calculate the text dimensions */
 
 	x = text->x;
 	y = text->y;
-	width = gr_text_width (fontid, str);
-	height = gr_text_height (fontid, str);
+	width = gr_text_width (text->fontid, str);
+	height = gr_text_height (text->fontid, str);
 
 	/* Update the font's maxheight (if needed) */
 	if (font->maxheight == 0)
@@ -365,7 +361,7 @@ void draw_text (void * what, REGION * clip)
 	fntcolor8 = text->color8;
 	fntcolor16 = text->color16;
 
-	gr_text_put (0, clip, fontid, x, y, str);
+    if(!gr_text_put (0, clip, text->fontid, x, y, str)) gr_text_destroy(text->id);
 
 	fntcolor8 = save8;
 	fntcolor16 = save16;

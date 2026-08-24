@@ -49,7 +49,6 @@
 #include "dcb.h"
 #include "dirs.h"
 #include "files.h"
-#include "pslang.h"
 
 void * globaldata = 0 ;
 void * localdata  = 0 ;
@@ -77,11 +76,6 @@ PROCDEF * procdef_get_by_name (char * name)
             return &procs[n];
 
 	return NULL ;
-}
-
-int dcb_is_v1 (void)
-{
-	return (dcb.data.Version & 0xFF00) == (DCB_VERSION_084 & 0xFF00);
 }
 
 DCB_HEADER dcb ;
@@ -151,29 +145,6 @@ int dcb_load (const char * filename)
 	return dcb_load_from (fp, 0);
 }
 
-/* 0.84 bytecode used opcodes 0x1E-0x45; 0.93 inserted JTFALSE/JTTRUE. */
-static void dcb_translate_code_v1 (int * code, int nbytes)
-{
-	int nwords, i;
-
-	if (!code || nbytes < 4) return ;
-	nwords = nbytes / 4 ;
-	i = 0 ;
-	while (i < nwords)
-	{
-		int word = code[i] ;
-		int op = word & MN_MASK ;
-		int base = op & 0x7F ;
-
-		if (base >= 0x1E && base <= 0x45)
-			code[i] = (word & ~MN_MASK) | ((base + 2) | (op & 0x80)) ;
-
-		i++ ;
-		if (MN_PARAMS (op) && i < nwords)
-			i++ ;
-	}
-}
-
 int dcb_load_from (file * fp, int offset)
 {
 	unsigned int n ;
@@ -207,43 +178,24 @@ int dcb_load_from (file * fp, int offset)
 	file_seek (fp, offset, SEEK_SET);
 	file_read (fp, &dcb, sizeof(DCB_HEADER_DATA)) ;
 
-	if (memcmp (dcb.data.Header, "dcb\xD\x0A\x1F\x00\x00", 8) != 0)
+	if (memcmp (dcb.data.Header, "dcb\xD\x0A\x1F\x00\x00", 8) != 0 ||
+	    (dcb.data.Version & 0xFF00) != (DCB_VERSION & 0xFF00))
+	{
+	/*	gr_error ("%s: no es un DCB version %d o compatible", filename, DCB_VERSION >> 8) ;*/
 		return 0 ;
-
-	{
-		unsigned ver = dcb.data.Version & 0xFF00 ;
-		if (ver != (DCB_VERSION & 0xFF00) && ver != (DCB_VERSION_084 & 0xFF00))
-			return 0 ;
 	}
 
-	{
-		int global_extra = 0 ;
-		int local_extra = 0 ;
-		int is_v1 = ((dcb.data.Version & 0xFF00) == (DCB_VERSION_084 & 0xFF00)) ;
-
-		if (is_v1)
-		{
-			global_extra = 4 * (1 + 12 + 400 + 2) ;
-			local_extra = 4 * 8 ;
-		}
-
-		vm_arena_init () ;
-		globaldata = vm_malloc (dcb.data.SGlobal + global_extra + 4) ;
-		localdata  = vm_malloc (dcb.data.SLocal + local_extra + 4) ;
-		memset (globaldata, 0, dcb.data.SGlobal + global_extra + 4) ;
-		memset (localdata, 0, dcb.data.SLocal + local_extra + 4) ;
-		offsets_init (dcb.data.Version, dcb.data.SGlobal, dcb.data.SLocal) ;
-		local_size = dcb.data.SLocal + local_extra ;
-	}
+	vm_arena_init () ;
+	globaldata = vm_malloc (dcb.data.SGlobal + 4) ;
+	localdata  = vm_malloc (dcb.data.SLocal + 4) ;
 	localstr   = (int *) malloc (4 * dcb.data.NLocStrings + 4) ;
 	dcb.proc   = (DCB_PROC *) malloc (sizeof(DCB_PROC) * (1+dcb.data.NProcs)) ;
 	procs      = (PROCDEF *) malloc (sizeof(PROCDEF) * (1+dcb.data.NProcs)) ;
 	mainproc   = procs ;
 
 	procdef_count = dcb.data.NProcs ;
+	local_size    = dcb.data.SLocal ;
 	local_strings = dcb.data.NLocStrings ;
-	memset (dcb.proc, 0, sizeof(DCB_PROC) * (1+dcb.data.NProcs)) ;
-	memset (procs, 0, sizeof(PROCDEF) * (1+dcb.data.NProcs)) ;
 
 	/* Recupera las zonas de datos globales */
 
@@ -260,31 +212,9 @@ int dcb_load_from (file * fp, int offset)
 	}
 
 	file_seek (fp, offset + dcb.data.OProcsTab, SEEK_SET) ;
-	if ((dcb.data.Version & 0xFF00) == (DCB_VERSION_084 & 0xFF00))
+	for (n = 0 ; n < dcb.data.NProcs ; n++)
 	{
-		for (n = 0 ; n < dcb.data.NProcs ; n++)
-		{
-			DCB_PROC_DATA_V1 old ;
-
-			file_read (fp, &old, sizeof(DCB_PROC_DATA_V1)) ;
-			dcb.proc[n].data.ID          = old.ID ;
-			dcb.proc[n].data.NParams     = old.NParams ;
-			dcb.proc[n].data.NPriVars    = old.NPriVars ;
-			dcb.proc[n].data.NPriStrings = old.NPriStrings ;
-			dcb.proc[n].data.NSentences  = old.NSentences ;
-			dcb.proc[n].data.SPrivate    = old.SPrivate ;
-			dcb.proc[n].data.SCode       = old.SCode ;
-			dcb.proc[n].data.OPrivate    = old.OPrivate ;
-			dcb.proc[n].data.OPriVars    = old.OPriVars ;
-			dcb.proc[n].data.OPriStrings = old.OPriStrings ;
-			dcb.proc[n].data.OCode       = old.OCode ;
-			dcb.proc[n].data.OSentences  = old.OSentences ;
-		}
-	}
-	else
-	{
-		for (n = 0 ; n < dcb.data.NProcs ; n++)
-			file_read (fp, &dcb.proc[n], sizeof(DCB_PROC_DATA)) ;
+		file_read (fp, &dcb.proc[n], sizeof(DCB_PROC_DATA)) ;
 	}
 
 	/* Recupera las cadenas */
@@ -378,8 +308,6 @@ int dcb_load_from (file * fp, int offset)
 	for (n = 0 ; n < dcb.data.NProcs ; n++)
 	{
 		procs[n].params             = dcb.proc[n].data.NParams ;
-		if (procs[n].params > 256)
-			procs[n].params = 0 ;
 		procs[n].string_count       = dcb.proc[n].data.NPriStrings ;
 		procs[n].pubstring_count    = dcb.proc[n].data.NPubStrings ;
 		procs[n].private_size       = dcb.proc[n].data.SPrivate ;
@@ -410,9 +338,6 @@ int dcb_load_from (file * fp, int offset)
 			procs[n].code = (int *) malloc(dcb.proc[n].data.SCode) ;
 			file_seek (fp, offset + dcb.proc[n].data.OCode, SEEK_SET) ;
 			file_read (fp, procs[n].code, dcb.proc[n].data.SCode) ;
-
-			if ((dcb.data.Version & 0xFF00) == (DCB_VERSION_084 & 0xFF00))
-				dcb_translate_code_v1 (procs[n].code, dcb.proc[n].data.SCode) ;
 
 	        if (dcb.proc[n].data.OExitCode)
 	            procs[n].exitcode = procs[n].code + dcb.proc[n].data.OExitCode ;

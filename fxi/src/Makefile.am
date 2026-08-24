@@ -7,7 +7,7 @@ INCLUDES = $(COMMON_CFLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) -I../../include -I
 
 fxi_LDADD = $(SDL_MIXER_LIBS) $(SDL_LIBS) $(COMMON_LIBS) -lz -lpng -lm
 
-SOURCE_FILES = main.c dcbr.c instance.c strings.c offsets_rt.c \
+SOURCE_FILES = main.c dcbr.c instance.c strings.c \
               i_main.c i_debug.c i_func.c \
 	          g_main.c g_maps.c g_blit.c g_texts.c g_pal.c g_draw.c \
 		      g_systexts.c g_console.c g_scroll.c g_flic.c g_mode7.c \

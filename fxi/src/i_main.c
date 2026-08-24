@@ -483,22 +483,6 @@ int instance_go (INSTANCE * r)
 
                     gprof_end (proc->name);
 
-                    if (dcb_is_v1 ())
-                    {
-                        /* Fenix 0.84 CALL/PROC: run until FRAME or END, then
-                         * the caller continues. 0.93 WAITING would keep the
-                         * HFF main process asleep through the history
-                         * cutscene, so intro.ogg only started afterwards. */
-                        if (*ptr == MN_CALL)
-                            *stack_ptr++ = instance_go (i);
-                        else
-                            instance_go (i);
-                        gprof_begin (proc->name);
-                        ptr += 2 ;
-                        proc = r->proc ;
-                        break ;
-                    }
-
                     /* Por default, me pongo en espera... */
                     LOCDWORD(r,STATUS) |= STATUS_WAITING_MASK;
                     i->called_by   = r;

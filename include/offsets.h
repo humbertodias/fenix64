@@ -24,10 +24,6 @@
  *
  */
 
-#ifdef FENIX_RUNTIME_OFFSETS
-#include "offsets_rt.h"
-#else
-
 /* ------------------------------------------ */
 /* Offsets de los datos globales predefinidos */
 /* ------------------------------------------ */
@@ -191,5 +187,3 @@
 #define SAVED_FILE		4*51
 #define SAVED_XGRAPH	4*52
 #define SAVED_PRIORITY  4*53
-
-#endif /* FENIX_RUNTIME_OFFSETS */

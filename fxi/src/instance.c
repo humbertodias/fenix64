@@ -911,21 +911,6 @@ INSTANCE * instance_next_by_priority()
 
 			while (j) {
 				if (LOCDWORD(j, PRIORITY) == LOCDWORD(i, PRIORITY)) {
-					if (dcb_is_v1 ()) {
-						/* 0.84 DCBs: run newly scheduled instances before
-						 * older ones of the same priority. HFF's menu does
-						 * delete_text(0) on END; if main runs first it
-						 * PROC's the options screen and the dying menu
-						 * then wipes those texts. */
-						i->next_by_priority = j;
-						i->prev_by_priority = j->prev_by_priority;
-						j->prev_by_priority = i;
-						if (i->prev_by_priority)
-							i->prev_by_priority->next_by_priority = i;
-						else
-							first_by_priority = i;
-						break;
-					}
 					i->prev_by_priority = j;
 					i->next_by_priority = j->next_by_priority;
 					j->next_by_priority = i;
