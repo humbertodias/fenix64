@@ -237,7 +237,7 @@ void instance_dump(INSTANCE * father, int indent)
 	if (!LOCDWORD(i,SON)) return ;
 
 	next = instance_get (LOCDWORD(i,SON)) ;
-	if (!next) gr_con_printf ("[FXI] ¬12**PANIC**¬7 SON %d does not exist\n", LOCDWORD(i,SON)) ;
+	if (!next) gr_con_printf ("[FXI] \xAC" "12**PANIC**\xAC" "7 SON %d does not exist\n", LOCDWORD(i,SON)) ;
 	i = next ;
 
 	while (i)
@@ -282,7 +282,7 @@ void instance_dump(INSTANCE * father, int indent)
 		{
 			next = instance_get (LOCDWORD(i, BIGBRO)) ;
 			if (!next) 
-                                gr_con_printf ("[FXI] ¬12**PANIC**¬7 BIGBRO %d does not exist\n", LOCDWORD(i, BIGBRO)) ;
+                                gr_con_printf ("[FXI] \xAC" "12**PANIC**\xAC" "7 BIGBRO %d does not exist\n", LOCDWORD(i, BIGBRO)) ;
 			i = next ;
 		}
 		else

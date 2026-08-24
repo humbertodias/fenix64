@@ -327,7 +327,7 @@ static int string_getid ()
 		if (!string_ptr[n]) return n ;
 
 	string_alloc (1024) ;
-	gr_con_printf ("[STRING] ¬12*PANIC¬7 Too many strings, allocating more space") ;
+	gr_con_printf ("[STRING] \xAC" "12*PANIC\xAC" "7 Too many strings, allocating more space") ;
 	return string_count++ ;
 }
 

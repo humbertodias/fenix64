@@ -100,7 +100,7 @@ main (int argc, char **argv)
 	const SDL_version * sdl_version ;
 	char * ptr ;
 
-    gr_con_printf ("¬15" VERSION) ;
+    gr_con_printf ("\xAC" "15" VERSION) ;
 
 	/* Find out if we are calling fxi.exe or whatever.exe */
  	ptr = argv[0] + strlen(argv[0]) ;
@@ -120,7 +120,7 @@ main (int argc, char **argv)
 	if (fxi) {
 		/* we are calling FXI.EXE */
 		sdl_version = SDL_Linked_Version();
-		gr_con_printf ("¬14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)", 
+		gr_con_printf ("\xAC" "14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)", 
 				SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL,
 				sdl_version->major, sdl_version->minor, sdl_version->patch) ;
 	}

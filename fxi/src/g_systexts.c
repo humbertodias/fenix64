@@ -953,7 +953,7 @@ void gr_sys_puts (GRAPH * map, int x, int y, Uint8 * str, int len)
 	
 	while (*str && len--)
 	{
-		if (*str == (Uint8)'¬')
+		if (*str == (Uint8)'\xAC')
 		{
 			Uint8 color = 0 ;
 			str++ ;

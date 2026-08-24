@@ -77,13 +77,13 @@ void gr_con_printf (const char *fmt, ...)
 	if (*text == '[')
 	{
 		memmove (text+3, text, strlen(text)+1) ;
-		memmove (text, "¬08", 3) ;
+		memmove (text, "\xAC" "08", 3) ;
 		ptr = strchr(text, ']') ;
 		if (ptr)
 		{
 			ptr++ ;
 			memmove (ptr+3, ptr, strlen(ptr)+1) ;
-			memmove (ptr, "¬07", 3) ;
+			memmove (ptr, "\xAC" "07", 3) ;
 		}
 	}
 	
@@ -98,7 +98,7 @@ void gr_con_printf (const char *fmt, ...)
 			gr_con_putline(iptr) ;
 			iptr = ptr+1 ;
 		}
-		if (*ptr == '¬')
+		if (*ptr == '\xAC')
 		{
 			ptr++ ;
 			if (isdigit(*ptr)) ptr++ ;
@@ -209,7 +209,7 @@ void gr_con_getkey(int key, int sym)
 	if (key == 13 && *console_input)
 	{
 		console_scroll_pos = 0 ;
-		gr_con_printf ("¬15> %s", console_input) ;
+		gr_con_printf ("\xAC" "15> %s", console_input) ;
 		gr_con_putcommand (console_input);
 		gr_con_do (console_input) ;
 		*console_input = 0 ;
@@ -489,13 +489,13 @@ void gr_con_do (const char * command)
 	if (strcmp (action, "HELP") == 0)
 	{
 		gr_con_printf (
-			"¬12STRINGS        ¬07  Show all strings in memory\n"
-			"¬12GLOBALS        ¬07  Show global vars with values\n"
-			"¬12LOCALS proc    ¬07  Show a process's local vars\n"
-			"¬12PRIVATES proc  ¬07  Show a process's private vars\n"
-			"¬12INSTANCES      ¬07  List all running processes\n"
-			"¬12SHOW expression¬07  Evaluate and show some expression\n"
-			"¬12QUIT           ¬07  Kill the program and exit\n\n"
+			"\xAC" "12STRINGS        \xAC" "07  Show all strings in memory\n"
+			"\xAC" "12GLOBALS        \xAC" "07  Show global vars with values\n"
+			"\xAC" "12LOCALS proc    \xAC" "07  Show a process's local vars\n"
+			"\xAC" "12PRIVATES proc  \xAC" "07  Show a process's private vars\n"
+			"\xAC" "12INSTANCES      \xAC" "07  List all running processes\n"
+			"\xAC" "12SHOW expression\xAC" "07  Evaluate and show some expression\n"
+			"\xAC" "12QUIT           \xAC" "07  Kill the program and exit\n\n"
 			"You can evaluate free expressions in the console,\n"
 			"and you can see or change local and private vars\n"
 			"using the . operator (65535.X, MAIN.X, etc.)\n");
