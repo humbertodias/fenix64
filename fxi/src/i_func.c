@@ -2223,7 +2223,11 @@ static int fxi_save_fnt (INSTANCE * my, int * params)
 static int fxi_write (INSTANCE * my, int * params)
 {
 	const char * text = string_get (params[4]) ;
-	int r = text ? gr_text_new (params[0], params[1], params[2], params[3], text) : 0 ;
+	int r ;
+
+	gr_text_set_creator (LOCDWORD(my, PROCESS_ID)) ;
+	r = text ? gr_text_new (params[0], params[1], params[2], params[3], text) : 0 ;
+	gr_text_set_creator (0) ;
 	string_discard (params[4]) ;
 	return r ;
 }
@@ -2290,7 +2294,10 @@ static int fxi_write_var (INSTANCE * my, int * params)
 			gr_error ("No es un tipo de dato válido");
 			break ;
 	}
-	return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), t) ;
+	gr_text_set_creator (LOCDWORD(my, PROCESS_ID)) ;
+	t = gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), t) ;
+	gr_text_set_creator (0) ;
+	return t ;
 }
 
 /*
@@ -2299,7 +2306,11 @@ static int fxi_write_var (INSTANCE * my, int * params)
 
 static int fxi_write_string (INSTANCE * my, int * params)
 {
-	return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 2) ;
+	int r ;
+	gr_text_set_creator (LOCDWORD(my, PROCESS_ID)) ;
+	r = gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 2) ;
+	gr_text_set_creator (0) ;
+	return r ;
 }
 
 /*
@@ -2308,7 +2319,11 @@ static int fxi_write_string (INSTANCE * my, int * params)
 
 static int fxi_write_int (INSTANCE * my, int * params)
 {
-	return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 3) ;
+	int r ;
+	gr_text_set_creator (LOCDWORD(my, PROCESS_ID)) ;
+	r = gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 3) ;
+	gr_text_set_creator (0) ;
+	return r ;
 }
 
 /*
@@ -2317,7 +2332,11 @@ static int fxi_write_int (INSTANCE * my, int * params)
 
 static int fxi_write_float (INSTANCE * my, int * params)
 {
-	return gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 4) ;
+	int r ;
+	gr_text_set_creator (LOCDWORD(my, PROCESS_ID)) ;
+	r = gr_text_new_var (params[0], params[1], params[2], params[3], VP(params[4]), 4) ;
+	gr_text_set_creator (0) ;
+	return r ;
 }
 
 static int fxi_move_text (INSTANCE * my, int * params)
@@ -2328,7 +2347,7 @@ static int fxi_move_text (INSTANCE * my, int * params)
 
 static int fxi_delete_text (INSTANCE * my, int * params)
 {
-	gr_text_destroy (params[0]) ;
+	gr_text_destroy_from (params[0], LOCDWORD(my, PROCESS_ID)) ;
 	return 1;
 }
 

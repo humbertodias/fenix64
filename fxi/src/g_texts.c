@@ -66,6 +66,7 @@ typedef struct _text
 	int color16 ;
 	int objectid ;
 	int last_value ;
+	int owner ;             /* PROCESS_ID that created this text, or 0 */
 	char * text ;           /* Memoria dinámica */
 	const void * var  ;		/* CHANGED TO VOID to allow diff. data types */
 } TEXT;
@@ -74,6 +75,13 @@ TEXT texts[MAX_TEXTS] ;
 
 int text_nextid = 1 ;
 int text_count  = 0 ;
+
+static int text_creator = 0 ;
+
+void gr_text_set_creator (int process_id)
+{
+	text_creator = process_id ;
+}
 
 #ifndef WIN32
 char *strrev(char *str)
@@ -392,6 +400,7 @@ int gr_text_new (int fontid, int x, int y, int alignment, const char * text)
 	texts[textid].color16 = fntcolor16 ;
 	texts[textid].objectid = gr_new_object (texts[textid].z, info_text, draw_text, &texts[textid]);
 	texts[textid].last_value = 0 ;
+	texts[textid].owner = text_creator ;
 	return textid ;
 }
 
@@ -418,19 +427,45 @@ void gr_text_move (int textid, int x, int y)
 
 void gr_text_destroy (int textid)
 {
+	gr_text_destroy_from (textid, 0) ;
+}
+
+void gr_text_destroy_from (int textid, int caller_id)
+{
 	if (textid == 0)
 	{
 		for (textid = 1 ; textid < text_nextid ; textid++)
 		{
 			if (texts[textid].on)
 			{
+				/* HFF: dying menu does delete_text(0) in the same frame
+				 * that main PROC's the next screen. Keep texts written by a
+				 * newer process that is still running. */
+				if (caller_id && texts[textid].owner > caller_id)
+				{
+					INSTANCE * owner = instance_get (texts[textid].owner) ;
+					if (owner && LOCDWORD(owner, STATUS) == STATUS_RUNNING)
+						continue ;
+				}
 				gr_destroy_object (texts[textid].objectid);
 				free (texts[textid].text) ;
 				texts[textid].on = 0 ;
+				texts[textid].owner = 0 ;
 			}
 		}
-		text_count = 0 ;
-		text_nextid = 1 ;
+		if (!caller_id)
+		{
+			text_count = 0 ;
+			text_nextid = 1 ;
+		}
+		else
+		{
+			text_count = 0 ;
+			for (textid = 1 ; textid < text_nextid ; textid++)
+				if (texts[textid].on) text_count++ ;
+			while (text_nextid > 1 && !texts[text_nextid-1].on)
+				text_nextid-- ;
+		}
 		return ;
 	}
 	if (textid > 0 && textid < text_nextid)
@@ -440,6 +475,7 @@ void gr_text_destroy (int textid)
 		gr_destroy_object (texts[textid].objectid);
 		free (texts[textid].text) ;
 		texts[textid].on = 0 ;
+		texts[textid].owner = 0 ;
 		if (textid == text_nextid-1)
 		{
 			while (text_nextid > 1 && !texts[text_nextid-1].on)

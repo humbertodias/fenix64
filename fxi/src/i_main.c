@@ -67,8 +67,13 @@ static int compare_instances (const void * ptr1, const void * ptr2)
 {
 	INSTANCE * i1 = *( (INSTANCE * *)ptr1 ) ;
 	INSTANCE * i2 = *( (INSTANCE * *)ptr2 ) ;
+	int d = LOCDWORD(i2,PRIORITY) - LOCDWORD(i1,PRIORITY) ;
 
-	return LOCDWORD(i2,PRIORITY) - LOCDWORD(i1,PRIORITY) ;
+	if (d) return d ;
+	/* Same priority: older process first (spawn order). HFF's KO overlay
+	 * is PROC'd by main; fighters must not run that frame before main
+	 * sets the slow-mo flag. Menu wipe vs WRITE is handled in delete_text. */
+	return LOCDWORD(i1, PROCESS_ID) - LOCDWORD(i2, PROCESS_ID) ;
 }
 
 void instance_go_all ()
@@ -181,6 +186,32 @@ void instance_go_all ()
 		for (n = 0 ; n < i_count ; n++)
 			if (LOCDWORD(ilist[n],STATUS) == 2)
 				instance_go (ilist[n]) ;
+
+		/* Present even if someone is still below 100% FRAME (HFF title
+		 * waits on keys; SDL must be pumped or the window stays black). */
+
+		gprof_frame();
+		gprof_begin ("Waiting for next frame");
+			gr_wait_frame() ;
+		gprof_end   ("Waiting for next frame");
+
+		gprof_begin ("Drawing");
+			gr_draw_frame() ;
+		gprof_end   ("Drawing");
+
+		gprof_begin ("Interpreter");
+
+		i = first_instance ;
+		while (i)
+		{
+			if (LOCDWORD(i,STATUS) == 2 && LOCDWORD(i,FRAME_PERCENT) >= 100)
+				LOCDWORD(i,FRAME_PERCENT) -= 100 ;
+			i = i->next ;
+		}
+
+		gr_advance_timers() ;
+
+		if (must_exit) break ;
 
 		/* NOTA: los procesos pueden haberse autodestruido tras su ejecución */
 	}
