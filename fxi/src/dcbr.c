@@ -36,11 +36,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#if defined(TARGET_MAC)
-#include <unistd.h>
-#elif defined(TARGET_BeOS)
-#include <unistd.h>
-#elif defined(TARGET_linux)
+#ifndef WIN32
 #include <unistd.h>
 #else
 #include <direct.h>

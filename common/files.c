@@ -421,7 +421,7 @@ file * file_open (const char * filename, char * mode)
 
 	const char * c, * n ;
 	int i ;
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 	int j ;
 #endif
 
@@ -444,7 +444,7 @@ file * file_open (const char * filename, char * mode)
 	name[2047] = 0;
 	strcpy (path, filename) ;
 	path[c-filename] = 0 ;
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 	for (j = 0 ; path[j] ; j++)
 		if (path[j] == '\\') path[j] = '/' ;
 #endif
@@ -469,7 +469,7 @@ file * file_open (const char * filename, char * mode)
 	if (strchr(name,'.'))
 	{
 		strcpy (here, strchr(name,'.') + 1) ;
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 		strcat (here, "/") ;
 #else
 		strcat (here, "\\") ;
@@ -483,7 +483,7 @@ file * file_open (const char * filename, char * mode)
 	{
 		strcpy (here, possible_paths[i]) ;
 		strcat (here, name) ;
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 		for (j = 0 ; here[j] ; j++)
 			if (here[j] == '\\') here[j] = '/' ;
 #endif

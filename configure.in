@@ -137,11 +137,14 @@ fi
 
 if test "$fxi" = yes; then
     FENIX_DEPS="`cd \"$srcdir\" && pwd`/deps/local"
+    # macos-build.sh installs Mach-O libSDL_mixer here. Linux docker mounts
+    # the same tree: -Ldeps/local makes ld pick that .a, skip the objects,
+    # and leave Mix_* undefined. Only search it on Darwin.
     if test -d "$FENIX_DEPS/lib"; then
-        SDL_MIXER_CFLAGS="-I$FENIX_DEPS/include -I$FENIX_DEPS/include/SDL"
-        LIBS="-L$FENIX_DEPS/lib $LIBS"
         case "$target_os" in
             darwin*)
+                SDL_MIXER_CFLAGS="-I$FENIX_DEPS/include -I$FENIX_DEPS/include/SDL"
+                LIBS="-L$FENIX_DEPS/lib $LIBS"
                 COMMON_LIBS="$COMMON_LIBS -Wl,-rpath,$FENIX_DEPS/lib"
                 ;;
         esac

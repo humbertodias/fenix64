@@ -244,7 +244,7 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS =  -static-libgcc
 LIBOBJS = 
-LIBS = -lX11 -L/src/deps/local/lib -lpng16 -lz 
+LIBS = -lX11 -lpng16 -lz 
 LTLIBOBJS = 
 MAINT = #
 MAKEINFO = ${SHELL} '/src/missing' makeinfo
@@ -264,7 +264,7 @@ PKG_CONFIG_PATH =
 SDL_CFLAGS = -D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL
 SDL_CONFIG = pkg-config --static sdl
 SDL_LIBS = -lSDL -lpthread -lm -ldl -lasound -lm -ldl -lpthread -lpulse-simple -lpulse -lX11 -lXext -lcaca -lpthread
-SDL_MIXER_CFLAGS = -I/src/deps/local/include -I/src/deps/local/include/SDL
+SDL_MIXER_CFLAGS = 
 SDL_MIXER_LIBS = -lSDL_mixer
 SET_MAKE = 
 SHELL = /bin/bash
