@@ -86,6 +86,7 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
     find . -type d \( -name .deps -o -name .libs \) \
       ! -path "./.git/*" ! -path "./deps/*" ! -path "./dist/*" -print0 | xargs -0r rm -rf
 
+    MAKE_ARGS=()
     if [[ "${PLATFORM}" == "windows" ]]; then
       HOST="${HOST:-x86_64-w64-mingw32}"
       MINGW_PREFIX="${MINGW_PREFIX:-/opt/mingw}"
@@ -109,27 +110,63 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
         exit 1
       }
       if [[ "${LINKAGE}" == "static" ]]; then
+        PREFIX="${FENIX_STATIC_PREFIX:-/opt/fenix-static}"
+        if [[ ! -x "${PREFIX}/bin/sdl-config" || ! -f "${PREFIX}/lib/libSDL.a" || ! -f "${PREFIX}/lib/libSDL_mixer.a" ]]; then
+          echo "static SDL 1.2 is missing under ${PREFIX} (rebuild docker/Dockerfile.linux)." >&2
+          exit 1
+        fi
         export PKG_CONFIG="pkg-config --static"
-        export LDFLAGS="${LDFLAGS:-} -static-libgcc"
+        export SDL_CONFIG="${PREFIX}/bin/sdl-config"
+        export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}"
+        export CPPFLAGS="-I${PREFIX}/include -I${PREFIX}/include/SDL $(pkg-config --cflags libpng zlib) ${CPPFLAGS:-}"
+        export LDFLAGS="-L${PREFIX}/lib -static-libgcc ${LDFLAGS:-}"
+        # Do not put -lpng/-lz in LIBS: they would be linked after
+        # -Wl,-Bdynamic and pull libpng16.so.16 / libz.so.1.
+        export LIBS="${LIBS:-}"
+      else
+        export CPPFLAGS="$(pkg-config --cflags libpng zlib) ${CPPFLAGS:-}"
+        export LIBS="$(pkg-config --libs libpng zlib) ${LIBS:-}"
+        export LDFLAGS="-Wl,-rpath,\$ORIGIN ${LDFLAGS:-}"
       fi
-      export CPPFLAGS="$(pkg-config --cflags libpng zlib) ${CPPFLAGS:-}"
-      export LIBS="$(pkg-config --libs libpng zlib) ${LIBS:-}"
       # QEMU amd64 on Apple Silicon can flake Autoconf AC_CHECK_LIB link tests.
       export ac_cv_lib_png_png_read_info=yes
       export ac_cv_header_png_h=yes
       export ac_cv_lib_z_gzsetparams=yes
       export ac_cv_header_zlib_h=yes
-      ./configure --enable-fpg --enable-map
+      if [[ "${LINKAGE}" == "static" ]]; then
+        ./configure --enable-fpg --enable-map --with-sdl-prefix="${PREFIX}" --disable-sdltest
+      else
+        ./configure --enable-fpg --enable-map
+      fi
       STAGE="/src/dist/linux-${LINKAGE}"
       BINS=(fxc/src/fxc fxi/src/fxi map/map fpg/fpg)
+      if [[ "${LINKAGE}" == "static" ]]; then
+        # sdl-config --libs omits X11/ALSA/Pulse needed by libSDL.a.
+        # fxi_LDADD puts -lpng after COMMON_LIBS (-Bdynamic -lc); wrap png/z/gif.
+        sdl_libs="$("${SDL_CONFIG}" --static-libs | sed "s/-Wl,-rpath,[^ ]*//g")"
+        png_z="-Wl,-Bstatic -lpng16 -lz -lgif -Wl,-Bdynamic -lm"
+        MAKE_ARGS=(
+          "SDL_LIBS=${sdl_libs}"
+          "fxi_LDADD=\$(SDL_MIXER_LIBS) \$(SDL_LIBS) ${png_z}"
+          "fxc_LDADD=\$(SDL_LIBS) -Wl,-Bstatic -lz -Wl,-Bdynamic"
+          "map_LDADD=${png_z}"
+          "fpg_LDADD=${png_z}"
+        )
+      else
+        MAKE_ARGS=()
+      fi
     fi
 
-    make -j"$(nproc)"
+    make -j"$(nproc)" "${MAKE_ARGS[@]}"
     rm -rf "${STAGE}"
     mkdir -p "${STAGE}"
     cp "${BINS[@]}" "${STAGE}/"
     if [[ "${PLATFORM}" == "windows" && "${LINKAGE}" == "shared" ]]; then
       cp "${MINGW_PREFIX}/bin/"*.dll "${STAGE}/" 2>/dev/null || true
+    fi
+    if [[ "${PLATFORM}" == "linux" && "${LINKAGE}" == "shared" ]]; then
+      bash /src/scripts/linux-bundle-so.sh "${STAGE}" \
+        "${STAGE}/fxc" "${STAGE}/fxi" "${STAGE}/map" "${STAGE}/fpg"
     fi
     for bin in "${BINS[@]}"; do
       test -e "${STAGE}/$(basename "${bin}")"
@@ -137,5 +174,14 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
     file "${STAGE}"/*
     if [[ "${PLATFORM}" == "linux" ]]; then
       "${STAGE}/fxc" -h || true
+      if [[ "${LINKAGE}" == "static" ]]; then
+        for bin in "${STAGE}"/*; do
+          if ldd "$bin" | grep -E "libSDL(-1\\.2|2)|libSDL_mixer|libpng|libz\\.so|libgif"; then
+            echo "static $(basename "$bin") still needs bundled shared libraries:" >&2
+            ldd "$bin" >&2
+            exit 1
+          fi
+        done
+      fi
     fi
   '

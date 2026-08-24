@@ -221,7 +221,7 @@ CCDEPMODE = depmode=gcc3
 CFLAGS = -std=gnu89 -O3 -finline-functions -ffast-math 
 COMMON_CFLAGS = -Wall -DTARGET_Linux
 COMMON_LIBS =  -Wl,-Bdynamic -lc
-CPPFLAGS = -I/usr/include/libpng16 
+CPPFLAGS = -I/opt/fenix-static/include -I/opt/fenix-static/include/SDL -I/usr/include/libpng16 
 CSCOPE = cscope
 CTAGS = ctags
 CYGPATH_W = echo
@@ -242,7 +242,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LDFLAGS =  -static-libgcc
+LDFLAGS = -L/opt/fenix-static/lib -static-libgcc 
 LIBOBJS = 
 LIBS = -lX11 -lpng16 -lz 
 LTLIBOBJS = 
@@ -260,12 +260,12 @@ PACKAGE_VERSION = 0.93
 PATH_SEPARATOR = :
 PKG_CONFIG = pkg-config --static
 PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = 
-SDL_CFLAGS = -D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL
-SDL_CONFIG = pkg-config --static sdl
-SDL_LIBS = -lSDL -lpthread -lm -ldl -lasound -lm -ldl -lpthread -lpulse-simple -lpulse -lX11 -lXext -lcaca -lpthread
+PKG_CONFIG_PATH = /opt/fenix-static/lib/pkgconfig
+SDL_CFLAGS = -I/opt/fenix-static/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
+SDL_CONFIG = /opt/fenix-static/bin/sdl-config
+SDL_LIBS = -L/opt/fenix-static/lib -Wl,-rpath,/opt/fenix-static/lib -lSDL -lpthread -lm -lpthread
 SDL_MIXER_CFLAGS = 
-SDL_MIXER_LIBS = -lSDL_mixer
+SDL_MIXER_LIBS = -lSDL_mixer -lvorbisfile -lvorbis -logg
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = 

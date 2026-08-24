@@ -140,13 +140,13 @@ jobs:
             Builds of `fxc`, `fxi`, `map`, and `fpg` for Linux, Windows, and macOS.
 
             Archives are named `fenix-<os>[-mingw]-<static|shared>-<tag>.zip`, with the executables at the zip root:
-            - **static** — libraries linked into the binaries where possible (`-static-libgcc` on Linux, `-static` on Windows, `-search_paths_first` on macOS)
-            - **shared** — dynamic SDL/png; Windows includes MinGW DLLs, macOS includes SDL_mixer dylibs
+            - **static** — libraries linked into the binaries where possible (`-static-libgcc` plus static SDL 1.2 / SDL_mixer / png / zlib / gif on Linux, `-static` on Windows, `-search_paths_first` on macOS)
+            - **shared** — dynamic SDL/png; Windows includes MinGW DLLs, macOS includes SDL_mixer dylibs, Linux uses linuxdeploy then flattens `.so` files next to the binaries
             - **fenix-linux-*** — x86_64 ELF from `docker/Dockerfile.linux` (Ubuntu 22.04, SDL 1.2)
             - **fenix-windows-mingw-*** — x86_64 PE from `docker/Dockerfile.windows` (MinGW-w64, SDL 1.2 / png / zlib / gif / ogg / vorbis)
             - **fenix-macos-*** — native Homebrew `sdl12-compat` plus SDL_mixer 1.2 built from source
 
             Linux and Windows CI images come from `docker/Dockerfile.linux` and `docker/Dockerfile.windows`.
-            OS graphics/audio libraries may still be required at runtime.
+            Linux static binaries still need OS X11 / ALSA / Pulse libraries at runtime.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

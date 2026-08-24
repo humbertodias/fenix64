@@ -154,6 +154,7 @@ if test "$fxi" = yes; then
     for d in \
         $MINGW_PREFIX/include/SDL \
         $FENIX_DEPS/include/SDL \
+        /opt/fenix-static/include/SDL \
         /usr/include/SDL \
         /usr/local/include/SDL \
         /opt/homebrew/include/SDL
@@ -179,10 +180,12 @@ if test "$fxi" = yes; then
         AC_MSG_ERROR([*** SDL_mixer 1.2 not found (need SDL_mixer 1.2, not SDL2/SDL3_mixer)])
     fi
     case "$target_os" in
-        mingw*)
+        mingw*|linux-gnu*|kfreebsd-gnu*)
             # --disable-music-ogg-shared leaves ov_* unresolved in libSDL_mixer.a
             SDL_MIXER_LIBS="$SDL_MIXER_LIBS -lvorbisfile -lvorbis -logg"
             ;;
+    esac
+    case "$target_os" in
         linux-gnu*|kfreebsd-gnu*)
             AC_CHECK_LIB(X11, [XQueryTree,XMoveWindow],,)
             ;;
