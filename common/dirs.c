@@ -36,7 +36,7 @@
 #include "dirs.h"
 #include "xstrings.h"
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 #ifdef WIN32
 int base_drive ;
@@ -155,7 +155,11 @@ int dir_create(const char * dir) {
 	int r ;
 
 	c = dir_path_convert(dir) ;	
+#ifdef WIN32
 	r = mkdir(c) ;
+#else
+	r = mkdir(c, 0777) ;
+#endif
 	free(c) ;
 	return r ;
 

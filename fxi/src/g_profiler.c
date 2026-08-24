@@ -33,7 +33,11 @@
 
 #include <string.h>
 #include <stdlib.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <math.h>
 #include <limits.h>
 

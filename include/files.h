@@ -43,6 +43,7 @@ extern int    file_writeSint16 (file * fp, Sint16 * buffer) ;
 extern int    file_writeUint16 (file * fp, Uint16 * buffer) ;
 extern int    file_writeSint32 (file * fp, Sint32 * buffer) ;
 extern int    file_writeUint32 (file * fp, Uint32 * buffer) ;
+extern int    file_qgets       (file * fp, char * buffer, int len) ;
 extern int    file_gets        (file * fp, char * buffer, int len) ;
 extern int    file_puts        (file * fp, const char * buffer) ;
 extern int    file_size        (file * fp) ;

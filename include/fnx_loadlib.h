@@ -21,7 +21,7 @@
 		#include <dlfcn.h>
     #endif
 
-    typedef void (__stdcall  * dlfunc) (void *(*)(char *), void (*)(char *, char *, int, void *));
+    typedef void (__stdcall  * dlfunc) (void *(*)(const char *), int (*)(char *, char *, int, void *));
 
     #ifdef WIN32
         #define dlopen(a,b)     LoadLibrary(a)

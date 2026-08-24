@@ -282,7 +282,7 @@ int imports[1024] ;
 int nimports = 0 ;
 
 // Funcion nula
-void * compile_export ( char * name )
+void * compile_export ( const char * name )
 {
     return ( NULL ) ;
 }

@@ -12,7 +12,11 @@ We don't need to create a BApplication objet, SDL does that for us.
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 
 #include <be/kernel/OS.h>
 #include <be/interface/Alert.h>

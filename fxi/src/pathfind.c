@@ -17,7 +17,11 @@
  */
 
 #include <stdio.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <stdlib.h>
 
 #include "fxi.h"

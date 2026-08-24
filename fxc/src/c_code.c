@@ -2630,7 +2630,7 @@ void compile_block (PROCDEF * p)
 
 		/* Asignation */
 
-		res = compile_subexpresion(0, 1) ;
+		res = compile_subexpresion() ;
 		if (!res.asignation && !res.call)
 			compile_error (MSG_INVALID_SENTENCE) ;
 		if (typedef_is_string(res.type) && !res.lvalue)

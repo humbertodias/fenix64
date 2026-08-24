@@ -32,7 +32,11 @@
  *				 0.82 - added gr_save_map
  */
 
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 

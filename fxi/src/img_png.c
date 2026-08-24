@@ -92,7 +92,7 @@ GRAPH * gr_read_png (const char * filename)
 
 	/* Rutina de error */
 
-	if (setjmp (png_ptr->jmpbuf))
+	if (setjmp (png_jmpbuf(png_ptr)))
 	{
 		png_destroy_read_struct (&png_ptr, &info_ptr, &end_info) ;
 		file_close (png) ;
@@ -267,7 +267,7 @@ GRAPH * gr_read_png (const char * filename)
 
 	/* Fin */
 
-	if (!setjmp (png_ptr->jmpbuf))
+	if (!setjmp (png_jmpbuf(png_ptr)))
 		png_read_end (png_ptr, 0) ;
 	file_close (png) ;
 	bitmap->modified = 1 ;
@@ -319,7 +319,7 @@ int gr_save_png (GRAPH * gr, const char * filename)
 
 	/* Error handling... */
 
-	if (setjmp(png_ptr->jmpbuf)) 
+	if (setjmp(png_jmpbuf(png_ptr))) 
 	{
 		fclose (file) ;
 		png_destroy_write_struct (&png_ptr, NULL) ;
@@ -363,7 +363,6 @@ int gr_save_png (GRAPH * gr, const char * filename)
 
 		/* Free allocated palette... */
 		png_free (png_ptr, (png_voidp) pal) ;
-		info_ptr->palette = NULL ;
 	} 
 	else 
 	{	

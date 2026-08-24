@@ -34,7 +34,11 @@
  *			0.72 - Corrected gr_text_bitmap (WRITE_IN_MAP)
  */
 
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <SDL.h>

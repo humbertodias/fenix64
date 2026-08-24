@@ -39,7 +39,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 
 #include "fxi.h"
 #include "dcb.h"

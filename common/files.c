@@ -26,7 +26,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 
 #include "files.h"
 
@@ -141,6 +145,11 @@ int file_puts (file * fp, const char * buffer)
 	}
 	*optr++ = '\n' ;
 	return file_write (fp, dest, optr-dest) ;
+}
+
+int file_qgets (file * fp, char * buffer, int len)
+{
+	return file_gets (fp, buffer, len) ;
 }
 
 /* Recupera una cadena de un fichero y la "descuotea" */

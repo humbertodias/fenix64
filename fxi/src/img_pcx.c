@@ -36,7 +36,11 @@
  *	INCLUDES
  */
 
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <SDL.h>

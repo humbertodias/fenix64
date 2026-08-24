@@ -39,6 +39,7 @@
 #include <direct.h>
 #else
 #include <unistd.h>
+#include <sys/stat.h>
 #endif
 
 #include <errno.h>

@@ -31,7 +31,11 @@
  * HISTORY:	0.82 - First version (used to be in g_texts.c)
  */
 
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <SDL.h>
