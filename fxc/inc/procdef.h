@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intérprete de videojuegos
- * Copyright (C) 1999 José Luis Cebrián Pagüe
+/* Fenix - Compilador/intÃ©rprete de videojuegos
+ * Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef __PROCDEF_H
 #define __PROCDEF_H
 
-/* Procesos (un "PROCDEF" es, en realidad, simplemente su definición) */
+/* Procesos (un "PROCDEF" es, en realidad, simplemente su definiciÃ³n) */
 
 #ifndef __SEGMENT_H
 #include "segment.h"

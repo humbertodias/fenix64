@@ -171,7 +171,7 @@ Index: fenix-0.92a.dfsg1/fxc/src/codeblock.c
  
  	if (MN_PARAMS(code) == 0 && param)
  	{
--		printf ("Aviso: mnemÛnico 0x%02X no recibe par·metros\n", code) ;
+-		printf ("Aviso: mnem√≥nico 0x%02X no recibe par√°metros\n", code) ;
 +		fprintf (stderr, _("Warning: mnemonic 0x%02X does not receive parameters\n"), code) ;
  	}
  
@@ -278,7 +278,7 @@ Index: fenix-0.92a.dfsg1/fxc/src/dcbw.c
  	}
 @@ -514,27 +522,27 @@
  
- 	/* 6. Mostrar estadÌsticas */
+ 	/* 6. Mostrar estad√≠sticas */
  
 -	printf ("\nFichero %s grabado (%ld bytes):\n\n", filename, offset) ;
 -	printf ("          Procesos:   %8d procesos\n", dcb.data.NProcs) ;

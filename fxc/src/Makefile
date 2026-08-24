@@ -1,5 +1,5 @@
-# Fenix - Compilador/intérprete de videojuegos
-# Copyright (C) 1999 José Luis Cebrián Pagüe
+# Fenix - Compilador/intÃ©rprete de videojuegos
+# Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ CFLAGS += `sdl-config --cflags` -I/boot/home/config/include
 LIBS += -ldl
 endif
 
-# Usar debug=true para activar versión de depurado
+# Usar debug=true para activar versiÃ³n de depurado
 
 ifeq ($(debug), true)
 CFLAGS += -DDEBUG -g
@@ -49,7 +49,7 @@ else
 CFLAGS += -O2 
 endif
 
-# Usar efence=true para activar la librería Electric Fence
+# Usar efence=true para activar la librerÃ­a Electric Fence
 
 ifeq ($(efence), true)
 LIBS += -lefence
@@ -89,7 +89,7 @@ $(TARGET): main.o main_div.o token.o identifier.o segment.o \
        sysstub.o typedef.o ../../common/files.o ../../common/xctype.o 
 	$(CC) -o $@ $^ $(LIBS) -lz
 
-# Módulos principales
+# MÃ³dulos principales
 
 main.o: main.c $(HEADERS)
 

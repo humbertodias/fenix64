@@ -26,7 +26,7 @@ Index: fenix-0.92a.dfsg1/map/map.c
  
  void help ()
  {
--	printf ("MAP Utility v0.75\nCopyright (C) 1999 José Luis Cebrián Pagüe\nCopyright (C) 2002 Fenix Team\n"
+-	printf ("MAP Utility v0.75\nCopyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e\nCopyright (C) 2002 Fenix Team\n"
 -		"This utility comes with ABSOLUTELY NO WARRANTY; map -h for details\n\n") ;
 +	printf (_("MAP Utility v0.75\nCopyright (C) 1999 Jose Luis Cebrian Pague\n"
 +		"Copyright (C) 2002 Fenix Team\n"
@@ -62,7 +62,7 @@ Index: fenix-0.92a.dfsg1/map/map.c
 -		fatal_error ("El GIF no contiene una paleta de colores") ;
 +		fatal_error (_("GIF file does not contain a colour palette")) ;
  	if (pal->ColorCount > 255)
--		fatal_error ("El GIF tiene más de 256 colores") ;
+-		fatal_error ("El GIF tiene mÃ¡s de 256 colores") ;
 +		fatal_error (_("GIF file has more than 256 colours")) ;
  
  	memset (map->palette, 0, PALETTE_SIZE) ;
@@ -149,7 +149,7 @@ Index: fenix-0.92a.dfsg1/map/map.c
  		for (k = 0 ; k < map->header.height ; k++)
  		{
 @@ -543,15 +552,15 @@
- 	/* Abre el fichero y se asegura de que screen está inicializada */
+ 	/* Abre el fichero y se asegura de que screen estÃ¡ inicializada */
  
  	png = fopen (filename, "rb") ;
 -	if (!png) fatal_error ("No existe %s\n", filename) ;
@@ -218,7 +218,7 @@ Index: fenix-0.92a.dfsg1/map/map.c
  	else if (strcmp (header, FPG_MAGIC) != 0 &&
  	    strcmp (header, FNT_MAGIC) != 0 &&
  	    strcmp (header, PAL_MAGIC) != 0)
--		fatal_error ("%s: no es un fichero de paleta válido", filename) ;
+-		fatal_error ("%s: no es un fichero de paleta vÃ¡lido", filename) ;
 +		fatal_error (_("'%s': not a valid colour palette file"), filename) ;
  
  	gzread (file, here, PALETTE_SIZE) ;
@@ -249,7 +249,7 @@ Index: fenix-0.92a.dfsg1/map/map.c
  	map->animation = (Sint16 *) malloc(n_frames * 2) ;
  	memcpy (map->animation, frames, n_frames * 2) ;
  	if ((map->header.width / map->frames) * map->frames != map->header.width)
--		fatal_error ("El ancho no es múltiplo de %d\n", map->frames) ;
+-		fatal_error ("El ancho no es mÃºltiplo de %d\n", map->frames) ;
 +		fatal_error (_("Width is not a multiple of %d\n"), map->frames) ;
  	map->header.width /= map->frames ;
  }
@@ -298,7 +298,7 @@ Index: fenix-0.92a.dfsg1/map/map.c
  					while (*ptr) ptr++ ;
  					break ;
  				default:
--					fatal_error ("Error: opción -%c no reconocida\n", *ptr) ;
+-					fatal_error ("Error: opciÃ³n -%c no reconocida\n", *ptr) ;
 +					fatal_error (_("Error: unknown option -%c\n"), *ptr) ;
  			}
  

@@ -20,7 +20,7 @@
 
 #define SCROLLS			4*14
 
-			/* Siguen 10 estructuras scroll de tamaño 20 */
+			/* Siguen 10 estructuras scroll de tamaÃ±o 20 */
 
 #define JOYLEFT			4*214
 #define JOYRIGHT		4*215
@@ -55,7 +55,7 @@
 
 #define M7STRUCTS		4*250
 
-			/* Siguen 10 estructuras de tamaño 10 */
+			/* Siguen 10 estructuras de tamaÃ±o 10 */
 
 /* Extras */
 

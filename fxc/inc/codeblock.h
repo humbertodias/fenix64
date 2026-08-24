@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intérprete de videojuegos
- * Copyright (C) 1999 José Luis Cebrián Pagüe
+/* Fenix - Compilador/intÃ©rprete de videojuegos
+ * Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #ifndef __CODEBLOCK_H
 #define __CODEBLOCK_H
 
-/* Bloques de código compilado. Contienen estructuras que sólo se emplean
- * durante el compilado: la función program_postprocess() independiza los
- * datos (CODEBLOCK.data[]) de dichas estructuras, que el intérprete
+/* Bloques de cÃ³digo compilado. Contienen estructuras que sÃ³lo se emplean
+ * durante el compilado: la funciÃ³n program_postprocess() independiza los
+ * datos (CODEBLOCK.data[]) de dichas estructuras, que el intÃ©rprete
  * no necesita */
 
 typedef struct _codeblock

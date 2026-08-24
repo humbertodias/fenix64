@@ -1,5 +1,5 @@
-# Fenix - Compilador/intÈrprete de videojuegos
-# Copyright (C) 1999 JosÈ Luis Cebri·n Pag¸e
+# Fenix - Compilador/int√©rprete de videojuegos
+# Copyright (C) 1999 Jos√© Luis Cebri√°n Pag√ºe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ LIBS += `sdl-config --libs` -L/usr/local/lib -lfreetype
 CFLAGS += -I/usr/include/sys
 endif
 
-# Usar efence=true para enlazar con la librerÌa Electric Fence
+# Usar efence=true para enlazar con la librer√≠a Electric Fence
 
 ifeq ($(efence), true)
     LIBS += -lefence
@@ -95,7 +95,7 @@ $(TARGET): main.o dcbr.o instance.o strings.o \
 	../../common/files.o ../../common/xctype.o g_profiler.o i_saveload.o
 	cc  $(LDEFS) -o $@ $^ $(LIBS)
 
-# MÛdulo principal
+# M√≥dulo principal
 
 main.o: main.c $(HEADERS)
 
@@ -107,7 +107,7 @@ instance.o: instance.c $(HEADERS)
 
 strings.o: strings.c $(HEADERS)
 
-# IntÈrprete
+# Int√©rprete
 
 i_main.o: i_main.c $(HEADERS)
 
@@ -117,7 +117,7 @@ i_func.o: i_func.c $(HEADERS) ../inc/fmath.h ../../include/sysprocs.h
 
 i_saveload.o: i_saveload.c $(HEADERS)
 
-# Rutinas gr·ficas
+# Rutinas gr√°ficas
 
 g_main.o: g_main.c $(HEADERS)
 
@@ -153,13 +153,13 @@ g_profiler.o: g_profiler.c $(HEADER)
 
 mmx_scale2x.o: mmx_scale2x.c $(HEADER)
 
-# Rutinas de carga de im·genes
+# Rutinas de carga de im√°genes
 
 img_png.o: img_png.c $(HEADERS)
 
 img_pcx.o: img_pcx.c $(HEADERS)
 
-# MÛdulo de sonido
+# M√≥dulo de sonido
 
 sound.o: sound.c $(HEADERS)
 

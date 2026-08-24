@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
+ *  Copyright Â© 2002 Fenix Team
  *
  */
 
@@ -52,7 +52,7 @@ SYSPROC sysprocs[MAX_SYSPROCS] =
 {
     /* Depurado */
     { 0x00, "SAY"                   , "S"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_say) },
-    /* Matemáticas */
+    /* MatemÃ¡ticas */
     { 0x10, "RAND"                  , "II"    , TYPE_DWORD  , 2 , SYSMACRO(fxi_rand) },
     { 0x11, "RAND_SEED"             , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_rand_seed) },
     { 0x12, "ABS"                   , "F"     , TYPE_FLOAT  , 1 , SYSMACRO(fxi_abs) },
@@ -69,7 +69,7 @@ SYSPROC sysprocs[MAX_SYSPROCS] =
     { 0x23, "ACOS"                  , "F"     , TYPE_FLOAT  , 1 , SYSMACRO(fxi_acos) },
     { 0x24, "ASIN"                  , "F"     , TYPE_FLOAT  , 1 , SYSMACRO(fxi_asin) },
     { 0x25, "ATAN"                  , "F"     , TYPE_FLOAT  , 1 , SYSMACRO(fxi_atan) },
-    /* Interacción entre procesos */
+    /* InteracciÃ³n entre procesos */
     { 0x30, "GET_ANGLE"             , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_get_angle) },
     { 0x31, "GET_DIST"              , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_get_dist) },
     { 0x32, "GET_DISTX"             , "II"    , TYPE_DWORD  , 2 , SYSMACRO(fxi_get_distx) },
@@ -86,7 +86,7 @@ SYSPROC sysprocs[MAX_SYSPROCS] =
     { 0x51, "GET_JOY_BUTTON"        , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_get_joy_button) },
     { 0x52, "GET_JOY_POSITION"      , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_get_joy_position) },
     { 0x53, "SELECT_JOY"            , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_select_joy) },
-    /* Inicialización y carga */
+    /* InicializaciÃ³n y carga */
     { 0x60, "SET_MODE"              , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_set_mode) },
     { 0x61, "SET_FPS"               , "II"    , TYPE_DWORD  , 2 , SYSMACRO(fxi_set_fps) },
     { 0x62, "LOAD_MAP"              , "S"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_load_map) },
@@ -211,7 +211,7 @@ SYSPROC sysprocs[MAX_SYSPROCS] =
     { 0xFD, "DRAW_CIRCLE"           , "III"   , TYPE_DWORD  , 3 , SYSMACRO(fxi_circle) },
     { 0xFE, "DRAW_FCIRCLE"          , "III"   , TYPE_DWORD  , 3 , SYSMACRO(fxi_fcircle) },
     { 0xFF, "SET_TEXT_COLOR"        , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_set_text_color) },
-    /* Búsqueda de caminos*/
+    /* BÃºsqueda de caminos*/
     { 0x100,"PATH_FIND"             , "IIIIIII",TYPE_DWORD  , 7 , SYSMACRO(fxi_path_find)  },
     { 0x101,"PATH_GETXY"            , "PP"    , TYPE_DWORD  , 2 , SYSMACRO(fxi_path_getxy)  },
     { 0x102,"PATH_WALL"             , "I"     , TYPE_DWORD  , 1 , SYSMACRO(fxi_path_wall)  },

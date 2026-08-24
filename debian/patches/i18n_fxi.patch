@@ -62,13 +62,13 @@ Index: fenix-0.92a.dfsg1/fxi/src/fbm.c
  
  		if (strcmp (file_header.magic, FBM_MAGIC) != 0)
  		{
--			fbm_error = "El fichero no es un FBM válido";
+-			fbm_error = "El fichero no es un FBM vÃ¡lido";
 +			fbm_error = _("Not a valid FBM file");
  			return NULL;
  		}
  		if ((file_header.version & 0xFF00) != 0x0100)
  		{
--			fbm_error = "El fichero FBM es de una versión posterior incompatible";
+-			fbm_error = "El fichero FBM es de una versiÃ³n posterior incompatible";
 +			fbm_error = _("FBM file is from a later incompatible version");
  			return NULL;
  		}
@@ -110,7 +110,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/fbm.c
  		graph = bitmap_new (header.code, header.width, header.height, file_header.depth, header.max_frame+1);
  		if (graph == NULL)
  		{
--			fbm_error = "Error al crear el gráfico en memoria";
+-			fbm_error = "Error al crear el grÃ¡fico en memoria";
 +			fbm_error = _("Error creating graphic in memory");
  			error = 1;
  		}
@@ -323,7 +323,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/fgc.c
  	lib = grlib_get(id);
  	if (lib == NULL || !lib->maps)
  	{
--		fgc_error = "Número de librería incorrecta";
+-		fgc_error = "NÃºmero de librerÃ­a incorrecta";
 +		fgc_error = _("Incorrect library number");
  		return 0;
  	}
@@ -332,7 +332,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/fgc.c
  		}
  		if (header.depth != lib->maps[i]->depth)
  		{
--			fgc_error = "La librería contiene mapas de diferente profundidad";
+-			fgc_error = "La librerÃ­a contiene mapas de diferente profundidad";
 +			fgc_error = _("Library contains maps of different depth");
  			return 0;
  		}
@@ -460,7 +460,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/fpl.c
  	}
  
      if (strncmp(header.magic, FPL_MAGIC, strlen(FPL_MAGIC)) == 0) {
--		fpl_error = "Fichero FPL inválido" ;
+-		fpl_error = "Fichero FPL invÃ¡lido" ;
 +		fpl_error = _("Invalid FPL file") ;
  		return 0 ;
      }
@@ -469,13 +469,13 @@ Index: fenix-0.92a.dfsg1/fxi/src/fpl.c
  	ARRANGE_DWORD(&file_header.version);
  
  	if (!FPL_VALID_DEPTH(header.depth)) {
--		fpl_error = "Profundidad de color no válida en el fichero FPL" ;
+-		fpl_error = "Profundidad de color no vÃ¡lida en el fichero FPL" ;
 +		fpl_error = _("Invalid colour depth in the FPL file") ;
  		return 0 ;
  	}
  
  	if ((header.version & 0xFF00) != 0x0100) {
--		fpl_error = "El fichero FPL es de una versión posterior incompatible";
+-		fpl_error = "El fichero FPL es de una versiÃ³n posterior incompatible";
 +		fpl_error = _("FPL belongs to a later incompatible version");
  		return 0;
  	}
@@ -553,7 +553,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/f_sort.c
  			}
  			if (maxvar == NULL)
  			{
--				gr_con_printf ("Estructura vacía");
+-				gr_con_printf ("Estructura vacÃ­a");
 +				gr_con_printf (_("Empty structure"));
  				return 0;
  			}
@@ -571,7 +571,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/f_sort.c
  			compare = compare_float;
  			break;
  		default:
--			gr_con_printf ("Tipo de dato usado como clave de ordenación inválido");
+-			gr_con_printf ("Tipo de dato usado como clave de ordenaciÃ³n invÃ¡lido");
 +			gr_con_printf (_("Invalid data type used as sorting key"));
  			return 0;
  	}
@@ -580,19 +580,19 @@ Index: fenix-0.92a.dfsg1/fxi/src/f_sort.c
  
  	if (type->BaseType[0] != TYPE_ARRAY)
  	{
--		gr_con_printf ("Sólo se permite ordenar un array de estructuras o valores");
+-		gr_con_printf ("SÃ³lo se permite ordenar un array de estructuras o valores");
 +		gr_con_printf (_("Only arrays of structures or values can be sorted"));
  		return 0;
  	}
  	if (vars > 1)
  	{
--		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+-		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 +		gr_con_printf (_("Trying to sort a structure with just one element"));
  		return 0;
  	}
  	if (type->Count[0] < 2)
  	{
--		gr_con_printf ("Intento de ordenar un array con un sólo elemento");
+-		gr_con_printf ("Intento de ordenar un array con un sÃ³lo elemento");
 +		gr_con_printf (_("Trying to sort an array with just one element"));
  		return 0;
  	}
@@ -601,19 +601,19 @@ Index: fenix-0.92a.dfsg1/fxi/src/f_sort.c
  
  	if (type->BaseType[0] != TYPE_ARRAY)
  	{
--		gr_con_printf ("Sólo se permite ordenar un array de estructuras o valores");
+-		gr_con_printf ("SÃ³lo se permite ordenar un array de estructuras o valores");
 +		gr_con_printf (_("Only arrays of structures or values can be sorted"));
  		return 0;
  	}
  	if (vars > 1)
  	{
--		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+-		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 +		gr_con_printf (_("Trying to sort a structure with just one element"));
  		return 0;
  	}
  	if (type->Count[0] < 2)
  	{
--		gr_con_printf ("Intento de ordenar un array con un sólo elemento");
+-		gr_con_printf ("Intento de ordenar un array con un sÃ³lo elemento");
 +		gr_con_printf (_("Trying to sort an array with just one element"));
  		return 0;
  	}
@@ -631,7 +631,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/f_sort.c
  	}
  	if (vars > 1)
  	{
--		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+-		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 +		gr_con_printf (_("Trying to sort a structure with just one element"));
  		return 0;
  	}
@@ -640,7 +640,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/f_sort.c
  	}
  	if (vars > 1)
  	{
--		gr_con_printf ("Intento de ordenar una estructura con un sólo elemento");
+-		gr_con_printf ("Intento de ordenar una estructura con un sÃ³lo elemento");
 +		gr_con_printf (_("Trying to sort a structure with just one element"));
  		return 0;
  	}
@@ -714,9 +714,9 @@ Index: fenix-0.92a.dfsg1/fxi/src/g_console.c
  
 -#define HELPTXT \
 +#define HELPTXT _( \
-             "¬02Process Info¬07\n"                                          \
-             "¬04INSTANCES      ¬07  List all running processes\n"           \
-             "¬04GLOBALS        ¬07  Show global vars with values\n"         \
+             "Â¬02Process InfoÂ¬07\n"                                          \
+             "Â¬04INSTANCES      Â¬07  List all running processes\n"           \
+             "Â¬04GLOBALS        Â¬07  Show global vars with values\n"         \
 @@ -85,7 +92,7 @@
              "\n"                                                            \
              "You can evaluate free expressions in the console,\n"           \
@@ -965,8 +965,8 @@ Index: fenix-0.92a.dfsg1/fxi/src/g_console.c
              for (n = 0 ; n < procdef_count; n++) {
                  if (procs[n].breakpoint) {
                      if (!f) {
--                        gr_con_printf("¬02Process type breakpoints¬07\n");
-+                        gr_con_printf(_("¬02Process type breakpoints¬07\n"));
+-                        gr_con_printf("Â¬02Process type breakpointsÂ¬07\n");
++                        gr_con_printf(_("Â¬02Process type breakpointsÂ¬07\n"));
                          f = 1;
                      }
                      gr_con_printf("%s\n", procs[n].name);
@@ -974,8 +974,8 @@ Index: fenix-0.92a.dfsg1/fxi/src/g_console.c
              for (i = first_instance ; i ; i = i->next) {
                  if (i->breakpoint) {
                      if (!f) {
--                            gr_con_printf("¬02Process breakpoints¬07\n");
-+                            gr_con_printf(_("¬02Process breakpoints¬07\n"));
+-                            gr_con_printf("Â¬02Process breakpointsÂ¬07\n");
++                            gr_con_printf(_("Â¬02Process breakpointsÂ¬07\n"));
                          f = 1;
                      }
                      gr_con_printf("%d\n", LOCDWORD(i, PROCESS_ID));
@@ -1442,7 +1442,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/g_pal.c
                  palette_changed = 1 ;
                  r = 1 ;
              } else {
--                fgc_error = "Fichero FGC no contiene información de paleta";
+-                fgc_error = "Fichero FGC no contiene informaciÃ³n de paleta";
 +                fgc_error = _("FGC file does not contain information about the colour palette");
                  file_close(fp);
                  return -1;
@@ -1697,7 +1697,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
                      break ;
  
                  default:
--                    gr_error ("Tipo de señal desconocida") ;
+-                    gr_error ("Tipo de seÃ±al desconocida") ;
 +                    gr_error (_("Unknown signal type")) ;
              }
  
@@ -1706,7 +1706,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
  fxi_set_mode (INSTANCE * my, int * params)
  {
      if (params[0] < 3200200 || params[0] > 16001400)
--        gr_error ("Modo gráfico no soportado") ;
+-        gr_error ("Modo grÃ¡fico no soportado") ;
 +        gr_error (_("Unsupported graphic mode")) ;
  
      gr_init(params[0]/10000, params[0]%10000) ;
@@ -1715,7 +1715,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
  fxi_set_mode_2 (INSTANCE * my, int * params)
  {
      if (params[0]>1600 || params[1]>1400)
--        gr_error ("Modo gráfico no soportado") ;
+-        gr_error ("Modo grÃ¡fico no soportado") ;
 +        gr_error (_("Unsupported graphic mode")) ;
  
      gr_init(params[0], params[1]) ;
@@ -1724,7 +1724,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
  {
  
      if (params[0]>1600 || params[1]>1400)
--        gr_error ("Modo gráfico no soportado");
+-        gr_error ("Modo grÃ¡fico no soportado");
 +        gr_error (_("Unsupported graphic mode"));
  
      GLODWORD(GRAPH_MODE) = ((GLODWORD(GRAPH_MODE) & 0xFF) | params[2]);
@@ -1733,7 +1733,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
  {
  
      if (params[0]>1600 || params[1]>1400)
--        gr_error ("Modo gráfico no soportado");
+-        gr_error ("Modo grÃ¡fico no soportado");
 +        gr_error (_("Unsupported graphic mode"));
  
      GLODWORD(GRAPH_MODE) = (params[2] | params[3]);
@@ -1742,7 +1742,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
      if (!map) return -1 ;
      if (map->depth != 8)
      {
--        gr_error ("Intento de usar convert_palette con un gráfico de 16 bits") ;
+-        gr_error ("Intento de usar convert_palette con un grÃ¡fico de 16 bits") ;
 +        gr_error (_("Trying to use convert_palette with a 16 bit graphic")) ;
          return 0;
      }
@@ -1760,8 +1760,8 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
      GRAPH * dest = bitmap_get (params[0], params[1]) ;
      GRAPH * orig = bitmap_get (params[0], params[2]) ;
  
--    if (!dest) gr_error ("map_put: mapa de destino no válido") ;
--    if (!orig) gr_error ("map_put: mapa de origen no válido") ;
+-    if (!dest) gr_error ("map_put: mapa de destino no vÃ¡lido") ;
+-    if (!orig) gr_error ("map_put: mapa de origen no vÃ¡lido") ;
 +    if (!dest) gr_error (_("map_put: Invalid destination map")) ;
 +    if (!orig) gr_error (_("map_put: Invalid source map")) ;
  
@@ -1807,7 +1807,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
              t = TEXT_INT;
              break;
          default:
--            gr_error ("No es un tipo de dato válido");
+-            gr_error ("No es un tipo de dato vÃ¡lido");
 +            gr_error (_("Not a valid data type"));
              break ;
      }
@@ -1848,7 +1848,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
      if (!map) return 0;
  
      if (map->depth != 16) {
--        gr_con_printf ("Intento de usar filter con un gráfico de 8 bits") ;
+-        gr_con_printf ("Intento de usar filter con un grÃ¡fico de 8 bits") ;
 +        gr_con_printf (_("Trying to use filter with an 8 bit graphic")) ;
          return 0;
      }
@@ -1857,7 +1857,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
      if (!map) return 0;
  
      if (map->depth != 16) {
--        gr_con_printf ("Intento de usar blur con un gráfico de 8 bits") ;
+-        gr_con_printf ("Intento de usar blur con un grÃ¡fico de 8 bits") ;
 +        gr_con_printf (_("Trying to use blur with an 8 bit graphic")) ;
          return 0;
      }
@@ -1866,7 +1866,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
      if (!map) return -1 ;
  
      if (map->depth != 16) {
--        gr_con_printf ("Intento de usar grayscale con un gráfico de 8 bits") ;
+-        gr_con_printf ("Intento de usar grayscale con un grÃ¡fico de 8 bits") ;
 +        gr_con_printf (_("Trying to use grayscale with an 8 bit graphic")) ;
          return -1 ;
      }
@@ -1875,7 +1875,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
  
      if (!map) return -1 ;
      if (map->depth != 16)
--        gr_error ("Intento de usar rgbscale con un gráfico de 8 bits") ;
+-        gr_error ("Intento de usar rgbscale con un grÃ¡fico de 8 bits") ;
 +        gr_error (_("Trying to use rgbscale with an 8 bit graphic")) ;
  
      for(i=0;i<map->height;i++)
@@ -1902,7 +1902,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_func.c
  
      if (graph == NULL)
      {
--        gr_error("Intento de grabar un gráfico inexistente\n(Libraría %d, gráfico %d)", params[0], params[1]);
+-        gr_error("Intento de grabar un grÃ¡fico inexistente\n(LibrarÃ­a %d, grÃ¡fico %d)", params[0], params[1]);
 +        gr_error(_("Trying to save an unexistant graphic (library %d, graphic %d)"), params[0], params[1]);
      }
      else
@@ -1971,7 +1971,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/i_main.c
  
              case MN_SYSCALL:
                  p = sysproc_get (ptr[1]) ;
--                if (!p) gr_error ("Error: Función del sistema desconocida\n") ;
+-                if (!p) gr_error ("Error: FunciÃ³n del sistema desconocida\n") ;
 +                if (!p) gr_error (_("Error: unknown system function\n")) ;
                  stack_ptr -= p->params ;
                  *stack_ptr = (*p->func) (r, stack_ptr) ;
@@ -2292,7 +2292,7 @@ Index: fenix-0.92a.dfsg1/fxi/src/img_png.c
  #include "fxi.h"
  
 @@ -82,15 +89,15 @@
-     /* Abre el fichero y se asegura de que screen está inicializada */
+     /* Abre el fichero y se asegura de que screen estÃ¡ inicializada */
  
      png = file_open (filename, "rb") ;
 -    if (!png) gr_error ("No existe %s\n", filename) ;
@@ -2654,8 +2654,8 @@ Index: fenix-0.92a.dfsg1/fxi/src/strings.c
      }
      // Incremento espacio
      string_alloc (1024) ;
--    gr_con_printf ("[STRING] ¬12*PANIC¬7 Too many strings, allocating more space") ;
-+    gr_con_printf (_("[STRING] ¬12*PANIC¬7 Too many strings, allocating more space")) ;
+-    gr_con_printf ("[STRING] Â¬12*PANICÂ¬7 Too many strings, allocating more space") ;
++    gr_con_printf (_("[STRING] Â¬12*PANICÂ¬7 Too many strings, allocating more space")) ;
  
      // Devuelvo el string_count + 1, ya que ahora tengo 1024 mas que antes
      return string_count++ ;

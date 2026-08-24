@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intérprete de videojuegos
- * Copyright (C) 1999 José Luis Cebrián Pagüe
+/* Fenix - Compilador/intÃ©rprete de videojuegos
+ * Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ extern void compile_program ();
 extern void compile_sentence (PROCDEF * p) ;
 extern void compile_block(PROCDEF *) ;
 
-/* Compilado de secciones especiales (definición de datos, etc) */
+/* Compilado de secciones especiales (definiciÃ³n de datos, etc) */
 extern int  compile_array_data (VARSPACE * n, segment * data, int size, int subsize, BASETYPE *t) ;
 extern int  compile_varspace (VARSPACE * n, segment * data, int additive, int copies, VARSPACE * c1, VARSPACE * c2) ;
 extern void compile_constants () ;
@@ -77,7 +77,7 @@ extern expresion_result compile_subexpresion () ;
 extern expresion_result compile_expresion (int need_constant, int need_lvalue, BASETYPE t) ;
 extern expresion_result convert_result_type (expresion_result res, BASETYPE t);
 
-/* Códigos de identificadores y palabras reservadas */
+/* CÃ³digos de identificadores y palabras reservadas */
 
 extern int 
 
@@ -110,6 +110,6 @@ extern int
 	identifier_float,		identifier_include,		identifier_type,
     identifier_import,		identifier_elseif,		identifier_question;
 
-extern int reserved_words ;	 /* Número de palabras reservadas */ 
+extern int reserved_words ;	 /* NÃºmero de palabras reservadas */ 
 
 #endif

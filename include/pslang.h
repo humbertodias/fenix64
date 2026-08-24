@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intérprete de videojuegos
- * Copyright (C) 1999 José Luis Cebrián Pagüe
+/* Fenix - Compilador/intÃ©rprete de videojuegos
+ * Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,10 @@
 #define MOD_TYPE	11
 
 /* --------------------- */
-/* Flags para mnemónicos */
+/* Flags para mnemÃ³nicos */
 /* --------------------- */
 
-/* Número de parámetros */
+/* NÃºmero de parÃ¡metros */
 
 #define MN_0_PARAMS	(0x00)
 #define MN_1_PARAMS	(0x80)
@@ -51,7 +51,7 @@
 #define MN_TYPEOF(code) ((code) & 0xF00)
 
 /* -------------------- */
-/* Códigos de mnemónico */
+/* CÃ³digos de mnemÃ³nico */
 /* -------------------- */
 
 /* Salidas */
@@ -107,12 +107,12 @@
 #define MN_JTRUE	(0x1D| MN_1_PARAMS)
 #define MN_JNOCASE	(0x1E| MN_1_PARAMS)
 
-/* Operaciones unarias - aceptan tipos de dato numéricos */
+/* Operaciones unarias - aceptan tipos de dato numÃ©ricos */
 
 #define	MN_NEG		(0x1F| MN_0_PARAMS)
 #define	MN_NOT		(0x20| MN_0_PARAMS)
 
-/* Operaciones binarias - Aceptan tipos de dato numéricos */
+/* Operaciones binarias - Aceptan tipos de dato numÃ©ricos */
 
 #define MN_MUL		(0x21| MN_0_PARAMS)
 #define MN_DIV		(0x22| MN_0_PARAMS)
@@ -141,7 +141,7 @@
 #define MN_INC		(0x33| MN_1_PARAMS)
 #define MN_DEC		(0x34| MN_1_PARAMS)
 
-/* Alteración directa de variables */
+/* AlteraciÃ³n directa de variables */
 
 #define MN_LET		(0x35| MN_0_PARAMS)
 #define MN_VARADD	(0x36| MN_0_PARAMS)
@@ -171,7 +171,7 @@
 
 #define MN_LETNP	(0x45| MN_0_PARAMS)
 
-/* Funciones de conversión */
+/* Funciones de conversiÃ³n */
 
 #define MN_INT2FLOAT	(0x50| MN_1_PARAMS)
 #define MN_FLOAT2INT	(0x51| MN_1_PARAMS)
@@ -179,7 +179,7 @@
 #define MN_STR2A        (0x61| MN_1_PARAMS)
 #define MN_STRACAT      (0x62| MN_1_PARAMS)
 
-/* Mnemónicos inexistentes - usados por el compilador internamente */
+/* MnemÃ³nicos inexistentes - usados por el compilador internamente */
 
 #define MN_REPEAT	(0x70| MN_1_PARAMS)
 #define MN_BREAK	(0x71| MN_1_PARAMS)

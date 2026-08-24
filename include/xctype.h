@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intérprete de videojuegos
- * Copyright (C) 1999 José Luis Cebrián Pagüe
+/* Fenix - Compilador/intÃ©rprete de videojuegos
+ * Copyright (C) 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  */
 #include "xctype_st.h"
 
-extern int dos_chars ;		/* 1 = Código fuente en caracteres MS-DOS */
+extern int dos_chars ;		/* 1 = CÃ³digo fuente en caracteres MS-DOS */
 extern char c_type[256] ;
 extern unsigned char c_upper[256] ;
 extern unsigned char c_lower[256] ;

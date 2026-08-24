@@ -1,7 +1,7 @@
 // FBM utility
 // ----------------------------------
 //
-// (c) 2004 JosÈ Luis Cebri·n 
+// (c) 2004 Jos√© Luis Cebri√°n 
 //
 // Conversion utility for FBM files. Use:
 //

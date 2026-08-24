@@ -1,5 +1,5 @@
-/* Fenix - Compilador/intÈrprete de videojuegos
- * Copyright (C) 1999 JosÈ Luis Cebri·n Pag¸e
+/* Fenix - Compilador/int√©rprete de videojuegos
+ * Copyright (C) 1999 Jos√© Luis Cebri√°n Pag√ºe
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include "typedef.h"
 #endif
 
-/* Un segmento es una zona lineal de datos que puede crecer din·micamente */
+/* Un segmento es una zona lineal de datos que puede crecer din√°micamente */
 
 typedef struct _segment
 {
