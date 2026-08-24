@@ -89,7 +89,7 @@
 #endif
 
 /* LINUX INCLUDES */
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 #include <dlfcn.h>
 #include <unistd.h>
 #include <sys/sysinfo.h>
@@ -3495,7 +3495,7 @@ static int fxi_formatFI (INSTANCE * my, int * params)
 
 /* Linux utility function */
 
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 int kernel_version_type(void)
 {
 	struct utsname sysinf;
@@ -3545,7 +3545,7 @@ static int fxi_memory_free (INSTANCE * my, int * params)
 	result = (float)mem.dwAvailPhys ;
 
 	return *(int *)&result ;
-#elif defined(TARGET_linux)
+#elif defined(TARGET_Linux) || defined(TARGET_linux)
 	struct sysinfo meminf;
 	int fv;
 
@@ -3592,7 +3592,7 @@ static int fxi_memory_total (INSTANCE * my, int * params)
 	result = mem.dwTotalPhys ;
 
 	return mem.dwTotalPhys ;
-#elif defined(TARGET_linux)
+#elif defined(TARGET_Linux) || defined(TARGET_linux)
 	struct sysinfo meminf;
 	int fv;
 
@@ -4684,11 +4684,9 @@ static int fxi_glob (INSTANCE * my, int * params)
 		string_use(params[0]);
 #ifdef TARGET_MAC
 		glob (path_final, GLOB_ERR | GLOB_NOSORT, NULL, &globd);
-#endif
-#ifdef TARGET_BeOS
+#elif defined(TARGET_BeOS) || defined(TARGET_BEOS)
 		glob (path_final, GLOB_ERR | GLOB_NOSORT, NULL, &globd);
-#endif
-#ifdef WIN32
+#else
 		glob (path_final, GLOB_ERR | GLOB_PERIOD | GLOB_NOSORT, NULL, &globd);
 #endif
 		currentFile = 0;
@@ -4805,7 +4803,7 @@ void sysproc_init()
 	const char    * filename;
 	unsigned int    n ;
 
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 	char soname[1024];
 	char * ptr;
 #elif defined(TARGET_BeOS)
@@ -4817,7 +4815,7 @@ void sysproc_init()
 	{
 		filename = string_get(dcb.imports[n]) ;
 
-#ifdef TARGET_linux
+#if defined(TARGET_Linux) || defined(TARGET_linux)
 		snprintf (soname, 1024, "./%s.so", filename);
 
 		/* Clean the name (strip .DLL, and use lowercase) */
