@@ -126,6 +126,7 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
       else
         export CPPFLAGS="$(pkg-config --cflags libpng zlib) ${CPPFLAGS:-}"
         export LIBS="$(pkg-config --libs libpng zlib) ${LIBS:-}"
+        export LDFLAGS="-Wl,-rpath,\$ORIGIN ${LDFLAGS:-}"
       fi
       # QEMU amd64 on Apple Silicon can flake Autoconf AC_CHECK_LIB link tests.
       export ac_cv_lib_png_png_read_info=yes
@@ -162,6 +163,10 @@ docker run --platform "${DOCKER_PLATFORM}" --rm \
     cp "${BINS[@]}" "${STAGE}/"
     if [[ "${PLATFORM}" == "windows" && "${LINKAGE}" == "shared" ]]; then
       cp "${MINGW_PREFIX}/bin/"*.dll "${STAGE}/" 2>/dev/null || true
+    fi
+    if [[ "${PLATFORM}" == "linux" && "${LINKAGE}" == "shared" ]]; then
+      bash /src/scripts/linux-bundle-so.sh "${STAGE}" \
+        "${STAGE}/fxc" "${STAGE}/fxi" "${STAGE}/map" "${STAGE}/fpg"
     fi
     for bin in "${BINS[@]}"; do
       test -e "${STAGE}/$(basename "${bin}")"

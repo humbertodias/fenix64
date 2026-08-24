@@ -35,6 +35,17 @@ RUN echo "fenix-linux ${TARGETPLATFORM}" \
 
 COPY linux-deps.sh config.guess config.sub /tmp/
 RUN bash /tmp/linux-deps.sh && rm -f /tmp/linux-deps.sh
+# linuxdeploy AppImage: extract at image build so CI/Docker need no FUSE.
+RUN curl -fL --retry 5 --retry-all-errors \
+      -o /tmp/linuxdeploy.AppImage \
+      https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
+    && chmod +x /tmp/linuxdeploy.AppImage \
+    && cd /opt \
+    && /tmp/linuxdeploy.AppImage --appimage-extract \
+    && mv squashfs-root linuxdeploy \
+    && rm -f /tmp/linuxdeploy.AppImage
+ENV LINUXDEPLOY=/opt/linuxdeploy/AppRun \
+    PATCHELF=/opt/linuxdeploy/usr/bin/patchelf
 
 WORKDIR /src
 CMD ["bash"]
