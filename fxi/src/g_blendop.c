@@ -85,7 +85,7 @@ Sint16 * blend_create ()
 {
 	Sint16 * blend ;
 	
-	blend = malloc(65536*2*sizeof(Sint16)) ;
+	blend = vm_malloc(65536*2*sizeof(Sint16)) ;
 	if (!blend) gr_error ("blend_create: sin memoria") ;
 	blend_init (blend) ;
 	return blend ;
@@ -105,7 +105,8 @@ Sint16 * blend_create ()
 
 void blend_free (Sint16 * blend)
 {
-	free (blend) ;
+	if (!vm_in_arena (blend))
+		free (blend) ;
 }
 
 /*

@@ -23,11 +23,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(TARGET_BEOS) || defined(TARGET_BeOS)
 #include <posix/assert.h>
+#else
+#include <assert.h>
+#endif
 #include <string.h>
 
 #include "fxi.h"
 #include "dcb.h"
+
+#define VA(p) vm_ptr(r, (int)(p))
 
 /* ---------------------------------------------------------------------- */
 /* Módulo principal del intérprete: función de ejecución de bloques       */
@@ -357,7 +363,7 @@ int instance_go (INSTANCE * r)
 			break ;
 		case MN_PTR:
 		case MN_PTR | MN_FLOAT:
-			stack_ptr[-1] = *(Sint32 *)stack_ptr[-1] ;
+			stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) ;
 			ptr++ ;
 			break ;
 
@@ -394,7 +400,7 @@ int instance_go (INSTANCE * r)
 			ptr += 2 ;
 			break ;
 		case MN_STRING | MN_PTR:
-			stack_ptr[-1] = *(Sint32 *)stack_ptr[-1] ;
+			stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) ;
 			string_use     ( stack_ptr[-1] ) ;
 			ptr++ ;
 			break ;
@@ -428,7 +434,7 @@ int instance_go (INSTANCE * r)
 			ptr += 2 ;
 			break ;
 		case MN_WORD | MN_PTR:
-			stack_ptr[-1] = *(Sint16 *)stack_ptr[-1] ;
+			stack_ptr[-1] = *(Sint16 *)VA(stack_ptr[-1]) ;
 			ptr++ ;
 			break ;
 		// Added... now !<word_var> works fine
@@ -461,7 +467,7 @@ int instance_go (INSTANCE * r)
 			ptr += 2 ;
 			break ;
 		case MN_BYTE | MN_PTR:
-			stack_ptr[-1] = *(Uint8 *)stack_ptr[-1] ;
+			stack_ptr[-1] = *(Uint8 *)VA(stack_ptr[-1]) ;
 			ptr++ ;
 			break ;
 		// Added... now !<byte_var> works fine
@@ -705,9 +711,9 @@ int instance_go (INSTANCE * r)
 		/* Operaciones con cadenas */
 
 		case MN_VARADD | MN_STRING:
-			n = *(Sint32 *)(stack_ptr[-2]) ;
-			*(Sint32 *)(stack_ptr[-2]) = string_add (n, stack_ptr[-1]) ;
-			string_use ( *(Sint32 *)(stack_ptr[-2]) ) ;
+			n = *(Sint32 *)VA(stack_ptr[-2]) ;
+			*(Sint32 *)VA(stack_ptr[-2]) = string_add (n, stack_ptr[-1]) ;
+			string_use ( *(Sint32 *)VA(stack_ptr[-2]) ) ;
 			string_discard (n) ;
 			string_discard (stack_ptr[-1]) ;
 			stack_ptr-- ;
@@ -715,8 +721,8 @@ int instance_go (INSTANCE * r)
 			break ;
 
 		case MN_LET | MN_STRING:
-			string_discard ( *(Sint32 *)(stack_ptr[-2]) ) ;
-			(*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+			string_discard ( *(Sint32 *)VA(stack_ptr[-2]) ) ;
+			(*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
@@ -788,7 +794,7 @@ int instance_go (INSTANCE * r)
 		/* Operaciones con cadenas de ancho fijo */
 
 		case MN_A2STR:
-			str = *(char **)(&stack_ptr[-ptr[1]-1]) ;
+			str = (char *)VA(stack_ptr[-ptr[1]-1]) ;
 			n = string_new(str);
 			string_use(n);
 			stack_ptr[-ptr[1]-1] = n ;
@@ -797,8 +803,8 @@ int instance_go (INSTANCE * r)
 
 		case MN_STR2A:
 			n = stack_ptr[-1];
-			strncpy (*(char **)(&stack_ptr[-2]), string_get(n), ptr[1]) ;
-			((char *)(stack_ptr[-2]))[ptr[1]] = 0;
+			strncpy ((char *)VA(stack_ptr[-2]), string_get(n), ptr[1]) ;
+			((char *)VA(stack_ptr[-2]))[ptr[1]] = 0;
 			stack_ptr[-2] = stack_ptr[-1];
 			stack_ptr--;
 			ptr+=2 ;
@@ -806,9 +812,9 @@ int instance_go (INSTANCE * r)
 
 		case MN_STRACAT:
 			n = stack_ptr[-1];
-			strncat (*(char **)(&stack_ptr[-2]), string_get(n), 
-				ptr[1] - strlen(*(char **)(&stack_ptr[-2]))) ;
-			((char *)(stack_ptr[-2]))[ptr[1]] = 0;
+			strncat ((char *)VA(stack_ptr[-2]), string_get(n), 
+				ptr[1] - strlen((char *)VA(stack_ptr[-2]))) ;
+			((char *)VA(stack_ptr[-2]))[ptr[1]] = 0;
 			stack_ptr[-2] = stack_ptr[-1];
 			stack_ptr--;
 			ptr+=2 ;
@@ -817,84 +823,84 @@ int instance_go (INSTANCE * r)
 		/* Operaciones directas con variables tipo DWORD */
 
 		case MN_LETNP:
-			(*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+			(*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
 			stack_ptr-=2 ;
 			ptr++ ;
 			break ;
 		case MN_LET:
-			(*(Sint32 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+			(*(Sint32 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_INC:
-			(*(Sint32 *)(stack_ptr[-1])) += ptr[1] ;
+			(*(Sint32 *)VA(stack_ptr[-1])) += ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_DEC:
-			(*(Sint32 *)(stack_ptr[-1])) -= ptr[1] ;
+			(*(Sint32 *)VA(stack_ptr[-1])) -= ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_POSTDEC:
-			(*(Sint32 *)(stack_ptr[-1])) -= ptr[1] ;
-			stack_ptr[-1] = *(Sint32 *)(stack_ptr[-1]) + ptr[1] ;
+			(*(Sint32 *)VA(stack_ptr[-1])) -= ptr[1] ;
+			stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) + ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_POSTINC:
-			*((Sint32 *)(stack_ptr[-1])) += ptr[1] ;
-			stack_ptr[-1] = *(Sint32 *)(stack_ptr[-1]) - ptr[1] ;
+			*((Sint32 *)VA(stack_ptr[-1])) += ptr[1] ;
+			stack_ptr[-1] = *(Sint32 *)VA(stack_ptr[-1]) - ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_VARADD:
-			*(Sint32 *)(stack_ptr[-2]) += stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) += stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARSUB:
-			*(Sint32 *)(stack_ptr[-2]) -= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) -= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARMUL:
-			*(Sint32 *)(stack_ptr[-2]) *= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) *= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARDIV:
 			if (stack_ptr[-1] == 0)
 				gr_error ("Error: Division por cero\n") ;
-			*(Sint32 *)(stack_ptr[-2]) /= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) /= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARMOD:
 			if (stack_ptr[-1] == 0)
 				gr_error ("Error: Division por cero\n") ;
-			*(Sint32 *)(stack_ptr[-2]) %= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) %= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VAROR:
-			*(Sint32 *)(stack_ptr[-2]) |= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) |= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARXOR:
-			*(Sint32 *)(stack_ptr[-2]) ^= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) ^= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARAND:
-			*(Sint32 *)(stack_ptr[-2]) &= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) &= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARROR:
-			*(Sint32 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_VARROL:
-			*(Sint32 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+			*(Sint32 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
@@ -902,79 +908,79 @@ int instance_go (INSTANCE * r)
 		/* Operaciones directas con variables tipo WORD */
 
 		case MN_WORD | MN_LET:
-			(*(Sint16 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+			(*(Sint16 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_INC:
-			(*(Sint16 *)(stack_ptr[-1])) += ptr[1] ;
+			(*(Sint16 *)VA(stack_ptr[-1])) += ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_WORD | MN_DEC:
-			(*(Sint16 *)(stack_ptr[-1])) -= ptr[1] ;
+			(*(Sint16 *)VA(stack_ptr[-1])) -= ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_WORD | MN_POSTDEC:
-			(*(Sint16 *)(stack_ptr[-1])) -= ptr[1] ;
-			stack_ptr[-1] = *(Sint16 *)(stack_ptr[-1]) + ptr[1] ;
+			(*(Sint16 *)VA(stack_ptr[-1])) -= ptr[1] ;
+			stack_ptr[-1] = *(Sint16 *)VA(stack_ptr[-1]) + ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_WORD | MN_POSTINC:
-			*((Sint16 *)(stack_ptr[-1])) += ptr[1] ;
-			stack_ptr[-1] = *(Sint16 *)(stack_ptr[-1]) - ptr[1] ;
+			*((Sint16 *)VA(stack_ptr[-1])) += ptr[1] ;
+			stack_ptr[-1] = *(Sint16 *)VA(stack_ptr[-1]) - ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_WORD | MN_VARADD:
-			*(Sint16 *)(stack_ptr[-2]) += stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) += stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARSUB:
-			*(Sint16 *)(stack_ptr[-2]) -= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) -= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARMUL:
-			*(Sint16 *)(stack_ptr[-2]) *= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) *= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARDIV:
 			if ((Sint16)stack_ptr[-1] == 0)
 				gr_error ("Error: Division por cero\n") ;
-			*(Sint16 *)(stack_ptr[-2]) /= (Sint16)stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) /= (Sint16)stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARMOD:
 			if ((Sint16)stack_ptr[-1] == 0)
 				gr_error ("Error: Division por cero\n") ;
-			*(Sint16 *)(stack_ptr[-2]) %= (Sint16)stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) %= (Sint16)stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VAROR:
-			*(Sint16 *)(stack_ptr[-2]) |= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) |= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARXOR:
-			*(Sint16 *)(stack_ptr[-2]) ^= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) ^= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARAND:
-			*(Sint16 *)(stack_ptr[-2]) &= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) &= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARROR:
-			*(Sint16 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_WORD | MN_VARROL:
-			*(Sint16 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+			*(Sint16 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
@@ -982,79 +988,79 @@ int instance_go (INSTANCE * r)
 		/* Operaciones directas con variables tipo BYTE */
 
 		case MN_BYTE | MN_LET:
-			(*(Uint8 *)(stack_ptr[-2])) = stack_ptr[-1] ;
+			(*(Uint8 *)VA(stack_ptr[-2])) = stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_INC:
-			(*(Uint8 *)(stack_ptr[-1])) += ptr[1] ;
+			(*(Uint8 *)VA(stack_ptr[-1])) += ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_BYTE | MN_DEC:
-			(*(Uint8 *)(stack_ptr[-1])) -= ptr[1] ;
+			(*(Uint8 *)VA(stack_ptr[-1])) -= ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_BYTE | MN_POSTDEC:
-			(*(Uint8 *)(stack_ptr[-1])) -= ptr[1] ;
-			stack_ptr[-1] = *(Uint8 *)(stack_ptr[-1]) + ptr[1] ;
+			(*(Uint8 *)VA(stack_ptr[-1])) -= ptr[1] ;
+			stack_ptr[-1] = *(Uint8 *)VA(stack_ptr[-1]) + ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_BYTE | MN_POSTINC:
-			*((Uint8 *)(stack_ptr[-1])) += ptr[1] ;
-			stack_ptr[-1] = *(Uint8 *)(stack_ptr[-1]) - ptr[1] ;
+			*((Uint8 *)VA(stack_ptr[-1])) += ptr[1] ;
+			stack_ptr[-1] = *(Uint8 *)VA(stack_ptr[-1]) - ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_BYTE | MN_VARADD:
-			*(Uint8 *)(stack_ptr[-2]) += stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) += stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARSUB:
-			*(Uint8 *)(stack_ptr[-2]) -= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) -= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARMUL:
-			*(Uint8 *)(stack_ptr[-2]) *= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) *= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARDIV:
 			if ((Uint8)stack_ptr[-1] == 0)
 				gr_error ("Error: Division por cero\n") ;
-			*(Uint8 *)(stack_ptr[-2]) /= (Uint8)stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) /= (Uint8)stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARMOD:
 			if ((Uint8)stack_ptr[-1] == 0)
 				gr_error ("Error: Division por cero\n") ;
-			*(Uint8 *)(stack_ptr[-2]) %= (Uint8)stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) %= (Uint8)stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VAROR:
-			*(Uint8 *)(stack_ptr[-2]) |= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) |= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARXOR:
-			*(Uint8 *)(stack_ptr[-2]) ^= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) ^= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARAND:
-			*(Uint8 *)(stack_ptr[-2]) &= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) &= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARROR:
-			*(Uint8 *)(stack_ptr[-2]) >>= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) >>= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_BYTE | MN_VARROL:
-			*(Uint8 *)(stack_ptr[-2]) <<= stack_ptr[-1] ;
+			*(Uint8 *)VA(stack_ptr[-2]) <<= stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
@@ -1062,47 +1068,47 @@ int instance_go (INSTANCE * r)
 		/* Operaciones directas con variables tipo FLOAT */
 
 		case MN_FLOAT | MN_LET:
-			(*(float *)(stack_ptr[-2])) = *(float *)&stack_ptr[-1] ;
+			(*(float *)VA(stack_ptr[-2])) = *(float *)&stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_FLOAT | MN_INC:
-			(*(float *)(stack_ptr[-1])) += ptr[1] ;
+			(*(float *)VA(stack_ptr[-1])) += ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_FLOAT | MN_DEC:
-			(*(float *)(stack_ptr[-1])) -= ptr[1] ;
+			(*(float *)VA(stack_ptr[-1])) -= ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_FLOAT | MN_POSTDEC:
-			(*(float *)(stack_ptr[-1])) -= ptr[1] ;
-			stack_ptr[-1] = *(Uint32 *)(stack_ptr[-1]) + ptr[1] ;
+			(*(float *)VA(stack_ptr[-1])) -= ptr[1] ;
+			stack_ptr[-1] = *(Uint32 *)VA(stack_ptr[-1]) + ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_FLOAT | MN_POSTINC:
-			*((float *)(stack_ptr[-1])) += ptr[1] ;
-			stack_ptr[-1] = *(Uint32 *)(stack_ptr[-1]) - ptr[1] ;
+			*((float *)VA(stack_ptr[-1])) += ptr[1] ;
+			stack_ptr[-1] = *(Uint32 *)VA(stack_ptr[-1]) - ptr[1] ;
 			ptr+=2 ;
 			break ;
 		case MN_FLOAT | MN_VARADD:
-			*(float *)(stack_ptr[-2]) += *(float *)&stack_ptr[-1] ;
+			*(float *)VA(stack_ptr[-2]) += *(float *)&stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_FLOAT | MN_VARSUB:
-			*(float *)(stack_ptr[-2]) -= *(float *)&stack_ptr[-1] ;
+			*(float *)VA(stack_ptr[-2]) -= *(float *)&stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_FLOAT | MN_VARMUL:
-			*(float *)(stack_ptr[-2]) *= *(float *)&stack_ptr[-1] ;
+			*(float *)VA(stack_ptr[-2]) *= *(float *)&stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;
 		case MN_FLOAT | MN_VARDIV:
 			if (*(float *)&stack_ptr[-1] == 0.0)
 				gr_error ("Error: Division por cero\n") ;
-			*(float *)(stack_ptr[-2]) /= *(float *)&stack_ptr[-1] ;
+			*(float *)VA(stack_ptr[-2]) /= *(float *)&stack_ptr[-1] ;
 			stack_ptr-- ;
 			ptr++ ;
 			break ;

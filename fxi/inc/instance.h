@@ -19,6 +19,7 @@
 #ifndef __INSTANCE_H
 #define __INSTANCE_H
 
+#include <stddef.h>
 #include <instance_st.h>
 #include "i_procdef_st.h"
 
@@ -48,6 +49,11 @@ extern void       instance_dump         (INSTANCE * father, int indent) ;
 extern void       instance_dump_all     () ;
 extern void		  instance_posupdate    (INSTANCE * i) ;
 extern int		  instance_poschanged   (INSTANCE * i) ;
+extern void *     vm_ptr                (INSTANCE * my, int p32) ;
+extern void *     vm_malloc             (size_t n) ;
+extern void       vm_arena_init         (void) ;
+extern int        vm_in_arena           (const void * p) ;
+extern size_t     vm_alloc_size         (const void * p) ;
 
 /* Las siguientes funciones son el punto de entrada del intérprete */
 

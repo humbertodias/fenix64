@@ -127,7 +127,8 @@ extern int report_graphics ;
 #include "sound.h"
 #include "flic.h"
 
-extern void   do_exit       () ;
+extern void   do_exit       (int n) ;
+extern void   mnemonic_dump (int i, int param) ;
 extern int    dcb_load      (const char * filename) ;
 extern char * getid         (unsigned int code) ;
 extern int    path_find     (GRAPH * bitmap, int sx, int sy, int dx, int dy, int options) ;
@@ -148,3 +149,8 @@ extern void   fnc_show_information();
 
 extern int savetypes (file * file, void * data, DCB_TYPEDEF * var, int nvars);
 extern int loadtypes (file * file, void * data, DCB_TYPEDEF * var, int nvars);
+extern void * vm_malloc     (size_t n) ;
+extern void   vm_arena_init (void) ;
+extern void * vm_ptr        (INSTANCE * my, int p32) ;
+extern int    vm_in_arena   (const void * p) ;
+extern size_t vm_alloc_size (const void * p) ;

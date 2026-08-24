@@ -44,6 +44,64 @@ int sound_active=0;     //variable para comprobar si el sonido está activado.
 
 static SDL_CD* cdrom ;
 
+#define SOUND_MAX_HANDLES 256
+static Mix_Music * vm_songs[SOUND_MAX_HANDLES] ;
+static Mix_Chunk * vm_wavs[SOUND_MAX_HANDLES] ;
+
+static int song_add (Mix_Music * m)
+{
+	int i ;
+
+	if (!m) return -1 ;
+	for (i = 1 ; i < SOUND_MAX_HANDLES ; i++)
+	{
+		if (!vm_songs[i])
+		{
+			vm_songs[i] = m ;
+			return i ;
+		}
+	}
+	return -1 ;
+}
+
+static Mix_Music * song_get (int id)
+{
+	if (id > 0 && id < SOUND_MAX_HANDLES) return vm_songs[id] ;
+	return NULL ;
+}
+
+static void song_del (int id)
+{
+	if (id > 0 && id < SOUND_MAX_HANDLES) vm_songs[id] = NULL ;
+}
+
+static int wav_add (Mix_Chunk * w)
+{
+	int i ;
+
+	if (!w) return 0 ;
+	for (i = 1 ; i < SOUND_MAX_HANDLES ; i++)
+	{
+		if (!vm_wavs[i])
+		{
+			vm_wavs[i] = w ;
+			return i ;
+		}
+	}
+	return 0 ;
+}
+
+static Mix_Chunk * wav_get (int id)
+{
+	if (id > 0 && id < SOUND_MAX_HANDLES) return vm_wavs[id] ;
+	return NULL ;
+}
+
+static void wav_del (int id)
+{
+	if (id > 0 && id < SOUND_MAX_HANDLES) vm_wavs[id] = NULL ;
+}
+
 
 
 /*
@@ -176,7 +234,7 @@ int load_song (const char * filename)
 			gr_con_printf("Couldn't load %s: %s\n",filename, SDL_GetError());
 			return(-1);
 	} else {
-		return ((int)music);
+		return song_add (music);
 	}
 
 }
@@ -201,6 +259,8 @@ int load_song (const char * filename)
 
 int play_song (int id, int loops)
 {	
+	Mix_Music * music ;
+
 	if (audio_initialized == 0)
 		sound_init();
 	if (sound_active==0) 
@@ -208,9 +268,10 @@ int play_song (int id, int loops)
 		gr_error ("Sound is not active");
 		return (-1);			
 	}
-		
-	if (((Mix_Music *)id!=NULL)){
-		int result = Mix_PlayMusic((Mix_Music *)id,loops);
+
+	music = song_get (id) ;
+	if (music){
+		int result = Mix_PlayMusic(music,loops);
 		if (result == -1) {
 			gr_error ("%s", Mix_GetError());
 		}
@@ -243,12 +304,15 @@ int play_song (int id, int loops)
 
 int fade_music_in (int id, int loops, int ms)
 {	
+	Mix_Music * music ;
+
 	if (audio_initialized == 0)
 		sound_init();
 	if (sound_active==0) return (-1);			
-		
-	if (((Mix_Music *)id!=NULL)){
-		return(Mix_FadeInMusic((Mix_Music *)id,loops, ms));
+
+	music = song_get (id) ;
+	if (music){
+		return(Mix_FadeInMusic(music,loops, ms));
 	} else {
 		return(-1);
 	}
@@ -298,12 +362,16 @@ int fade_music_off (int ms)
 
 int unload_song (int id)
 {	
+	Mix_Music * music ;
+
 	if (audio_initialized == 0)
 		sound_init();
 	if (sound_active==0) return (-1);			
 
-	if ((Mix_Music *)id!=NULL) {
-		Mix_FreeMusic((Mix_Music *)id);
+	music = song_get (id) ;
+	if (music) {
+		Mix_FreeMusic(music);
+		song_del (id) ;
 		return (0) ;
 	} else {
 		return (-1);
@@ -480,7 +548,7 @@ int load_wav (const char * filename)
 		gr_con_printf("Couldn't load %s: %s\n",filename, SDL_GetError());
 		return(0);
 	} else {
-		return ((int)music);
+		return wav_add (music);
 	}
 
 }
@@ -506,13 +574,15 @@ int load_wav (const char * filename)
 int play_wav (int id, int loops)
 {	
 	int canal;
+	Mix_Chunk * chunk ;
 
 	if (audio_initialized == 0)
 		sound_init();
 	if (sound_active==0) return (-1);			
-		
-	if ((Mix_Chunk *)id!=NULL) {				
-		canal=Mix_PlayChannel(-1,(Mix_Chunk *)id,loops);
+
+	chunk = wav_get (id) ;
+	if (chunk) {				
+		canal=Mix_PlayChannel(-1,chunk,loops);
 		return(canal);
 	}
 	else {
@@ -543,12 +613,16 @@ int play_wav (int id, int loops)
 
 int unload_wav (int id)
 {
+	Mix_Chunk * chunk ;
+
 	if (audio_initialized == 0)
 		sound_init();
 	if (sound_active==0) return (-1);			
 
-	if ((Mix_Chunk *)id!=NULL) {
-		Mix_FreeChunk((Mix_Chunk *)id);
+	chunk = wav_get (id) ;
+	if (chunk) {
+		Mix_FreeChunk(chunk);
+		wav_del (id) ;
 		return (0) ;
 	} else return (-1);
 	

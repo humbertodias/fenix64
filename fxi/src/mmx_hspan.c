@@ -36,6 +36,8 @@
 
 #include "fxi.h"
 
+#if defined(_MSC_VER) && defined(_M_IX86)
+
 /* Parameters for hspan_16to16_translucent */
 extern Sint16 * ghost1;
 extern Sint16 * ghost2;
@@ -448,3 +450,37 @@ ending:
 		emms
 	}
 }
+
+#else
+
+void MMX_draw_hspan_8to8_nocolorkey (Uint8 * scr, Uint8 * tex, int pixels, int incs)
+{
+	(void)scr; (void)tex; (void)pixels; (void)incs;
+}
+
+void MMX_draw_hspan_8to8_translucent (Uint8 * scr, Uint8 * tex, int pixels, int incs)
+{
+	(void)scr; (void)tex; (void)pixels; (void)incs;
+}
+
+void MMX_draw_hspan_8to8 (Uint8 * scr, Uint8 * tex, int pixels, int incs)
+{
+	(void)scr; (void)tex; (void)pixels; (void)incs;
+}
+
+void MMX_draw_hspan_16to16 (Uint16 * scr, Uint16 * tex, int pixels, int incs)
+{
+	(void)scr; (void)tex; (void)pixels; (void)incs;
+}
+
+void MMX_draw_hspan_16to16_translucent (Uint16 * scr, Uint16 * tex, int pixels, int incs)
+{
+	(void)scr; (void)tex; (void)pixels; (void)incs;
+}
+
+void MMX_draw_hspan_16to16_nocolorkey (Uint16 * scr, Uint16 * tex, int pixels, int incs)
+{
+	(void)scr; (void)tex; (void)pixels; (void)incs;
+}
+
+#endif

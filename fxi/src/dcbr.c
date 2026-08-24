@@ -147,8 +147,8 @@ int dcb_load (const char * filename)
 		return 0 ;
 	}
 
-	globaldata = malloc (dcb.SGlobal + 4) ;
-	localdata  = malloc (dcb.SLocal + 4) ;
+	globaldata = vm_malloc (dcb.SGlobal + 4) ;
+	localdata  = vm_malloc (dcb.SLocal + 4) ;
 	localstr   = (int *) malloc (4 * dcb.NLocStrings + 4) ;
 	dcb.proc   = (DCB_PROC *) malloc (sizeof(DCB_PROC) * (1+dcb.NProcs)) ;
 	procs      = (PROCDEF *) malloc (sizeof(PROCDEF) * (1+dcb.NProcs)) ;

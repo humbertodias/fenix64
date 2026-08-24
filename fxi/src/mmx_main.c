@@ -54,6 +54,7 @@ int MMX_available = 0;
 
 void MMX_init()
 {
+#if defined(__i386__) || defined(_M_IX86)
         int cpuid_processor;
         int cpuid_features;
 
@@ -74,4 +75,7 @@ void MMX_init()
 #endif
 
         MMX_available = (cpuid_features & (1 << 23)) ? 1:0;
+#else
+        MMX_available = 0;
+#endif
 }
