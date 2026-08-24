@@ -104,8 +104,12 @@ else
 	CFLAGS="-O3 -finline-functions -ffast-math $INCLUDES"
 fi
 # 0.84 is C89: empty () means unspecified args. C23 treats () as (void).
-# Clang 16+ errors on the function-pointer casts 0.84 used for blitters/qsort.
-CFLAGS="-std=gnu89 -Wno-incompatible-function-pointer-types $CFLAGS"
+CFLAGS="-std=gnu89 $CFLAGS"
+# Clang 16+ errors on 0.84 function-pointer casts. GCC does not know this flag
+# and, if any other diagnostic is emitted, treats it as a failure.
+if $CC -std=gnu89 -Werror -Wno-incompatible-function-pointer-types -c -x c /dev/null -o /dev/null >/dev/null 2>&1; then
+	CFLAGS="-Wno-incompatible-function-pointer-types $CFLAGS"
+fi
 
 dnl librerias para todos
 
