@@ -1,7 +1,7 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
+ *  Last stable release   : 
  *  Project documentation : http://fenix.divsite.net
  *
  *
@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright © 1999 José Luis Cebrián Pagüe
@@ -33,6 +33,11 @@
  */
 
 #include <stdlib.h>
+#include <SDL.h>
+
+#ifdef BeIDE
+#include <BeOS.h>
+#endif
 
 #include "fxi.h"
 
@@ -56,10 +61,10 @@ static int      alpha8_tables_ok = 0 ;
  *  Each alpha table has a 128K memory footprint. Having many alpha tables
  *  provides more transparency values.
  *
- *  PARAMS :
- *		count			Number of tables
+ *  PARAMS : 
+ *		count			Number of tables 
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -67,10 +72,12 @@ static int      alpha8_tables_ok = 0 ;
 static void init_alpha16_tables (int count)
 {
 	int      i, color, inc, next = 0, factor;
-	Uint16 * table16 = NULL;
+	Uint16 * table16;
 
-	if (alpha16_tables_ok == count) return;
-	if (count <= 0 || count > 128) return;
+	if (alpha16_tables_ok == count)
+		return;
+	if (count <= 0 || count > 128)
+		return;
 
 	inc = 256/count;
 
@@ -127,10 +134,10 @@ static void init_alpha16_tables (int count)
  *  provides more transparency values. Those tables should be updated
  *  when the palette changes.
  *
- *  PARAMS :
- *		count			Number of tables
+ *  PARAMS : 
+ *		count			Number of tables 
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -140,7 +147,7 @@ extern Uint8 nearest_table[64][64][64] ;
 static void init_alpha8_tables (int count)
 {
 	int     i, color, color2, inc, next = 0, factor;
-	Uint8 * table8 = NULL;
+	Uint8 * table8;
 
 	if (alpha8_tables_ok == count)
 		return;
@@ -202,10 +209,10 @@ static void init_alpha8_tables (int count)
  *  Static routine used to initialize the 16 bits conversion
  *  tables (this only needs to be done once)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -219,12 +226,13 @@ static void init_conversion_tables()
 
 	convert565ToScreen = (Uint16 *) malloc(sizeof(Uint16) * 65536);
 	convertScreenTo565 = (Uint16 *) malloc(sizeof(Uint16) * 65536);
-	if (convert565ToScreen == NULL && convertScreenTo565 == NULL)
+
+	if (convert565ToScreen == NULL || convertScreenTo565 == NULL)
 	{
 		gr_error ("init_conversion_tables: sin memoria");
 		return;
 	}
-
+	
 	if (!scr_initialized) gr_init(320,200);
 	conversion_tables_ok = 1;
 
@@ -251,10 +259,11 @@ static void init_conversion_tables()
 		r = ((n >> 8) & 0xF8) >> screen->format->Rloss ;
 		g = ((n >> 3) & 0xFC) >> screen->format->Gloss ;
 		b = ((n << 3) & 0xF8) >> screen->format->Bloss ;
-
-		convert565ToScreen[n] = (r << screen->format->Rshift) |
-			                    (g << screen->format->Gshift) |
-			                    (b << screen->format->Bshift) ;
+		
+		convert565ToScreen[n] = 
+			(r << screen->format->Rshift) |
+			(g << screen->format->Gshift) |
+			(b << screen->format->Bshift) ;
 
 		/* Calculate conversion from 565 to screen format */
 
@@ -265,9 +274,10 @@ static void init_conversion_tables()
 		b = (((n & screen->format->Bmask) >> screen->format->Bshift)
 			    << screen->format->Bloss);
 
-		convertScreenTo565[n] = ((r & 0xF8) << 8) |
-			                    ((g & 0xFC) << 3) |
-			                    ((b & 0xF8) >> 3) ;
+		convertScreenTo565[n] = 
+			((r & 0xF8) << 8) |
+			((g & 0xFC) << 3) |
+			((b & 0xF8) >> 3) ;
 	}
 }
 
@@ -277,23 +287,21 @@ static void init_conversion_tables()
  *  Convert a sequence of 16 bits pixels from 5:6:5 format to
  *  the format used by the screen (usually 5:5:5 or 5:6:5)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		ptr				Pointer to the first pixel
  *		len				Number of pixels (not bytes!)
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
 
 void gr_convert16_565ToScreen (Uint16 * ptr, int len)
 {
-	if (!conversion_tables_ok) init_conversion_tables();
+	if (!conversion_tables_ok)
+		init_conversion_tables();
 
-	while (len--) {
-	    *ptr = convert565ToScreen[*ptr] ;
-	    ptr++;
-	}
+	while (len--) *ptr++ = convert565ToScreen[*ptr] ;
 }
 
 /*
@@ -303,23 +311,21 @@ void gr_convert16_565ToScreen (Uint16 * ptr, int len)
  *  (usually 5:5:5 or 5:6:5) to the 5:6:5 format used to
  *  store 16 bits pixel values to files in disk
  *
- *  PARAMS :
+ *  PARAMS : 
  *		ptr				Pointer to the first pixel
  *		len				Number of pixels (not bytes!)
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
 
 void gr_convert16_ScreenTo565 (Uint16 * ptr, int len)
 {
-	if (!conversion_tables_ok) init_conversion_tables();
+	if (!conversion_tables_ok)
+		init_conversion_tables();
 
-	while (len--) {
-	    *ptr = convertScreenTo565[*ptr] ;
-	    ptr++;
-	}
+	while (len--) *ptr++ = convertScreenTo565[*ptr] ;
 }
 
 /*
@@ -328,13 +334,13 @@ void gr_convert16_ScreenTo565 (Uint16 * ptr, int len)
  *  Fade a 16-bit graphic a given ammount. Fading values are given in percent
  *  (0% = black, 100% = original color, 200% = full color value)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		graph			Pointer to the graphic object
- *		r				Percent of Red component
+ *		r				Percent of Red component 
  *		g				Percent of Green component
  *		b				Percent of Blue component
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -344,13 +350,13 @@ void gr_fade16 (GRAPH * graph, int r, int g, int b)
 	Uint16 Rtable[32];
 	Uint16 Gtable[32];
 	Uint16 Btable[32];
-	Uint32 x, y;
-	Uint32 Rmask;
-	Uint32 Rshift;
-	Uint32 Gmask;
-	Uint32 Gshift;
-	Uint32 Bmask;
-	Uint32 Bshift;
+	int x, y;
+	int Rmask;
+	int Rshift;
+	int Gmask;
+	int Gshift;
+	int Bmask;
+	int Bshift;
 
 	for (x = 0 ; x < 32 ; x++)
 	{
@@ -365,7 +371,7 @@ void gr_fade16 (GRAPH * graph, int r, int g, int b)
 			Gtable[x] = (c * g / 100) >> screen->format->Gloss << screen->format->Gshift;
 		else
 			Gtable[x] = (c + (255-c) * (g-100) / 100) >> screen->format->Gloss << screen->format->Gshift;
-
+		
 		if (b <= 100)
 			Btable[x] = (c * b / 100) >> screen->format->Bloss << screen->format->Bshift;
 		else
@@ -385,9 +391,10 @@ void gr_fade16 (GRAPH * graph, int r, int g, int b)
 
 		for (x = 0 ; x < graph->width ; x++, ptr++)
 		{
-			*ptr = (Rtable[((*ptr & Rmask) >> Rshift)] |
-			        Gtable[((*ptr & Gmask) >> Gshift)] |
-			        Btable[((*ptr & Bmask) >> Bshift)] );
+			*ptr = (
+				  Rtable[((*ptr & Rmask) >> Rshift)]
+				| Gtable[((*ptr & Gmask) >> Gshift)]
+				| Btable[((*ptr & Bmask) >> Bshift)] );
 		}
 	}
 }
@@ -398,17 +405,18 @@ void gr_fade16 (GRAPH * graph, int r, int g, int b)
  *  Get an alpha multiplication table (a table that, given a 16 bit color,
  *  returns the color multiplied by the alpha value)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		alpha			Alpha value for the requested table
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
 
 Uint16 * gr_alpha16 (int alpha)
 {
-	if (alpha16_tables_ok == 0) init_alpha16_tables(GLODWORD(ALPHA_STEPS));
+	if (alpha16_tables_ok == 0)
+		init_alpha16_tables(GLODWORD(ALPHA_STEPS));
 	return alpha16[alpha];
 }
 
@@ -418,10 +426,10 @@ Uint16 * gr_alpha16 (int alpha)
  *  Get an alpha translation table (a table that, given two 8 bit color,
  *  returns the composite color given the alpha value)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		alpha			Alpha value for the requested table
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */

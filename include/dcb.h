@@ -1,6 +1,6 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
  *  Last stable release   :
  *  Project documentation : http://fenix.divsite.net
  *
@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
- *  Copyright Â© 2002 Fenix Team
+ *  Copyright © 1999 José Luis Cebrián Pagüe
+ *  Copyright © 2002 Fenix Team
  *
  */
 
@@ -50,7 +50,7 @@
 #pragma pack(push, 1)
 #endif
 
-/* OpciÃ³n del GNU C para que la estructura ocupe el mÃ­nimo de memoria */
+/* Opción del GNU C para que la estructura ocupe el mínimo de memoria */
 
 #ifdef __GNUC__
 #define __PACKED __attribute__ ((packed))
@@ -61,7 +61,9 @@
 /* Estructura del fichero .dcb */
 
 /* Please update the version's high-number between Fenix versions */
-#define DCB_VERSION 0x0600
+#define DCB_VERSION 0x0100
+
+#define DCB_ID_SIZE 64
 
 typedef struct
 {
@@ -70,6 +72,8 @@ typedef struct
 }
 __PACKED
 DCB_ID ;
+
+#define DCB_FILE_SIZE 64
 
 #define DCB_FILE_COMPRESSED 1
 
@@ -83,6 +87,8 @@ typedef struct
 __PACKED
 DCB_FILE ;
 
+#define DCB_SENTENCE_SIZE sizeof(DCB_SENTENCE)
+
 typedef struct
 {
     Uint32  NFile ;
@@ -93,6 +99,7 @@ typedef struct
 __PACKED
 DCB_SENTENCE ;
 
+#define DCB_TYPEDEF_SIZE sizeof(DCB_TYPEDEF)
 #define NO_MEMBERS       0xFFFFFFFF
 
 typedef struct
@@ -104,6 +111,8 @@ typedef struct
 __PACKED
 DCB_TYPEDEF ;
 
+#define DCB_VAR_SIZE sizeof(DCB_VAR)
+
 typedef struct
 {
     DCB_TYPEDEF Type ;      /* 40 bytes */
@@ -114,6 +123,8 @@ typedef struct
 __PACKED
 DCB_VAR ;
 
+#define DCB_VARSPACE_SIZE sizeof(DCB_VARSPACE)
+
 typedef struct
 {
     Uint32  NVars ;
@@ -122,55 +133,40 @@ typedef struct
 __PACKED
 DCB_VARSPACE ;
 
+#define DCB_PROC_SIZE 48
+
 typedef struct          /* Cabecera de cada proceso     */
 {
     Uint32  ID ;
 
-    Uint32  Flags ;
-
     Uint32  NParams ;
     Uint32  NPriVars ;
     Uint32  NPriStrings ;
-    Uint32  NPubVars ;
-    Uint32  NPubStrings ;
     Uint32  NSentences ;
 
     Uint32  SPrivate ;
-    Uint32  SPublic ;
     Uint32  SCode ;
 
     Uint32  OPrivate ;
     Uint32  OPriVars ;
     Uint32  OPriStrings ;
-
-    Uint32  OPublic ;
-    Uint32  OPubVars ;
-    Uint32  OPubStrings ;
-
     Uint32  OCode ;
     Uint32  OSentences ;
 
-    Uint32  OExitCode ;
-}
-__PACKED
-DCB_PROC_DATA ;
-
-typedef struct          /* Cabecera de cada proceso     */
-{
-    DCB_PROC_DATA   data; /* Estructura que se carga desde el fichero */
+    /* - Aquí acaba la parte que se carga desde el fichero - */
 
     DCB_SENTENCE    * sentence ;
-
     DCB_VAR         * privar ;
-    DCB_VAR         * pubvar ;
 }
 __PACKED
 DCB_PROC ;
 
+#define DCB_HEADER_SIZE 280
+
 typedef struct          /* Cabecera general del fichero */
 {
     Uint8           Header[8] ; /* "DCB"            */
-    Uint32          Version ;   /* 0x0100 para versiÃ³n 1.0  */
+    Uint32          Version ;   /* 0x0100 para versión 1.0  */
 
     Uint32          NProcs ;
     Uint32          NFiles ;
@@ -203,13 +199,8 @@ typedef struct          /* Cabecera general del fichero */
     Uint32          OImports ;
     Uint32          OSourceFiles ;
     Uint32          __reserved2[3] ;
-}
-__PACKED
-DCB_HEADER_DATA ;
 
-typedef struct          /* Cabecera general del fichero */
-{
-    DCB_HEADER_DATA data;   /* Estructura que se carga desde el fichero */
+    /* - Aquí acaba la parte que se carga del fichero */
 
     DCB_ID          * id ;
     DCB_VAR         * glovar ;

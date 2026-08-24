@@ -1,36 +1,23 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <stdio.h>
-#ifdef TARGET_BEOS
 #include <posix/assert.h>
-#else
-#include <assert.h>
-#endif
-
 #include <stdlib.h>
 
 #include "fxi.h"
@@ -47,8 +34,8 @@ node ;
 static int  * path_result = NULL ;
 static int  * path_result_pointer = NULL ;
 
-static node * pf_open = NULL ;
-static node * pf_closed = NULL ;
+static node * open = NULL ;
+static node * closed = NULL ;
 static node * found = NULL ;
 
 static int destination_x, destination_y ;
@@ -65,14 +52,14 @@ double heuristic (int x, int y)
 
 	if (x == destination_x && y == destination_y)
 		return 0 ;
-	if (block >= block_if)
+	if (block >= block_if) 
 		return 1073741824.0 ;
-	if (x < 0 || y < 0 || x >= (int)map->width || y >= (int)map->height)
+	if (x < 0 || y < 0 || x >= map->width || y >= map->height) 
 		return 1073741824.0 ;
 
 	dx = abs(destination_x - x) ;
 	dy = abs(destination_y - y) ;
-	return (double)block + (double)dx*dx + (double)dy*dy ;
+	return (double)block + (double)dx*dx + (double)dy*dy ; 
 }
 
 int path_set_wall (int n)
@@ -83,7 +70,7 @@ int path_set_wall (int n)
 
 /* ---------------------------------------------------------------- */
 
-/* Uso: pf_open = add(pf_open, this) ; */
+/* Uso: open = add(open, this) ; */
 /* La lista permanecerá ordenada */
 node * node_add (node * list, node * this)
 {
@@ -117,7 +104,7 @@ node * node_add (node * list, node * this)
 	}
 }
 
-/* Uso: pf_open = remove(pf_open, this) ; */
+/* Uso: open = remove(open, this) ; */
 node * node_remove (node * list, node * this)
 {
 	node * curr = list ;
@@ -179,18 +166,18 @@ node * node_new (node * parent, int x, int y, int cost_inc)
 void node_push_succesor (node * parent, int ix, int iy, int cost)
 {
 	node * curr, * f_op, * f_cl ;
-
+	
 	curr = node_new (parent, parent->x+ix, parent->y+iy, cost) ;
 	if (curr->h > 131072) { free(curr); return ; }
 
-	f_cl = node_find (pf_closed, curr->x, curr->y) ;
+	f_cl = node_find (closed, curr->x, curr->y) ;
 	if (f_cl) { free(curr); return ; }
-	f_op = node_find (pf_open, curr->x, curr->y) ;
+	f_op = node_find (open, curr->x, curr->y) ;
 	if (f_op && f_op->f <= curr->f) { free(curr); return ; }
 
-	if (f_op) pf_open = node_remove (pf_open, f_op) ;
-	if (f_cl) pf_closed = node_remove (pf_closed, f_cl) ;
-	pf_open = node_add (pf_open, curr) ;
+	if (f_op) open = node_remove (open, f_op) ;
+	if (f_cl) closed = node_remove (closed, f_cl) ;
+	open = node_add (open, curr) ;
 }
 
 void node_push_succesors (node * parent, int options)
@@ -237,17 +224,17 @@ int path_find (GRAPH * bitmap, int sx, int sy, int dx, int dy, int options)
 	destination_x = dx ;
 	destination_y = dy ;
 
-	pf_open = node_reset (pf_open) ;
-	pf_closed = node_reset (pf_closed) ;
+	open = node_reset (open) ;
+	closed = node_reset (closed) ;
 
 	curr = node_new (NULL, startup_x, startup_y, 0) ;
 	curr->f = curr->h = 1 ;
-	pf_open = node_add (pf_open, curr) ;
+	open = node_add (open, curr) ;
 
-	while (pf_open)
+	while (open)
 	{
-		curr = pf_open ;
-		pf_open = node_remove (pf_open, curr) ;
+		curr = open ;
+		open = node_remove (open, curr) ;
 
 		if (curr->x == (unsigned)destination_x && curr->y == (unsigned)destination_y)
 		{
@@ -289,7 +276,7 @@ int path_find (GRAPH * bitmap, int sx, int sy, int dx, int dy, int options)
 
 		node_push_succesors (curr, options) ;
 
-		pf_closed = node_add (pf_closed, curr) ;
+		closed = node_add (closed, curr) ;
 	}
 
 	return 0 ;

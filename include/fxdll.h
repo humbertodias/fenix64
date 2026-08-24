@@ -1,27 +1,19 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
- *  Copyright Â© 2002 Fenix Team
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #ifndef __FXDLL_H
@@ -29,12 +21,7 @@
 
 #define FNXDLL
 
-#ifdef TARGET_MAC
-#include <SDL/SDL.h>
-#else
 #include <SDL.h>
-#endif
-
 #include <instance_st.h>
 #include <grlib_st.h>
 #include <files_st.h>
@@ -50,7 +37,7 @@ extern "C" {
 #endif
 
 #if defined(MAIN_FILE) || !defined(MULTIPLE_FILES)
-#define FXEXTERN
+#define FXEXTERN 
 #else
 #define FXEXTERN extern
 #endif
@@ -67,10 +54,7 @@ FXEXTERN int * _debug ;            /* 1 = Actovate debug options       */
 FXEXTERN int * _fxi ;              /* 1 = EXE module is FXI.EXE        */
 FXEXTERN int * _enable_16bits ;    /* 1 = 16bpp MODE on                */
 FXEXTERN int * _enable_filtering ; /* 1 = 16bpp filter MODE on         */
-
-FXEXTERN Uint32 * _frame_count ;
-FXEXTERN Uint32 * _current_time ;
-
+FXEXTERN int * _frame_count ;
 FXEXTERN SDL_Surface	* * _screen ;
 
 #define debug              ( * _debug             )
@@ -79,7 +63,6 @@ FXEXTERN SDL_Surface	* * _screen ;
 #define enable_filtering   ( * _enable_filtering  )
 #define screen             ( * _screen            )
 #define frame_count        ( * _frame_count       )
-#define current_time       ( * _current_time      )
 
 FXEXTERN int * _syscolor8 ;
 FXEXTERN int * _syscolor16 ;
@@ -104,7 +87,7 @@ FXEXTERN int * _report_graphics ;
 #define report_graphics     (* _report_graphics )
 
 FXEXTERN void   (* _gr_error      )(const char *fmt, ...) ;
-FXEXTERN void   (* _do_exit       )(int n) ;
+FXEXTERN void   (* _do_exit       )() ;
 FXEXTERN int    (* _dcb_load      )(const char * filename) ;
 FXEXTERN char * (* _getid         )(unsigned int code) ;
 FXEXTERN int    (* _path_find     )(GRAPH * bitmap, int sx, int sy, int dx, int dy, int options) ;
@@ -128,8 +111,6 @@ FXEXTERN int    (*_file_read       )(file * fp, void * buffer, int len) ;
 FXEXTERN int    (*_file_write      )(file * fp, const void * buffer, int len) ;
 FXEXTERN int    (*_file_gets       )(file * fp, char * buffer, int len) ;
 FXEXTERN int    (*_file_puts       )(file * fp, const char * buffer) ;
-FXEXTERN int    (*_file_qgets      )(file * fp, char * buffer, int len) ;
-FXEXTERN int    (*_file_qputs      )(file * fp, const char * buffer) ;
 FXEXTERN int    (*_file_size       )(file * fp) ;
 FXEXTERN int    (*_file_pos        )(file * fp) ;
 FXEXTERN int    (*_file_seek       )(file * fp, int pos, int where) ;
@@ -144,9 +125,6 @@ FXEXTERN FILE * (*_file_fp         )(file * fp) ;
 #define file_read		(*_file_read)
 #define file_write		(*_file_write)
 #define file_gets		(*_file_gets)
-#define file_puts		(*_file_puts)
-#define file_qgets		(*_file_qgets)
-#define file_qputs		(*_file_qputs)
 #define file_size		(*_file_size)
 #define file_pos		(*_file_pos)
 #define file_seek		(*_file_seek)
@@ -179,7 +157,7 @@ FXEXTERN int          (*_string_ptoa    )(void * n) ;
 FXEXTERN int          (*_string_comp    )(int code1, int code2) ;
 FXEXTERN int          (*_string_casecmp )(int code1, int code2) ;
 FXEXTERN int          (*_string_char    )(int n, int nchar) ;
-FXEXTERN int          (*_string_substr  )(int code, int first, int len) ;
+FXEXTERN int          (*_string_substr  )(int code, int first, int last) ;
 FXEXTERN int          (*_string_find    )(int code1, int code2, int first) ;
 FXEXTERN int          (*_string_ucase   )(int code1) ;
 FXEXTERN int          (*_string_lcase   )(int code1) ;
@@ -220,7 +198,7 @@ FXEXTERN int          (*_string_concat  )(int code1, char * str2) ;
  * xctype.h
  *****************************************************/
 
-FXEXTERN int           * _dos_chars ;		/* 1 = CÃ³digo fuente en caracteres MS-DOS */
+FXEXTERN int           * _dos_chars ;		/* 1 = Código fuente en caracteres MS-DOS */
 FXEXTERN char          ** _c_type ;
 FXEXTERN unsigned char ** _c_upper ;
 FXEXTERN unsigned char ** _c_lower ;
@@ -287,9 +265,9 @@ FXEXTERN int     *_current_fli_y ;
 #define flic_do_frame	(*_flic_do_frame)
 #define flic_reset		(*_flic_reset)
 
-/*****************************************************
+/*
  * grlib.h
- *****************************************************/
+ */
 
 FXEXTERN int              * _scr_initialized ;
 FXEXTERN REGION          ** _regions ;
@@ -298,6 +276,9 @@ FXEXTERN GRAPH           ** _scrbitmap ;
 FXEXTERN GRLIB           ** _syslib ;
 FXEXTERN GRAPH           ** _icono ;
 FXEXTERN int              * _last_frame_ms ;
+FXEXTERN int             ** _joy_x,
+                         ** _joy_y,
+                		 ** _joy_b;
 FXEXTERN char            ** _apptitle ;
 FXEXTERN key_equiv       ** _key_table ;
 FXEXTERN unsigned char   ** _keystate ;
@@ -308,11 +289,6 @@ FXEXTERN int              * _scr_height ;
 
 FXEXTERN int              * _full_screen ;
 FXEXTERN int              * _double_buffer ;
-FXEXTERN int              * _exit_status ;
-FXEXTERN int              * _grab_input ;
-FXEXTERN int              * _window_status ;
-FXEXTERN int              * _focus_status ;
-FXEXTERN int              * _mouse_status ;
 
 #define scr_initialized      ( * _scr_initialized    )
 #define regions              ( * _regions            )
@@ -331,11 +307,6 @@ FXEXTERN int              * _mouse_status ;
 #define scr_width            ( * _scr_width          )
 #define scr_height           ( * _scr_height         )
 #define full_screen          ( * _full_screen        )
-#define window_status        ( * _window_status      )
-#define focus_status         ( * _focus_status       )
-#define mouse_status         ( * _mouse_status       )
-#define exit_status          ( * _exit_status        )
-#define grab_input           ( * _grab_input         )
 #define double_buffer        ( * _double_buffer      )
 
 FXEXTERN char (*_nearest_table)[64][64][64];
@@ -344,7 +315,7 @@ FXEXTERN void (*_gr_fill_nearest_table)();
 #define nearest_table (*_nearest_table)
 #define gr_fill_nearest_table (*_gr_fill_nearest_table)
 
-/* InicializaciÃ³n y control de tiempo */
+/* Inicialización y control de tiempo */
 /* ---------------------------------- */
 
 FXEXTERN void (*_gr_init           )(int w, int h) ;
@@ -399,26 +370,24 @@ FXEXTERN int          * _trans_table_updated ;   /* 1 = La tabla es utilizable  
 FXEXTERN void  (*_gr_make_trans_table)() ;
 #define gr_make_trans_table (*_gr_make_trans_table)
 
-FXEXTERN int          * _palette_loaded ;        /* Â¿Se ha cargado ya la paleta inicial ? */
+FXEXTERN int          * _palette_loaded ;        /* ¿Se ha cargado ya la paleta inicial ? */
 FXEXTERN int          * _palette_changed ;       /* Poner a 1 cuando se cambien colores   */
-FXEXTERN int          * _fade_on ;               /* Â¿Hay un fade activo?                  */
-FXEXTERN int          * _fade_step ;             /* Si lo hay, posiciÃ³n (0=off)           */
+FXEXTERN int          * _fade_on ;               /* ¿Hay un fade activo?                  */
+FXEXTERN int          * _fade_step ;             /* Si lo hay, posición (0=off)           */
 
-FXEXTERN PALETTE *  (*_gr_read_pal           )(file * file) ;
-FXEXTERN PALETTE *  (*_gr_read_pal_with_gamma)(file * file) ;
-FXEXTERN void       (*_gr_refresh_palette    )() ;
-FXEXTERN void       (*_gr_fade_init          )(int r, int g, int b, int speed, int dir) ;
-FXEXTERN void       (*_gr_fade_step          )() ;
-FXEXTERN void       (*_gr_roll_palette       )(int color0, int num, int inc) ;
-FXEXTERN int        (*_gr_find_nearest_color )(int r, int g, int b) ;
-FXEXTERN void       (*_gr_set_rgb            )(int c, int r, int g, int b) ;
-FXEXTERN int        (*_gr_rgb                )(int r, int g, int b) ;
-FXEXTERN void       (*_gr_get_rgb            )(int color, int *r, int *g, int *b) ;
-FXEXTERN void       (*_gr_set_colors         )(int color, int num, Uint8 * pal) ;
-FXEXTERN void       (*_gr_get_colors         )(int color, int num, Uint8 * pal) ;
+FXEXTERN int   (*_gr_read_pal           )(file * file) ;
+FXEXTERN void  (*_gr_refresh_palette    )() ;
+FXEXTERN void  (*_gr_fade_init          )(int r, int g, int b, int speed, int dir) ;
+FXEXTERN void  (*_gr_fade_step          )() ;
+FXEXTERN void  (*_gr_roll_palette       )(int color0, int num, int inc) ;
+FXEXTERN int   (*_gr_find_nearest_color )(int r, int g, int b) ;
+FXEXTERN void  (*_gr_set_rgb            )(int c, int r, int g, int b) ;
+FXEXTERN int   (*_gr_rgb                )(int r, int g, int b) ;
+FXEXTERN void  (*_gr_get_rgb            )(int color, int *r, int *g, int *b) ;
+FXEXTERN void  (*_gr_set_colors         )(int color, int num, Uint8 * pal) ;
+FXEXTERN void  (*_gr_get_colors         )(int color, int num, Uint8 * pal) ;
 
 #define gr_read_pal				(*_gr_read_pal)
-#define gr_read_pal_with_gamma  (*_gr_read_pal_with_gamma)
 #define gr_refresh_palette		(*_gr_refresh_palette)
 #define gr_fade_init			(*_gr_fade_init)
 #define gr_fade_step			(*_gr_fade_step)
@@ -469,7 +438,7 @@ FXEXTERN void     (*_blend_grayscale    )(Sint16 * blend, int method) ;
 #define blend_apply			(*_blend_apply)
 #define blend_grayscale     (*_blend_grayscale)
 
-/* GestiÃ³n de bitmaps y librerÃ­as de grÃ¡ficos */
+/* Gestión de bitmaps y librerías de gráficos */
 /* ------------------------------------------ */
 
 FXEXTERN int      (*_gr_load_map      )(const char * filename) ;
@@ -485,13 +454,12 @@ FXEXTERN int      (*_grlib_new        )() ;
 FXEXTERN void     (*_grlib_destroy    )(int libid) ;
 FXEXTERN int      (*_grlib_add_map    )(int libid, GRAPH * map) ;
 FXEXTERN int      (*_grlib_unload_map )(int libid, int mapcode) ;
-FXEXTERN GRAPH *  (*_bitmap_new       )(int code, int w, int h, int depth, int frames) ;
+FXEXTERN GRAPH *  (*_bitmap_new       )(int code, int w, int h, int depth) ;
 FXEXTERN GRAPH *  (*_bitmap_clone     )(GRAPH *) ;
-FXEXTERN GRAPH *  (*_bitmap_new_syslib)(int w, int h, int depth,int frames) ;
+FXEXTERN GRAPH *  (*_bitmap_new_syslib)(int w, int h, int depth) ;
 FXEXTERN GRAPH *  (*_bitmap_get       )(int libid, int mapcode) ;
 FXEXTERN void     (*_bitmap_destroy   )(GRAPH * map) ;
 FXEXTERN void     (*_bitmap_add_cpoint)(GRAPH *map, int x, int y) ;
-FXEXTERN void     (*_bitmap_set_cpoint)(GRAPH *map, int index, int x, int y) ;
 FXEXTERN void     (*_bitmap_analize   )(GRAPH * bitmap) ;
 FXEXTERN void     (*_bitmap_animate   )(GRAPH * bitmap) ;
 FXEXTERN void     (*_bitmap_animate_to)(GRAPH * bitmap, int pos, int speed) ;
@@ -515,7 +483,6 @@ FXEXTERN void     (*_bitmap_animate_to)(GRAPH * bitmap, int pos, int speed) ;
 #define bitmap_get			(*_bitmap_get)
 #define bitmap_destroy		(*_bitmap_destroy)
 #define bitmap_add_cpoint	(*_bitmap_add_cpoint)
-#define bitmap_set_cpoint	(*_bitmap_set_cpoint)
 #define bitmap_analize		(*_bitmap_analize)
 #define bitmap_animate		(*_bitmap_animate)
 #define bitmap_animate_to	(*_bitmap_animate_to)
@@ -543,7 +510,7 @@ FXEXTERN REGION * (*_region_get      )(int n);
 /* ---------- */
 
 FXEXTERN void     (*_draw_instance_at    )(INSTANCE * i, REGION * r, int x, int y) ;
-FXEXTERN void     (*_draw_instance       )(void * i, REGION * clip) ;
+FXEXTERN void     (*_draw_instance       )(INSTANCE * i, REGION * clip) ;
 FXEXTERN void     (*_instance_update_bbox)(INSTANCE * i) ;
 FXEXTERN GRAPH  * (*_instance_graph      )(INSTANCE * i) ;
 FXEXTERN void     (*_scroll_region       )(int nscroll, REGION * r) ;
@@ -596,7 +563,7 @@ FXEXTERN int      (*_gr_text_margintop  )(int fontid, const unsigned char * text
 FXEXTERN int      (*_gr_text_width      )(int fontid, const unsigned char * text) ;
 FXEXTERN int      (*_gr_text_widthn     )(int fontid, const unsigned char * text, int n) ;
 FXEXTERN int      (*_gr_text_height     )(int fontid, const unsigned char * text) ;
-FXEXTERN int      (*_gr_text_put        )(GRAPH * dest, REGION * clip, int fontid, int x, int y, const unsigned char * text) ;
+FXEXTERN void     (*_gr_text_put        )(GRAPH * dest, REGION * clip, int fontid, int x, int y, const unsigned char * text) ;
 FXEXTERN GRAPH  * (*_gr_text_bitmap     )(int fontid, const char * text, int centered) ;
 
 #define gr_text_setcolor		(*_gr_text_setcolor)
@@ -615,7 +582,7 @@ FXEXTERN GRAPH  * (*_gr_text_bitmap     )(int fontid, const char * text, int cen
 /* Bajo nivel */
 /* ---------- */
 
-/* Las funciones grÃ¡ficas admiten dest=0 para referirse a la pantalla.
+/* Las funciones gráficas admiten dest=0 para referirse a la pantalla.
 * Para poder usar esta funcionalidad, debe estar bloqueada antes */
 
 FXEXTERN int  (*_gr_lock_screen   )() ;
@@ -624,7 +591,7 @@ FXEXTERN void (*_gr_unlock_screen )() ;
 #define gr_lock_screen		(*_gr_lock_screen)
 #define gr_unlock_screen	(*_gr_unlock_screen)
 
-/* Primitivas grÃ¡ficas */
+/* Primitivas gráficas */
 
 FXEXTERN void (*_gr_clear     )(GRAPH * dest) ;
 FXEXTERN void (*_gr_clear_as  )(GRAPH * dest, int color) ;
@@ -670,7 +637,7 @@ FXEXTERN void (*_gr_drawing_move    )(int id, int x, int y) ;
 
 FXEXTERN void (*_gr_blit          )(GRAPH * dest, REGION * clip, int x, int y, int flags, GRAPH * gr) ;
 FXEXTERN void (*_gr_get_bbox      )(REGION * dest, REGION * clip, int x, int y, int flags, int angle, int scalex, int scaley, GRAPH * gr) ;
-FXEXTERN void (*_gr_rotated_blit  )(GRAPH * dest, REGION * clip, int scrx, int scry, int flags, int angle, int scalex, int scaley, GRAPH * gr) ;
+FXEXTERN void (*_gr_rotated_blit  )(GRAPH * dest, REGION * clip, int x, int y, int flags, int angle, int scalex, int scaley, GRAPH * gr) ;
 
 #define gr_blit			(*_gr_blit)
 #define gr_get_bbox		(*_gr_get_bbox)
@@ -837,42 +804,38 @@ FXEXTERN int  (*_set_song_volume)  (int volume);
 #define is_playing_song (*_is_playing_song)
 #define set_song_volume (*_set_song_volume)
 
-FXEXTERN int  (*_load_wav)			(const char * filename);
-FXEXTERN int  (*_play_wav)			(int id , int loops, int channel);
+FXEXTERN int  (*_load_wav)		(const char * filename);
+FXEXTERN int  (*_play_wav)		(int id , int loops);
 FXEXTERN int  (*_unload_wav)		(int id);
-FXEXTERN int  (*_stop_wav)			(int id);
-FXEXTERN int  (*_pause_wav)			(int id);
+FXEXTERN int  (*_stop_wav)		(int id);
+FXEXTERN int  (*_pause_wav)		(int id);
 FXEXTERN int  (*_resume_wav)		(int id);
 FXEXTERN int  (*_is_playing_wav)	(int id);
 FXEXTERN int  (*_set_wav_volume)	(int id,int volume);
-FXEXTERN int  (*_set_channel_volume)(int id,int volume);
-FXEXTERN int  (*_reserve_channels)  (int id);
-FXEXTERN int  (*_set_panning)		(int canal,int left, int right);
-FXEXTERN int  (*_set_position)		(int canal,int angle, int dist);
-FXEXTERN int  (*_set_distance)		(int canal,int dist);
-FXEXTERN int  (*_reverse_stereo)	(int canal,int flip);
+FXEXTERN int	 (*_set_panning)	(int canal,int left, int right);
+FXEXTERN int	 (*_set_position)	(int canal,int angle, int dist);
+FXEXTERN int	 (*_set_distance)	(int canal,int dist);
+FXEXTERN int	 (*_reverse_stereo)	(int canal,int flip);
 
-#define load_wav			(*_load_wav)
-#define play_wav			(*_play_wav)
-#define unload_wav			(*_unload_wav)
-#define stop_wav			(*_stop_wav)
-#define pause_wav			(*_pause_wav)
-#define resume_wav			(*_resume_wav)
-#define is_playing_wav		(*_is_playing_wav)
-#define set_wav_volume		(*_set_wav_volume)
-#define set_channel_volume	(*_set_channel_volume)
-#define reserve_channels	(*_reserve_channels)
-#define set_panning			(*_set_panning)
-#define set_position		(*_set_position)
-#define set_distance		(*_set_distance)
-#define reverse_stereo		(*_reverse_stereo)
+#define load_wav		(*_load_wav)
+#define play_wav		(*_play_wav)
+#define unload_wav		(*_unload_wav)
+#define stop_wav		(*_stop_wav)
+#define pause_wav		(*_pause_wav)
+#define resume_wav		(*_resume_wav)
+#define is_playing_wav	(*_is_playing_wav)
+#define set_wav_volume	(*_set_wav_volume)
+#define set_panning		(*_set_panning)
+#define set_position	(*_set_position)
+#define set_distance	(*_set_distance)
+#define reverse_stereo	(*_reverse_stereo)
 
-FXEXTERN int  (*_fade_music_in)	(int id, int loops, int ms) ;
-FXEXTERN int  (*_fade_music_off)(int ms) ;
-FXEXTERN void (*_ini_musiccd)	() ;
-FXEXTERN void (*_cd_play)		(int track, int continuous) ;
-FXEXTERN void (*_cd_stop)		() ;
-FXEXTERN int  (*_cd_playing)	() ;
+FXEXTERN int	 (*_fade_music_in)	 (int id, int loops, int ms);
+FXEXTERN int	 (*_fade_music_off)	 (int ms);
+FXEXTERN void (*_ini_musiccd      )();
+FXEXTERN void (*_cd_play          )(int track, int continuous) ;
+FXEXTERN void (*_cd_stop          )() ;
+FXEXTERN int  (*_cd_playing       )() ;
 
 #define fade_music_in	(*_fade_music_in)
 #define fade_music_off	(*_fade_music_off)
@@ -916,7 +879,7 @@ FXEXTERN void       (*_instance_dump_all    )() ;
 #define instance_poschanged     (*_instance_poschanged)
 #define instance_posupdate      (*_instance_posupdate)
 
-/* Las siguientes funciones son el punto de entrada del intÃ©rprete */
+/* Las siguientes funciones son el punto de entrada del intérprete */
 FXEXTERN int        (*_instance_go          )(INSTANCE * r) ;
 FXEXTERN void       (*_instance_go_all      )() ;
 
@@ -955,8 +918,6 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
     _file_write                 = FENIX_import ( "file_write" ); \
     _file_gets                  = FENIX_import ( "file_gets" ); \
     _file_puts                  = FENIX_import ( "file_puts" ); \
-    _file_qgets                 = FENIX_import ( "file_qgets" ); \
-    _file_qputs                 = FENIX_import ( "file_qputs" ); \
     _file_size                  = FENIX_import ( "file_size" ); \
     _file_pos                   = FENIX_import ( "file_pos" ); \
     _file_seek                  = FENIX_import ( "file_seek" ); \
@@ -1025,6 +986,9 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
     _syslib                     = FENIX_import ( "syslib" ); \
     _icono                      = FENIX_import ( "icono" ); \
     _last_frame_ms              = FENIX_import ( "last_frame_ms" ); \
+    _joy_x                      = FENIX_import ( "joy_x" ); \
+    _joy_y                      = FENIX_import ( "joy_y" ); \
+    _joy_b                      = FENIX_import ( "joy_b" ); \
     _apptitle                   = FENIX_import ( "apptitle" ); \
     _key_table                  = FENIX_import ( "key_table" ); \
     _keystate                   = FENIX_import ( "keystate" ); \
@@ -1100,7 +1064,6 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
     _bitmap_get                 = FENIX_import ( "bitmap_get" ); \
     _bitmap_destroy             = FENIX_import ( "bitmap_destroy" ); \
     _bitmap_add_cpoint          = FENIX_import ( "bitmap_add_cpoint" ); \
-    _bitmap_set_cpoint          = FENIX_import ( "bitmap_set_cpoint" ); \
     _bitmap_analize             = FENIX_import ( "bitmap_analize" ); \
     _bitmap_animate             = FENIX_import ( "bitmap_animate" ); \
     _bitmap_animate_to          = FENIX_import ( "bitmap_animate_to" ); \
@@ -1222,8 +1185,6 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
     _resume_wav                 = FENIX_import ( "resume_wav" ); \
     _is_playing_wav             = FENIX_import ( "is_playing_wav" ); \
     _set_wav_volume             = FENIX_import ( "set_wav_volume" ); \
-	_set_channel_volume         = FENIX_import ( "set_channel_volume" ); \
-	_reserve_channels           = FENIX_import ( "reserve_channels" ); \
     _ini_musiccd                = FENIX_import ( "ini_musiccd" ); \
     _cd_play                    = FENIX_import ( "cd_play" ); \
     _cd_stop                    = FENIX_import ( "cd_stop" ); \
@@ -1238,7 +1199,6 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
 	_syscolor8                  = FENIX_import ( "syscolor8" ); \
 	_fntcolor8                  = FENIX_import ( "fntcolor8" ); \
 	_frame_count                = FENIX_import ( "frame_count" ); \
-	_current_time               = FENIX_import ( "current_time" ); \
     _drawing_stipple            = FENIX_import ( "drawing_stipple" ); \
     _gr_setalpha                = FENIX_import ( "gr_setalpha" ); \
 	_gr_bezier                  = FENIX_import ( "gr_bezier" ); \
@@ -1255,111 +1215,111 @@ void  (*FENIX_export)(char * name, char * paramtypes, int type, void * func)
 #endif
 
 /* Keyboard codes */
-#define KEY_0			 11
-#define KEY_1			  2
-#define KEY_2			  3
-#define KEY_3			  4
-#define KEY_4			  5
-#define KEY_5			  6
-#define KEY_6			  7
-#define KEY_7			  8
-#define KEY_8			  9
-#define KEY_9			 10
-#define KEY_A			 30
-#define KEY_B			 48
-#define KEY_BACKSLASH	 43
-#define KEY_BACKSPACE	 14
-#define KEY_C			 46
-#define KEY_CAPSLOCK	 58
-#define KEY_CARET		 40
-#define KEY_COMMA		 51
-#define KEY_D			 32
-#define KEY_DELETE		 83
-#define KEY_DOWN		 80
-#define KEY_E			 18
-#define KEY_END			 79
-#define KEY_EQUALS		 90
-#define KEY_ESCAPE		  1
-#define KEY_F10			 68
-#define KEY_F11			 87
-#define KEY_F12			 88
-#define KEY_F1			 59
-#define KEY_F2			 60
-#define KEY_F			 33
-#define KEY_F3			 61
-#define KEY_F4			 62
-#define KEY_F5			 63
-#define KEY_F6			 64
-#define KEY_F7			 65
-#define KEY_F8			 66
-#define KEY_F9			 67
-#define KEY_G			 34
-#define KEY_GREATER		 91
-#define KEY_H			 35
-#define KEY_HOME		 71
-#define KEY_I			 23
-#define KEY_INSERT		 82
-#define KEY_J			 36
-#define KEY_K			 37
-#define KEY_KP0			 11
-#define KEY_KP1			  2
-#define KEY_KP2			  3
-#define KEY_KP3			  4
-#define KEY_KP4			  5
-#define KEY_KP5			  6
-#define KEY_KP6			  7
-#define KEY_KP7			  8
-#define KEY_KP8			  9
-#define KEY_KP9			 10
-#define KEY_KP_DIVIDE	 53
-#define KEY_KP_ENTER	 28
-#define KEY_KP_MINUS	 74
-#define KEY_KP_MULTIPLY	 55
-#define KEY_KP_PERIOD	 52
-#define KEY_KP_PLUS		 78
-#define KEY_L			 38
-#define KEY_LEFT		 75
-#define KEY_LEFTBRACKET  26
-#define KEY_LESS		 89
-#define KEY_LMETA		 56
-#define KEY_LSHIFT		 42
-#define KEY_M			 50
-#define KEY_MINUS		 12
-#define KEY_N			 49
-#define KEY_NUMLOCK		 69
-#define KEY_O			 24
-#define KEY_P			 25
-#define KEY_PAGEDOWN	 81
-#define KEY_PAGEUP		 73
-#define KEY_PERIOD		 52
-#define KEY_PLUS		 13
-#define KEY_Q			 16
-#define KEY_QUESTION	 92
-#define KEY_QUOTE		 41
-#define KEY_R			 19
-#define KEY_RETURN		 28
-#define KEY_RIGHT		 77
+#define KEY_0 11
+#define KEY_1 2
+#define KEY_2 3
+#define KEY_3 4
+#define KEY_4 5
+#define KEY_5 6
+#define KEY_6 7
+#define KEY_7 8
+#define KEY_8 9
+#define KEY_9 10
+#define KEY_A 30
+#define KEY_B 48
+#define KEY_BACKSLASH 43
+#define KEY_BACKSPACE 14
+#define KEY_C 46
+#define KEY_CAPSLOCK 58
+#define KEY_CARET 40
+#define KEY_COMMA 51
+#define KEY_D 32
+#define KEY_DELETE 83
+#define KEY_DOWN 80
+#define KEY_E 18
+#define KEY_END 79
+#define KEY_EQUALS 90
+#define KEY_ESCAPE 1
+#define KEY_F10 68
+#define KEY_F11 87
+#define KEY_F12 88
+#define KEY_F1 59
+#define KEY_F2 60
+#define KEY_F 33
+#define KEY_F3 61
+#define KEY_F4 62
+#define KEY_F5 63
+#define KEY_F6 64
+#define KEY_F7 65
+#define KEY_F8 66
+#define KEY_F9 67
+#define KEY_G 34
+#define KEY_GREATER 91
+#define KEY_H 35
+#define KEY_HOME 71
+#define KEY_I 23
+#define KEY_INSERT 82
+#define KEY_J 36
+#define KEY_K 37
+#define KEY_KP0 11
+#define KEY_KP1 2
+#define KEY_KP2 3
+#define KEY_KP3 4
+#define KEY_KP4 5
+#define KEY_KP5 6
+#define KEY_KP6 7
+#define KEY_KP7 8
+#define KEY_KP8 9
+#define KEY_KP9 10
+#define KEY_KP_DIVIDE 53
+#define KEY_KP_ENTER 28
+#define KEY_KP_MINUS 74
+#define KEY_KP_MULTIPLY 55
+#define KEY_KP_PERIOD 52
+#define KEY_KP_PLUS 78
+#define KEY_L 38
+#define KEY_LEFT 75
+#define KEY_LEFTBRACKET 26
+#define KEY_LESS 89
+#define KEY_LMETA 56
+#define KEY_LSHIFT 42	
+#define KEY_M 50
+#define KEY_MINUS 12
+#define KEY_N 49
+#define KEY_NUMLOCK 69
+#define KEY_O 24
+#define KEY_P 25
+#define KEY_PAGEDOWN 81
+#define KEY_PAGEUP 73
+#define KEY_PERIOD 52
+#define KEY_PLUS 13
+#define KEY_Q 16
+#define KEY_QUESTION 92
+#define KEY_QUOTE 41	
+#define KEY_R 19
+#define KEY_RETURN 28
+#define KEY_RIGHT 77
 #define KEY_RIGHTBRACKET 27
-#define KEY_RMETA		 56
-#define KEY_RSHIFT		 54
-#define KEY_S			 31
-#define KEY_SCROLLOCK	 70
-#define KEY_SEMICOLON	 39
-#define KEY_SLASH		 53
-#define KEY_SPACE		 57
-#define KEY_T			 20
-#define KEY_TAB			 15
-#define KEY_U			 22
-#define KEY_UP			 72
-#define KEY_V			 47
-#define KEY_W			 17
-#define KEY_X			 45
-#define KEY_Y			 21
-#define KEY_Z			 44
-#define KEY_RALT		 93
-#define KEY_RCTRL		 94
-#define KEY_LALT		 95
-#define KEY_LCTRL		 96
-#define KEY_MENU		 97
+#define KEY_RMETA 56
+#define KEY_RSHIFT 54
+#define KEY_S 31
+#define KEY_SCROLLOCK 70
+#define KEY_SEMICOLON 39
+#define KEY_SLASH 53
+#define KEY_SPACE 57
+#define KEY_T 20
+#define KEY_TAB 15
+#define KEY_U 22
+#define KEY_UP 72
+#define KEY_V 47
+#define KEY_W 17
+#define KEY_X 45
+#define KEY_Y 21
+#define KEY_Z 44
+#define KEY_RALT 93
+#define KEY_RCTRL 94
+#define KEY_LALT 95
+#define KEY_LCTRL 96
+#define KEY_MENU 97
 
 #endif

@@ -1,37 +1,25 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TARGET_BEOS
-#include <posix/assert.h>
-#else
 #include <assert.h>
-#endif
 
 #include "fxc.h"
 
@@ -104,7 +92,7 @@ int string_new (const char * text)
 	return string_count++ ;
 }
 
-int string_compile (const char ** source)
+int string_compile (const char * * source)
 {
 	char c = *(*source)++, conv ;
 	const char * ptr ;
@@ -112,7 +100,8 @@ int string_compile (const char ** source)
 	if (string_count == string_max)
 	{
 		string_max += 1024 ;
-		string_offset = (int *) realloc (string_offset, string_max * sizeof(int)) ;
+		string_offset = (int *) realloc (string_offset, 
+			string_max * sizeof(int)) ;
 		if (string_offset == 0)
 		{
 			fprintf (stdout, "Demasiadas cadenas\n") ;
@@ -124,30 +113,23 @@ int string_compile (const char ** source)
 
 	while (*(*source))
 	{
-		if (*(*source) == c)  // Termina la string?
+		if (*(*source) == c)
 		{
 			(*source)++ ;
-			if (*(*source) == c) // Comienza una nueva? (esto es para strings divididas)
+			if (*(*source) == c) 
 			{
 				string_mem[string_used++] = c ;
 				(*source)++ ;
 			}
 			else
 			{
-			    // Elimino todos los espacios para buscar si hay otra string, esto es para strings divididas
 				ptr = (*source) ;
 				while (ISSPACE(*ptr))
 				{
 					if (*ptr == '\n') line_count++ ;
 					ptr++ ;
 				}
-				// Si despues de saltar todos los espacios, no tengo un delimitador de string, salgo
-				if (*ptr != c) {
-				    (*source) = ptr; // Fix: Splinter, por problema con numeracion de lineas
-				    break ;
-				}
-
-				// Obtengo delimitador de string, me posiciono en el caracter siguiente, dentro de la string
+				if (*ptr != c) break ;
 				(*source) = ptr+1 ;
 				continue ;
 			}
@@ -177,13 +159,12 @@ int string_compile (const char ** source)
 
 	/* Hack: añade el posible fichero al DCB */
 
-	if (autoinclude) {
-    	if (strchr(string_mem + string_offset[string_count], '\\') ||
-	        strchr(string_mem + string_offset[string_count], '.'))
-	    {
-    		dcb_add_file (string_mem + string_offset[string_count]) ;
-    	}
-    }
+	if (autoinclude)
+	if (strchr(string_mem + string_offset[string_count], '\\') ||
+	    strchr(string_mem + string_offset[string_count], '.'))
+	{
+		dcb_add_file (string_mem + string_offset[string_count]) ;
+	}
 
 	return string_count++ ;
 }

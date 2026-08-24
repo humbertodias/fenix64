@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /Zd /O2 /I ".\inc" /I "..\include" /I "..\..\sdl\include" /I "..\libpng" /I "..\mikmod" /I "..\..\zlib\include" /I "..\freetype\include" /D "NDEBUG" /D "STD_HEADERS" /D "_WINDOWS" /D "ZLIB_DLL" /D "_CONSOLE" /D "REGEX_MALLOC" /D "WIN32" /D "_MBCS" /D STDC_HEADERS=1 /D "TARGET_win32" /FR /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zd /O2 /I ".\inc" /I "..\include" /I "..\sdl\include" /I "..\libpng" /I "..\mikmod" /I "..\zlib" /I "..\freetype\include" /D "NDEBUG" /D "STD_HEADERS" /D "REGEX_MALLOC" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D STDC_HEADERS=1 /FR /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /debug /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "FXI - Win32 Debug"
@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I ".\inc" /I "..\include" /I "..\..\sdl\include" /I "..\..\libpng" /I "..\mikmod" /I "..\..\zlib\include" /I "..\freetype\include" /D "_DEBUG" /D "ZLIB_DLL" /D "_CONSOLE" /D "REGEX_MALLOC" /D "WIN32" /D "_MBCS" /D STDC_HEADERS=1 /D "TARGET_win32" /FR /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I ".\inc" /I "..\include" /I "..\sdl\include" /I "..\libpng" /I "..\mikmod" /I "..\zlib" /I "..\freetype\include" /D "_DEBUG" /D "REGEX_MALLOC" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D STDC_HEADERS=1 /FR /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
@@ -77,7 +77,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -92,18 +92,6 @@ LINK32=link.exe
 # Begin Group "graphic library"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\src\fbm.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\fgc.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\fpl.c
-# End Source File
 # Begin Source File
 
 SOURCE=.\src\g_blendop.c
@@ -194,26 +182,6 @@ SOURCE=.\src\mmx_scale2x.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\src\f_bgload.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\f_cd.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\f_joystick.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\f_sort.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\i_copy.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\i_debug.c
 # End Source File
 # Begin Source File
@@ -246,71 +214,75 @@ SOURCE=.\src\sound.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\libpng\png.c
+SOURCE=..\libpng\pngset.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngerror.c
+SOURCE=..\libpng\pngvcrd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pnggccrd.c
+SOURCE=..\libpng\png.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngget.c
+SOURCE=..\libpng\pngasmrd.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngmem.c
+SOURCE=..\libpng\pngerror.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngpread.c
+SOURCE=..\libpng\pnggccrd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngread.c
+SOURCE=..\libpng\pngget.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngrio.c
+SOURCE=..\libpng\pngmem.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngrtran.c
+SOURCE=..\libpng\pngpread.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngrutil.c
+SOURCE=..\libpng\pngread.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngset.c
+SOURCE=..\libpng\pngrio.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngtrans.c
+SOURCE=..\libpng\pngrtran.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngvcrd.c
+SOURCE=..\libpng\pngrutil.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngwio.c
+SOURCE=..\libpng\pngwrite.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngwrite.c
+SOURCE=..\libpng\pngwtran.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngwtran.c
+SOURCE=..\libpng\pngwutil.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\pngwutil.c
+SOURCE=..\libpng\pngtrans.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libpng\pngwio.c
 # End Source File
 # End Group
 # Begin Source File
@@ -366,6 +338,14 @@ SOURCE=..\SDL\include\close_code.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\libpng\png.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libpng\pngconf.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\SDL\include\SDL.h
 # End Source File
 # Begin Source File
@@ -414,6 +394,10 @@ SOURCE=..\SDL\include\SDL_main.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\SDL_mixer.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\SDL\include\SDL_mouse.h
 # End Source File
 # Begin Source File
@@ -447,19 +431,7 @@ SOURCE=..\SDL\include\SDL_video.h
 # End Group
 # Begin Source File
 
-SOURCE=..\include\dcb.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\dirs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\fbm.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\fgc.h
 # End Source File
 # Begin Source File
 
@@ -488,10 +460,6 @@ SOURCE=..\include\fnx_loadlib.h
 # Begin Source File
 
 SOURCE=inc\font.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\fpl.h
 # End Source File
 # Begin Source File
 
@@ -531,27 +499,11 @@ SOURCE=..\include\offsets.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libpng\png.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\libpng\pngasmrd.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\libpng\pngconf.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\pslang.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\include\regex.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\SDL_mixer\include\SDL_mixer.h
 # End Source File
 # Begin Source File
 
@@ -564,10 +516,6 @@ SOURCE=..\include\strings.h
 # Begin Source File
 
 SOURCE=..\include\sysprocs.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\inc\sysprocs_p.h
 # End Source File
 # Begin Source File
 
@@ -611,19 +559,19 @@ SOURCE=.\res\fxi.rc
 # PROP Default_Filter "lib"
 # Begin Source File
 
-SOURCE=..\..\SDL_mixer\lib\SDL_mixer.lib
+SOURCE=..\LIB\zlib.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SDL\lib\SDLmain.lib
+SOURCE=..\LIB\SDLmain.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SDL\lib\SDL.lib
+SOURCE=..\LIB\SDL.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zlib\lib\zdll.lib
+SOURCE=..\Lib\SDL_mixer.lib
 # End Source File
 # End Group
 # End Target

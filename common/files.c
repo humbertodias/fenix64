@@ -1,27 +1,19 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 /* SDL_BYTEORDER */
@@ -34,11 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#ifdef TARGET_BEOS
 #include <posix/assert.h>
-#else
-#include <assert.h>
-#endif
 
 #include "files.h"
 
@@ -48,15 +36,15 @@ char * possible_paths[32] =
 	0
 } ;
 
-int opened_files = 0;
-
-#define MAX_X_FILES 2048
+#define MAX_X_FILES 256
 
 typedef struct
 {
 	char name[40] ;
 	int  offset ;
+	long pos ;
 	int  size ;
+	int  eof ;
 	FILE * fp ;
 }
 XFILE ;
@@ -75,8 +63,8 @@ void file_add_xfile (file * fp, long offset, char * name, int size)
 	x_file[x_files_count].fp = fp->fp ;
 	x_file[x_files_count].offset = offset ;
 	x_file[x_files_count].size = size ;
-/*	x_file[x_files_count].pos = offset ;
-	x_file[x_files_count].eof = 0 ; */
+	x_file[x_files_count].pos = offset ;
+	x_file[x_files_count].eof = 0 ;
 	strncpy (x_file[x_files_count].name, name, 39) ;
 	x_file[x_files_count].name[39] = 0 ;
 
@@ -96,22 +84,21 @@ int file_read (file * fp, void * buffer, int len)
 
 		xf = &x_file[fp->n] ;
 
-		if ((len + fp->pos) > (xf->offset + xf->size))
+		if (len + xf->pos > xf->offset + xf->size) 
 		{
-			fp->eof = 1 ;
-			len = xf->size + xf->offset - fp->pos ;
+			xf->eof = 1 ;
+			len = xf->size + xf->offset - xf->pos ;
 		}
-		fseek (xf->fp, fp->pos, SEEK_SET) ;
+		fseek (xf->fp, xf->pos, SEEK_SET) ;
 		result = fread (buffer, 1, len, xf->fp) ;
-		fp->pos = ftell (xf->fp) ;
+		xf->pos = ftell (xf->fp) ;
 		return result ;
 	}
-
 	if (fp->type == F_GZFILE)
 	{
 		int result = gzread (fp->gz, buffer, len) ;
-		if ((fp->error = (result < 0)) != 0)
-            result = 0 ;
+		if ((fp->error = result < 0) != 0) 
+                        result = 0 ;
 		return result ;
 	}
 
@@ -120,7 +107,7 @@ int file_read (file * fp, void * buffer, int len)
 
 /* Guarda una cadena "cuoteada" al disco */
 
-int file_qputs (file * fp, const char * buffer)
+int file_puts (file * fp, const char * buffer)
 {
 	char dest[1024], * optr ;
 	const char * ptr ;
@@ -158,48 +145,45 @@ int file_qputs (file * fp, const char * buffer)
 
 /* Recupera una cadena de un fichero y la "descuotea" */
 
-int file_qgets (file * fp, char * buffer, int len)
+int file_gets (file * fp, char * buffer, int len)
 {
-	char * ptr, * result = NULL ;
+	char * ptr, * result ;
 
 	if (fp->type == F_XFILE)
 	{
 		XFILE * xf ;
-		int l = 0;
-		char * ptr = result = buffer ;
-
+		int l = 0, result = 0 ;
+		char * ptr = buffer ;
+		
 		xf = &x_file[fp->n] ;
-
-		fseek (xf->fp, fp->pos, SEEK_SET) ;
+		
+		fseek (xf->fp, xf->pos, SEEK_SET) ;
 		while (l < len)
 		{
-			if (fp->pos >= xf->offset + xf->size)
+			if (xf->pos >= xf->offset + xf->size)
 			{
-				fp->eof = 1 ;
+				xf->eof = 1 ;
 				break ;
 			}
 			fread (ptr, 1, 1, xf->fp) ;
-			l++ ;
-			fp->pos++ ;
-			if (*ptr++ == '\n')
+			result++ ;
+			xf->pos++ ;
+			if (*ptr++ == '\n') 
 				break ;
 		}
 		*ptr = 0 ;
-		fp->pos = ftell(xf->fp) ;
-
-	    if (l == 0) return 0 ;
-
+		xf->pos = ftell(xf->fp) ;
 	}
 	else if (fp->type == F_GZFILE)
 	{
 		result = gzgets (fp->gz, buffer, len) ;
 	}
-	else
+	else 
 	{
 		result = fgets(buffer, len, fp->fp);
 	}
 
-	if (result == NULL) { buffer[0] = 0 ; return 0 ; }
+	if (result == 0) { buffer[0] = 0 ; return 0 ; }
 
 	ptr = buffer ;
 	while (*ptr)
@@ -221,76 +205,19 @@ int file_qgets (file * fp, char * buffer, int len)
 	return strlen(buffer) ;
 }
 
-/* Guarda una cadena al disco */
-
-int file_puts (file * fp, const char * buffer)
-{
-	return file_write (fp, buffer, strlen(buffer)) ;
-}
-
-/* Recupera una cadena de un fichero y la "descuotea" */
-
-int file_gets (file * fp, char * buffer, int len)
-{
-	char * ptr, * result = NULL ;
-
-	if (fp->type == F_XFILE)
-	{
-		XFILE * xf ;
-		int l = 0;
-		char * ptr = result = buffer ;
-
-		xf = &x_file[fp->n] ;
-
-		fseek (xf->fp, fp->pos, SEEK_SET) ;
-		while (l < len)
-		{
-			if (fp->pos >= xf->offset + xf->size)
-			{
-				fp->eof = 1 ;
-				break ;
-			}
-			fread (ptr, 1, 1, xf->fp) ;
-			l++ ;
-			fp->pos++ ;
-			if (*ptr++ == '\n') break ;
-		}
-		*ptr = 0 ;
-		fp->pos = ftell(xf->fp) ;
-
-	    if (l == 0) return 0 ;
-
-	}
-	else if (fp->type == F_GZFILE)
-	{
-		result = gzgets (fp->gz, buffer, len) ;
-	}
-	else
-	{
-		result = fgets(buffer, len, fp->fp);
-	}
-
-	if (result == NULL) {
-	    buffer[0] = 0 ;
-	    return 0 ;
-	}
-
-	return strlen(buffer) ;
-}
-
 /* Escribe en un fichero binario un dato de tipo entero */
 
-int file_writeSint8 (file * fp, Sint8 * buffer)
+int file_writeSint8 (file * fp, Sint8 * buffer) 
 {
 	return file_write (fp, buffer, 1);
 }
 
-int file_writeUint8 (file * fp, Uint8 * buffer)
+int file_writeUint8 (file * fp, Uint8 * buffer) 
 {
 	return file_write (fp, buffer, 1);
 }
 
-int file_writeSint16 (file * fp, Sint16 * buffer)
+int file_writeSint16 (file * fp, Sint16 * buffer) 
 {
 	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
 		return file_write (fp, buffer, 2);
@@ -300,16 +227,16 @@ int file_writeSint16 (file * fp, Sint16 * buffer)
 	#endif
 }
 
-int file_writeUint16 (file * fp, Uint16 * buffer)
+int file_writeUint16 (file * fp, Uint16 * buffer) 
 {
 	return file_writeSint16 (fp, buffer);
 }
 
-int file_writeSint32 (file * fp, Sint32 * buffer)
+int file_writeSint32 (file * fp, Sint32 * buffer) 
 {
 	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
 		return file_write (fp, buffer, 4);
-	#else
+	#else	
 		       file_write (fp, (Uint8 *)buffer + 3, 1);
 		       file_write (fp, (Uint8 *)buffer + 2, 1);
 		       file_write (fp, (Uint8 *)buffer + 1, 1);
@@ -317,24 +244,24 @@ int file_writeSint32 (file * fp, Sint32 * buffer)
 	#endif
 }
 
-int file_writeUint32 (file * fp, Uint32 * buffer)
+int file_writeUint32 (file * fp, Uint32 * buffer) 
 {
 	return file_writeSint32 (fp, (Sint32 *)buffer);
 }
 
 /* Lee de un fichero binario un dato de tipo entero */
 
-int file_readSint8 (file * fp, Sint8 * buffer)
+int file_readSint8 (file * fp, Sint8 * buffer) 
 {
 	return file_read (fp, buffer, 1);
 }
 
-int file_readUint8 (file * fp, Uint8 * buffer)
+int file_readUint8 (file * fp, Uint8 * buffer) 
 {
 	return file_read (fp, buffer, 1);
 }
 
-int file_readSint16 (file * fp, Sint16 * buffer)
+int file_readSint16 (file * fp, Sint16 * buffer) 
 {
 	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
 		return file_read (fp, buffer, 2);
@@ -344,16 +271,16 @@ int file_readSint16 (file * fp, Sint16 * buffer)
 	#endif
 }
 
-int file_readUint16 (file * fp, Uint16 * buffer)
+int file_readUint16 (file * fp, Uint16 * buffer) 
 {
 	return file_readSint16 (fp, buffer);
 }
 
-int file_readSint32 (file * fp, Sint32 * buffer)
+int file_readSint32 (file * fp, Sint32 * buffer) 
 {
 	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
 		return file_read (fp, buffer, 4);
-	#else
+	#else	
 		       file_read (fp, (Uint8 *)buffer + 3, 1);
 		       file_read (fp, (Uint8 *)buffer + 2, 1);
 		       file_read (fp, (Uint8 *)buffer + 1, 1);
@@ -361,7 +288,7 @@ int file_readSint32 (file * fp, Sint32 * buffer)
 	#endif
 }
 
-int file_readUint32 (file * fp, Uint32 * buffer)
+int file_readUint32 (file * fp, Uint32 * buffer) 
 {
 	return file_readSint32 (fp, (Sint32 *)buffer);
 }
@@ -377,23 +304,22 @@ int file_write (file * fp, void * buffer, int len)
 
 		xf = &x_file[fp->n] ;
 
-		if ((len + fp->pos) > (xf->offset + xf->size))
+		if (len + xf->pos > xf->offset + xf->size) 
 		{
-			fp->eof = 1 ;
-			len = xf->size + xf->offset - fp->pos ;
+			xf->eof = 1 ;
+			len = xf->size + xf->offset - xf->pos ;
 		}
-		fseek (xf->fp, fp->pos, SEEK_SET) ;
+		fseek (xf->fp, xf->pos, SEEK_SET) ;
 		result = fwrite (buffer, 1, len, xf->fp) ;
-		fp->pos = ftell (xf->fp) ;
+		xf->pos = ftell (xf->fp) ;
 		return result ;
 	}
-
 	if (fp->type == F_GZFILE)
 	{
 		int result = gzwrite (fp->gz, buffer, len) ;
-		if ((fp->error = (result < 0)) != 0)
-            result = 0 ;
-		return (result < len) ? 0 : len ;
+		if ((fp->error = result < 0) != 0) 
+                        result = 0 ;
+		return result < len ? 0 : 1 ;
 	}
 
 
@@ -408,7 +334,6 @@ int file_size (file * fp)
 
 	if (fp->type == F_XFILE)
 		return x_file[fp->n].size ;
-
 	if (fp->type == F_GZFILE)
 	{
 		fprintf (stderr, "file_size: inválida en ficheros comprimidos\n") ;
@@ -427,11 +352,10 @@ int file_size (file * fp)
 int file_pos (file * fp)
 {
 	if (fp->type == F_XFILE)
-		return fp->pos - x_file[fp->n].offset ;
-
+		return x_file[fp->n].pos - x_file[fp->n].offset ;
 	if (fp->type == F_GZFILE)
 		return gztell(fp->gz) ;
-
+	
 	return ftell (fp->fp) ;
 }
 
@@ -445,17 +369,15 @@ int file_seek (file * fp, int pos, int where)
 		if (where == SEEK_END)
 			pos = x_file[fp->n].size - pos + 1 ;
 		else if (where == SEEK_CUR)
-			pos += ( fp->pos - x_file[fp->n].offset );
+			pos += x_file[fp->n].pos - x_file[fp->n].offset ;
 
 		if (x_file[fp->n].size < pos)
 			pos = x_file[fp->n].size ;
-
 		if (pos < 0) pos = 0 ;
 
-		fp->pos = pos + x_file[fp->n].offset ;
-		return pos ;
+		x_file[fp->n].pos = pos + x_file[fp->n].offset ;
+		return x_file[fp->n].pos - x_file[fp->n].offset ;
 	}
-
 	if (fp->type == F_GZFILE)
 	{
 		assert(fp->gz);
@@ -470,30 +392,14 @@ int file_seek (file * fp, int pos, int where)
 
 static int open_raw (file * f, const char * filename, const char * mode)
 {
-    char    _mode[5];
-    char    *p;
-
 	if (!strchr(mode,'0'))
 	{
 		f->type = F_GZFILE ;
 		f->gz = gzopen (filename, mode) ;
-		f->eof  = 0 ;
 		if (f->gz) return 1 ;
 	}
-
-    p=_mode;
-    while(*mode){
-        if(*mode!='0'){
-            *p=*mode;
-            p++;
-        }
-        mode++;
-    }
-    *p='\0';
-
-	f->eof  = 0 ;
 	f->type = F_FILE ;
-	f->fp = fopen (filename, _mode) ;
+	f->fp = fopen (filename, mode) ;
 	if (f->fp) return 1 ;
 	return 0 ;
 }
@@ -506,7 +412,7 @@ file * file_open (const char * filename, char * mode)
 
 	const char * c, * n ;
 	int i ;
-#ifdef PATH_SLASH
+#ifdef TARGET_linux
 	int j ;
 #endif
 
@@ -514,8 +420,7 @@ file * file_open (const char * filename, char * mode)
 
 	f = (file *) malloc(sizeof(file)) ;
 	assert (f) ;
-	memset (f, 0, sizeof(file)) ;
-	strncpy (f->name, filename, MAX_PATH);
+	memset (f, 0, sizeof(f)) ;
 
 	c = filename ;
 	for (n = c+strlen(c) ; n >= c ; n--)
@@ -530,59 +435,50 @@ file * file_open (const char * filename, char * mode)
 	name[2047] = 0;
 	strcpy (path, filename) ;
 	path[c-filename] = 0 ;
-#ifdef PATH_SLASH
+#ifdef TARGET_linux
 	for (j = 0 ; path[j] ; j++)
 		if (path[j] == '\\') path[j] = '/' ;
 #endif
 
-	strcpy (here, path) ;
-	strcat (here, name) ;
-	if (open_raw (f, here, mode)) {
-        opened_files++;
-	    return f ;
+	if (strchr(mode,'r') && strchr(mode,'b'))
+	for (i = 0 ; i < x_files_count ; i++)
+	{
+		if (strcmp(name, x_file[i].name) == 0)
+		{
+			x_file[i].pos = x_file[i].offset ;
+			f->type = F_XFILE ;
+			f->n = i ;
+			return f ;
+		}
 	}
 
-    /* Si archivo real no existe en disco */
-	if (strchr(mode,'r') && strchr(mode,'b') && !strchr(mode,'+') && !strchr(mode,'w')) {
-    	for (i = 0 ; i < x_files_count ; i++)
-    	{
-    		if (strcmp(name, x_file[i].name) == 0)
-    		{
-    			f->eof  = 0 ;
-    			f->pos  = x_file[i].offset ;
-    			f->type = F_XFILE ;
-    			f->n = i ;
-                opened_files++;
-    			return f ;
-    		}
-    	}
-    }
+	strcpy (here, path) ;
+	strcat (here, name) ;
+	if (open_raw (f, here, mode)) return f ;
 
 	/* Busca por el directorio de la extensión (directorio FPG para FPG) */
 	if (strchr(name,'.'))
 	{
 		strcpy (here, strchr(name,'.') + 1) ;
-		strcat (here, PATH_SEP) ;
+#ifdef TARGET_linux
+		strcat (here, "/") ;
+#else
+		strcat (here, "\\") ;
+#endif
 		strcat (here, path) ;
 		strcat (here, name) ;
-    	if (open_raw (f, here, mode)) {
-            opened_files++;
-	        return f ;
-	    }
+		if (open_raw (f, here, mode)) return f ;
 	}
 
 	for (i = 0 ; possible_paths[i] ; i++)
 	{
 		strcpy (here, possible_paths[i]) ;
 		strcat (here, name) ;
-#ifdef PASH_SLASH
+#ifdef TARGET_linux
 		for (j = 0 ; here[j] ; j++)
 			if (here[j] == '\\') here[j] = '/' ;
 #endif
-    	if (open_raw (f, here, mode)) {
-            opened_files++;
-	        return f ;
-	    }
+		if (open_raw (f, here, mode)) return f ;
 	}
 
 	free (f) ;
@@ -593,21 +489,12 @@ file * file_open (const char * filename, char * mode)
 
 void file_close (file * fp)
 {
-	if (fp == NULL)
-		return;
-
-/*
 	if (fp->type == F_XFILE)
-        fp->pos = x_file[fp->n].offset ;
-*/
+                x_file[fp->n].pos = x_file[fp->n].offset ;
 	if (fp->type == F_FILE)
 		fclose(fp->fp) ;
-
 	if (fp->type == F_GZFILE)
 		gzclose(fp->gz) ;
-
-    opened_files--;
-
 	free(fp) ;
 }
 
@@ -622,7 +509,7 @@ void file_addp  (const char * path)
 	for (n = 0 ; truepath[n] ; n++)
 		if (truepath[n] == '/')
 			truepath[n] = '\\' ;
-	if (truepath[strlen(truepath)-1] != '\\')
+	if (truepath[strlen(truepath)-1] != '\\') 
 		strcat (truepath, "\\") ;
 
 	for (n = 0 ; n < 31 && possible_paths[n] ; n++) ;
@@ -652,16 +539,16 @@ int file_eof (file * fp)
 {
 	if (fp->type == F_XFILE)
 	{
-		return fp->eof ? 1:0;
+		XFILE * f = &x_file[fp->n] ;
+		return f->eof ;
 	}
-
 	if (fp->type == F_GZFILE)
-    {
-        if (fp->error) return 1 ;
-	    return gzeof(fp->gz) ? 1:0;
-    }
+        {
+                if (fp->error) return 1 ;
+		return gzeof(fp->gz) ;
+        }
 
-	return feof(fp->fp) ? 1:0;
+	return feof(fp->fp) ;
 }
 
 /* Devuelve el FILE * correspondiente al fichero */
@@ -671,9 +558,8 @@ FILE * file_fp (file * f)
 	if (f->type == F_XFILE)
 	{
 		XFILE * xf = &x_file[f->n] ;
-		fseek (xf->fp, f->pos, SEEK_SET) ;
+		fseek (xf->fp, xf->pos, SEEK_SET) ;
 		return xf->fp ;
 	}
-
 	return f->fp ;
 }

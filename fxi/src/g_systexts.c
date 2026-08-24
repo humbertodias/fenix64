@@ -1,39 +1,32 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef TARGET_BEOS
-#include <posix/assert.h>
-#else
 #include <assert.h>
-#endif
-
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+
+#include <SDL.h>
+
+#ifdef BeIDE
+#include <BeOS.h>
+#endif
 
 #include "fxi.h"
 #include "dcb.h"
@@ -881,13 +874,13 @@ static char sysfont[][8][16] = {
 }
 };
 
-static Uint8 * letters = " ABCDEFGHIJKLM\xD1NOPQRSTUVWXYZ0123456789.:=%abcdefghijklm\xF1nopqrstuvwxyz[](){}-><_,\\/+*!\xA1?\xBF\"'\x01\x02\x03" ;
+static Uint8 * letters = " ABCDEFGHIJKLMÑNOPQRSTUVWXYZ0123456789.:=%abcdefghijklmñnopqrstuvwxyz[](){}-><_,\\/+*!¡?¿\"'\x01\x02\x03" ;
 
 static int fg, bg ;
 
 void gr_sys_putchar (GRAPH * map, int ox, int oy, Uint8 c)
 {
-        Sint32 x, y ;
+        int x, y ;
         static int corr[256] ;
         static int corr_init = 0 ;
 
@@ -903,14 +896,14 @@ void gr_sys_putchar (GRAPH * map, int ox, int oy, Uint8 c)
         for (y = oy ; y < oy+8 ; y++)								\
         {															\
                 TYPE * ptr; Uint8 * cptr ;							\
-                if (y < 0 || y >= (int)map->height)					\
+                if (y < 0 || y >= map->height)						\
                         continue ;									\
                 ptr = (TYPE *)((Uint8*)map->data + map->pitch*y) ;	\
                 ptr += ox;											\
                 cptr = (Uint8*)sysfont[c][y-oy];		  			\
                 for (x = ox ; x < ox+6 ; x++, cptr++)				\
                 {                                        			\
-                        if (x < 0 || x >= (int)map->width)  		\
+                        if (x < 0 || x >= map->width)    			\
                         {                                			\
                                 ptr++ ;                  			\
                                 continue ;               			\
@@ -921,7 +914,7 @@ void gr_sys_putchar (GRAPH * map, int ox, int oy, Uint8 c)
                                 *ptr++ = bg ;            			\
                         else ptr++ ;                     			\
                 }                                        			\
-        }
+        } 
 
         if (map->depth == 8)
 		{
@@ -957,10 +950,10 @@ void gr_sys_puts (GRAPH * map, int x, int y, Uint8 * str, int len)
 		gr_sys_puts (map, x, y+1, str, len);
 		fg = ofg;
 	}
-
+	
 	while (*str && len--)
 	{
-		if (*str == (Uint8)'\xAC')
+		if (*str == (Uint8)'¬')
 		{
 			Uint8 color = 0 ;
 			str++ ;
@@ -998,7 +991,7 @@ void gr_sys_color (int cfg, int cbg)
 	{
 		if (!trans_table_updated)
 			gr_make_trans_table() ;
-
+		
 		if (cfg > 0)
 			fg = gr_find_nearest_color (
 				((cfg & 0xFF0000) >> 16),

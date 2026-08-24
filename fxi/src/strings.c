@@ -1,8 +1,8 @@
 /****************************************************************************/
 /*                                                                          */
 /* Fenix - Videogame compiler/interpreter                                   */
-/* Current release       : PROJECT 1.0 - 0.84                               */
-/* Last stable release   :                                                                          */
+/* Current release       : PROJECT 1.0 - 0.76                              */
+/* Last stable release   : OFFICIAL RELEASE 0.71B                           */
 /* Project documentation : http://fenix.divsite.net                         */
 /*                                                                          */
 /****************************************************************************/
@@ -39,12 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TARGET_BEOS
 #include <posix/assert.h>
-#else
-#include <assert.h>
-#endif
-
 
 #include "fxi.h"
 #include "dcb.h"
@@ -55,10 +50,7 @@
 
 /* 1 to debug string operations to the console (lots of text) */
 int report_string = 0 ;
-/*
-#undef gr_con_printf
-#define gr_con_printf(...) printf(__VA_ARGS__);fflush(stdout);
-*/
+
 /****************************************************************************/
 /* STATIC VARIABLES :                                                       */
 /****************************************************************************/
@@ -71,7 +63,7 @@ static int      string_used = 0 ;
 /* Pointers to each string's text. Every string is allocated using strdup()
    or malloc(). A pointer of a unused slot is 0. Exception: "fixed" strings
    are stored in a separate memory block and should not be freed */
-static char  ** string_ptr ;
+static char * * string_ptr ;
 
 /* Usage count for each string. An unused slot has a count of 0 */
 static int    * string_uct ;
@@ -97,20 +89,19 @@ static int      string_ptr_allocated = 0 ;
 
 void string_init ()
 {
-    string_mem = (char *) malloc (4096) ;
-    string_allocated = 4096 ;
-    string_used = 0 ;
+	string_mem = (char *) malloc (4096) ;
+	string_allocated = 4096 ;
+	string_used = 0 ;
 
-    string_ptr_allocated = 1024 ;
-    string_ptr = (char **) malloc (1024 * sizeof(char *)) ;
-    string_uct = (int *) malloc (1024 * sizeof(int)) ;
-    string_dontfree = (char *) malloc (1024 * sizeof(char)) ;
+	string_ptr_allocated = 1024 ;
+	string_ptr = (char * *) malloc (1024 * sizeof(char *)) ;
+	string_uct = (int *) malloc (1024 * sizeof(int)) ;
+	string_dontfree = (char *) malloc (1024 * sizeof(char)) ;
 
-    /* Create an empty string with ID 0 */
-    string_mem[0] = 0 ;
-    string_ptr[0] = string_mem ;
-
-    string_count = 1 ;
+	/* Create an empty string with ID 0 */
+	string_mem[0] = 0 ;
+	string_ptr[0] = string_mem ;
+	string_count = 1 ;
 }
 
 /****************************************************************************/
@@ -125,14 +116,17 @@ void string_init ()
 
 static void string_alloc (int count)
 {
-    string_ptr_allocated += count ;
+	string_ptr_allocated += count ;
 
-    string_ptr = (char **) realloc (string_ptr, string_ptr_allocated * sizeof(char *)) ;
-    string_uct = (int *) realloc (string_uct, string_ptr_allocated * sizeof(int)) ;
-    string_dontfree = (char *) realloc (string_dontfree, string_ptr_allocated * sizeof(char)) ;
+	string_ptr = (char * *) 
+		realloc (string_ptr, string_ptr_allocated * sizeof(char *)) ;
+	string_uct = (int *)    
+		realloc (string_uct, string_ptr_allocated * sizeof(int)) ;
+	string_dontfree = (char *)   
+		realloc (string_dontfree, string_ptr_allocated * sizeof(char)) ;
 
-    if (!string_ptr || !string_uct || !string_dontfree)
-        gr_error ("string_alloc: sin memoria\n") ;
+	if (!string_ptr || !string_uct || !string_dontfree)
+		gr_error ("string_alloc: sin memoria\n") ;
 }
 
 /****************************************************************************/
@@ -144,27 +138,22 @@ static void string_alloc (int count)
 
 void string_dump ()
 {
-    int i ;
-    int used=0;
-
-    gr_con_printf ("[STRING] ---- Dumping MaxID=%d strings ----\n", string_count) ;
-
-    for (i = 0 ; i < string_count ; i++){
-        if (string_ptr[i]){
-            if (string_uct[i] == 0){
-                if (!string_dontfree[i]){
-                    free(string_ptr[i]) ;
-                    string_ptr[i] = NULL ; // Splinter
-                    continue ;
-                }
-            }
-            used++;
-        } else {
-            continue ;
-        }
-        gr_con_printf ("[STRING] %4d %1d [%4d]: {%s}\n", i, string_uct[i], string_dontfree[i], string_ptr[i]) ;
-    }
-    gr_con_printf ("[STRING] ---- Dumping Used=%d End ----\n", used) ;
+	int i ;
+	gr_con_printf ("[STRING] ---- Dumping %d strings ----\n", string_count) ;
+	for (i = 0 ; i < string_count ; i++)
+	{
+		if (string_uct[i] == 0)
+		{
+			if (string_ptr[i]) 
+			{
+                                if (!string_dontfree[i])
+                                        free(string_ptr[i]) ;
+				string_ptr[i] = 0 ;
+			}
+			continue ;
+		}
+		gr_con_printf ("[STRING] %4d [%4d]: {%s}\n", i, string_uct[i], string_ptr[i]) ;
+	}
 }
 
 /****************************************************************************/
@@ -178,11 +167,8 @@ void string_dump ()
 
 const char * string_get (int code)
 {
-    assert (code < string_count && code >= 0) ;
-    if (report_string){
-        gr_con_printf ("[STRING] string_get %d\n", code) ;
-    }
-    return string_ptr[code] ;
+	assert (code < string_count && code >= 0) ;
+	return string_ptr[code] ;
 }
 
 /****************************************************************************/
@@ -200,39 +186,31 @@ const char * string_get (int code)
 
 void string_load (file * fp)
 {
-    int * string_offset, n;
+	int * string_offset, n ;
 
-    string_count = dcb.data.NStrings ;
-    string_used  = dcb.data.SText ;
-    file_seek (fp, dcb.data.OStrings, SEEK_SET) ;
-    string_offset = (int *) malloc (4 * string_count) ;
-    if (!string_offset) {
-        gr_error ("string_load: not enough memory\n") ;
-    }
-    file_read (fp, string_offset, 4 * string_count) ;
-    if (string_used > string_allocated)
-    {
-        string_allocated = string_used ;
-        string_mem = (char *) realloc (string_mem, string_used) ;
-    }
-    if (string_count + 128 > string_ptr_allocated) {
-        string_alloc (string_count + 512 - string_ptr_allocated) ;
-    }
+	string_count = dcb.NStrings ;
+	string_used  = dcb.SText ;
+	file_seek (fp, dcb.OStrings, SEEK_SET) ;
+	string_offset = (int *) malloc (4 * string_count) ;
+	if (!string_offset)
+		gr_error ("string_load: not enough memory\n") ;
+	file_read (fp, string_offset, 4 * string_count) ;
+	if (string_used > string_allocated)
+	{
+		string_allocated = string_used ;
+		string_mem = (char *) realloc (string_mem, string_used) ;
+	}
+	if (string_count + 128 > string_ptr_allocated)
+		string_alloc (string_count + 512 - string_ptr_allocated) ;
+	file_seek (fp, dcb.OText, SEEK_SET) ;
+	file_read (fp, string_mem, string_used) ;
 
-    file_seek (fp, dcb.data.OText, SEEK_SET) ;
-    file_read (fp, string_mem, string_used) ;
-
-    for (n = 0 ; n < string_count ; n++)
-    {
-        string_ptr[n]       = string_mem + string_offset[n] ;
-        string_uct[n]       = 0 /*25*/ ; // -- Fix Splinter
-        string_dontfree[n]  = 1 ;
-    }
-
-    string_ptr[n]       = NULL ;
-    string_uct[n]       = 0 ; // -- Fix Splinter
-
-    free (string_offset) ;
+	for (n = 0 ; n < string_count ; n++)
+	{
+		string_ptr[n] = string_mem + string_offset[n] ;
+		string_uct[n] = 2 ;
+	}
+	free (string_offset) ;
 }
 
 /****************************************************************************/
@@ -246,14 +224,10 @@ void string_load (file * fp)
 
 void string_use (int code)
 {
-    if (code < 0 || code > string_count || !string_ptr[code]) {
-        return;
-    }
-
-    string_uct[code]++ ;
-    if (report_string) {
-        gr_con_printf ("[STRING] String %d used (count: %d)\n", code, string_uct[code]) ;
-    }
+	string_uct[code]++ ;
+        if (report_string)
+                gr_con_printf ("[STRING] String %d used (count: %d)\n", 
+                                code, string_uct[code]) ;
 }
 
 /****************************************************************************/
@@ -270,44 +244,35 @@ void string_use (int code)
 
 void string_discard (int code)
 {
-    if ( code < 0 || code > string_count || !string_ptr[code]) {
-        return;
-    }
+	if (string_uct[code] == 0)
+	{
+                if (report_string)
+                        gr_con_printf ("[STRING] String %d released "
+                                "but already discarted\n", code) ;
+		return ;
+	}
 
-    if (string_uct[code] < 1)
-    {
-        if (report_string) {
-            gr_con_printf ("[STRING] string_discard: String %d released but already discarted\n", code) ;
-        }
-        return ;
-    }
-
-    string_uct[code]-- ;
-
-    if (report_string) {
-        gr_con_printf ("[STRING] string_discard: String %d released (count: %d)\n", code, string_uct[code]) ;
-    }
-
-    if ( string_uct[code] < 1 )
-    {
-        if (report_string) {
-            gr_con_printf ("[STRING] string_discard: String %d released and discarted\n", code) ;
-        }
-
-        if (!string_dontfree[code]) {
-            free(string_ptr[code]) ;
-            string_ptr[code] = NULL ; // Splinter
-            string_uct[code] = 0 ;
-        }
-
-        if (report_string ) {
-            if ( string_dontfree[code]) {
-                gr_con_printf ("[STRING] string_discard: (Memory don't freed - %d is special string, count: %d)\n", code, string_uct[code]) ;
-            } else {
-                gr_con_printf ("[STRING] string_discard: String %d released and discarted (count: %d)\n", code, string_uct[code]) ;
-            }
-        }
-    }
+	string_uct[code]-- ;
+        if (report_string)
+                gr_con_printf ("[STRING] String %d released (count: %d)\n", 
+                        code, string_uct[code]) ;
+	if (string_uct[code] < 1 && code > 0)
+	{
+                if (report_string)
+                        gr_con_printf ("[STRING] String %d released "
+                                "and discarted\n", code) ;
+                if (!string_dontfree[code])
+                        free(string_ptr[code]) ;
+                if (report_string && string_dontfree[code])
+                        gr_con_printf ("[STRING] (Memory don't freed - special string)\n") ;
+		string_ptr[code] = 0 ;
+		if (code == string_count-1)
+		{
+			while (string_count > 1 && 
+			       string_ptr[string_count-1] == 0)
+				string_count--;
+		}
+	}
 }
 
 /****************************************************************************/
@@ -320,21 +285,24 @@ void string_discard (int code)
 
 void string_coalesce()
 {
-    int n ;
+	int n ;
 
-    if (string_count < string_ptr_allocated/2)
-        return ;
+	if (string_count < string_ptr_allocated/2)
+		return ;
 
-    for (n = 1 ; n < string_ptr_allocated ; n++)
-    {
-        if (!string_uct[n])
-        {
-            if (!string_dontfree[n]) {
-                free (string_ptr[n]) ;
-                string_ptr[n] = NULL ; // Splinter
-            }
-        }
-    }
+	for (n = 1 ; n < string_ptr_allocated ; n++)
+	{
+		if (!string_uct[n])
+		{
+                        if (!string_dontfree[n])
+                                free (string_ptr[n]) ;
+			string_ptr[n] = 0 ;
+			string_uct[n] = 0 ;
+		}
+	}
+
+	while (string_count > 1 && string_ptr[string_count-1] == 0)
+		string_count--;
 }
 
 /****************************************************************************/
@@ -346,25 +314,17 @@ void string_coalesce()
 
 static int string_getid ()
 {
-    int n ;
+	int n ;
 
-    // Si tengo suficientes alocados, retorno el siguiente segun string_count
-    if (string_count < string_ptr_allocated) {
-        return string_count++ ;
-    }
+	if (string_count < string_ptr_allocated)
+		return string_count++ ;
 
-    // Ya no tengo mas espacio, entonces busco alguno libre
-    for (n = 1 ; n < string_ptr_allocated ; n++) {
-        if (!string_ptr[n]) {
-            return n ;
-        }
-    }
-    // Incremento espacio
-    string_alloc (1024) ;
-    gr_con_printf ("[STRING] \xAC" "12*PANIC\xAC" "7 Too many strings, allocating more space") ;
+	for (n = 1 ; n < string_ptr_allocated ; n++)
+		if (!string_ptr[n]) return n ;
 
-    // Devuelvo el string_count + 1, ya que ahora tengo 1024 mas que antes
-    return string_count++ ;
+	string_alloc (1024) ;
+	gr_con_printf ("[STRING] ¬12*PANIC¬7 Too many strings, allocating more space") ;
+	return string_count++ ;
 }
 
 /****************************************************************************/
@@ -376,20 +336,19 @@ static int string_getid ()
 
 int string_new (const char * ptr)
 {
-    char * str = strdup(ptr) ;
-    int    id ;
+	char * str = strdup(ptr) ;
+	int    id ;
 
-    assert (str) ;
-    id = string_getid() ;
+	assert (str) ;
+	id = string_getid() ;
 
-    if (report_string) {
-        gr_con_printf ("[STRING] String %d created: \"%s\"\n", id, str) ;
-    }
+        if (report_string)
+                gr_con_printf ("[STRING] String %d created: \"%s\"\n", id, str) ;
 
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-    return id ;
+	string_ptr[id] = str ;
+	string_uct[id] = 0 ;
+        string_dontfree[id] = 0 ;
+	return id ;
 }
 
 /*
@@ -398,32 +357,27 @@ int string_new (const char * ptr)
  *  Create a new string from a text buffer section
  *
  *  PARAMS:
- *              ptr         Pointer to the text buffer at start position
- *              count       Number of characters
+ *		ptr				Pointer to the text buffer at start position
+ *		count			Number of characters
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      ID of the new string
  */
 
 int string_newa (const char * ptr, unsigned count)
 {
-    char * str = malloc(count+1);
-    int    id ;
+	char * str = malloc(count+1);
+	int    id ;
 
-    assert (str) ;
-    id = string_getid() ;
+	assert (str) ;
+	id = string_getid() ;
 
-    strncpy (str, ptr, count);
-    str[count] = 0;
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
+	strncpy (str, ptr, count);
+	str[count] = 0;
+	string_ptr[id] = str ;
+	string_uct[id] = 0 ;
     string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (newa) String %d created: \"%s\"\n", id, str) ;
-    }
-
-    return id ;
+	return id ;
 }
 
 /****************************************************************************/
@@ -435,20 +389,20 @@ int string_newa (const char * ptr, unsigned count)
 
 int string_concat (int code1, char * str2)
 {
-    char * str1 ;
+	char * str1 ;
 
-    assert (code1 < string_count && code1 >= 0) ;
+	assert (code1 < string_count && code1 >= 0) ;
 
-    str1 = string_ptr[code1] ;
-    assert (str1) ;
+        str1 = string_ptr[code1] ;
+	assert (str1) ;
 
-    str1 = (char *) realloc(str1, strlen(str1) + strlen(str2) + 1) ;
-    assert (str1) ;
+	str1 = (char *) realloc(str1, strlen(str1) + strlen(str2) + 1) ;
+	assert (str1) ;
 
-    strcat (str1, str2) ;
+	strcat (str1, str2) ;
 
-    string_ptr[code1] = str1 ;
-    return code1 ;
+	string_ptr[code1] = str1 ;
+	return code1 ;
 }
 
 /****************************************************************************/
@@ -460,30 +414,24 @@ int string_concat (int code1, char * str2)
 
 int string_add (int code1, int code2)
 {
-    const char * str1 = string_get(code1) ;
-    const char * str2 = string_get(code2) ;
-    char * str3 ;
-    int id ;
+	const char * str1 = string_get(code1) ;
+	const char * str2 = string_get(code2) ;
+	char * str3 ;
+	int id ;
 
-    assert (str1) ;
-    assert (str2) ;
+	assert (str1) ;
+	assert (str2) ;
 
-    str3 = (char *) malloc(strlen(str1) + strlen(str2) + 1) ;
-    assert (str3) ;
+	str3 = (char *) malloc(strlen(str1) + strlen(str2) + 1) ;
+	assert (str3) ;
 
-    strcpy (str3, str1) ;
-    strcat (str3, str2) ;
-    id = string_getid() ;
+	strcpy (str3, str1) ;
+	strcat (str3, str2) ;
+	id = string_getid() ;
 
-    string_ptr[id] = str3 ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (add) String %d created: \"%s\"\n", id, str3) ;
-    }
-
-    return id ;
+	string_ptr[id] = str3 ;
+	string_uct[id] = 0 ;
+	return id ;
 }
 
 /****************************************************************************/
@@ -494,24 +442,18 @@ int string_add (int code1, int code2)
 
 int string_ptoa (void * n)
 {
-    char * str ;
-    int id ;
+	char * str ;
+	int id ;
 
-    str = (char *) malloc(64) ;
-    assert (str)  ;
+	str = (char *) malloc(64) ;
+	assert (str)  ;
 
-    sprintf (str, "%p", n) ;
+	sprintf (str, "%p", n) ;
 
-    id = string_getid() ;
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (ptoa) String %d created: \"%s\"\n", id, str) ;
-    }
-
-    return id ;
+	id = string_getid() ;
+	string_ptr[id] = str ;
+	string_uct[id] = 0 ;
+	return id ;
 }
 
 /****************************************************************************/
@@ -522,32 +464,26 @@ int string_ptoa (void * n)
 
 int string_ftoa (float n)
 {
-    char * str, * ptr ;
-    int id ;
+	char * str, * ptr ;
+	int id ;
 
-    str = (char *) malloc(64) ;
-    assert (str)  ;
+	str = (char *) malloc(64) ;
+	assert (str)  ;
 
-    sprintf (str, "%f", n) ;
-    ptr = str + strlen(str) - 1 ;
-    while (ptr >= str)
-    {
-        if (*ptr != '0') break ;
-        *ptr-- = 0 ;
-    }
-    if (ptr >= str && *ptr == '.') *ptr = 0 ;
-    if (*str == 0) strcpy (str, "0") ;
+	sprintf (str, "%f", n) ;
+	ptr = str + strlen(str) - 1 ;
+	while (ptr >= str)
+	{
+		if (*ptr != '0') break ;
+		*ptr-- = 0 ;
+	}
+	if (ptr >= str && *ptr == '.') *ptr = 0 ;
+	if (*str == 0) strcpy (str, "0") ;
 
-    id = string_getid() ;
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (ftoa) String %d created: \"%s\"\n", id, str) ;
-    }
-
-    return id ;
+	id = string_getid() ;
+	string_ptr[id] = str ;
+	string_uct[id] = 0 ;
+	return id ;
 }
 
 /****************************************************************************/
@@ -558,52 +494,18 @@ int string_ftoa (float n)
 
 int string_itoa (int n)
 {
-    char * str ;
-    int id ;
+	char * str ;
+	int id ;
 
-    str = (char *) malloc(32) ;
-    assert (str)  ;
+	str = (char *) malloc(32) ;
+	assert (str)  ;
 
-    sprintf (str, "%d", n) ;
+	sprintf (str, "%d", n) ;
 
-    id = string_getid() ;
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (itoa) String %d created: \"%s\"\n", id, str) ;
-    }
-
-    return id ;
-}
-
-/****************************************************************************/
-/* FUNCTION : string_uitoa                                                  */
-/****************************************************************************/
-/* Convert an unsigned integer to a new created string and return its ID.   */
-/****************************************************************************/
-
-int string_uitoa (unsigned int n)
-{
-    char * str ;
-    int id ;
-
-    str = (char *) malloc(32) ;
-    assert (str)  ;
-
-    sprintf (str, "%u", n) ;
-
-    id = string_getid() ;
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (uitoa) String %d created: \"%s\"\n", id, str) ;
-    }
-
-    return id ;
+	id = string_getid() ;
+	string_ptr[id] = str ;
+	string_uct[id] = 0 ;
+	return id ;
 }
 
 /****************************************************************************/
@@ -614,10 +516,10 @@ int string_uitoa (unsigned int n)
 
 int string_comp (int code1, int code2)
 {
-    const char * str1 = string_get(code1) ;
-    const char * str2 = string_get(code2) ;
+	const char * str1 = string_get(code1) ;
+	const char * str2 = string_get(code2) ;
 
-    return strcmp (str1, str2) ;
+	return strcmp (str1, str2) ;
 }
 
 /****************************************************************************/
@@ -632,26 +534,21 @@ int string_comp (int code1, int code2)
 
 int string_char (int n, int nchar)
 {
-    const char * str = string_get(n) ;
-    int          len ;
-    char buffer[2] ;
+	const char * str = string_get(n) ;
+	int          len ;
+	char buffer[2] ;
 
-    assert (str) ;
-    len = strlen(str) ;
-
-    if (nchar >= len)
-        nchar = len ;
-
-    if (nchar < 0)
-        nchar = len + nchar ;
-
-    if (nchar < 0)
-        nchar = len ;
-
-    buffer[0] = str[nchar] ;
-    buffer[1] = 0 ;
-
-    return string_new (buffer) ;
+	assert (str) ;
+	len = strlen(str) ;
+	if (nchar >= len)
+		nchar = len ;
+	if (nchar < 0)
+		nchar = len + nchar ;
+	if (nchar < 0)
+		nchar = len ;
+	buffer[0] = str[nchar] ;
+	buffer[1] = 0 ;
+	return string_new (buffer) ;
 }
 
 /****************************************************************************/
@@ -660,46 +557,38 @@ int string_char (int n, int nchar)
 /* Extract a substring from a string. The parameters can be:                */
 /* - 0 or positive: count this character from the left (0 = leftmost)       */
 /* - negative: count this character from the right (-1 = rightmost)         */
-/*                                                                          */
-/* NO MORE: If first > last, the two values are swapped before returning the result  */
+/* If first > last, the two values are swapped before returning the result  */
 /****************************************************************************/
 
-int string_substr (int code, int first, int len)
+int string_substr (int code, int first, int last)
 {
-    const char * str = string_get(code) ;
-    char       * ptr ;
-    int          rlen, n ;
+	const char * str = string_get(code) ;
+	char       * ptr ;
+	int          len, n ;
 
-    assert (str) ;
-    rlen = strlen(str) ;
+	assert (str) ;
+	len = strlen(str) ;
+	if (first < 0) first = len + first ;
+	if (last  < 0) last  = len + last ;
+	if (first < 0) first = 0 ;
+	if (last  < 0) { return string_new("") ; }
+	if (first > len) first = len ;
+	if (last  > len) last  = len ;
+	if (first > last)
+	{
+		n = first ;
+		first = last ;
+		last = n ;
+	}
 
-    if (first < 0) first = rlen + first ;
-    if (first < 0) first = 0 ;
-    if (first > (rlen - 1)) return string_new("") ;
-
-    if (len < 0) {
-        len = rlen + (len + 2) - first - 1 ;
-        if (len < 1) return string_new("") ;
-    }
-
-    if ((first + len) > rlen) len = (rlen - first) ;
-
-    ptr = (char *)malloc(len+1) ;
-    memcpy (ptr, str + first, len) ;
-    ptr[len]            = 0 ;
-
-    n                   = string_getid() ;
-    string_ptr[n]       = ptr ;
-    string_uct[n]       = 0 ;
-    string_dontfree[n]  = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (substr) String %d created: \"%s\"\n", n, ptr) ;
-    }
-
-    return n ;
+	ptr = (char *)malloc(last-first+2) ;
+	n   = string_getid() ;
+	memcpy (ptr, str+first, last-first+1) ;
+	ptr[last-first+1] = 0 ;
+	string_ptr[n]   = ptr ;
+	string_uct[n]   = 0 ;
+	return n ;
 }
-
 
 /*
  *  FUNCTION : string_find
@@ -708,41 +597,41 @@ int string_substr (int code, int first, int len)
  *  for the leftmost position) or -1 if the string was not found.
  *
  *  PARAMS:
- *              code1                   Code of the string
- *              code2                   Code of the substring
- *              first                   Character to start the search
- *                                      (negative to search backwards)
+ *		code1			Code of the string
+ *		code2			Code of the substring
+ *		first			Character to start the search
+ *						(negative to search backwards)
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Result of the comparison
  */
 
 int string_find (int code1, int code2, int first)
 {
-    const char * str1 = string_get(code1) ;
-    const char * str2 = string_get(code2) ;
-    int pos, len1, len ;
+	const char * str1 = string_get(code1) ;
+	const char * str2 = string_get(code2) ;
+	int pos, len1, len ;
 
-    assert (str1 && str2) ;
-    len1 = strlen(str1);
-    len = strlen(str2) ;
+	assert (str1 && str2) ;
+	len1 = strlen(str1);
+	len = strlen(str2) ;
 
-    pos = first;
-    if (pos < 0)
-    {
-        pos = len1 + pos;
-        if (pos < 0)
-            pos = 0;
-    }
-    if (pos > len1)
-        pos = len1;
+	pos = first;
+	if (pos < 0)
+	{
+		pos = len1 + pos;
+		if (pos < 0)
+			pos = 0;
+	}
+	if (pos > len1)
+		pos = len1;
 
-    for ( ; str1[pos] && pos >= 0 ; first >= 0 ? pos++ : pos--)
-    {
-        if (memcmp(str1+pos, str2, len) == 0)
-            return pos ;
-    }
-    return -1 ;
+	for ( ; str1[pos] && pos >= 0 ; first >= 0 ? pos++ : pos--)
+	{
+		if (memcmp(str1+pos, str2, len) == 0)
+			return pos ;
+	}
+	return -1 ;
 }
 
 /*
@@ -752,36 +641,29 @@ int string_find (int code1, int code2, int first)
  *  creates a new string in the correct case and returns its id.
  *
  *  PARAMS:
- *              code                    Internal code of original string
+ *		code			Internal code of original string
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Code of the resulting string
  */
 
 int string_ucase (int code)
 {
-    const char * str = string_get(code) ;
-    char       * bptr, * ptr ;
-    int          id ;
+	const char * str = string_get(code) ;
+	char       * bptr, * ptr ;
+	int          id ;
 
-    assert (str) ;
-    bptr = (char *)malloc(strlen(str)+1) ;
-    assert (bptr) ;
+	assert (str) ;
+	bptr = (char *)malloc(strlen(str)+1) ;
+	assert (bptr) ;
 
-    for (ptr = bptr; *str ; ptr++, str++)
-        *ptr = TOUPPER(*str) ;
-
-    *ptr = 0 ;
-    id = string_getid() ;
-    string_ptr[id] = bptr ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (ucase) String %d created: \"%s\"\n", id, bptr) ;
-    }
-
-    return id ;
+	for (ptr = bptr; *str ; ptr++, str++) 
+		*ptr = TOUPPER(*str) ;
+	*ptr = 0 ;
+	id = string_getid() ;
+	string_ptr[id] = bptr ;
+	string_uct[id] = 0 ;
+	return id ;
 }
 
 /*
@@ -791,73 +673,62 @@ int string_ucase (int code)
  *  creates a new string in the correct case and returns its id.
  *
  *  PARAMS:
- *              code                    Internal code of original string
+ *		code			Internal code of original string
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Code of the resulting string
  */
 
 int string_lcase (int code)
 {
-    const char * str = string_get(code) ;
-    char       * bptr, * ptr ;
-    int          id ;
+	const char * str = string_get(code) ;
+	char       * bptr, * ptr ;
+	int          id ;
 
-    assert (str) ;
-    bptr = (char *)malloc(strlen(str)+1) ;
-    assert (bptr) ;
+	assert (str) ;
+	bptr = (char *)malloc(strlen(str)+1) ;
+	assert (bptr) ;
 
-    for (ptr = bptr; *str ; ptr++, str++)
-        *ptr = TOLOWER(*str) ;
-
-    *ptr = 0 ;
-    id = string_getid() ;
-    string_ptr[id] = bptr ;
-    string_uct[id] = 0 ;
-    string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (lcase) String %d created: \"%s\"\n", id, bptr) ;
-    }
-
-    return id ;
+	for (ptr = bptr; *str ; ptr++, str++) 
+		*ptr = TOLOWER(*str) ;
+	*ptr = 0 ;
+	id = string_getid() ;
+	string_ptr[id] = bptr ;
+	string_uct[id] = 0 ;
+	return id ;
 }
 
 /*
  *  FUNCTION : string_strip
  *
- *  Create a copy of a string, without any leading or ending blanks
+ *  Create a copy of a string, without any leading or ending blanks 
  *
  *  PARAMS:
- *              code                    Internal code of original string
+ *		code			Internal code of original string
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Code of the resulting string
  */
 
 int string_strip (int code)
 {
-    const char * ptr = string_get(code) ;
-    char *       ostr;
-    char *       bptr;
-    int          id = string_new(ptr);
+	const char * ptr = string_get(code) ;
+	char *       ostr;
+	char *       bptr;
+	int          id = string_new(ptr);
 
-    ostr = (char *)string_get(id) ;
-    bptr = ostr;
-    assert (bptr);
+	ostr = (char *)string_get(id) ;
+	bptr = ostr;
+	assert (bptr);
 
-    while (*ptr == ' ' || *ptr == '\n' || *ptr == '\r' || *ptr == '\t')
-        ptr++;
-
-    while (*ptr)
-        *bptr++ = *ptr++;
-
-    while (bptr > ostr && (bptr[-1] == ' ' || bptr[-1] == '\n' || bptr[-1] == '\r' || bptr[-1] == '\t'))
-        bptr--;
-
-    *bptr = 0;
-
-    return id ;
+	while (*ptr == ' ' || *ptr == '\n' || *ptr == '\r' || *ptr == '\t') 
+		ptr++;
+	while (*ptr) 
+		*bptr++ = *ptr++;
+	while (bptr > ostr && (bptr[-1] == ' ' || bptr[-1] == '\n' || bptr[-1] == '\r' || bptr[-1] == '\t')) 
+		bptr--;
+	*bptr = 0;
+	return id ;
 }
 
 /*
@@ -866,67 +737,67 @@ int string_strip (int code)
  *  Format a number using the given characters
  *
  *  PARAMS:
- *              number                  Number to format
- *              spec                    Format specification
+ *		number			Number to format
+ *		spec			Format specification
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Code of the resulting string
  */
 
 int string_format (double number, int dec, char point, char thousands)
 {
-    char buffer[128];
-    char buffer2[256];
-    char * s, * t;
-    int c;
+	char buffer[128];
+	char buffer2[256];
+	char * s, * t;
+	int c;
 
-    int negative = 0;
+	int negative = 0;
 
-    if (number < 0)
-    {
-        negative = 1;
-//        number = -number;
-    }
+	if (number < 0)
+	{
+		negative = 1;
+		number = -number;
+	}
 
-    sprintf (buffer, "%.*f", dec, number);
-    s = buffer + strlen(buffer)-1;
-    t = buffer2 + 127;
-    *t-- = 0;
-    if (strchr (buffer, '.'))
-    {
-        if (dec < 0)
-        {
-            while (*s == '0' && s >= buffer)
-                s--;
-            if (*s == '.')
-                *s-- = 0;
-        }
-        if (strchr (buffer, '.'))
-        {
-            while (s >= buffer)
-            {
-                if (*s == '.')
-                {
-                    *t-- = point;
-                    s--;
-                    break;
-                }
-                *t-- = *s--;
-            }
-        }
-    }
-    c = 0;
-    while (s >= buffer)
-    {
-        *t-- = *s-- ;
-        if (c == 2 && s >= buffer)
-        {
-            *t-- = thousands ;
-            c = 0;
-        }
-        else c++;
-    }
-    return string_new (t+1);
+	sprintf (buffer, "%.*f", dec, number);
+	s = buffer + strlen(buffer)-1;
+	t = buffer2 + 127;
+	*t-- = 0;
+	if (strchr (buffer, '.'))
+	{
+		if (dec < 0)
+		{
+			while (*s == '0' && s >= buffer) 
+				s--;
+			if (*s == '.')
+				*s-- = 0;
+		}
+		if (strchr (buffer, '.'))
+		{
+			while (s >= buffer)
+			{
+				if (*s == '.')
+				{
+					*t-- = point;
+					s--;
+					break;
+				}
+				*t-- = *s--;
+			}
+		}
+	}
+	c = 0;
+	while (s >= buffer)
+	{
+		*t-- = *s-- ;
+		if (c == 2 && s >= buffer)
+		{
+			*t-- = thousands ;
+			c = 0;
+		}
+		else c++;
+	}
+	return string_new (t+1);
 }
 
 /*
@@ -935,28 +806,26 @@ int string_format (double number, int dec, char point, char thousands)
  *  Compare two strings (case-insensitive version)
  *
  *  PARAMS:
- *              code1                   Code of the first string
- *              code2                   Code of the second string
+ *		code1			Code of the first string
+ *		code2			Code of the second string
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Result of the comparison
  */
 
 int string_casecmp (int code1, int code2)
 {
-    const unsigned char * str1 = string_get(code1) ;
-    const unsigned char * str2 = string_get(code2) ;
+	const unsigned char * str1 = string_get(code1) ;
+	const unsigned char * str2 = string_get(code2) ;
 
-    while (*str1 || *str2)
-    {
-        if (TOUPPER(*str1) != TOUPPER(*str2))
-            return TOUPPER(*str1) - TOUPPER(*str2);
-
-        str1++;
-        str2++;
-    }
-
-    return 0 ;
+	while (*str1 || *str2)
+	{
+		if (TOUPPER(*str1) != TOUPPER(*str2))
+			return TOUPPER(*str1) - TOUPPER(*str2);
+		str1++;
+		str2++;
+	}
+	return 0 ;
 }
 
 /*
@@ -965,53 +834,48 @@ int string_casecmp (int code1, int code2)
  *  Add spaces to the left or right of a string
  *
  *  PARAMS:
- *              code                    Code of the string
- *              total                   Total length of the final string
- *              align                   0 = align to the right; 1 = align to the left
+ *		code			Code of the string
+ *		total			Total length of the final string
+ *		align			0 = align to the right; 1 = align to the left
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Result of the comparison
  */
 
 int string_pad (int code, int total, int align)
 {
-    const char * ptr = string_get(code);
+	const char * ptr = string_get(code);
 
-    int    len;
-    int    spaces = 0;
-    int    id;
-    char * str;
+	int    len;
+	int    spaces = 0;
+	int    id;
+	char * str;
 
-    assert(ptr);
-    len = strlen(ptr);
-    if (len < total)
-        spaces = total - len;
+	assert(ptr);
+	len = strlen(ptr);
+	if (len < total)
+		spaces = total - len;
 
-    if (!spaces) return string_new(ptr) ;
+	if (!spaces) return string_new(ptr) ;
 
-    str = malloc(total+1);
-    assert (str);
+	str = malloc(total+1);
+	assert (str);
 
-    if (!align)
-    {
-        memset (str, ' ', spaces);
-        strcpy (str + spaces, ptr) ;
-    }
-    else
-    {
-        strcpy (str, ptr) ;
-        memset (str + len, ' ', spaces) ;
-        str[total] = 0;
-    }
+	if (!align)
+	{
+		memset (str, ' ', spaces);
+		strcpy (str + spaces, ptr) ;
+	}
+	else
+	{
+		strcpy (str, ptr) ;
+		memset (str + len, ' ', spaces) ;
+		str[total] = 0;
+	}
 
-    id = string_getid() ;
-    string_ptr[id] = str ;
-    string_uct[id] = 0 ;
+	id = string_getid() ;
+	string_ptr[id] = str ;
+	string_uct[id] = 0 ;
     string_dontfree[id] = 0 ;
-
-    if (report_string){
-        gr_con_printf ("[STRING] (pad) String %d created: \"%s\"\n", id, str) ;
-    }
-
-    return id ;
+	return id ;
 }

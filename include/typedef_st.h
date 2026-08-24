@@ -1,27 +1,19 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
- *  Copyright Â© 2002 Fenix Team
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #ifndef __TYPEDEF_ST_H
@@ -32,20 +24,14 @@
 typedef enum {
 	TYPE_UNDEFINED = 0,
 
-	TYPE_INT	 = 1,
-	TYPE_DWORD   = 2,
-	TYPE_SHORT	 = 3,
-	TYPE_WORD	 = 4,
-	TYPE_SBYTE	 = 5,
-	TYPE_BYTE	 = 6,
-
-	TYPE_CHAR    = 8,
-	TYPE_FLOAT	 = 9,
-
+	TYPE_DWORD   = 1,
+	TYPE_WORD,
+	TYPE_BYTE,
+	TYPE_FLOAT   = 8,
 	TYPE_STRING  = 16,
-	TYPE_ARRAY	 = 17,
-	TYPE_STRUCT	 = 18,
-	TYPE_POINTER = 19
+	TYPE_ARRAY,
+	TYPE_STRUCT,
+	TYPE_POINTER
 }
 BASETYPE ;
 
@@ -76,6 +62,5 @@ TYPEDEF ;
 #define typedef_count(t)        (t.chunk[0].count)
 #define typedef_base(t)         (t.chunk[0].type)
 #define typedef_members(t)      (t.varspace)
-#define typedef_is_unsigned(t)	(t.chunk[0].type <= 8 && !(t.chunk[0].type & 1))
 
 #endif

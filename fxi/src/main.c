@@ -1,7 +1,7 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
+ *  Last stable release   : 
  *  Project documentation : http://fenix.divsite.net
  *
  *
@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright © 1999 José Luis Cebrián Pagüe
@@ -36,64 +36,24 @@
  * INCLUDES
  */
 
-#ifdef TARGET_BEOS
-#include <posix/assert.h>
-#else
 #include <assert.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <SDL.h>
 #include "fxi.h"
 #include "font.h"
 #include "dcb.h"
 
-/* os versions */
-#ifdef WIN32
-	#define OS_ID 0
-#endif
-#ifdef TARGET_Linux
-	#define OS_ID 1
-#endif
-#ifdef TARGET_BEOS
-	#define OS_ID 2
-#endif
-#ifdef TARGET_MAC
-	#define OS_ID 3
-#endif
-#ifdef TARGET_GP32
-	#define OS_ID 4
-#endif
-#ifdef TARGET_DC
-	#define OS_ID 5
-#endif
-#ifdef TARGET_BSD
-	#define OS_ID 6
-#endif
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#define DCB_MAGIC	"DCB Stub\x1A\x0D\x0A"
 /*
  *  GLOBAL VARIABLES
  */
 
-int debug	 = 0;		/* 1 if running in debug mode					 */
-int fxi		 = 0;		/* 1 only if this is an standalone interpreter   */
-int embedded = 0;		/* 1 only if this is a stub with an embedded DCB */
-
-#ifdef TARGET_MAC
-    int current_file = 0;
-    char files[][256];
-#endif
+int debug = 0 ;		/* EXTERN defined in fxi.h */
+int fxi   = 0 ;		/* EXTERN defined in fxi.h */
 
 extern int full_screen, double_buffer ;
-extern char *apptitle;
-
 
 /*
  *  FUNCTION : do_exit
@@ -103,7 +63,7 @@ extern char *apptitle;
  *  PARAMS:
  *      INT n: ERROR LEVEL to return to OS
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      No value
  *
  */
@@ -111,13 +71,8 @@ extern char *apptitle;
 void
 do_exit(int n)
 {
-    int i;
-
-	if (keytab_initialized) keytab_free() ;
-
-	for (i=0;i<MAX_JOYS;i++)
-	    if (_joysticks[i]!=NULL) SDL_JoystickClose(_joysticks[i]) ;
-
+	if (keytab_initialized) keytab_free() ;	
+	if (selected_joystick!=NULL) SDL_JoystickClose(selected_joystick) ;
 	SDL_Quit() ;
 	exit(n) ;
 }
@@ -130,121 +85,67 @@ do_exit(int n)
  *  PARAMS:
  *      INT n: ERROR LEVEL to return to OS
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      No value
  *
  */
 
-int main (int argc, char **argv)
+main (int argc, char **argv)
 {
-	char *				filename = 0 ;
-	char				dcbname[256] ;
-	INSTANCE *			mainproc_running ;
-	int					i, j ;
-	int					norun = 0 ;
+	char * filename = 0 ;
+	char dcbname[256] ;
+	INSTANCE * mainproc_running ;
+	int i, j ;
+	int norun = 0 ;
 	const SDL_version * sdl_version ;
-	char *				ptr ;
-	file *				fp = NULL;
+	char * ptr ;
 
-	struct
-	{
-		char	magic[12];
-		int		dcb_offset;
-	}
-	dcb_signature;
+    gr_con_printf ("¬15" VERSION) ;
 
 	/* Find out if we are calling fxi.exe or whatever.exe */
-
  	ptr = argv[0] + strlen(argv[0]) ;
- 	while (ptr > argv[0] && ptr[-1] != '\\' && ptr[-1] != '/')
+ 	while (ptr > argv[0] && ptr[-1] != '\\' && ptr[-1] != '/') 
  		ptr-- ;
  	fxi = (strncmp(ptr,"fxi",3) == 0) || (strncmp(ptr,"FXI",3) == 0) ;
-
+ 
 	/* Init RAND generator */
-
 	srand (time(NULL)) ;
 
-	/* Init SDL */
-
-	if ( SDL_Init (SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_CDROM) < 0 )
-	{
+	/* Init SDL info */
+	if ( SDL_Init (SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_CDROM) < 0 ) {
 		printf ("SDL Init Error: %s\n", SDL_GetError()) ;
 		do_exit(1) ;
 	}
 
-	SDL_JoystickEventState (SDL_ENABLE) ;
-
-    gr_con_printf ("\xAC" "15" FXI_VERSION) ;
-
-	if (fxi)
-	{
-		/* Standalone interpreter, dump some info */
-
+	if (fxi) {
+		/* we are calling FXI.EXE */
 		sdl_version = SDL_Linked_Version();
-		gr_con_printf ("\xAC" "14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)",
+		gr_con_printf ("¬14SDL: %d.%d.%d (DLL loaded: %d.%d.%d)", 
 				SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL,
 				sdl_version->major, sdl_version->minor, sdl_version->patch) ;
 	}
-	else
-	{
-		/* Hand-made interpreter: search for DCB at EOF */
 
-		if (!file_exists(argv[0]))
-		{
-#ifdef WIN32
-			char   exepath[MAX_PATH];
+	SDL_JoystickEventState (SDL_ENABLE) ;
 
-			GetModuleFileName(NULL, exepath, sizeof(exepath));
-			fp = file_open(exepath, "rb0");
-#endif
-		}
-		else
-			fp = file_open(argv[0], "rb0");
-
-		if (fp != NULL)
-		{
-			file_seek (fp, -(int)sizeof(dcb_signature), SEEK_END);
-			file_read (fp, &dcb_signature, sizeof(dcb_signature));
-
-			if (strcmp(dcb_signature.magic, DCB_MAGIC) == 0)
-			{
-				ARRANGE_DWORD (&dcb_signature.dcb_offset);
-
-				filename = argv[0];
-				embedded = 1;
-			}
-		}
-
-		if (!embedded)
-		{
-			/* No embedded DCB; search for a DCB with similar name */
-
-			filename = ptr ;
-	 		while (*ptr && *ptr != '.') ptr++ ;
-	 		*ptr = 0 ;
-		}
-	}
-
- 	if (fxi)
-	{
+ 	if (!fxi) {
+		/* calling WHATEVER.EXE must guess DCB/DAT filename */
+ 		filename = ptr ;
+ 		while (*ptr != '.') ptr++ ;
+ 		*ptr = 0 ;
+	} else {
 		/* Calling FXI.EXE so we must get all command line params */
-
-		for (i = 1 ; i < argc ; i++)
-		{
-			if (argv[i][0] == '-')
-			{
+		for (i = 1 ; i < argc ; i++) {
+			if (argv[i][0] == '-') {
 				j = 1 ;
-				while (argv[i][j])
-				{
+				while (argv[i][j]) {
+#ifdef DEBUG
 					if (argv[i][j] == 'd') debug = 1 ;
+#endif
 					if (argv[i][j] == 'r') norun = 1 ;
 					//if (argv[i][j] == 'b') double_buffer = 1 ;
 					if (argv[i][j] == 'f') enable_filtering = 1 ;
-
-					if (argv[i][j] == 'i')
-					{
-						if (argv[i][j+1] == 0)
-						{
+					if (argv[i][j] == 'i') {
+						if (argv[i][j+1] == 0) {
 							if (i == argc-1)
 								gr_error ("You must provide a directory") ;
 							file_addp (argv[i+1]);
@@ -256,11 +157,8 @@ int main (int argc, char **argv)
 					}
 					j++ ;
 				}
-			}
-			else
-			{
-				if (!filename)
-				{
+			} else {
+				if (!filename) {
 					filename = argv[i] ;
 					if (i < argc-1)
 						memmove (&argv[i], &argv[i+1],
@@ -271,13 +169,16 @@ int main (int argc, char **argv)
 			}
 		}
 
-		if (!filename)
-		{
-			gr_error ( FXI_VERSION "\nCopyright(C) 2002 Fenix Team\nCopyright(C) 1999 Jose Luis Cebrian\n"
+		if (!filename) {
+			gr_error (VERSION "\nCopyright(C) 2002 Fenix Team\nCopyright (C)1999 Jose Luis Cebrian\n"
 				"Fenix comes with ABSOLUTELY NO WARRANTY; see COPYING for details\n\n"
 				"Usage: %s [options] file.dcb\n\n"
+#ifdef DEBUG
 				"   -d       Activate DEBUG mode\n"
+#endif
+//				"   -w       Execute in WINDOWED mode\n"
 				"   -f       16bpp Filter ON (only 16bpp color mode)\n"
+//				"   -b       Double buffer ON\n\n"
 				"This program is free software dsitributed under.\n\n"
 				"GNU General Public License published by Free Software Foundation.\n"
 				"Permission granted to distribute and/or modify as stated in the license\n"
@@ -293,56 +194,41 @@ int main (int argc, char **argv)
 	gprof_init () ;
 	string_init () ;
 	init_c_type() ;
-
+	
 	/* Init application title for windowed modes */
-
 	strcpy (dcbname, filename) ;
 	apptitle = strdup(filename) ;
 
-#ifdef TARGET_MAC
-        strcpy (files[current_file], filename);
-#endif
-
-	if (!embedded)
+	if (!file_exists(dcbname))
 	{
-		/* First try to load directly (we expect fxi myfile.dcb) */
-		if (!dcb_load(dcbname))
-		{
-			/* not successful... try for DCB */
+		/* Hack: con FXI renombrado, se permite que el fichero
+		 * de datos tenga una extensión .DAT en vez de .DCB */
 
-			strcat (dcbname, ".dcb") ;
-
-			if (!dcb_load(dcbname))
-			{
-				/* not successful... try for DAT */
-
-				strcpy (dcbname, filename) ;
- 				strcat (dcbname, ".dat") ;
-
-				if (!dcb_load(dcbname))
-				{
-					gr_error ("%s: no existe o no es un DCB version %d o compatible", filename, DCB_VERSION >> 8) ;
-					return -1 ;
-				}
-			}
-		}
+ 		if (!fxi)
+ 		{
+ 			strcat (dcbname, ".dat") ;
+ 			if (!file_exists(dcbname))
+ 			{
+ 				strcpy (dcbname, filename) ;
+ 				strcat (dcbname, ".dcb") ;
+ 			}
+ 		}
+ 		else
+ 		{
+ 			strcat (dcbname, ".dcb") ;
+ 		}
 	}
-	else
-	{
-		dcb_load_from(fp, dcb_signature.dcb_offset);
-/*		file_close (fp); */
-	}
+
+	if (!dcb_load (dcbname))
+		return -1 ;
 
 	/* If the dcb is not in debug mode, switch off the profiler */
 
-	if (dcb.data.NID == 0)
-	{
+	if (dcb.NID == 0)
 		gprof_toggle();
-		debug = 0;
-	}
 
 	/* Initialization (modules needed after dcb_load) */
-
+	
 	fnc_init();
 	#ifdef MMX_FUNCTIONS
 		MMX_init();
@@ -360,7 +246,7 @@ int main (int argc, char **argv)
 		string_use (*ptr) ;
 	}
 	GLODWORD(ARGC) = argc-1 ;
-	GLODWORD(FXI_OS) = OS_ID ;
+
 	if (mainproc)
 	{
 		mainproc_running = instance_new (mainproc, 0) ;
@@ -374,3 +260,4 @@ int main (int argc, char **argv)
 	do_exit(0);
 	return 0;
 }
+

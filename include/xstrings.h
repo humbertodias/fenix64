@@ -1,7 +1,7 @@
 /****************************************************************************/
 /*                                                                          */
 /* Fenix - Videogame compiler/interpreter                                   */
-/* Current release       : PROJECT 1.0 - 0.84                               */
+/* Current release       : PROJECT 1.0 - 0.76                               */
 /* Last stable release   :                                                  */
 /* Project documentation : http://fenix.divsite.net                         */
 /*                                                                          */
@@ -22,8 +22,8 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA */
 /*                                                                          */
 /****************************************************************************/
-/* Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e                                 */
-/* Copyright Â© 2002 FENIX PROJECT 1.0 TEAM                                  */
+/* Copyright © 1999 José Luis Cebrián Pagüe                                 */
+/* Copyright © 2002 FENIX PROJECT 1.0 TEAM                                  */
 /****************************************************************************/
 
 /****************************************************************************/
@@ -55,13 +55,12 @@ extern void         string_discard (int code) ;
 extern int          string_add     (int code1, int code2) ;
 extern int          string_compile (const char * * source) ;
 extern int          string_itoa    (int n) ;
-extern int          string_uitoa   (unsigned int n) ;
 extern int          string_ftoa    (float n) ;
 extern int          string_ptoa    (void * n) ;
 extern int          string_comp    (int code1, int code2) ;
 extern int          string_casecmp (int code1, int code2) ;
 extern int          string_char    (int n, int nchar) ;
-extern int          string_substr  (int code, int first, int len) ;
+extern int          string_substr  (int code, int first, int last) ;
 extern int          string_find    (int code1, int code2, int first) ;
 extern int          string_ucase   (int code1) ;
 extern int          string_lcase   (int code1) ;

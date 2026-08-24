@@ -1,28 +1,3 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
- *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
- */
 
 /* ------------------------------------------ */
 /* Offsets de los datos globales predefinidos */
@@ -45,7 +20,7 @@
 
 #define SCROLLS			4*14
 
-			/* Siguen 10 estructuras scroll de tamaño 20 */
+			/* Siguen 10 estructuras scroll de tama�o 20 */
 
 #define JOYLEFT			4*214
 #define JOYRIGHT		4*215
@@ -80,7 +55,7 @@
 
 #define M7STRUCTS		4*250
 
-			/* Siguen 10 estructuras de tamaño 10 */
+			/* Siguen 10 estructuras de tama�o 10 */
 
 /* Extras */
 
@@ -92,42 +67,24 @@
 #define SOUND_FREQ		4*355
 #define SOUND_MODE		4*356
 #define GRAPH_MODE		4*357
-#define SCALE_MODE		4*358
-#define ARGC			4*359
-#define ARGV_TABLE		4*360	/* 32+1 cadenas */
-#define SPEED_GAUGE		4*393
-#define FRAME_TIME		4*394
-#define REGEX_REG		4*395	/* 16 cadenas */
-#define ALPHA_STEPS		4*411
+#define ARGC			4*358
+#define ARGV_TABLE		4*359	/* 32+1 cadenas */
+#define SPEED_GAUGE		4*392
+#define FRAME_TIME		4*393
+#define REGEX_REG		4*394	/* 16 cadenas */
+#define ALPHA_STEPS		4*410
 
 /* FILEINFO struct */
-#define FILE_PATH		4*412
-#define FILE_NAME		4*413
-#define FILE_DIRECTORY	4*414
-#define FILE_HIDDEN		4*415
-#define FILE_READONLY	4*416
-#define FILE_SIZE		4*417
-#define FILE_CREATED	4*418
-#define FILE_MODIFIED	4*419
+#define FILE_PATH		4*411
+#define FILE_NAME		4*412
+#define FILE_DIRECTORY	4*413
+#define FILE_HIDDEN		4*414
+#define FILE_READONLY	4*415
+#define FILE_SIZE		4*416
+#define FILE_CREATED	4*417
+#define FILE_MODIFIED	4*418
 
-#define FULL_SCREEN		4*420
-
-#define EXIT_STATUS		4*421
-#define WINDOW_STATUS	4*422
-#define FOCUS_STATUS	4*423
-#define MOUSE_STATUS    4*424
-#define CD_TRACK		4*425
-#define CD_FRAME		4*426
-#define CD_TRACKS		4*427
-#define CD_MINUTE		4*428
-#define CD_SECOND		4*429
-#define CD_SUBFRAME		4*430
-#define CD_MINUTES      4*431
-#define CD_SECONDS		4*432
-#define CD_FRAMES		4*433
-#define CD_TRACKINFO	4*434			// 400 INTs
-#define FXI_OS			4*834
-#define SOUND_CHANNELS	4*835
+#define FULL_SCREEN		4*419
 
 /* ----------------------------------------- */
 /* Offsets de los datos locales predefinidos */
@@ -139,8 +96,6 @@
 #define TYPE_SCAN		4*3
 #define STATUS			4*4
 #define CHANGED         4*5
-#define XGRAPH_FLAGS	4*6
-#define SAVED_STATUS	4*7
 #define PREV_Z			4*8
 #define DISTANCE_1		4*9
 #define DISTANCE_2		4*10
@@ -160,30 +115,34 @@
 #define COORDY       	4*24
 #define COORDZ       	4*25
 #define GRAPHID 		4*26
-#define PALETTEID 		4*27
-#define FLAGS   		4*28
-#define GRAPHSIZE    	4*29
-#define ANGLE   		4*30
-#define REGIONID    	4*31
-#define FILEID  		4*32
-#define XGRAPH  		4*33
-#define HEIGHT  		4*34
-#define RESOLUTION		4*35
-#define ALPHA           4*36
-#define GRAPHSIZEX      4*37
-#define GRAPHSIZEY      4*38
-#define BLENDOP			4*39
-#define SAVED_X			4*40
-#define SAVED_Y			4*41
-#define SAVED_GRAPH		4*42
-#define SAVED_PALETTE	4*43
-#define SAVED_ANGLE		4*44
-#define SAVED_ALPHA		4*45
-#define SAVED_BLENDOP	4*46
-#define SAVED_SIZE		4*47
-#define SAVED_SIZEX		4*48
-#define SAVED_SIZEY		4*49
-#define SAVED_FLAGS		4*50
-#define SAVED_FILE		4*51
-#define SAVED_XGRAPH	4*52
-#define SAVED_PRIORITY  4*53
+#define FLAGS   		4*27
+#define GRAPHSIZE    	4*28
+#define ANGLE   		4*29
+#define REGIONID    	4*30
+#define FILEID  		4*31
+#define XGRAPH  		4*32
+#define HEIGHT  		4*33
+#define RESOLUTION		4*34
+#define ALPHA           4*35
+#define GRAPHSIZEX      4*36
+#define GRAPHSIZEY      4*37
+#define BLENDOP			4*38
+#define SAVED_X			4*49
+#define SAVED_Y			4*40
+#define SAVED_GRAPH		4*41
+#define SAVED_ANGLE		4*42
+#define SAVED_ALPHA		4*43
+#define SAVED_BLENDOP	4*44
+#define SAVED_SIZE		4*45
+#define SAVED_SIZEX		4*46
+#define SAVED_SIZEY		4*47
+#define SAVED_FLAGS		4*48
+
+/* Algunas definiciones comunes */
+
+#define STATUS_DEAD		0
+#define STATUS_KILLED	1
+#define STATUS_RUNNING	2
+#define STATUS_SLEEPING	3
+#define STATUS_FROZEN 	4
+

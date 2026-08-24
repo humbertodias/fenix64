@@ -1,27 +1,19 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <ctype.h>
@@ -29,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "xctype.h"
+#include <xctype.h>
 
 /* Tabla de conversión de caracteres MS-DOS a Windows */
 
@@ -147,15 +139,15 @@ void init_c_type ()
 	set_c_lower  ("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		      "abcdefghijklmnopqrstuvwxyz") ;
 #ifdef RESPETAR_ACENTOS
-	set_c_upper  ("\xE1\xE9\xED\xF3\xFA\xF1\xE7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5", 
-	              "\xC1\xC9\xCD\xD3\xDA\xD1\xC7\xC0\xC8\xCC\xD2\xD9\xC4\xCB\xCF\xD6\xDC\xDD\xC2\xCA\xCE\xD4\xDB\xC6\xC3\xC5\xD5") ;
-	set_c_lower  ("\xC1\xC9\xCD\xD3\xDA\xD1\xC7\xC0\xC8\xCC\xD2\xD9\xC4\xCB\xCF\xD6\xDC\xDD\xC2\xCA\xCE\xD4\xDB\xC6\xC3\xC5\xD5",
-		      "\xE1\xE9\xED\xF3\xFA\xF1\xE7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5") ;
+	set_c_upper  ("áéíóúñçàèìòùäëïöüýâêîôûæãåõ", 
+	              "ÁÉÍÓÚÑÇÀÈÌÒÙÄËÏÖÜÝÂÊÎÔÛÆÃÅÕ") ;
+	set_c_lower  ("ÁÉÍÓÚÑÇÀÈÌÒÙÄËÏÖÜÝÂÊÎÔÛÆÃÅÕ",
+		      "áéíóúñçàèìòùäëïöüýâêîôûæãåõ") ;
 #else
-	set_c_upper  ("\xE1\xE9\xED\xF3\xFA\xF1\xD1\xE7\xC7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5\xC1\xC9\xCD\xD3\xDA", 
-	              "AEIOUNNCCAEIOUAEIOUYAEIOU\xC6" "AAOAEIOU") ;
-	set_c_lower  ("\xE1\xE9\xED\xF3\xFA\xF1\xD1\xE7\xC7\xE0\xE8\xEC\xF2\xF9\xE4\xEB\xEF\xF6\xFC\xFD\xE2\xEA\xEE\xF4\xFB\xE6\xE3\xE5\xF5\xC1\xC9\xCD\xD3\xDA", 
-	              "aeiounnccaeiouaeiouyaeiou\xC6" "aaoaeiou") ;
+	set_c_upper  ("áéíóúñÑçÇàèìòùäëïöüýâêîôûæãåõÁÉÍÓÚ", 
+	              "AEIOUNNCCAEIOUAEIOUYAEIOUÆAAOAEIOU") ;
+	set_c_lower  ("áéíóúñÑçÇàèìòùäëïöüýâêîôûæãåõÁÉÍÓÚ", 
+	              "aeiounnccaeiouaeiouyaeiouÆaaoaeiou") ;
 #endif
 
 	set_c_from  (" \t\n\r", CTYPE_SPACE) ;
@@ -168,8 +160,8 @@ void init_c_type ()
 	
 	set_c_range ('A', 'Z', CTYPE_ALPHA) ;
 	set_c_range ('a', 'z', CTYPE_ALPHA) ;
-	set_c_from  ("\xE1\xE9\xED\xF3\xFA\xC1\xC9\xCD\xD3\xDA\xF1\xD1\xE7\xC7\xE0\xE8\xEC\xF2\xF9\xC0\xC8\xCC\xD2\xD9\xE4\xEB\xEF\xF6\xFC\xC4\xCB\xCF\xD6\xDC\xFF\xFD\xE2\xEA\xEE\xF4\xFB\xC2\xCA\xCE\xD4\xDB"
-		     "\xE6\xC6\xE3\xE5\xF0\xF5\xAA\xBA\xC3\xC5\xD0\xD5\xD8", CTYPE_ALPHA) ;
+	set_c_from  ("áéíóúÁÉÍÓÚñÑçÇàèìòùÀÈÌÒÙäëïöüÄËÏÖÜÿýâêîôûÂÊÎÔÛ"
+		     "æÆãåðõªºÃÅÐÕØ", CTYPE_ALPHA) ;
 
 	set_c_as    (CTYPE_ALPHA, CTYPE_WORDCHAR) ;
 	set_c_from  ("_",         CTYPE_WORDCHAR) ;

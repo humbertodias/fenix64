@@ -1,35 +1,27 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
- *  Copyright Â© 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #ifndef __CODEBLOCK_H
 #define __CODEBLOCK_H
 
-/* Bloques de cÃ³digo compilado. Contienen estructuras que sÃ³lo se emplean
- * durante el compilado: la funciÃ³n program_postprocess() independiza los
- * datos (CODEBLOCK.data[]) de dichas estructuras, que el intÃ©rprete
+/* Bloques de código compilado. Contienen estructuras que sólo se emplean
+ * durante el compilado: la función program_postprocess() independiza los
+ * datos (CODEBLOCK.data[]) de dichas estructuras, que el intérprete
  * no necesita */
 
 typedef struct _codeblock
@@ -38,7 +30,6 @@ typedef struct _codeblock
 	int reserved ;
 	int current ;
 	int previous ;
-	int previous2 ;
 
 	int * loops ;
 	int loop_count ;
@@ -51,17 +42,8 @@ typedef struct _codeblock
 }
 CODEBLOCK ;
 
-typedef struct _codeblock_pos
-{
-	int current;
-	int previous;
-	int previous2;
-}
-CODEBLOCK_POS ;
-
 extern void codeblock_init(CODEBLOCK * c) ;
 extern void codeblock_add (CODEBLOCK * c, int code, int param) ;
-extern void codeblock_add_block (CODEBLOCK * c, CODEBLOCK_POS from, CODEBLOCK_POS to);
 extern void codeblock_loop_start (CODEBLOCK * c, int loop, int begin) ;
 extern void codeblock_loop_end (CODEBLOCK * c, int loop, int end) ;
 extern int  codeblock_loop_add (CODEBLOCK * c) ;
@@ -71,9 +53,6 @@ extern void codeblock_postprocess (CODEBLOCK * c) ;
 extern void codeblock_dump (CODEBLOCK * c) ;
 extern void mnemonic_dump (int i, int param) ;
 extern void program_postprocess () ;
-
-extern CODEBLOCK_POS codeblock_pos(CODEBLOCK * c);
-extern void          codeblock_setpos(CODEBLOCK * c, CODEBLOCK_POS p);
 
 #endif
 

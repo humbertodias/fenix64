@@ -1,7 +1,7 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
+ *  Last stable release   : 
  *  Project documentation : http://fenix.divsite.net
  *
  *
@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright © 1999 José Luis Cebrián Pagüe
@@ -28,19 +28,16 @@
  * FILE        : g_profiler.c
  * DESCRIPTION : Profiler module
  *
- * HISTORY:      0.81 - First version
+ * HISTORY:      0.81 - First version 
  */
 
 #include <string.h>
 #include <stdlib.h>
-#ifdef TARGET_BEOS
 #include <posix/assert.h>
-#else
-#include <assert.h>
-#endif
-
 #include <math.h>
 #include <limits.h>
+
+#include <SDL.h>
 
 #include <fxi.h>
 
@@ -89,10 +86,10 @@ static int   gprof_activate = 1;
  *  Internal function used to allocate more profile samples. The number
  *  of profile entries has no internal limit.
  *
- *  PARAMS :
+ *  PARAMS : 
  *		count			New value for gprof_allocated
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -104,8 +101,10 @@ static int gprof_allocate (int count)
 
 	/* Alloc more dynamic memory */
 
-	samples = (PROFILE_SAMPLE  *) realloc (samples, count * sizeof(PROFILE_SAMPLE));
-	history = (PROFILE_HISTORY *) realloc (history, count * sizeof(PROFILE_HISTORY));
+	samples = (PROFILE_SAMPLE  *) realloc (samples,
+				count * sizeof(PROFILE_SAMPLE));
+	history = (PROFILE_HISTORY *) realloc (history,
+				count * sizeof(PROFILE_HISTORY));
 
 	if (samples == NULL || history == NULL)
 	{
@@ -137,20 +136,18 @@ static int gprof_allocate (int count)
  *		- Both are children of the same parent and a.average < b.average
  *		- The parent of a should be drawn before b or its parent
  *
- *  PARAMS :
+ *  PARAMS : 
  *		a				Pointer to a sample number
  *		b				Pointer to a sample number
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      < 1 if sample a should be drawn first
  *        0 if it does not matter
  *		> 1 if sample b should be drawn first
  */
 
-static int gprof_compare (const void * va, const void * vb)
+static int gprof_compare (const int * a, const int * b)
 {
-	const int * a = va;
-	const int * b = vb;
 	if (samples[*b].parent == samples[*a].parent)
 	{
 		int timediff;
@@ -158,7 +155,7 @@ static int gprof_compare (const void * va, const void * vb)
 		/* Both are top level */
 		if (samples[*a].parent == -1)
 			return *a - *b ;
-
+		
 		/* Children of the same parent */
 		timediff = (int)((history[*a].average - history[*b].average) * 100.0);
 		if (timediff == 0)
@@ -197,11 +194,11 @@ static int gprof_compare (const void * va, const void * vb)
  *
  *  Internal function used to store a sample into the history
  *
- *  PARAMS :
+ *  PARAMS : 
  *		sample			Pointer to the sample object
  *      total			Time elapsed after frame start
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -209,8 +206,6 @@ static void gprof_store (int i, int total)
 {
 	double value;
 	PROFILE_SAMPLE * sample = &samples[i];
-
-	if (!gprof_active) return;
 
 	assert (total > 0);
 
@@ -254,10 +249,10 @@ static void gprof_store (int i, int total)
  *
  *  Initialize the profiler. This should be called at program startup once.
  *
- *  PARAMS :
+ *  PARAMS : 
  *		None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -288,11 +283,11 @@ void gprof_init()
  *
  *  Starts the timing of a program block
  *
- *  PARAMS :
+ *  PARAMS : 
  *		name		Name of the block (it must the same pointer each time,
  *					use a constant string or a constant pointer)
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -311,10 +306,8 @@ void gprof_begin (const char * name)
 		{
 			if (strcmp(samples[i].name, name) == 0)
 			{
-				if (samples[i].active) {
-//					gr_con_printf ("gprof_begin: bloque %s ya activo", name);
-					return;
-				}
+				if (samples[i].active)
+					gr_error ("gprof_begin: bloque %s ya activo", name);
 				samples[i].called++;
 				samples[i].active++;
 				samples[i].start = SDL_GetTicks();
@@ -369,10 +362,10 @@ void gprof_begin (const char * name)
  *
  *  End the timing of a program block
  *
- *  PARAMS :
+ *  PARAMS : 
  *		name		Name of the block (same pointer used in gprof_start!)
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -392,7 +385,7 @@ void gprof_end (const char * name)
 		{
 			if (samples[i].active < 1)
 			{
-//				gr_con_printf ("gprof_end: bloque %s inactivo", name);
+				gr_error ("gprof_end: bloque %s inactivo", name);
 				return;
 			}
 			break;
@@ -400,7 +393,7 @@ void gprof_end (const char * name)
 	}
 	if (i == gprof_sample_count)
 	{
-//		gr_con_printf ("gprof_end: no se encontró el bloque %s", name);
+		gr_error ("gprof_end: no se encontró el bloque %s", name);
 		return;
 	}
 
@@ -430,10 +423,10 @@ void gprof_end (const char * name)
  *  Call this function at frame start time. It will close any opened
  *  profile samples and update the profiler history.
  *
- *  PARAMS :
+ *  PARAMS : 
  *		None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -444,19 +437,6 @@ void gprof_frame()
 	int  min_parent_count;
 	long now;
 	long elapsed;
-
-	if (gprof_activate != gprof_active)
-	{
-		if (gprof_activate != 0)
-		{
-			gprof_active = 1;
-			if (gprof_activate < 0)
-				gprof_activate++;
-		}
-		else gprof_active = 0;
-	}
-
-	if (!gprof_active) return;
 
 	/* Close any open samples, childs first */
 
@@ -511,7 +491,7 @@ void gprof_frame()
 		gprof_frame_count++;
 		return;
 	}
-/*
+
 	if (gprof_activate != gprof_active)
 	{
 		if (gprof_activate != 0)
@@ -524,7 +504,7 @@ void gprof_frame()
 	}
 
 	if (!gprof_active) return;
-*/
+
 	/* Update frame information */
 
 	now = SDL_GetTicks();
@@ -555,10 +535,10 @@ void gprof_frame()
  *
  *  Dumps profiler history to a text file (in append mode)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		filename		Name of the file
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -568,7 +548,7 @@ void gprof_dump (const char * filename)
 	int    n;
 	int    parents_of = -1;
 	FILE * f = fopen (filename, "a");
-
+	
 	if (f == NULL) return;
 
 	fputs ("\n", f);
@@ -596,8 +576,9 @@ void gprof_dump (const char * filename)
 
 		/* Write the history information */
 
-		fprintf (f, "%6.02f :%6.02f :%6.02f :%6.02f :  ", history[i].average, history[i].min,  history[i].max, history[i].last);
-
+		fprintf (f, "%6.02f :%6.02f :%6.02f :%6.02f :  ",
+			history[i].average, history[i].min, history[i].last);
+		
 		for (n = 0 ; n < samples[i].parent_count ; n++)
 			fputs ("  ", f);
 
@@ -619,10 +600,10 @@ void gprof_dump (const char * filename)
  *
  *  Reset the profile history
  *
- *  PARAMS :
+ *  PARAMS : 
  *		None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -634,7 +615,7 @@ void gprof_reset ()
 		history[i].valid = 0;
 
 	gprof_frame_count = 0;
-
+	
 	if (!gprof_active)
 	{
 		gprof_activate = -2;
@@ -646,10 +627,10 @@ void gprof_reset ()
  *
  *  Draw the current profile history to a bitmap
  *
- *  PARAMS :
+ *  PARAMS : 
  *		dest			Destination graphic
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -666,13 +647,12 @@ void gprof_draw (GRAPH * dest)
 	int    x, y;
 	int    i, c;
 	int    n;
+	int    parents_of = -1;
 	char   buffer[100];
 	int    count;
 	int    count_worthless = 0;
 	int    show_worthless = 0;
 	int  * list;
-
-	if (!gprof_active) return;
 
 	/* Count total history lines */
 	for (i = count = count_worthless = 0 ; i < gprof_sample_count ; i++)
@@ -718,20 +698,20 @@ void gprof_draw (GRAPH * dest)
 	{
 		i = list[c];
 		if (!history[i].valid) continue;
-
+		
 		if (show_worthless > 0 || !ISWORTHLESS(i))
 		{
 			if (ISWORTHLESS(i))
 				show_worthless--;
 
 			/* Write the history information */
-
+			
 			_snprintf (buffer, 100, "%5.01f %5.01f %5.01f %5.01f : ",
 				history[i].average, history[i].min, history[i].max, history[i].last);
-
+			
 			for (n = 0 ; n < samples[i].parent_count ; n++)
 				strncat (buffer, "  ", 99-strlen(buffer));
-
+			
 			strncat (buffer, samples[i].name, 99-strlen(buffer));
 			gr_sys_puts (dest, x, y+=CHARHEIGHT, buffer, 50);
 		}
@@ -755,10 +735,10 @@ void gprof_draw (GRAPH * dest)
  *
  *  Toggles the profiler
  *
- *  PARAMS :
+ *  PARAMS : 
  *		dest			Destination graphic
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 

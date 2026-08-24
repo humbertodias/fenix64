@@ -1,40 +1,27 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TARGET_BEOS
-#include <posix/assert.h>
-#else
 #include <assert.h>
-#endif
 #include "token.h"
 #include "identifiers.h"
-#include "compiler.h"
 
 /* ---------------------------------------------------------------------- */
 /* Gestor de identificadores                                              */
@@ -49,9 +36,7 @@ int identifier_hash_value (const char * string)
 	int t = 0 ;
 	const char * ptr = string ;
 
-/*	while (*ptr) t = (t << 1) | *ptr++ ; */
-	while (*ptr) t = (t << 3) | ( (*ptr++) & 0x07 ) ; /* Mejor dispersion en el hashing */
-
+	while (*ptr) t = (t << 1) | *ptr++ ;
 	return (t & 63) ;
 }
 
@@ -94,18 +79,16 @@ void identifier_init ()
 
 void identifier_dump ()
 {
-	int i, ii ;
+	int i ;
 	identifier * ptr ;
 
 	printf ("---- %d identifiers ----\n", identifier_count) ;
 	for (i = 0 ; i < 64 ; i++)
 	{
 		ptr = identifier_hash[i] ;
-		ii = 0;
 		while (ptr)
 		{
-			ii++;
-			printf ("%4d: %-32s [%04d] [%3d]\n", ptr->code, ptr->name, i, ii) ;
+			printf ("%4d: %-32s [%04d]\n", ptr->code, ptr->name, i) ;
 			ptr = ptr->next ;
 		}
 	}
@@ -134,7 +117,7 @@ int identifier_add_as (const char * string, int code)
 	w->next = identifier_hash[hash] ;
 	identifier_hash[hash] = w ;
 	identifier_count++ ;
-
+	
 	return 1 ;
 }
 
@@ -174,9 +157,8 @@ int i ;
 		ptr = identifier_hash[i] ;
 		while (ptr)
 		{
-			if (ptr->code == code) {
+			if (ptr->code == code)
 				return ptr->line ;
-			}
 			ptr = ptr->next ;
 		}
 	}
@@ -194,9 +176,8 @@ int i ;
 		ptr = identifier_hash[i] ;
 		while (ptr)
 		{
-			if (ptr->code == code) {
+			if (ptr->code == code)
 				return ptr->f ;
-			}
 			ptr = ptr->next ;
 		}
 	}
@@ -213,9 +194,8 @@ const char * identifier_name (int code)
 		ptr = identifier_hash[i] ;
 		while (ptr)
 		{
-			if (ptr->code == code) {
+			if (ptr->code == code)
 				return ptr->name ;
-			}
 			ptr = ptr->next ;
 		}
 	}
@@ -234,25 +214,3 @@ int identifier_next_code ()
 {
 	return identifier_code ;
 }
-
-int identifier_is_basic_type (int id)
-{
-	return (
-		id == identifier_int ||
-		id == identifier_short ||
-		id == identifier_char ||
-		id == identifier_dword ||
-		id == identifier_word ||
-		id == identifier_byte ||
-		id == identifier_signed ||
-		id == identifier_unsigned ||
-		id == identifier_float ||
-		id == identifier_string
-		);
-}
-
-int identifier_is_type (int id)
-{
-	return identifier_is_basic_type(id) || segment_by_name(id) != NULL;
-}
-

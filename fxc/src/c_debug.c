@@ -1,36 +1,25 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef TARGET_BEOS
-#include <posix/assert.h>
-#else
 #include <assert.h>
-#endif
 
 #include "fxc.h"
 
@@ -83,11 +72,6 @@ mnemonics[] =
 	{ "OR", MN_OR },
 	{ "XOR", MN_XOR },
 
-	{ "BNOT", MN_BNOT },
-	{ "BAND", MN_BAND },
-	{ "BOR", MN_BOR },
-	{ "BXOR", MN_BXOR },
-
 	{ "EQ", MN_EQ },
 	{ "NE", MN_NE },
 	{ "GT", MN_GT },
@@ -97,8 +81,6 @@ mnemonics[] =
 
 	{ "FLOAT2INT", MN_FLOAT2INT, 1 },
 	{ "INT2FLOAT", MN_INT2FLOAT, 1 },
-	{ "INT2WORD", MN_INT2WORD, 1 },
-	{ "INT2BYTE", MN_INT2BYTE, 1 },
 
 	{ "POSTINC", MN_POSTINC, 1 },
 	{ "POSTDEC", MN_POSTDEC, 1 },
@@ -125,8 +107,6 @@ mnemonics[] =
 	{ "JUMP", MN_JUMP, 1 },
 	{ "JFALSE", MN_JFALSE, 1 },
 	{ "JTRUE", MN_JTRUE, 1 },
-	{ "JTFALSE", MN_JTFALSE, 1 },
-	{ "JTTRUE", MN_JTTRUE, 1 },
 	{ "PTR", MN_PTR },
 
 	{ "SWITCH", MN_SWITCH },
@@ -138,26 +118,18 @@ mnemonics[] =
 	{ "SUBSTR", MN_SUBSTR, 1 },
 
 	{ "STR2INT", MN_STR2INT, 1 },
-	{ "STR2CHR", MN_STR2CHR, 1 },
 	{ "INT2STR", MN_INT2STR, 1 },
 	{ "CHR2STR", MN_CHR2STR, 1 },
 	{ "STR2FLOAT", MN_STR2FLOAT, 1 },
 	{ "FLOAT2STR", MN_FLOAT2STR, 1 },
 	{ "POINTER2STR", MN_POINTER2STR, 1 },
-//	{ "POINTER2BOL", MN_POINTER2BOL, 1 },
+	{ "POINTER2BOL", MN_POINTER2BOL, 1 },
 
 	{ "A2STR", MN_A2STR, 0 },
 	{ "STR2A", MN_STR2A, 0 },
 	{ "STRACAT", MN_STRACAT, 0 },
 
 	{ "DEBUG", MN_DEBUG, 1 },
-	{ "------", MN_SENTENCE, 1 },
-
-	{ "PUBLIC", MN_PUBLIC, 1 },
-	{ "GET_PUBLIC", MN_GET_PUBLIC, 1 },
-
-	{ "REMOTE_PUBLIC", MN_REMOTE_PUBLIC, 1 },
-	{ "GET_REMOTE_PUBLIC", MN_GET_REMOTE_PUBLIC, 1 },
 
 	{ 0, -1 }
 } ;
@@ -165,27 +137,16 @@ mnemonics[] =
 void mnemonic_dump (int i, int param)
 {
 	int n = 0 ;
-	printf("%03X ", i);
-
 	while (mnemonics[n].name)
 	{
-		if (mnemonics[n].code == (i & MN_MASK))
+		if (mnemonics[n].code == (i & 0xFF))
 		{
 			switch (MN_TYPEOF(i))
 			{
-				case MN_UNSIGNED:
-					printf ("UNSIGNED ") ;
-					break ;
 				case MN_WORD:
-					printf ("SHORT    ") ;
-					break ;
-				case MN_WORD | MN_UNSIGNED:
 					printf ("WORD     ") ;
 					break ;
 				case MN_BYTE:
-					printf ("CHAR     ") ;
-					break ;
-				case MN_BYTE | MN_UNSIGNED:
 					printf ("BYTE     ") ;
 					break ;
 				case MN_FLOAT:
@@ -198,19 +159,13 @@ void mnemonic_dump (int i, int param)
 					printf ("         ") ;
 					break ;
 			}
-
-			printf ("%-20s", mnemonics[n].name) ;
-			if (i == MN_SYSCALL || i == MN_SYSPROC) {
+			printf ("%-12s", mnemonics[n].name) ;
+			if (i == MN_SYSCALL || i == MN_SYSPROC)
 				printf ("%-8s", sysproc_name(param)) ;
-			} else if (i == (MN_PUSH | MN_FLOAT)) {
+			else if (i == (MN_PUSH | MN_FLOAT))
 				printf ("%-8f", *(float *)&param) ;
-			} else {
-			    switch(MN_PARAMS(i)){
-			        case    1:
-				            printf ("%-8d", param) ;
-			                break;
-			    }
-			}
+			else if (i & MN_1_PARAMS)
+				printf ("%-8d", param) ;
 			printf ("\n") ;
 		}
 		n++ ;
@@ -225,7 +180,7 @@ void codeblock_dump (CODEBLOCK * c)
 		showdir = 0 ;
 		for (n = 0 ; n < c->label_count ; n++)
 		{
-			if (c->labels[n] == i)
+			if (c->labels[n] == i) 
 			{
 				if (!showdir) printf ("\n") ;
 				printf ("Label %d:\n", n) ;
@@ -252,7 +207,7 @@ void codeblock_dump (CODEBLOCK * c)
 		else
 			printf ("\t") ;
 
-		mnemonic_dump (c->data[i], c->data[i+1] );
+		mnemonic_dump (c->data[i], c->data[i+1]) ;
 
 	}
 	printf ("%d:\n", i) ;

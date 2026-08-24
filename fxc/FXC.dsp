@@ -39,10 +39,9 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "..\bin"
 # PROP Intermediate_Dir "release"
-# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\includes" /I ".\inc" /I "..\include" /I "..\..\sdl\include" /I "..\..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "TARGET_win32" /FR /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I ".\inc" /I "..\includes" /I "..\sdl\include" /I "..\zlib" /I "..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /c
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
 !ELSEIF  "$(CFG)" == "FXC - Win32 Debug"
 
@@ -63,10 +62,9 @@ LINK32=link.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "..\bin\Debug"
 # PROP Intermediate_Dir "Debug"
-# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I ".\inc" /I "..\include" /I "..\..\sdl\include" /I "..\..\zlib\include" /D "_DEBUG" /D "TARGET_win32" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MT /W3 /Gm /GX /ZI /Od /I ".\inc" /I "..\include" /I "..\sdl\include" /I "..\zlib" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,7 +72,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
 !ENDIF 
 
@@ -99,6 +97,10 @@ SOURCE=.\src\c_debug.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\c_fixed.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\c_main.c
 # End Source File
 # Begin Source File
@@ -112,10 +114,6 @@ SOURCE=.\src\constants.c
 # Begin Source File
 
 SOURCE=.\src\dcbw.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\error.c
 # End Source File
 # Begin Source File
 
@@ -191,23 +189,7 @@ SOURCE=..\include\dcb.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\inc\errors.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\inc\errors_st.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\files.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\files_st.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\fnx_loadlib.h
 # End Source File
 # Begin Source File
 
@@ -239,10 +221,6 @@ SOURCE=..\include\strings.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\sysprocs.h
-# End Source File
-# Begin Source File
-
 SOURCE=inc\token.h
 # End Source File
 # Begin Source File
@@ -251,23 +229,11 @@ SOURCE=..\include\typedef.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\typedef_st.h
-# End Source File
-# Begin Source File
-
 SOURCE=inc\varspace.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\include\xctype.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\xctype_st.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\xstrings.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
@@ -287,7 +253,7 @@ SOURCE=.\res\fxc.rc
 # PROP Default_Filter "lib"
 # Begin Source File
 
-SOURCE=..\..\zlib\lib\zdll.lib
+SOURCE=..\LIB\zlib.lib
 # End Source File
 # End Group
 # End Target

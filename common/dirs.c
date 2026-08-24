@@ -1,6 +1,6 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
  *  Last stable release   :
  *  Project documentation : http://fenix.divsite.net
  *
@@ -36,8 +36,7 @@
 #include "dirs.h"
 #include "xstrings.h"
 #include <string.h>
-#include <stdlib.h>
-
+#include <malloc.h>
 
 #ifdef WIN32
 int base_drive ;
@@ -50,30 +49,31 @@ char * base_dir ;
  *
  *  Convert a path to the valid OS format
  *
- *  PARAMS :
- *      char * path:    path to convert
+ *  PARAMS : 
+ *		char * path:	path to convert
  *
- *  RETURN VALUE :
- *      char *:         converted path
+ *  RETURN VALUE : 
+ *      char *:			converted path
  *
  */
 
 char * dir_path_convert(const char * dir) {
+	
+	char *c,*p ;
 
-    char *c,*p ;
-
-    p = strdup(dir) ;
-    c = p ;
-    // Convert characters
-    while (*p) {
+	p = strdup(dir) ;
+	c = p ;
+	// Convert characters
+	while (*p) {
 #ifdef WIN32
-        if (*p=='/') *p='\\' ;
+		if (*p=='/') *p='\\' ;
 #else
-        if (*p=='\\') *p='/' ;
+		if (*p=='\\') *p='/' ;
 #endif
-        p++ ;
-    }
-    return c;
+		p++ ;
+		}
+	return c;
+
 }
 
 
@@ -82,40 +82,56 @@ char * dir_path_convert(const char * dir) {
  *
  *  Retrieve current directory
  *
- *  PARAMS :
+ *  PARAMS : 
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      STRING ID pointing to a system string with the current dir
  *
  */
 
+#ifdef WIN32
+
 char * dir_current(void) {
 
   char dir[1024] ; /* buffer to the directory */
-  char * c = getcwd(dir,sizeof(dir)) ;
-  return c ? strdup(c) : NULL ;
+  char * c ;
+  c = getcwd(dir,1024) ;
+  return strdup(c) ;
+
 }
+
+#else
+
+char * dir_current(void) {
+  return strdup(".");
+}
+
+#endif
 
 /*
  *  FUNCTION : dir_change
  *
  *  Retrieve current directory
  *
- *  PARAMS :
- *      char * dir:     the new current directory
+ *  PARAMS : 
+ *		char * dir:		the new current directory
  *
- *  RETURN VALUE :
- *      0           - FAILURE
- *      NON_ZERO    - SUCCESS
+ *  RETURN VALUE : 
+ *		0			- FAILURE
+ *		NON_ZERO	- SUCCESS
  *
  */
 
 int dir_change(const char * dir) {
+	
+	int r ;
+	char *c ;
+	
+	c = dir_path_convert(dir) ;		
+	r = chdir(c) ;
+	free(c) ;
+	return r ;
 
-    char *c = dir_path_convert(dir) ;
-    int r = chdir(c) ;
-    free(c) ;
-    return r ;
 }
 
 
@@ -124,27 +140,25 @@ int dir_change(const char * dir) {
  *
  *  Retrieve current directory
  *
- *  PARAMS :
- *      char * dir:     the directory to create
+ *  PARAMS : 
+ *		char * dir:		the directory to create
  *
- *  RETURN VALUE :
- *      0           - FAILURE
- *      NON_ZERO    - SUCCESS
+ *  RETURN VALUE : 
+ *		0			- FAILURE
+ *		NON_ZERO	- SUCCESS
  *
  */
 
 int dir_create(const char * dir) {
+	
+	char *c ;
+	int r ;
 
-    char *c = dir_path_convert(dir) ;
-    int r ;
+	c = dir_path_convert(dir) ;	
+	r = mkdir(c) ;
+	free(c) ;
+	return r ;
 
-#ifdef WIN32
-    r = mkdir(c) ;
-#else
-    r = mkdir(c,0777) ;
-#endif
-    free(c) ;
-    return r ;
 }
 
 /*
@@ -152,41 +166,23 @@ int dir_create(const char * dir) {
  *
  *  Retrieve current directory
  *
- *  PARAMS :
- *      char * dir:     the directory to delete
+ *  PARAMS : 
+ *		char * dir:		the directory to delete
  *
- *  RETURN VALUE :
- *      0           - FAILURE
- *      NON_ZERO    - SUCCESS
+ *  RETURN VALUE : 
+ *		0			- FAILURE
+ *		NON_ZERO	- SUCCESS
  *
  */
 
 int dir_delete(const char * dir) {
+	
+	char *c ;
+	int r ;
 
-    char *c = dir_path_convert(dir) ;
-    int r = rmdir(c) ;
-    free(c) ;
-    return r ;
-}
+	c = dir_path_convert(dir) ;	
+	r = rmdir(c) ;
+	free(c) ;
+	return r ;
 
-/*
- *  FUNCTION : dir_deletefile
- *
- *  Remove a given file
- *
- *  PARAMS :
- *      char * filename: the file to delete
- *
- *  RETURN VALUE :
- *      0           - FAILURE
- *      NON_ZERO    - SUCCESS
- *
- */
-
-int dir_deletefile(const char * filename) {
-
-    char *c = dir_path_convert(filename) ;
-    int r = unlink(c) ;
-    free(c) ;
-    return (r==-1) ? 0 : 1 ;
 }

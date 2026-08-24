@@ -1,26 +1,25 @@
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 /*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
- *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
+ * HISTORY:		0.83 - Added gr_save_png definition
+ *         		0.82 - Added gr_save_map definition
+ *				0.74 - Added apptitle and icono for WM functions
  *
  */
 
@@ -29,8 +28,6 @@
 
 #include "instance_st.h"
 #include "grlib_st.h"
-
-#define MAX_JOYS    32
 
 /* -------------------------------------------------------------------- */
 /* Librería gráfica                                                     */
@@ -42,14 +39,12 @@ extern int              audio_initialized ;
 extern int				enable_16bits ;      /* 1 = 16bpp MODE on                */
 extern int				enable_filtering ;   /* 1 = 16bpp filter MODE on         */
 
-extern DRAWING_OBJECT * drawing_objects ;
-
 extern Uint16			syscolor16 ;
 extern int				syscolor8 ;			 /* Color for drawing primitives	 */
 extern Uint16           fntcolor16 ;
 extern int				fntcolor8 ;			 /* Color for drawing bitmap text	 */
 
-extern Uint32           drawing_stipple;
+extern int              drawing_stipple;
 
 extern REGION           regions[32] ;
 extern SDL_Surface		* screen ;
@@ -57,7 +52,6 @@ extern GRAPH            * background ;
 extern GRAPH            * scrbitmap ;
 extern GRLIB            * syslib ;
 extern GRAPH            * icono ;
-extern SDL_Joystick		* _joysticks[MAX_JOYS];
 extern SDL_Joystick		* selected_joystick;
 extern scrolldata		scrolls[10] ;
 extern int              last_frame_ms ;
@@ -70,13 +64,7 @@ extern int              scr_width ;
 extern int              scr_height ;
 
 extern int              full_screen ;
-extern int              frameless ;
 extern int              double_buffer ;
-extern int				grab_input ;
-extern int				window_status ;
-extern int				focus_status ;
-extern int				mouse_status ;
-extern int				exit_status ;
 extern int				background_dirty ;
 
 extern FONT * fonts[256] ;
@@ -97,9 +85,6 @@ extern void keytab_init       () ;
 extern void keytab_free       () ;
 extern int  gr_key            (int code) ;
 extern int  gr_timer          () ;
-
-extern Uint32 frame_count;
-extern Uint32 current_time;
 
 /* Objetos definidos por DLL */
 /* ------------------------- */
@@ -134,40 +119,25 @@ extern void         gr_fill_nearest_table() ;
 extern int          palette_loaded ;        /* ¿Se ha cargado ya la paleta inicial ? */
 extern int          palette_changed ;       /* Poner a 1 cuando se cambien colores   */
 extern int          fade_on ;               /* ¿Hay un fade activo?                  */
-extern int          fade_set ;              /* ¿Hay un fade seteado pero inactivo?   */
 extern int          fade_step ;             /* Si lo hay, posición (0=off)           */
 
-
-extern PALETTE * pal_new(PALETTE * basepal);
-extern PALETTE * pal_new2(void * datapal);
-
-extern void pal_destroy(PALETTE * pal);
-extern void pal_refresh(PALETTE * pal);
-extern void pal_use(PALETTE * pal);
-extern int  pal_get (PALETTE * spal, int color, int num, Uint8 * pal);
-extern int  pal_set (PALETTE * spal, int color, int num, Uint8 * pal);
-extern int  pal_map_assign (int libid, int mapcode, PALETTE * palid);
-extern int  pal_map_remove (int libid, int mapcode);
-
-extern PALETTE    * gr_read_pal             (file * fp) ;
-extern PALETTE    * gr_read_pal_with_gamma  (file * fp);
-
-extern void         gr_refresh_palette      () ;
-extern void         gr_fade_init            (int pr, int pg, int pb, int speed) ;
-extern void         gr_fade_step            () ;
-extern void         gr_roll_palette         (int color0, int num, int inc) ;
-extern int          gr_find_nearest_color   (int r, int g, int b) ;
-extern void         gr_set_rgb              (int c, int r, int g, int b) ;
-extern int          gr_rgb                  (int r, int g, int b) ;
-extern void         gr_get_rgb              (int color, int *r, int *g, int *b) ;
-extern void         gr_set_colors           (int color, int num, Uint8 * pal) ;
-extern void         gr_get_colors           (int color, int num, Uint8 * pal) ;
+extern int          gr_read_pal           (file * file) ;
+extern void         gr_refresh_palette    () ;
+extern void         gr_fade_init          (int pr, int pg, int pb, int speed) ;
+extern void         gr_fade_step          () ;
+extern void         gr_roll_palette       (int color0, int num, int inc) ;
+extern int          gr_find_nearest_color (int r, int g, int b) ;
+extern void         gr_set_rgb            (int c, int r, int g, int b) ;
+extern int          gr_rgb                (int r, int g, int b) ;
+extern void         gr_get_rgb            (int color, int *r, int *g, int *b) ;
+extern void         gr_set_colors         (int color, int num, Uint8 * pal) ;
+extern void         gr_get_colors         (int color, int num, Uint8 * pal) ;
 
 /* Blend ops */
 /* --------- */
 
 extern Sint16 * blend_create       () ;
-extern void     blend_free         (Sint16 * blend) ;
+extern void     blend_free         () ;
 extern void     blend_init         (Sint16 * blend) ;
 extern void     blend_translucency (Sint16 * blend, float ammount) ;
 extern void     blend_intensity    (Sint16 * blend, float ammount) ;
@@ -176,26 +146,6 @@ extern void     blend_swap         (Sint16 * blend) ;
 extern void     blend_assign       (GRAPH * bitmap, Sint16 * blend) ;
 extern void     blend_apply        (GRAPH * bitmap, Sint16 * blend) ;
 extern void     blend_grayscale    (Sint16 * blend, int method) ;
-
-/* FBM/FGC/FPL files */
-/* ----------------- */
-
-extern GRAPH *	fbm_load_from    (file * fp, int fgc_depth);
-extern GRAPH *  fbm_load		 (const char * filename);
-extern int 		fbm_save		 (GRAPH * graph, const char * filename);
-extern int      fbm_save_to		 (GRAPH * map, file * fp, int with_palette);
-extern Uint32   fbm_size		 (GRAPH * graph, int with_header, int with_palette);
-
-extern int		fgc_load		 (const char * filename);
-extern int		fgc_save		 (int id, const char * filename);
-
-extern int		fpl_load_from	 (file * fp);
-extern int		fpl_save		 (const char * filename);
-
-extern const char * fbm_error;
-extern const char * fgc_error;
-extern const char * fpl_error;
-
 
 /* Gestión de bitmaps y librerías de gráficos */
 /* ------------------------------------------ */
@@ -207,6 +157,8 @@ extern int      gr_load_fpg      (const char * filename) ;
 extern int      gr_load_pal      (const char * filename) ;
 
 extern int      gr_save_pal      (const char * filename) ;
+extern int		gr_save_map		 (GRAPH * gr, const char * filename) ;
+extern int		gr_save_fpg		 (int libid,  const char * filename) ;
 extern int		gr_save_png		 (GRAPH * gr, const char * filename) ;
 
 extern GRLIB  * grlib_get        (int libid) ;
@@ -216,20 +168,15 @@ extern void     grlib_destroy    (int libid) ;
 extern int      grlib_add_map    (int libid, GRAPH * map) ;
 extern int      grlib_unload_map (int libid, int mapcode) ;
 
-extern GRAPH * bitmap_new        (int code, int w, int h, int depth, int frames) ;
+extern GRAPH * bitmap_new        (int code, int w, int h, int depth) ;
 extern GRAPH * bitmap_clone      (GRAPH * t) ;
-extern GRAPH * bitmap_new_syslib (int w, int h, int depth, int frames) ;
+extern GRAPH * bitmap_new_syslib (int w, int h, int depth) ;
 extern GRAPH * bitmap_get        (int libid, int mapcode) ;
 extern void    bitmap_destroy    (GRAPH * map) ;
-extern void    bitmap_destroy_fake (GRAPH * map) ;
 extern void    bitmap_add_cpoint (GRAPH *map, int x, int y) ;
-extern void    bitmap_set_cpoint (GRAPH * map, Uint32 point, int x, int y);
 extern void    bitmap_analize    (GRAPH * bitmap) ;
 extern void    bitmap_animate    (GRAPH * bitmap) ;
 extern void    bitmap_animate_to (GRAPH * bitmap, int pos, int speed) ;
-extern int     bitmap_next_code  ();
-
-extern void	   bitmap_16bits_conversion();
 
 /* Regiones */
 /* -------- */
@@ -246,7 +193,7 @@ extern REGION * region_get      (int n);
 /* ---------- */
 
 extern void    draw_instance_at (INSTANCE * i, REGION * r, int x, int y) ;
-extern void    draw_instance    (void * i, REGION * clip) ;
+extern void    draw_instance    (INSTANCE * i, REGION * clip) ;
 extern void    instance_update_bbox(INSTANCE * i) ;
 extern GRAPH * instance_graph   (INSTANCE * i) ;
 extern int     instance_visible (INSTANCE * i);
@@ -278,22 +225,8 @@ extern int      gr_text_margintop  (int fontid, const unsigned char * text) ;
 extern int      gr_text_width      (int fontid, const unsigned char * text) ;
 extern int      gr_text_widthn     (int fontid, const unsigned char * text, int n) ;
 extern int      gr_text_height     (int fontid, const unsigned char * text) ;
-extern int      gr_text_put        (GRAPH * dest, REGION * region, int fontid, int x, int y, const unsigned char * text) ;
+extern void     gr_text_put        (GRAPH * dest, REGION * region, int fontid, int x, int y, const unsigned char * text) ;
 extern GRAPH  * gr_text_bitmap     (int fontid, const char * text, int centered) ;
-
-// Tipos para gr_text_new_var
-
-#define TEXT_TEXT		1
-#define TEXT_STRING		2
-#define TEXT_INT		3
-#define TEXT_FLOAT		4
-#define TEXT_WORD		5
-#define TEXT_BYTE		6
-#define TEXT_CHARARRAY	7
-#define TEXT_SHORT		8
-#define TEXT_DWORD		9
-#define TEXT_SBYTE		10
-#define TEXT_CHAR		11
 
 /* Bajo nivel */
 /* ---------- */
@@ -310,7 +243,6 @@ extern void gr_mark_instance (INSTANCE *);
 
 extern void gr_clear     (GRAPH * dest) ;
 extern void gr_clear_as  (GRAPH * dest, int color) ;
-extern void gr_clear_region (GRAPH * dest, REGION * region) ;
 extern void gr_put_pixel (GRAPH * dest, int x, int y, int color) ;
 extern int  gr_get_pixel (GRAPH * dest, int x, int y) ;
 
@@ -328,9 +260,6 @@ extern void gr_bezier    (GRAPH * dest, REGION * clip, int * params) ;
 extern int  gr_drawing_new     (DRAWING_OBJECT drawing, int z) ;
 extern void gr_drawing_destroy (int id) ;
 extern void gr_drawing_move    (int id, int x, int y) ;
-
-extern void draw_object (void * dr, REGION * clip) ;
-extern int info_object (void * dr, REGION * clip) ;
 
 /* Bitmaps */
 
@@ -356,12 +285,9 @@ extern void gr_mode7_start  (int n, int fileid, int inid, int outid, int region,
 extern void gr_mode7_stop   (int n) ;
 extern void gr_mode7_draw   (int n) ;
 extern int  gr_mode7_active (int n) ;
-extern void gr_mode7_bbox   (int n, REGION * r) ;
 
 /* Consola del sistema */
 /* ------------------- */
-
-extern int  show_console ;
 
 extern void gr_sys_color   (int cfg, int cbg) ;
 extern void gr_sys_puts    (GRAPH * map, int x, int y, Uint8 * str, int len) ;
@@ -373,7 +299,6 @@ extern void gr_con_show    (int doit) ;
 extern void gr_con_draw    () ;
 extern void gr_con_getkey  (int key, int sym) ;
 extern void gr_con_scroll  (int direction) ;
-extern void gr_con_lateral_scroll (int direction);
 extern void gr_con_do      (const char * command) ;
 
 /* Profiler */
@@ -392,19 +317,17 @@ extern void gprof_toggle();
 /* -------------------------------------------------- */
 
 #ifdef WIN32
-  #ifndef __GNUC__
-  #define MMX_FUNCTIONS
-  #endif
+#define MMX_FUNCTIONS
 
 extern int  MMX_available;
 
 extern void MMX_init();
-extern void MMX_draw_hspan_8to8_nocolorkey (void * scr, void * tex, int pixels, int incs);
-extern void MMX_draw_hspan_8to8_translucent	(void * scr, void * tex, int pixels, int incs);
-extern void MMX_draw_hspan_8to8 (void * scr, void * tex, int pixels, int incs);
-extern void MMX_draw_hspan_16to16 (void * scr, void * tex, int pixels, int incs);
-extern void MMX_draw_hspan_16to16_translucent (void * scr, void * tex, int pixels, int incs);
-extern void MMX_draw_hspan_16to16_nocolorkey (void * scr, void * tex, int pixels, int incs);
+extern void MMX_draw_hspan_8to8_nocolorkey (Uint8 * scr, Uint8 * tex, int pixels, int incs);
+extern void MMX_draw_hspan_8to8_translucent	(Uint8 * scr, Uint8 * tex, int pixels, int incs);
+extern void MMX_draw_hspan_8to8 (Uint8 * scr, Uint8 * tex, int pixels, int incs);
+extern void MMX_draw_hspan_16to16 (Uint16 * scr, Uint16 * tex, int pixels, int incs);
+extern void MMX_draw_hspan_16to16_translucent (Uint16 * scr, Uint16 * tex, int pixels, int incs);
+extern void MMX_draw_hspan_16to16_nocolorkey (Uint16 * scr, Uint16 * tex, int pixels, int incs);
 #endif
 
 /* Rutinas de conversión entre formatos */
@@ -418,15 +341,11 @@ extern Uint8  * gr_alpha8  (int alpha);
 
 /* Rutinas del Mame's 2xScale algorithm */
 
-extern void scale2x(Uint8 *srcPtr, Uint32 srcPitch, Uint8 *dstPtr, Uint32 dstPitch, int width, int height);
-/*extern void scale2x32(Uint8 *srcPtr, Uint32 srcPitch, Uint8 *dstPtr, Uint32 dstPitch, int width, int height);*/
+extern void AdMame2x(Uint8 *srcPtr, Uint32 srcPitch,
+	Uint8 *dstPtr, Uint32 dstPitch, int width, int height);
+extern void AdMame2x32(Uint8 *srcPtr, Uint32 srcPitch,
+    Uint8 *dstPtr, Uint32 dstPitch, int width, int height);
 
-/* Rutinas del ScummVM's HQ2x algorithm */
-
-extern void hq2x(Uint8 *srcPtr, Uint32 srcPitch, Uint8 *dstPtr, Uint32 dstPitch, int width, int height);
-
-/* Otras rutinas de SCALE */
-extern void scale_normal2x(Uint8 *srcPtr, Uint32 srcPitch, Uint8 *dstPtr, Uint32 dstPitch, int width, int height);
-extern void scanline2x(Uint8 *srcPtr, Uint32 srcPitch, Uint8 *dstPtr, Uint32 dstPitch, int width, int height);
+extern int frame_count;
 
 #endif

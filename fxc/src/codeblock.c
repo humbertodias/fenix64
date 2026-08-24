@@ -1,62 +1,28 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#ifdef TARGET_BEOS
-#include <posix/assert.h>
-#else
 #include <assert.h>
-#endif
 
 #include "fxc.h"
 #include "messages.c"
-
-/*
- *  FUNCTION : codeblock_postprocess
- *
- *  After every codeblock has been completed (all the source code is
- *  compiled), update a codeblock with all things that couldn't be
- *  done before. This function does the following:
- *
- *	- Updates all user procedure/function calls with the process
- *    number instead of its identifier id. Emits a compiler error
- *    if a process what user but never defined.
- *
- *  - Updates all jumps so that they go to absolute opcode offsets
- *    inside the procedure, instead of refering to the label table
- *
- *  This function will be called once for each existing code block.
- *
- *  PARAMS :
- *      code			Pointer to the codeblock to modify
- *
- *  RETURN VALUE :
- *      None
- */
 
 void codeblock_postprocess (CODEBLOCK * code)
 {
@@ -79,9 +45,7 @@ void codeblock_postprocess (CODEBLOCK * code)
 			}
 			ptr[1] = proc->typeid ;
 		}
-		if (*ptr == MN_JUMP    ||
-		    *ptr == MN_JFALSE  || *ptr == MN_JTFALSE ||
-		    *ptr == MN_JTRUE   || *ptr == MN_JTTRUE  ||
+		if (*ptr == MN_JUMP    || *ptr == MN_JFALSE || 
 		    *ptr == MN_JNOCASE || *ptr == MN_CLONE)
 		{
 			ptr++ ;
@@ -116,19 +80,6 @@ void codeblock_postprocess (CODEBLOCK * code)
 	}
 }
 
-/*
- *  FUNCTION : codeblock_init
- *
- *  Initializes a new code block and allocates initial data
- *  for all its internal structs.
- *
- *  PARAMS :
- *      c			Pointer to the codeblock to initialize
- *
- *  RETURN VALUE :
- *      None
- */
-
 void codeblock_init(CODEBLOCK * c)
 {
 	c->data = (int *) malloc (64 * sizeof(int)) ;
@@ -141,8 +92,6 @@ void codeblock_init(CODEBLOCK * c)
 	c->label_count = 0 ;
 	c->label_reserved = 16 ;
 	c->current = 0 ;
-	c->previous = 0 ;
-	c->previous2 = 0 ;
 	if (!c->data || !c->loops || !c->labels)
 	{
 		fprintf (stdout, "CODEBLOCK: sin memoria\n") ;
@@ -150,24 +99,7 @@ void codeblock_init(CODEBLOCK * c)
 	}
 }
 
-/*
- *  FUNCTION : codeblock_alloc
- *             codeblock_loop_alloc
- *			   codeblock_label_alloc
- *
- *  Internal functions that alloc more memory for an
- *  internal data of the code block. Shouldn't be used
- *  outside this module.
- *
- *  PARAMS :
- *      c			Pointer to the codeblock
- *		count		Additional size in number of members
- *
- *  RETURN VALUE :
- *      None
- */
-
-static void codeblock_alloc (CODEBLOCK * c, int count)
+void codeblock_alloc (CODEBLOCK * c, int count)
 {
 	c->reserved += count ;
 	c->data = (int *) realloc (c->data, c->reserved * sizeof(int)) ;
@@ -178,7 +110,7 @@ static void codeblock_alloc (CODEBLOCK * c, int count)
 	}
 }
 
-static void codeblock_loop_alloc (CODEBLOCK * c, int count)
+void codeblock_loop_alloc (CODEBLOCK * c, int count)
 {
 	c->loop_reserved += count ;
 	c->loops = (int *) realloc (c->loops, c->loop_reserved * sizeof(int) * 2) ;
@@ -189,18 +121,7 @@ static void codeblock_loop_alloc (CODEBLOCK * c, int count)
 	}
 }
 
-static void codeblock_label_alloc (CODEBLOCK * c, int count)
-{
-	c->label_reserved += count ;
-	c->labels = (int *) realloc (c->labels, c->label_reserved * sizeof(int) * 2) ;
-	if (!c->labels)
-	{
-		fprintf (stdout, "CODEBLOCK: sin memoria\n") ;
-		exit (1) ;
-	}
-}
-
-int  codeblock_loop_add (CODEBLOCK * c)
+extern int  codeblock_loop_add (CODEBLOCK * c) 
 {
 	return c->loop_count++ ;
 }
@@ -223,6 +144,17 @@ void codeblock_loop_end (CODEBLOCK * c, int loop, int end)
 	c->loops[loop*2+1] = end ;
 }
 
+void codeblock_label_alloc (CODEBLOCK * c, int count)
+{
+	c->label_reserved += count ;
+	c->labels = (int *) realloc (c->labels, c->label_reserved * sizeof(int) * 2) ;
+	if (!c->labels)
+	{
+		fprintf (stdout, "CODEBLOCK: sin memoria\n") ;
+		exit (1) ;
+	}
+}
+
 int codeblock_label_add (CODEBLOCK * c)
 {
 	c->label_count++ ;
@@ -234,53 +166,6 @@ int codeblock_label_add (CODEBLOCK * c)
 void codeblock_label_set (CODEBLOCK * c, int label, int offset)
 {
 	c->labels[label] = offset ;
-}
-
-void codeblock_stepback (CODEBLOCK * c)
-{
-	int code  = c->data[c->previous];
-	int param = 0;
-
-	if (MN_PARAMS(code) > 0)
-		param = c->data[c->previous+1];
-
-	if (c->previous != c->previous2)
-	{
-		c->current  = c->previous;
-		c->previous = c->previous2;
-		codeblock_add (c, code, param);
-	}
-}
-
-CODEBLOCK_POS codeblock_pos(CODEBLOCK * c)
-{
-	CODEBLOCK_POS p;
-
-	p.current = c->current;
-	p.previous = c->previous;
-	p.previous2 = c->previous2;
-	return p;
-}
-
-void codeblock_setpos(CODEBLOCK * c, CODEBLOCK_POS p)
-{
-	c->current = p.current;
-	c->previous = p.previous;
-	c->previous2 = p.previous2;
-}
-
-void codeblock_add_block (CODEBLOCK * c, CODEBLOCK_POS from, CODEBLOCK_POS to)
-{
-	if (c->current+(to.current - from.current)+2 >= c->reserved)
-		codeblock_alloc (c, (to.current - from.current + 34) & 0x1F) ;
-
-	memcpy (c->data + c->current, c->data + from.current, 4*(to.current - from.current));
-	c->current += to.current - from.current;
-	c->previous = c->current - (to.current - to.previous);
-	if (to.current - from.current > 2)
-		c->previous2 = c->current - (to.current - to.previous2);
-	else
-		c->previous2 = c->previous;
 }
 
 void codeblock_add (CODEBLOCK * c, int code, int param)
@@ -298,35 +183,30 @@ void codeblock_add (CODEBLOCK * c, int code, int param)
 		{
 			c->data[c->previous] = MN_INDEX ;
 			c->data[c->previous+1] *= param ;
-			codeblock_stepback(c);
 			return ;
 		}
 		else if (code == MN_ADD && c->data[c->previous] == MN_PUSH)
 		{
 			c->data[c->previous] = MN_INDEX ;
-			codeblock_stepback(c);
 			return ;
 		}
 		else if (code == MN_SUB && c->data[c->previous] == MN_PUSH)
 		{
 			c->data[c->previous] = MN_INDEX ;
 			c->data[c->previous+1] = -c->data[c->previous+1] ;
-			codeblock_stepback(c);
 			return ;
 		}
-		else if ((code & MN_MASK) == MN_INDEX)
+		else if (code == MN_INDEX)
 		{
 			if (c->data[c->previous] == MN_INDEX)
 			{
 				c->data[c->previous+1] += param ;
 				return ;
 			}
-			if ((c->data[c->previous] & MN_MASK) == MN_GLOBAL
-			 || (c->data[c->previous] & MN_MASK) == MN_LOCAL
-			 || (c->data[c->previous] & MN_MASK) == MN_PUBLIC
-			 || (c->data[c->previous] & MN_MASK) == MN_REMOTE_PUBLIC
-			 || (c->data[c->previous] & MN_MASK) == MN_PRIVATE
-			 || (c->data[c->previous] & MN_MASK) == MN_REMOTE)
+			if (c->data[c->previous] == MN_GLOBAL
+			 || c->data[c->previous] == MN_LOCAL
+			 || c->data[c->previous] == MN_PRIVATE
+			 || c->data[c->previous] == MN_REMOTE)
 			{
 				c->data[c->previous+1] += param ;
 				return ;
@@ -334,10 +214,10 @@ void codeblock_add (CODEBLOCK * c, int code, int param)
 		}
 		else if (code == MN_POP)
 		{
-			switch (c->data[c->previous] & MN_MASK)
+			switch (c->data[c->previous])
 			{
 				case MN_LET:
-					c->data[c->previous] = MN_LETNP | (c->data[c->previous] & ~MN_MASK);
+					c->data[c->previous] = MN_LETNP ;
 					return ;
 				case MN_CALL:
 					c->data[c->previous] = MN_PROC ;
@@ -347,41 +227,33 @@ void codeblock_add (CODEBLOCK * c, int code, int param)
 					return ;
 			}
 		}
-		else if ((code & MN_MASK) == MN_PTR)
+		else if ((code & 0xFF) == MN_PTR)
 		{
 			/* Mismo caso */
 
-			switch (c->data[c->previous] & MN_MASK)
+			switch (c->data[c->previous])
 			{
 				case MN_PRIVATE:
-					c->data[c->previous] = MN_GET_PRIV   | (code & ~MN_MASK) ;
+					c->data[c->previous] = MN_GET_PRIV | (code & ~0xFF) ;
 					return ;
 				case MN_LOCAL:
-					c->data[c->previous] = MN_GET_LOCAL  | (code & ~MN_MASK) ;
-					return ;
-				case MN_PUBLIC:
-					c->data[c->previous] = MN_GET_PUBLIC | (code & ~MN_MASK) ;
-					return ;
-				case MN_REMOTE_PUBLIC:
-					c->data[c->previous] = MN_GET_REMOTE_PUBLIC | (code & ~MN_MASK) ;
+					c->data[c->previous] = MN_GET_LOCAL | (code & ~0xFF) ;
 					return ;
 				case MN_GLOBAL:
-					c->data[c->previous] = MN_GET_GLOBAL | (code & ~MN_MASK) ;
+					c->data[c->previous] = MN_GET_GLOBAL | (code & ~0xFF) ;
 					return ;
 				case MN_REMOTE:
-					c->data[c->previous] = MN_GET_REMOTE | (code & ~MN_MASK) ;
+					c->data[c->previous] = MN_GET_REMOTE | (code & ~0xFF) ;
 					return ;
 			}
 		}
 	}
 
-	c->previous2 = c->previous;
-	c->previous  = c->current ;
-	c->data[c->current++] = code ;
+	c->previous = c->current ;
 
-	if (MN_PARAMS(code) > 0) {
+	c->data[c->current++] = code ;
+	if (MN_PARAMS(code) > 0) 
 		c->data[c->current++] = param ;
-    }
 
 	if (c->current+2 >= c->reserved) codeblock_alloc (c, 32) ;
 }

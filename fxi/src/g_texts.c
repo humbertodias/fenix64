@@ -1,7 +1,7 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
+ *  Last stable release   : 
  *  Project documentation : http://fenix.divsite.net
  *
  *
@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright © 1999 José Luis Cebrián Pagüe
@@ -30,18 +30,14 @@
  *
  * HISTORY:	0.82 - New extended FONT format. Font functions moved to g_font.
  *          0.74 - gr_text_new_var modified to support data types
- *			0.74 - gr_text_put_all modified to suppor new data types
+ *			0.74 - gr_text_put_all modified to suppor new data types 
  *			0.72 - Corrected gr_text_bitmap (WRITE_IN_MAP)
  */
 
-#ifdef TARGET_BEOS
 #include <posix/assert.h>
-#else
-#include <assert.h>
-#endif
-
 #include <stdlib.h>
 #include <string.h>
+#include <SDL.h>
 
 #include "fxi.h"
 
@@ -50,9 +46,16 @@
 int fntcolor8 = -1 ;
 Uint16 fntcolor16 = 0xFFFF ;
 
-typedef struct _text
+#define TEXT_TEXT		1
+#define TEXT_STRING		2
+#define TEXT_INTEGER	3
+#define TEXT_FLOAT		4
+#define TEXT_WORD		5
+#define TEXT_BYTE		6
+#define TEXT_CHARARRAY	7
+
+typedef struct _text 
 {
-    int id ;
 	int on ;		/* 1 - Texto ; 2 - VarSTR; 3 - VarINT; 4 - VarFLOAT; 5 - VarWORD; 6 - VarBYTE */
 	int fontid ;
 	int x ;
@@ -77,7 +80,8 @@ char *strrev(char *str)
 {
       char *p1, *p2;
 
-      if (! str || ! *str) return str;
+      if (! str || ! *str)
+            return str;
       for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; ++p1, --p2)
       {
             *p1 ^= *p2;
@@ -91,13 +95,13 @@ char *strrev(char *str)
 /*
  *  FUNCTION : get_text
  *
- *  Returns the character string of a given text
+ *  Returns the character string of a given text 
  *  (may be the representation of a integer or float value)
  *
- *  PARAMS :
+ *  PARAMS : 
  *		text			Pointer to the text object
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      String contained within the text
  *
  */
@@ -108,17 +112,14 @@ static const char * get_text (TEXT * text)
 	char * aux;
 	int w;
 
-	switch (text->on)
+	switch (text->on) 
 	{
 		case TEXT_TEXT:
 			return text->text;
 		case TEXT_STRING:
 			return string_get(*(int*)text->var) ;
-		case TEXT_INT:
+		case TEXT_INTEGER:
 			sprintf (buffer, "%d", *(int *)text->var) ;
-			return buffer ;
-		case TEXT_DWORD:
-			sprintf (buffer, "%u", *(int *)text->var) ;
 			return buffer ;
 		case TEXT_FLOAT:
 			sprintf (buffer, "%f", *(float *)text->var) ;
@@ -133,23 +134,14 @@ static const char * get_text (TEXT * text)
 		case TEXT_BYTE:
 			sprintf (buffer, "%d", *(Uint8 *)text->var) ;
 			return buffer ;
-		case TEXT_SBYTE:
-			sprintf (buffer, "%d", *(Sint8 *)text->var) ;
-			return buffer ;
-		case TEXT_CHAR:
-			sprintf (buffer, "%c", *(Uint8 *)text->var) ;
-			return buffer ;
 		case TEXT_WORD:
 			sprintf (buffer, "%d", *(Uint16 *)text->var) ;
-			return buffer ;
-		case TEXT_SHORT:
-			sprintf (buffer, "%d", *(Sint16 *)text->var) ;
 			return buffer ;
 		case TEXT_CHARARRAY:
 			return (const char *)(text->var);
 	}
 
-	return NULL;
+	return "";
 }
 
 /*
@@ -157,28 +149,21 @@ static const char * get_text (TEXT * text)
  *
  *  Returns information about a text object
  *
- *  PARAMS :
+ *  PARAMS : 
  *		text			Pointer to the text object
  *		bbox			Region to update with the text bounding box
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      1 if the text has changed since last frame
  *
  */
 
-static int info_text (void * what, REGION * bbox)
+static int info_text (TEXT * text, REGION * bbox)
 {
-	TEXT * text = (TEXT *) what;
 	const char * str = get_text(text);
 	int x, y, width, height;
 	REGION prev = *bbox;
 	FONT * font;
-
-    // Splinter
-    if (!str) return 1;
-
-	font = gr_font_get (text->fontid);
-	if (!font) return 1;
 
 	/* Calculate the text dimensions */
 
@@ -189,15 +174,20 @@ static int info_text (void * what, REGION * bbox)
 
 	/* Update the font's maxheight (if needed) */
 
+	font = gr_font_get (text->fontid);
+	if (font == NULL)
+		return 0;
+
 	if (font->maxheight == 0)
 	{
 		int c;
 
 		for (c = 0 ; c < 256 ; c++)
 		{
-			if (font->glyph[c].bitmap == NULL) continue;
-			if (font->maxheight < (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset)
-				font->maxheight = (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset;
+			if (font->glyph[c].bitmap == NULL)
+				continue;
+			if (font->maxheight < font->glyph[c].bitmap->height + font->glyph[c].yoffset)
+				font->maxheight = font->glyph[c].bitmap->height + font->glyph[c].yoffset;
 		}
 	}
 
@@ -250,20 +240,19 @@ static int info_text (void * what, REGION * bbox)
 			return 0;
 		case TEXT_STRING:
 		case TEXT_FLOAT:
-		case TEXT_INT:
-		case TEXT_DWORD:
-			if (text->last_value == *(int *)text->var) return 0;
+		case TEXT_INTEGER:
+			if (text->last_value == *(int *)text->var)
+				return 0;
 			text->last_value = *(int *)text->var;
 			return 1;
 		case TEXT_BYTE:
-		case TEXT_SBYTE:
-		case TEXT_CHAR:
-			if (text->last_value == *(Uint8 *)text->var) return 0;
+			if (text->last_value == *(Uint8 *)text->var)
+				return 0;
 			text->last_value = *(Uint8 *)text->var;
 			return 1;
 		case TEXT_WORD:
-		case TEXT_SHORT:
-			if (text->last_value == *(Uint16 *)text->var) return 0;
+			if (text->last_value == *(Uint16 *)text->var)
+				return 0;
 			text->last_value = *(Uint16 *)text->var;
 			return 1;
 		case TEXT_CHARARRAY:
@@ -277,32 +266,21 @@ static int info_text (void * what, REGION * bbox)
  *
  *  Draws a text object
  *
- *  PARAMS :
+ *  PARAMS : 
  *		text			Pointer to the text object
  *		clip			Clipping region
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
 
-void draw_text (void * what, REGION * clip)
+void draw_text (TEXT * text, REGION * clip)
 {
-	TEXT * text = (TEXT *) what;
 	const char * str = get_text(text);
 	int save8, save16;
 	int x, y, width, height;
 	FONT * font;
-	int ret;
-
-    // Splinter
-    if (!str) return;
-
-	font = gr_font_get (text->fontid);
-	if (font == NULL) {
-	    gr_text_destroy(text->id);
-	    return;
-	}
 
 	/* Calculate the text dimensions */
 
@@ -312,15 +290,21 @@ void draw_text (void * what, REGION * clip)
 	height = gr_text_height (text->fontid, str);
 
 	/* Update the font's maxheight (if needed) */
+
+	font = gr_font_get (text->fontid);
+	if (font == NULL)
+		return;
+
 	if (font->maxheight == 0)
 	{
 		int c;
 
 		for (c = 0 ; c < 256 ; c++)
 		{
-			if (font->glyph[c].bitmap == NULL) continue;
-			if (font->maxheight < (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset)
-				font->maxheight = (int)font->glyph[c].bitmap->height + font->glyph[c].yoffset;
+			if (font->glyph[c].bitmap == NULL)
+				continue;
+			if (font->maxheight < font->glyph[c].bitmap->height + font->glyph[c].yoffset)
+				font->maxheight = font->glyph[c].bitmap->height + font->glyph[c].yoffset;
 		}
 	}
 
@@ -361,7 +345,7 @@ void draw_text (void * what, REGION * clip)
 	fntcolor8 = text->color8;
 	fntcolor16 = text->color16;
 
-    if(!gr_text_put (0, clip, text->fontid, x, y, str)) gr_text_destroy(text->id);
+	gr_text_put (0, clip, text->fontid, x, y, str) ;
 
 	fntcolor8 = save8;
 	fntcolor16 = save16;
@@ -372,13 +356,13 @@ void draw_text (void * what, REGION * clip)
  *
  *  Create a new text, using a fixed text string
  *
- *  PARAMS :
+ *  PARAMS : 
  *		fontid			Font number
  *		x, y			Screen coordinates
  *		alignment		Alignment
  *		text			Pointer to text
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -391,14 +375,12 @@ int gr_text_new (int fontid, int x, int y, int alignment, const char * text)
 	{
 		for (textid = 1 ; textid < MAX_TEXTS ; textid++)
 			if (!texts[textid].on) break ;
-
 		if (textid == MAX_TEXTS)
 			gr_error ("Demasiados textos en pantalla") ;
 	}
 	else text_nextid++ ;
 	text_count++ ;
 
-	texts[textid].id = textid ;
 	texts[textid].on = 1 ;
 	texts[textid].fontid = fontid ;
 	texts[textid].x = x ;
@@ -421,7 +403,7 @@ int gr_text_new_var (int fontid, int x, int y, int alignment, const void * var, 
 	texts[textid].on = type ;
 	if (type > 1)
 		texts[textid].var = var ;
-
+	
 	return textid ;
 }
 
@@ -440,9 +422,10 @@ void gr_text_destroy (int textid)
 	{
 		for (textid = 1 ; textid < text_nextid ; textid++)
 		{
-			if (texts[textid].on) {
+			if (texts[textid].on)
+			{
 				gr_destroy_object (texts[textid].objectid);
-				if (texts[textid].text) free (texts[textid].text) ;
+				free (texts[textid].text) ;
 				texts[textid].on = 0 ;
 			}
 		}
@@ -455,9 +438,10 @@ void gr_text_destroy (int textid)
 		if (!texts[textid].on) return ;
 
 		gr_destroy_object (texts[textid].objectid);
-		if (texts[textid].text) free (texts[textid].text) ;
+		free (texts[textid].text) ;
 		texts[textid].on = 0 ;
-		if (textid == text_nextid-1) {
+		if (textid == text_nextid-1)
+		{
 			while (text_nextid > 1 && !texts[text_nextid-1].on)
 				text_nextid-- ;
 		}
@@ -475,16 +459,12 @@ int gr_text_widthn (int fontid, const unsigned char * text, int n)
 	int l = 0 ;
 	FONT * f ;
 
-	if (!text || !*text) return 0;
-
-	if (fontid < 0 || fontid > 255 || !fonts[fontid]) {
-		gr_con_printf ("Tipo de letra incorrecto (%d)", fontid) ;
-		return 0;
-	}
-
+	if (fontid < 0 || fontid > 255 || !fonts[fontid])
+		gr_error ("Tipo de letra incorrecto (%d)", fontid) ;
+	
 	f = fonts[fontid] ;
-
-	while (*text && n--)
+	
+	while (*text && n--) 
 	{
 		switch (f->charset)
 		{
@@ -505,17 +485,17 @@ int gr_text_margintop (int fontid, const unsigned char * text)
 	int minyoffset = 0x7FFFFFFF ;
 	FONT * f ;
 
-	if (!text || !*text) return 0;
-
 	if (fontid < 0 || fontid > 255 || !fonts[fontid])
 	{
-		gr_con_printf ("Tipo de letra incorrecto (%d)", fontid) ;
+		gr_error ("Tipo de letra incorrecto (%d)", fontid) ;
 		return 0;
 	}
-
+	
 	f = fonts[fontid] ;
 
-	while (*text)
+	if (!*text)
+		return 0;
+	while (*text) 
 	{
 		switch (f->charset)
 		{
@@ -541,34 +521,31 @@ int gr_text_height (int fontid, const unsigned char * text)
 
 	if (fontid < 0 || fontid > 255 || !fonts[fontid])
 	{
-		gr_con_printf ("Tipo de letra incorrecto (%d)", fontid) ;
+		gr_error ("Tipo de letra incorrecto (%d)", fontid) ;
 		return 0;
 	}
-
-	if (!text || !*text) return 0;
 
 	margin = gr_text_margintop (fontid, text);
 	f = fonts[fontid] ;
 
-	while (*text)
+	if (!*text)
+		return 0;
+
+	while (*text) 
 	{
 		if (f->glyph[*text].bitmap)
 		{
 			switch (f->charset)
 			{
 				case CHARSET_ISO8859:
-					if (l < f->glyph[dos_to_win[*text]].yoffset
-						  + (int)f->glyph[dos_to_win[*text]].bitmap->height)
-					{
-						l = f->glyph[dos_to_win[*text]].yoffset
-						  + (int)f->glyph[dos_to_win[*text]].bitmap->height ;
-					}
+					if (l < f->glyph[dos_to_win[*text]].yoffset 
+						+ f->glyph[dos_to_win[*text]].bitmap->height)
+						l = f->glyph[dos_to_win[*text]].yoffset 
+						+ f->glyph[dos_to_win[*text]].bitmap->height ;
 					break;
 				case CHARSET_CP850:
-					if (f->glyph[*text].yoffset + (int)f->glyph[*text].bitmap->height > l)
-					{
-						l = f->glyph[*text].yoffset + (int)f->glyph[*text].bitmap->height ;
-					}
+					if (f->glyph[*text].yoffset + f->glyph[*text].bitmap->height > l)
+						l = f->glyph[*text].yoffset + f->glyph[*text].bitmap->height ;
 					break;
 			}
 		}
@@ -577,7 +554,7 @@ int gr_text_height (int fontid, const unsigned char * text)
 	return l - margin ;
 }
 
-int gr_text_put (GRAPH * dest, REGION * clip, int fontid, int x, int y, const unsigned char * text)
+void gr_text_put (GRAPH * dest, REGION * clip, int fontid, int x, int y, const unsigned char * text)
 {
 	GRAPH * ch ;
 	FONT   * f ;
@@ -585,27 +562,24 @@ int gr_text_put (GRAPH * dest, REGION * clip, int fontid, int x, int y, const un
 	int flags ;
 	int save16, save8;
 
-    if (fontid < 0 || fontid > 255 || !fonts[fontid]) {
-        gr_con_printf ("Tipo de letra incorrecto (%d)", fontid) ;
-        return 0;
-    }
-
-	if (!text || !*text) return 1;
-
 	if (!dest) dest = scrbitmap ;
 
-    f = fonts[fontid] ;
+        if (fontid < 0 || fontid > 255 || !fonts[fontid])
+                gr_error ("Tipo de letra incorrecto (%d)", fontid) ;
+
+        f = fonts[fontid] ;
 
 	/* Se permite imprimir texto antes de inicializar los globales */
 
 	flags = globaldata ? GLODWORD(TEXT_FLAGS) : 0 ;
+	
 
 	save8 = syscolor8;
 	save16 = syscolor16;
-
+	
 	if (fntcolor8 == -1)
 	{
-		gr_setcolor ((dest->depth == 8) ? gr_find_nearest_color(255,255,255):gr_rgb(255,255,255));
+		gr_setcolor (dest->depth == 8 ? gr_find_nearest_color(255,255,255):gr_rgb(255,255,255));
 	}
 	else
 	{
@@ -629,11 +603,11 @@ int gr_text_put (GRAPH * dest, REGION * clip, int fontid, int x, int y, const un
 		}
 
 		ch = f->glyph[current_char].bitmap ;
-		if (ch)
+		if (ch) 
 		{
-			gr_blit (dest, clip, x + f->glyph[current_char].xoffset,
-				                 y + f->glyph[current_char].yoffset,
-                                 flags, ch) ;
+			gr_blit (dest, clip, x + f->glyph[current_char].xoffset, 
+				              y + f->glyph[current_char].yoffset, 
+							  flags, ch) ;
 		}
 		x += f->glyph[current_char].xadvance ;
 		text++ ;
@@ -641,8 +615,6 @@ int gr_text_put (GRAPH * dest, REGION * clip, int fontid, int x, int y, const un
 
 	syscolor8 = save8;
 	syscolor16 = save16;
-
-	return 1;
 }
 
 GRAPH * gr_text_bitmap (int fontid, const char * text, int alignment)
@@ -650,29 +622,22 @@ GRAPH * gr_text_bitmap (int fontid, const char * text, int alignment)
 	GRAPH * gr ;
 	int x, y ;
 	FONT   * f ;
+        
+        if (fontid < 0 || fontid > 255 || !fonts[fontid])
+                gr_error ("Tipo de letra incorrecto (%d)", fontid) ;
 
-	// Splinter
-	if (!text || !*text) return NULL;
-
-    if (fontid < 0 || fontid > 255 || !fonts[fontid]) {
-       gr_con_printf ("Tipo de letra incorrecto (%d)", fontid) ;
-       return NULL;
-    }
-
-    f = fonts[fontid] ;
-
+        f = fonts[fontid] ;
+	
 	/* Un refresco de paleta en mitad de gr_text_put puede provocar efectos
 	 * desagradables al modificar el tipo de letra del sistema */
 
 	if (palette_changed) gr_refresh_palette() ;
 
-	gr = bitmap_new_syslib (gr_text_width (fontid, text), gr_text_height (fontid, text), enable_16bits ? 16:8, 1) ;
+	gr = bitmap_new_syslib (gr_text_width (fontid, text),
+		gr_text_height (fontid, text), enable_16bits ? 16:8) ;
 	assert (gr) ;
 	gr_clear (gr) ;
-	if (!gr_text_put (gr, 0, fontid, 0, -gr_text_margintop(fontid, text), text)) {
-	    bitmap_destroy(gr);
-	    return NULL;
-    }
+	gr_text_put (gr, 0, fontid, 0, -gr_text_margintop(fontid, text), text) ;
 
 	switch (alignment)
 	{
@@ -736,6 +701,6 @@ void gr_text_setcolor (int c)
 }
 
 int gr_text_getcolor()
-{
+{	
 	return ((enable_16bits)?fntcolor16:fntcolor8) ;
 }

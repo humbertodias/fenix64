@@ -1,7 +1,7 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
+ *  Last stable release   : 
  *  Project documentation : http://fenix.divsite.net
  *
  *
@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright © 1999 José Luis Cebrián Pagüe
@@ -29,17 +29,14 @@
  * DESCRIPTION : bitmap & pixbuff functions
  *
  * HISTORY:      0.81 - patched bitmap_new to initializa to 0 values
- *               0.82 - added gr_save_map
+ *				 0.82 - added gr_save_map
  */
 
-#ifdef TARGET_BEOS
 #include <posix/assert.h>
-#else
-#include <assert.h>
-#endif
-
 #include <string.h>
 #include <stdlib.h>
+
+#include <SDL.h>
 
 #include "fxi.h"
 
@@ -50,523 +47,539 @@ extern GRAPH * gr_read_pcx (const char * filename) ;
 
 static int free_map_code = 1000 ;
 
-static GRAPH * first = NULL;
-
 /* Returns the code of a new system library graph (1000+). Searchs
    for free slots if the program creates too many system maps */
 
-int bitmap_next_code()
+static int get_free_map_code()
 {
-    int i;
+	int i;
 
-    if (free_map_code > 2000)
-    {
-        for (i = free_map_code-1 ; i >= 1000 ; i--)
-        {
-            if (bitmap_get(0, i) == 0)
-                return i;
-        }
-    }
-    return free_map_code++;
+	if (free_map_code > 2000)
+	{
+		for (i = free_map_code-1 ; i >= 1000 ; i--)
+		{
+			if (bitmap_get(0, i) == 0)
+				return i;
+		}
+	}
+	return free_map_code++;
 }
 
-GRAPH * bitmap_new (int code, int w, int h, int depth, int frames)
+GRAPH * bitmap_new (int code, int w, int h, int depth)
 {
-    GRAPH  * gr ;
-    int      bytesPerRow, wb ;
+	GRAPH  * gr ;
+	int      bytesPerRow, wb ;
 
-    if (depth != 8 && depth != 16 && depth != 1)
-    {
-        gr_con_printf ("Profundidad de color no soportada (new bitmap)\n") ;
-        return NULL;
-    }
+	if (depth != 8 && depth != 16 && depth != 1)
+	{
+		gr_error ("Profundidad de color no soportada\n(new bitmap)") ;
+		return NULL;
+	}
 
-    if (frames < 1) frames = 1;
+	/* Calculate the row size (dword-aligned) */
 
-    /* Calculate the row size (dword-aligned) */
+	wb = w * depth / 8;
+	if (wb*8/depth < w)
+		wb++;
 
-    wb = w * depth / 8;
-    if ((wb * 8 / depth) < w) wb++;
+	bytesPerRow = wb;
+	if (bytesPerRow & 0x03)
+		bytesPerRow = (bytesPerRow & ~3) + 4;
 
-    bytesPerRow = wb;
-    if (bytesPerRow & 0x03) bytesPerRow = (bytesPerRow & ~3) + 4;
+	/* Create and fill the struct */
 
-    /* Create and fill the struct */
+	gr = (GRAPH *) malloc (sizeof(GRAPH)) ;
+	if (!gr) 
+	{
+		gr_error ("bitmap_new(%dx%dx%d): sin memoria", w, h, depth) ; ;
+		return NULL;
+	}
 
-    gr = (GRAPH *) malloc (sizeof(GRAPH)) ;
-    if (!gr)
-    {
-        gr_con_printf ("bitmap_new(%dx%dx%d): sin memoria", w, h, depth) ; ;
-        return NULL;
-    }
+	gr->width       = w ;
+	gr->widthb      = wb ;
+	gr->pitch       = bytesPerRow ;
+	gr->height      = h ;
+	gr->depth       = depth ;
+	gr->name[0]     = 0 ;
+	gr->code        = code ;
+	gr->data        = (char *) malloc (h * gr->pitch) ;
+	gr->offset      = 0 ;
+	gr->flags       = 0 ;
+	gr->modified    = 0 ;
+	gr->info_flags  = 0 ;
+	gr->cpoints     = NULL ;
+	gr->animation   = NULL ;
+	gr->blend_table = NULL ;
 
-    memset (gr, 0, sizeof(GRAPH));
-
-    gr->width            = w ;
-    gr->widthb           = wb ;
-    gr->pitch            = bytesPerRow ;
-    gr->frames           = frames;
-    gr->height           = h ;
-    gr->depth            = depth ;
-    gr->code             = code ;
-    gr->data_start       = (char *) malloc (h * gr->pitch * frames) ;
-    gr->data             = gr->data_start;
-    gr->cpoints          = NULL ;
-    gr->blend_table      = NULL ;
-    gr->keyframes        = (FBM_KEYFRAME *) malloc(sizeof(FBM_KEYFRAME));
-    gr->sequences        = (FBM_SEQUENCE *) malloc(sizeof(FBM_SEQUENCE));
-    gr->next             = first;
-    gr->prev             = NULL;
-    gr->current_keyframe = -1;
-
-    gr->palette          = NULL ;
-
-    if (first) first->prev = gr;
-    first = gr;
-
-    if (!gr->data || !gr->keyframes || !gr->sequences)
-    {
-        if (gr->data) free(gr->data);
-        if (gr->keyframes) free(gr->keyframes);
-        if (gr->sequences) free(gr->sequences);
-        free (gr);
-
-        gr_con_printf ("bitmap_new: sin memoria en calloc(%d, %d)", h, gr->pitch) ; ;
-        return NULL;
-    }
-
-    // Fills default data for the animation
-
-    gr->keyframes->angle = 0;
-    gr->keyframes->flags = 0;
-    gr->keyframes->frame = 0;
-    gr->keyframes->pause = 25;
-
-    gr->sequences->first_keyframe = 0;
-    gr->sequences->last_keyframe = 0;
-    gr->sequences->next_sequence = 0;
-    gr->sequences->name[0] = 0;
-
-    return gr ;
+	if (!gr->data) 
+	{
+		free (gr);
+		gr_error ("bitmap_new: sin memoria en calloc(%d, %d)", h, gr->pitch) ; ;
+		return NULL;
+	}
+	return gr ;
 }
 
-GRAPH * bitmap_clone (GRAPH * map)
+GRAPH * bitmap_clone (GRAPH * this)
 {
-    GRAPH * gr ;
-    Uint32 y;
+	GRAPH * gr ;
+	int y;
+	int w;
 
-    gr = bitmap_new_syslib(map->width, map->height, map->depth, 1) ;
-    if (gr == NULL) return NULL;
-    for (y = 0 ; y < map->height ; y++)
-    {
-        memcpy ((Uint8*)gr->data_start + gr->pitch * y,
-                (Uint8*)map->data + gr->pitch * y,
-                gr->widthb);
-    }
-    if (map->cpoints)
-    {
-        gr->cpoints = malloc(4 * map->ncpoints) ;
-        memcpy (gr->cpoints, map->cpoints, 4 * map->ncpoints) ;
-        gr->ncpoints = map->ncpoints ;
-    }
-    gr->width = map->width;
-    gr->blend_table = map->blend_table;
-    gr->offset = map->offset ;
-    gr->info_flags = map->info_flags ;
-    gr->modified = map->modified ;
-    gr->palette = map->palette ;
-    pal_use(map->palette);
-    memcpy (gr->name, map->name, sizeof(map->name)) ;
-    return gr ;
+	w = this->animation ? this->animation->frames * this->width : this->width;
+	gr = bitmap_new_syslib(w, this->height, this->depth) ;
+	if (gr == NULL) return NULL;
+	for (y = 0 ; y < this->height ; y++)
+	{
+		memcpy ((Uint8*)gr->data + gr->pitch * y,
+			    (Uint8*)this->data + gr->pitch * y,
+				gr->widthb);
+	}
+	if (this->animation)
+	{
+		gr->animation = malloc(sizeof(ANIMATION)) ;
+		memcpy (gr->animation, this->animation, sizeof(ANIMATION)) ;
+		gr->animation->order = malloc(2 * (this->animation->length+1)) ;
+		memcpy (gr->animation->order, this->animation->order,
+			2 * (this->animation->length)) ;
+	}
+	if (this->cpoints)
+	{
+		gr->cpoints = malloc(4 * (this->flags & F_NCPOINTS)) ;
+		memcpy (gr->cpoints, this->cpoints, 4 * (this->flags & F_NCPOINTS)) ;
+	}
+	gr->width = this->width ;
+	gr->flags = this->flags ;
+	gr->offset = this->offset ;
+	gr->info_flags = this->info_flags ;
+	gr->modified = this->modified ;
+	memcpy (gr->name, this->name, sizeof(this->name)) ;
+	return gr ;
 }
+
 
 void bitmap_add_cpoint (GRAPH * map, int x, int y)
 {
-    map->cpoints = (CPOINT *) realloc (map->cpoints, (map->ncpoints+1) * sizeof(CPOINT)) ;
-    map->cpoints[map->ncpoints].x = x ;
-    map->cpoints[map->ncpoints].y = y ;
-    map->ncpoints++;
-}
-
-
-/*
- *  FUNCTION : bitmap_set_cpoint
- *
- *  Set a control point in a graphic
- *
- *  PARAMS :
- *      map             Pointer to the bitmap
- *      point           Control point index
- *      x               New X coordinate or CPOINT_UNDEFINED to unset
- *      y               New Y coordinate or CPOINT_UNDEFINED to unset
- *
- *  RETURN VALUE :
- *      None
- *
- */
-
-void bitmap_set_cpoint (GRAPH * map, Uint32 point, int x, int y)
-{
-    Uint32 n;
-
-    if (point < 0)
-        return;
-
-    if (map->ncpoints <= point)
-    {
-        map->cpoints = (CPOINT *) realloc (map->cpoints, (point+1) * sizeof(CPOINT)) ;
-        for (n = map->ncpoints; n < point; n++)
-        {
-            map->cpoints[n].x = CPOINT_UNDEFINED;
-            map->cpoints[n].y = CPOINT_UNDEFINED;
-        }
-        map->ncpoints = point+1 ;
-    }
-    map->cpoints[point].x = x;
-    map->cpoints[point].y = y;
+	int n = (map->flags & F_NCPOINTS) ;
+	map->flags = ((map->flags & ~F_NCPOINTS) | (n+1)) ;
+	map->cpoints = (CPOINT *) realloc (map->cpoints,
+			(n+1) * sizeof(CPOINT)) ;
+	map->cpoints[n].x = x ;
+	map->cpoints[n].y = y ;
 }
 
 void bitmap_destroy (GRAPH * map)
 {
-    if (!map) return;
-
-    if (map->prev) map->prev->next = map->next;
-    if (map->next) map->next->prev = map->prev;
-/*  if (map->next_time) map->next->prev = map->next; */
-    if (first == map) first = map->next;
-
-    if (map->cpoints) free(map->cpoints) ;
-    if (map->keyframes) free(map->keyframes);
-    if (map->sequences) free(map->sequences);
-
-    pal_destroy(map->palette);
-
-    free (map->data) ;
-    free (map) ;
+	if (map->cpoints) free(map->cpoints) ;
+        if (map->animation) {
+                free (map->animation->order) ;
+                free (map->animation) ;
+        }
+	free (map->data) ;
+	free (map) ;
 }
 
-void bitmap_destroy_fake (GRAPH * map)
-{
-    if (!map) return;
-
-    if (map->prev) map->prev->next = map->next;
-    if (map->next) map->next->prev = map->prev;
-/*  if (map->next_time) map->next->prev = map->next; */
-    if (first == map) first = map->next;
-
-    if (map->cpoints) free(map->cpoints);
-    if (map->keyframes) free(map->keyframes);
-    if (map->sequences) free(map->sequences);
-
-    pal_destroy(map->palette);
-
-    free (map) ;
-}
 
 static GRAPH * gr_read_map (file * fp)
 {
-    char header[8] ;
-    unsigned short int w, h, c ;
-    Uint32 y ;
-    int depth, code ;
-    GRAPH * gr ;
-    int len;
-    PALETTE * pal = NULL;
+	char header[8] ;
+	unsigned short int w, h, c ;
+	int y ;
+	int depth, code ;
+	GRAPH * gr ;
+	int len;
 
-    /* Carga los datos de cabecera */
+	/* Carga los datos de cabecera */
 
-    file_read (fp, header, 8) ;
-    if (strcmp (header, M16_MAGIC) == 0)
-        depth = 16 ;
-    else if (strcmp (header, MAP_MAGIC) == 0)
-        depth = 8 ;
-    else if (strcmp (header, M01_MAGIC) == 0)
-        depth = 1 ;
-    else
-        return NULL ;
+	file_read (fp, header, 8) ;
+	if (strcmp (header, M16_MAGIC) == 0) 
+		depth = 16 ;
+	else if (strcmp (header, MAP_MAGIC) == 0) 
+		depth = 8 ;
+	else if (strcmp (header, M01_MAGIC) == 0) 
+		depth = 1 ;
+	else
+		return 0 ;
 
-    file_readUint16 (fp, &w) ;
-    file_readUint16 (fp, &h) ;
-    file_readSint32 (fp, &code) ;
+	file_readUint16 (fp, &w) ;
+	file_readUint16 (fp, &h) ;
+	file_readSint32 (fp, &code) ;
 
-    gr = bitmap_new (code, w, h, depth, 1) ;
-    if (!gr) return NULL ;
-    file_read (fp, gr->name, 32) ;
-    gr->name[31] = 0 ;
+	gr = bitmap_new (code, w, h, depth) ;
+	if (!gr) return 0 ;
+	file_read (fp, gr->name, 32) ;
+	gr->name[31] = 0 ;
 
-    /* Datos de paleta */
+	/* Datos de paleta */
 
-    if (gr->depth == 8)
-        if (!(pal = gr_read_pal_with_gamma (fp))) {
-            bitmap_destroy(gr);
-            return NULL ;
-        }
+	if (gr->depth == 8)
+	{
+		if (palette_loaded)
+			file_seek (fp, 576 + 768, SEEK_CUR) ;
+		else
+			if (!gr_read_pal (fp)) return 0 ;
+	}
 
-    /* Puntos de control */
+	/* Puntos de control */
 
-    file_readUint16 (fp, &c) ;
-    gr->ncpoints = c ;
+	file_readUint16 (fp, &c) ;
+	gr->flags = c ;
 
-    if (gr->ncpoints)
-    {
-        gr->cpoints = (CPOINT *) malloc (c * sizeof(CPOINT)) ;
-        if (!gr->cpoints) {
-            bitmap_destroy(gr);
-            pal_destroy(pal);
-            return NULL ;
-        }
+	if (gr->flags & F_NCPOINTS)
+	{
+		gr->cpoints = (CPOINT *) malloc ((c & F_NCPOINTS) * sizeof(CPOINT)) ;
+		if (!gr->cpoints) { free(gr) ; return 0 ; }
+		for (c = 0 ; c < (gr->flags & F_NCPOINTS) ; c++)
+		{
+			file_readUint16 (fp, &w) ;
+			file_readUint16 (fp, &h) ;
+			gr->cpoints[c].x = w ;
+			gr->cpoints[c].y = h ;
+		}
+	}
+	else	gr->cpoints = 0 ;
 
-        for (c = 0 ; c < gr->ncpoints ; c++)
-        {
-            file_readUint16 (fp, &w) ;
-            file_readUint16 (fp, &h) ;
-            if ((short int) w == -1 && (short int) h == -1)
-            {
-                w = CPOINT_UNDEFINED;
-                h = CPOINT_UNDEFINED;
-            }
-            gr->cpoints[c].x = w ;
-            gr->cpoints[c].y = h ;
-        }
-    }
-   else
-        gr->cpoints = 0 ;
+	len = gr->widthb;
 
-    len = gr->widthb;
+	if (gr->flags & F_ANIMATION)
+	{
+		if (!gr->animation) gr->animation = malloc(sizeof(ANIMATION)) ;
+		if (!gr->animation) { free(gr) ; return 0 ; }
+		file_readUint16 (fp, &c) ; gr->animation->frames = c ;
+		file_readUint16 (fp, &c) ; gr->animation->length = c ;
+		file_readUint16 (fp, &c) ; gr->animation->speed = c ;
+		gr->animation->remaining = gr->animation->speed ;
+		gr->animation->order = (Sint16 *) malloc(gr->animation->length * 2) ;
+		if (!gr->animation->order) { free(gr) ; return 0 ; }
+		file_read (fp, gr->animation->order, gr->animation->length * 2) ;
+		ARRANGE_WORDS (gr->animation->order, gr->animation->length);
+		gr->pitch *= gr->animation->frames ;
+		len *= gr->animation->frames;
+	}
 
-    /* Datos del gráfico */
+	/* Datos del gráfico */
 
-    for (y = 0 ; y < gr->height ; y++)
-    {
-        Uint8 * line = (Uint8 *)gr->data + gr->pitch*y;
-        if (!file_read (fp, line, len))
-        {
-            bitmap_destroy(gr);
-            pal_destroy(pal);
-            return NULL ;
-        }
-        if (gr->depth == 16)
-        {
-            ARRANGE_WORDS (line, len/2);
-            if (scr_initialized) gr_convert16_565ToScreen ((Uint16 *)line, len/2);
-        }
-    }
+	for (y = 0 ; y < gr->height ; y++)
+	{
+		Uint8 * line = (Uint8 *)gr->data + gr->pitch*y;
+		if (!file_read (fp, line, len))
+		{
+			free (gr->data) ;
+			free (gr) ;
+			return 0 ;
+		}
+		if (gr->depth == 16) 
+		{
+			ARRANGE_WORDS (line, len/2);
+			gr_convert16_565ToScreen ((Uint16 *)line, len/2);
+		}
+	}
 
-	if (gr->depth == 8 && !gr->palette) gr->palette = pal;
-
-    gr->modified = 1 ;
-
-    return gr ;
+	gr->modified = 1 ;
+	return gr ;
 }
 
 /* Funciones de carga de nivel superior */
 
 int gr_load_png (const char * mapname)
 {
-    GRAPH * gr ;
+	GRAPH * gr ;
 
-    gr = gr_read_png (mapname) ;
-    if (!gr) return -1 ;
-    gr->code = bitmap_next_code() ;
-    assert (syslib) ;
-    grlib_add_map (0, gr) ;
-    return gr->code ;
+	gr = gr_read_png (mapname) ;
+	if (!gr) return -1 ;
+	gr->code = get_free_map_code() ;
+	assert (syslib) ;
+	grlib_add_map (0, gr) ;
+	return gr->code ;
 }
 
 int gr_load_pcx (const char * mapname)
 {
-    GRAPH * gr ;
+	GRAPH * gr ;
 
-    gr = gr_read_pcx (mapname) ;
-    if (!gr) return -1 ;
-    gr->code = bitmap_next_code() ;
-    assert (syslib) ;
-    grlib_add_map (0, gr) ;
-    return gr->code ;
+	gr = gr_read_pcx (mapname) ;
+	if (!gr) return -1 ;
+	gr->code = get_free_map_code() ;
+	assert (syslib) ;
+	grlib_add_map (0, gr) ;
+	return gr->code ;
 }
 
 int gr_load_map (const char * mapname)
 {
-    GRAPH * gr ;
-    file * fp = file_open (mapname, "rb") ;
+	GRAPH * gr ;
+	file * fp = file_open (mapname, "rb") ;
 
-    if (!fp)
-    {
-        gr_con_printf ("Mapa %s no encontrado\n", mapname) ;
-        return -1 ;
-    }
-
-    gr = fbm_load_from (fp, 0);
-    if (!gr)
-    {
-        file_close(fp);
-        fp = file_open(mapname, "rb");
-        if (fp) gr = gr_read_map (fp) ;
-    }
-    file_close (fp) ;
-
-    if (!gr) return -1 ;
-
-    gr->code = bitmap_next_code() ;
-    assert (syslib) ;
-    grlib_add_map (0, gr) ;
-    return gr->code ;
+	if (!fp) 
+	{
+		gr_error ("Mapa %s no encontrado\n", mapname) ;
+		return -1 ;
+	}
+	gr = gr_read_map (fp) ;
+	file_close (fp) ;
+	if (!gr) return -1 ;
+	gr->code = get_free_map_code() ;
+	assert (syslib) ;
+	grlib_add_map (0, gr) ;
+	return gr->code ;
 }
 
-GRAPH * bitmap_new_syslib (int w, int h, int depth, int frames)
-{
-    GRAPH * gr ;
+// Saving a map
 
-    gr = bitmap_new (0, w, h, depth, frames) ;
-    if (!gr) return NULL;
-    gr->code = bitmap_next_code() ;
-    assert (syslib) ;
-    grlib_add_map (0, gr) ;
-    return gr ;
+int gr_save_map (GRAPH * gr, const char * filename)
+{
+	MAP_HEADER  	mh ;
+	char			fname[1024] ;
+	gzFile *		file ;
+	unsigned char	colors[256][3] ;
+	unsigned char * block ;
+	int				i;
+	int				linesize;
+	Uint8 *         lineptr;
+	Sint16          flags;
+
+	strncpy (fname, filename, 1000);
+	if (!strrchr(fname,'.')) 
+		strcat (fname,".map") ;
+
+	file = gzopen(fname,"wb") ;
+	if (!file) 
+	{
+		gr_error ("No se pudo crear el fichero %s.\n", fname) ;
+		return -1 ;
+	}
+	
+	if (gr->depth == 8)
+		strcpy(mh.magic,MAP_MAGIC) ;
+	else if (gr->depth == 16)
+		strcpy(mh.magic,M16_MAGIC) ;
+	else if (gr->depth == 1)
+		strcpy(mh.magic,M01_MAGIC) ;
+	else
+	{
+		gr_error ("gr_save_map: profundidad de color no soportada");
+		return -1;
+	}
+
+	mh.width = gr->width ;
+	mh.height = gr->height ;
+	mh.code = gr->code ;
+	strncpy (mh.name, gr->name, sizeof(mh.name)) ;
+
+	ARRANGE_WORD (&mh.width);
+	ARRANGE_WORD (&mh.height);
+	ARRANGE_DWORD (&mh.code);
+
+	gzwrite (file, &mh, sizeof(MAP_HEADER)) ;
+
+	// Palette...
+
+	if (gr->depth == 8) 
+	{
+		block = calloc(576,1) ;
+		for (i=0 ; i<256 ; i++) 
+		{
+			colors[i][0] = palette[i].r >> 2 ;
+			colors[i][1] = palette[i].g >> 2 ;
+			colors[i][2] = palette[i].b >> 2 ;
+		}
+		gzwrite (file, &colors, 768) ;		
+		gzwrite (file, block, 576) ;		
+		free(block) ;
+	}
+	
+	flags = gr->flags;
+	ARRANGE_WORD (&flags);
+	gzwrite (file, &flags, 2) ;	
+
+	if (gr->flags & F_NCPOINTS) 
+	{
+		ARRANGE_WORDS ((Sint16 *)gr->cpoints, gr->flags & F_NCPOINTS);
+		gzwrite (file, gr->cpoints, 4 * (gr->flags & F_NCPOINTS)) ;	
+		ARRANGE_WORDS ((Sint16 *)gr->cpoints, gr->flags & F_NCPOINTS);
+	}
+
+	// Animation
+
+	linesize = gr->widthb;
+
+	if (gr->flags & F_ANIMATION) 
+	{
+		linesize *= gr->animation->frames;
+
+		ARRANGE_WORD  (&gr->animation->frames);
+		ARRANGE_WORD  (&gr->animation->length);
+		ARRANGE_WORD  (&gr->animation->speed);
+		ARRANGE_WORDS (&gr->animation->order, gr->animation->length);
+
+		gzwrite (file, &gr->animation->frames, 2) ;
+		gzwrite (file, &gr->animation->length, 2) ;
+		gzwrite (file, &gr->animation->speed, 2) ;
+		gzwrite (file, &gr->animation->order, 2 * gr->animation->length) ;
+
+		ARRANGE_WORD  (&gr->animation->frames);
+		ARRANGE_WORD  (&gr->animation->length);
+		ARRANGE_WORD  (&gr->animation->speed);
+		ARRANGE_WORDS (&gr->animation->order, gr->animation->length);
+	}	
+
+	// Pixbuffer
+
+	lineptr = gr->data;
+
+	if (gr->depth == 16)
+	{
+		if ( (block = malloc(gr->widthb)) == NULL)
+		{
+			gr_error ("gr_save_map: sin memoria");
+			gzclose (file);
+			return 0;
+		}
+	}
+
+	for (i = 0 ; i < gr->height ; i++, lineptr += gr->pitch)
+	{
+		if (gr->depth == 16)
+		{
+			memcpy (block, lineptr, gr->widthb);
+			gr_convert16_ScreenTo565 ((Uint16 *)block, gr->width);
+			ARRANGE_WORDS (block, gr->width);
+			gzwrite (file, block, gr->widthb);
+		}
+		else
+		{
+			gzwrite (file, lineptr, gr->widthb);
+		}
+	}
+
+	if (gr->depth == 16)
+		free(block);
+
+	gzclose (file) ;
+	return 1 ;	
+}
+
+GRAPH * bitmap_new_syslib (int w, int h, int depth)
+{
+	GRAPH * gr ;
+	
+	gr = bitmap_new (0, w, h, depth) ;
+	gr->code = get_free_map_code() ;
+	assert (syslib) ;
+	grlib_add_map (0, gr) ;
+	return gr ;
 }
 
 /* Análisis */
 
 void bitmap_analize (GRAPH * bitmap)
 {
-    Uint32 x, y;
+	int x, y;
 
-    if (bitmap->modified > 0)
-        bitmap->modified = 0 ;
-    bitmap->info_flags = 0 ;
+	Uint32 pixels = bitmap->pitch * bitmap->height ;
 
-    /* Search for transparent pixels (value 0).
-     * If none found, set the flag GI_NOCOLORKEY */
+	if (bitmap->modified > 0)
+		bitmap->modified = 0 ;
+	bitmap->info_flags = 0 ;
 
-    if (bitmap->depth == 8)
-    {
-        for (y = 0 ; y < bitmap->height ; y++)
-        {
-            Uint8 * ptr = memchr ((Uint8 *)bitmap->data + bitmap->pitch*y, 0, bitmap->width) ;
-            if (ptr) break;
-        }
-        if (y == bitmap->height)
-            bitmap->info_flags |= GI_NOCOLORKEY ;
-    }
-    else
-    {
-        Uint16 * ptr = (Uint16 *)bitmap->data ;
-        for (y = 0 ; y < bitmap->height ; y++, ptr += bitmap->pitch/2)
-        {
-            for (x = 0 ; x < bitmap->width ; x++)
-                if (ptr[x] == 0) break;
-            if (x != bitmap->width)
-                break;
-        }
-        if (y == bitmap->height)
-            bitmap->info_flags |= GI_NOCOLORKEY ;
-    }
+	/* Search for transparent pixels (value 0).
+	 * If none found, set the flag GI_NOCOLORKEY */
+
+	if (bitmap->depth == 8)
+	{
+		for (y = 0 ; y < bitmap->height ; y++)
+		{
+			Uint8 * ptr = memchr ((Uint8 *)bitmap->data + bitmap->pitch*y, 
+								  0, bitmap->width) ;
+			if (ptr) break;
+		}
+		if (y == bitmap->height)
+			bitmap->info_flags |= GI_NOCOLORKEY ;
+	}
+	else
+	{
+		Uint16 * ptr = (Uint16 *)bitmap->data ;
+		for (y = 0 ; y < bitmap->height ; y++, ptr += bitmap->pitch/2)
+		{
+			for (x = 0 ; x < bitmap->width ; x++)
+				if (ptr[x] == 0) break;
+			if (x != bitmap->width)
+				break;
+		}
+		if (y == bitmap->height)
+			bitmap->info_flags |= GI_NOCOLORKEY ;
+	}
 }
 
 /* Animación */
 
 void bitmap_animate_to (GRAPH * bitmap, int pos, int speed)
 {
+	if (pos > bitmap->animation->length) 
+		pos = bitmap->animation->length - 1 ;
+	if (pos < 0)
+		pos = 0 ;
+
+	if (bitmap->depth == 16)
+	{
+		bitmap->data = (Uint16 *)bitmap->data - bitmap->offset ;
+		bitmap->offset = bitmap->pitch * (bitmap->animation->order[pos]-1) ;
+		bitmap->data = (Uint16 *)bitmap->data + bitmap->offset ;
+	}
+	else
+	{
+		bitmap->data = (Uint8 *)bitmap->data - bitmap->offset ;
+		bitmap->offset = bitmap->pitch * (bitmap->animation->order[pos]-1) ;
+		bitmap->data = (Uint8 *)bitmap->data + bitmap->offset ;
+	}
+
+	bitmap->animation->pos = pos ;
+	bitmap->animation->speed = speed ;
+	bitmap->animation->remaining = speed ;
 }
 
-/*
- *  FUNCTION : bitmap_animate
- *
- *  Update the current bitmap frame using the current_time global,
- *  advancing the bitmap animation if needed
- *
- *  PARAMS :
- *      dest            Destination bitmap or NULL for screen
- *      clip            Clipping region or NULL for the whole screen
- *      scrx, scry      Pixel coordinates of the center on screen
- *      gr              Pointer to the graphic object to draw
- *
- *  RETURN VALUE :
- *      None
- *
- */
+extern int frame_count ;
 
-void bitmap_animate (GRAPH * map)
+void bitmap_animate (GRAPH * bitmap)
 {
-    if (map->last_frame == frame_count || map->next_time > current_time || current_time == 0)
-        return;
+	if (!(bitmap->flags & F_ANIMATION))
+		return ;
+        if (!bitmap->animation)
+                return ;
+	if (bitmap->animation->last_frame == frame_count)
+		return ;
+	if (!bitmap->animation->speed)
+		return ;
 
-    // Check for internal error conditions that shouldn't happen
+	bitmap->animation->last_frame = frame_count ;
+	bitmap->animation->remaining -= last_frame_ms ;
 
-    if (map->current_keyframe > map->max_keyframe) map->current_keyframe = 0;
-    if (map->current_sequence > map->max_sequence) map->current_sequence = 0;
+	while (bitmap->animation->remaining < 0)
+	{
+		if (bitmap->animation->speed < 1) 
+			bitmap->animation->speed = last_frame_ms ;
+		if (bitmap->animation->speed < 10) 
+			bitmap->animation->speed = 10 ;
 
-    map->last_frame = frame_count;
+		bitmap->animation->remaining += bitmap->animation->speed ;
 
-    // Update the animation
+		if (bitmap->depth == 16)
+		{
+			bitmap->data = (Uint16 *)bitmap->data - bitmap->offset ;
+			bitmap->offset = bitmap->pitch * 
+                                (bitmap->animation->order[bitmap->animation->pos]-1) ;
+			bitmap->data = (Uint16 *)bitmap->data + bitmap->offset ;
+		}
+		else
+		{
+			bitmap->data = (Uint8 *)bitmap->data - bitmap->offset ;
+			bitmap->offset = bitmap->pitch * 
+                                (bitmap->animation->order[bitmap->animation->pos]-1) ;
+			bitmap->data = (Uint8 *)bitmap->data + bitmap->offset ;
+		}
 
-    map->end_of_sequence = 0;
-
-    // Advance to the next keyframe
-
-    map->current_keyframe++;
-    map->next_time += map->keyframes[map->current_keyframe].pause;
-
-    // At end of sequence, move to the next sequence of mark the map
-    // as if it is at the end of the animation
-
-    if (map->current_keyframe > map->sequences[map->current_sequence].last_keyframe)
-    {
-        if (map->sequences[map->current_sequence].next_sequence >= 0)
-        {
-            map->current_sequence = map->sequences[map->current_sequence].next_sequence;
-            if (map->current_sequence > map->max_sequence) map->current_sequence = 0;
-
-            map->current_keyframe = map->sequences[map->current_sequence].first_keyframe;
-        }
-        else
-        {
-            map->current_keyframe--;
-            map->end_of_sequence = 1;
-        }
-    }
-
-    // This is an internal error condition; shouldn't happen
-    if (map->current_keyframe > map->max_keyframe) map->current_keyframe = 0;
-
-    map->current_frame = map->keyframes[map->current_keyframe].frame;
-    if (map->current_frame > map->frames-1) map->current_frame = 0;
-
-    // Calculate the next time, only if there was a long wait since
-    // the last update
-
-    map->next_time = current_time + map->keyframes[map->current_keyframe].pause;
-
-    // Adjust the graphic data
-
-    map->data = (Uint8*)map->data_start + map->height * map->pitch * map->current_frame;
-
-}
-
-/*
- *  FUNCTION : bitmap_16bits_conversion
- *
- *  When 16 bits mode is initialized for the first time, this
- *  function will convert every 16 bit bitmap in memory to
- *  the screen format
- *
- *  PARAMS :
- *      None
- *
- *  RETURN VALUE :
- *      None
- *
- */
-
-void bitmap_16bits_conversion()
-{
-    GRAPH * map = first;
-
-    while (map)
-    {
-        if (map->depth == 16)
-            gr_convert16_565ToScreen (map->data_start, map->width * map->height * map->frames);
-
-        map = map->next;
-    }
+		bitmap->animation->pos++ ;
+		if (bitmap->animation->pos == bitmap->animation->length)
+			bitmap->animation->pos = 0 ;
+	}
 }

@@ -1,33 +1,32 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef BeIDE
+#include <BeOS.h>
+#endif
+
 #include "fxi.h"
+
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#define MAX(a,b) ((a)>(b)?(a):(b))
 
 /* Indicadores de bloqueo */
 #define GRAPH_HWRAP 1
@@ -80,8 +79,8 @@ static int scroll_fills_region (REGION r)
 	int n ;
 	REGION r2 ;
 	SCROLL_EXTRA_DATA * data ;
-    GRAPH * graph ;
-    int flags ;
+        GRAPH * graph ;
+        int flags ;
 
 	if (r.x > r.x2 || r.y > r.y2) return 1 ;
 
@@ -103,10 +102,10 @@ static int scroll_fills_region (REGION r)
 		if (flags & B_TRANSLUCENT) continue ;
 
 		// Descarta el scroll si puede verse a través
-
+		
 		if (!(flags & B_NOCOLORKEY))
 		{
-			if (graph->modified)
+			if (graph->modified) 
 				bitmap_analize(graph) ;
 			if (!(graph->info_flags & GI_NOCOLORKEY))
 				continue ;
@@ -154,9 +153,9 @@ void gr_scroll_start (int n, int fileid, int graphid, int backid, int region, in
 		scrolls[n].graph = graphid ? bitmap_get (fileid, graphid) : 0 ;
 		scrolls[n].back  = backid  ? bitmap_get (fileid, backid)  : 0 ;
 
-		if (!graphid || !scrolls[n].graph)
+		if (!graphid || !scrolls[n].graph) 
 			gr_error ("El fondo de scroll %d:%d no existe\n", fileid, graphid) ;
-		if ( backid && !scrolls[n].back )
+		if ( backid && !scrolls[n].back ) 
 			gr_error ("Grafico %d:%d no existe\n", fileid, backid) ;
 	}
 }
@@ -182,7 +181,7 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 {
 	int nproc, x, y, x0, y0, x1, y1, cx, cy, w, h, speed ;
 
-	static INSTANCE ** proclist = 0  ;
+	static INSTANCE * * proclist = 0  ;
 	static int proclist_reserved = 0 ;
 	int proclist_count ;
 	REGION r;
@@ -194,7 +193,7 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 
 	data = &((SCROLL_EXTRA_DATA *)&GLODWORD(SCROLLS))[n] ;
 
-	if (!scrolls[n].active || !scrolls[n].region || !scrolls[n].graph)
+	if (!scrolls[n].active || !scrolls[n].region || !scrolls[n].graph) 
 		return ;
 
 	w = scrolls[n].region->x2 - scrolls[n].region->x + 1 ;
@@ -276,9 +275,11 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 
 		cx = LOCDWORD(scrolls[n].camera,COORDX) ;
 		cy = LOCDWORD(scrolls[n].camera,COORDY) ;
-
-        RESOLXY(scrolls[n].camera, cx, cy);
-
+		if (LOCDWORD(scrolls[n].camera, RESOLUTION))
+		{
+			cx /= LOCDWORD(scrolls[n].camera, RESOLUTION) ;
+			cy /= LOCDWORD(scrolls[n].camera, RESOLUTION) ;
+		}
 		cx -= w/2 ;
 		cy -= h/2 ;
 
@@ -286,16 +287,16 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 		if (data->y0 < cy) data->y0 = MIN(data->y0+speed, cy) ;
 		if (data->x0 > cx) data->x0 = MAX(data->x0-speed, cx) ;
 		if (data->y0 > cy) data->y0 = MAX(data->y0-speed, cy) ;
-    }
+        }
 
-    /* Scrolls no cíclicos y posición del background */
-
-    if (scrolls[n].graph)
-    {
+        /* Scrolls no cíclicos y posición del background */
+        
+        if (scrolls[n].graph)
+        {
 		if (!(scrolls[n].flags & GRAPH_HWRAP))
-			data->x0 = MAX (0, MIN (data->x0, (int)scrolls[n].graph->width - w)) ;
+			data->x0 = MAX (0, MIN (data->x0, scrolls[n].graph->width - w)) ;
 		if (!(scrolls[n].flags & GRAPH_VWRAP))
-			data->y0 = MAX (0, MIN (data->y0, (int)scrolls[n].graph->height - h)) ;
+			data->y0 = MAX (0, MIN (data->y0, scrolls[n].graph->height - h)) ;
 	}
 
 	if (scrolls[n].ratio)
@@ -307,9 +308,9 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
         if (scrolls[n].back)
         {
 		if (!(scrolls[n].flags & BACK_HWRAP))
-			data->x1 = MAX (0, MIN (data->x1, (int)scrolls[n].back->width - w)) ;
+			data->x1 = MAX (0, MIN (data->x1, scrolls[n].back->width - w)) ;
 		if (!(scrolls[n].flags & BACK_VWRAP))
-			data->y1 = MAX (0, MIN (data->y1, (int)scrolls[n].back->height - h)) ;
+			data->y1 = MAX (0, MIN (data->y1, scrolls[n].back->height - h)) ;
 	}
 
 	/* Actualiza la posición del scroll según las variables globales */
@@ -341,8 +342,8 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 
 	if (scrolls[n].back)
 	{
-		if (scrolls[n].back->ncpoints > 0 &&
-			scrolls[n].back->cpoints[0].x >= 0)
+		if ((scrolls[n].back->flags & F_NCPOINTS) > 0 && 
+				scrolls[n].back->cpoints[0].x >= 0)
 		{
 			cx = scrolls[n].back->cpoints[0].x ;
 			cy = scrolls[n].back->cpoints[0].y ;
@@ -359,7 +360,8 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 			x = scrolls[n].region->x - scrolls[n].x1 ;
 			while (x < scrolls[n].region->x2)
 			{
-				gr_blit (0, &r, x+cx, y+cy, data->flags2, scrolls[n].back) ;
+				gr_blit (0, &r, x+cx, y+cy, 
+					 data->flags2, scrolls[n].back) ;
 				x += scrolls[n].back->width ;
 			}
 			y += scrolls[n].back->height ;
@@ -368,8 +370,8 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 
 	/* Dibuja el primer plano */
 
-	if (scrolls[n].graph->ncpoints > 0 &&
-		scrolls[n].graph->cpoints[0].x >= 0)
+	if ((scrolls[n].graph->flags & F_NCPOINTS) > 0 && 
+			scrolls[n].graph->cpoints[0].x >= 0)
 	{
 		cx = scrolls[n].graph->cpoints[0].x ;
 		cy = scrolls[n].graph->cpoints[0].y ;
@@ -386,7 +388,8 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 		x = scrolls[n].region->x - scrolls[n].x0 ;
 		while (x < scrolls[n].region->x2)
 		{
-			gr_blit (0, &r, x+cx, y+cy, data->flags1, scrolls[n].graph) ;
+			gr_blit (0, &r, x+cx, y+cy, data->flags1,
+				 scrolls[n].graph) ;
 			x += scrolls[n].graph->width ;
 		}
 		y += scrolls[n].graph->height ;
@@ -398,9 +401,8 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 	proclist_count = 0 ;
 	while (i)
 	{
-		if (((LOCDWORD(i,STATUS) & ~STATUS_WAITING_MASK) == STATUS_RUNNING ||
-		     (LOCDWORD(i,STATUS) & ~STATUS_WAITING_MASK) == STATUS_FROZEN     ) &&
-		    LOCDWORD(i,CTYPE) == 1)
+		if ((LOCDWORD(i,STATUS) == STATUS_RUNNING || LOCDWORD(i,STATUS) == STATUS_FROZEN) 
+				&& LOCDWORD(i,CTYPE) == 1)
 		{
 			if (LOCDWORD(i,CFLAGS) && !(LOCDWORD(i,CFLAGS) & (1<<n)))
 			{
@@ -411,7 +413,8 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 			if (proclist_count == proclist_reserved)
 			{
 				proclist_reserved += 16 ;
-				proclist = (INSTANCE **) realloc (proclist, sizeof(INSTANCE *) * proclist_reserved) ;
+				proclist = (INSTANCE **) realloc (proclist,
+					sizeof(INSTANCE *) * proclist_reserved) ;
 			}
 
 			proclist[proclist_count++] = i ;
@@ -430,11 +433,15 @@ void gr_scroll_draw (int n, int do_drawing, REGION * clipping)
 		x = LOCDWORD (proclist[nproc], COORDX) ;
 		y = LOCDWORD (proclist[nproc], COORDY) ;
 
-        RESOLXY(proclist[nproc], x, y);
-
-		draw_instance_at (proclist[nproc], &r,
-				          x - scrolls[n].posx0 + scrolls[n].region->x,
-				          y - scrolls[n].posy0 + scrolls[n].region->y) ;
+		if (LOCDWORD (proclist[nproc], RESOLUTION))
+		{
+			x /= LOCDWORD (proclist[nproc], RESOLUTION) ;
+			y /= LOCDWORD (proclist[nproc], RESOLUTION) ;
+		}
+		
+		draw_instance_at (proclist[nproc], &r, 
+				  x - scrolls[n].posx0 + scrolls[n].region->x, 
+				  y - scrolls[n].posy0 + scrolls[n].region->y) ;
 	}
 }
 

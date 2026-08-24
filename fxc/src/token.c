@@ -1,27 +1,19 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <ctype.h>
@@ -38,7 +30,7 @@
 /* rellena la estructura global "token" con los datos del mismo.          */
 /* ---------------------------------------------------------------------- */
 
-int line_count = 0 ; // Se pone a 0, ya que lo incremente con cada \n, y hasta no obtener un \n no se procesa la linea (Splinter)
+int line_count = 1 ;
 int current_file = 0 ;
 
 static int disable_defines = 0;
@@ -89,11 +81,11 @@ static int 			id_if;
  *  This function is used by preprocessor()
  *  with a #ifdef, #ifndef or #if directive.
  *
- *  PARAMS :
+ *  PARAMS : 
  *      id1			Identifier of ending directive (i.e. id_endif)
  *		id2			Alternative ending directive (i.e. id_else) or 0 if none
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -107,22 +99,11 @@ void preprocessor_jumpto(int id, int id2)
 	{
 		if (*source_ptr == '\n')
 		{
-			line_count++ ;
 			source_ptr++;
-			while (ISSPACE(*source_ptr)) {
-			    if (*source_ptr == '\n') {
-			        line_count++ ;
-			    }
-				source_ptr++;
-			}
-
+			while (ISSPACE(*source_ptr)) source_ptr++;
 			if (*source_ptr == '#')
 			{
 				source_ptr++;
-			    if (*source_ptr == '\n') {
-			        line_count++ ;
-			    }
-
 				token_next();
 				if (token.type == IDENTIFIER)
 				{
@@ -146,10 +127,10 @@ void preprocessor_jumpto(int id, int id2)
  *  is called just after the macro name is read (next token
  *  should be a '(' if any parameters needed)
  *
- *  PARAMS :
+ *  PARAMS : 
  *      None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -160,7 +141,7 @@ void preprocessor_expand (DEFINE * def)
 	const char * begin;
 	const char * old_source;
 	char * text;
-	int i, count, depth, allocated, size, part, actual_line_count;
+	int i, count, depth, allocated, size, part;
 
 	/* No params - easy case */
 
@@ -205,9 +186,8 @@ void preprocessor_expand (DEFINE * def)
 		source_ptr++;
 	}
 
-	if (count != def->param_count-1 || *source_ptr != ')') {
-		compile_error(MSG_INCORRECT_PARAMC, string_get(def->code), def->param_count-1 );
-	}
+	if (count != def->param_count-1 || *source_ptr != ')')
+		compile_error(MSG_INCORRECT_PARAMC);
 	source_ptr++;
 
 	/* Expand the macro */
@@ -217,61 +197,54 @@ void preprocessor_expand (DEFINE * def)
 	text = (char *)malloc(allocated);
 	old_source = source_ptr;
 	source_ptr = def->text;
-	actual_line_count = line_count;
 
 	while (*source_ptr && *source_ptr != '\n')
 	{
 		begin = source_ptr;
 		while (ISSPACE(*source_ptr) && *source_ptr != '\n') source_ptr++;
+		if (*source_ptr && *source_ptr != '\n')
+		{
+			token_next();
+			if (token.type == IDENTIFIER)
+			{
+				/* Next token is an identifier. Search for parameter */
 
-        if (*source_ptr ) {
-    	    if ( *source_ptr != '\n') {
-    			token_next();
-    			if (token.type == IDENTIFIER)
-    			{
-    				/* Next token is an identifier. Search for parameter */
+				for (i = 0 ; i < def->param_count ; i++)
+				{
+					if (def->param_id[i] == token.code)
+						break;
+				}
+				if (i != def->param_count)
+				{
+					/* Parameter found - expand it */
 
-    				for (i = 0 ; i < def->param_count ; i++)
-    				{
-    					if (def->param_id[i] == token.code)
-    						break;
-    				}
-    				if (i != def->param_count)
-    				{
-    					/* Parameter found - expand it */
+					part = param_right[i] - param_left[i];
+					if (size + part + 1 >= allocated)
+					{
+						allocated += ((part + 256) & ~ 127);
+						text = (char *)realloc(text, part);
+					}
+					text[size++] = ' ';
+					memcpy (text + size, param_left[i], part);
+					size += part;
+					continue;
+				}
+			}
 
-    					part = param_right[i] - param_left[i];
-    					if (size + part + 1 >= allocated)
-    					{
-    						allocated += ((part + 256) & ~ 127);
-    						text = (char *)realloc(text, part);
-    					}
-    					text[size++] = ' ';
-    					memcpy (text + size, param_left[i], part);
-    					size += part;
-    					continue;
-    				}
-    			}
+			/* No parameter found - copy the token */
 
-    			/* No parameter found - copy the token */
-
-    			part = source_ptr - begin;
-    			if (size + part + 1 >= allocated)
-    			{
-    				allocated += ((part + 256) & ~127);
-    				text = (char *)realloc(text, part);
-    			}
-    			memcpy (text + size, begin, part);
-    			size += part;
-    		} else {
-                line_count++;
-                source_ptr++;
-            }
-        }
+			part = source_ptr - begin;
+			if (size + part + 1 >= allocated)
+			{
+				allocated += ((part + 256) & ~127);
+				text = (char *)realloc(text, part);
+			}
+			memcpy (text + size, begin, part);
+			size += part;
+		}
 	}
 	text[size] = 0;
 	source_ptr = old_source;
-	line_count = actual_line_count;
 
 	/* Now "include" the expanded text "file" */
 
@@ -287,10 +260,10 @@ void preprocessor_expand (DEFINE * def)
  *
  *  The function moves source_ptr to the next line.
  *
- *  PARAMS :
+ *  PARAMS : 
  *      None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  */
 
@@ -298,8 +271,7 @@ void preprocessor ()
 {
 	int i, ifdef;
 	const char * ptr;
-	int actual_line_count;
-
+	
 	static int initialized = 0;
 
 	if (!initialized)
@@ -346,18 +318,13 @@ void preprocessor ()
 			{
 				if (!*source_ptr)
 					compile_error (MSG_EXPECTED, ")");
-
 				if (i == MAX_MACRO_PARAMS)
 					compile_error (MSG_TOO_MANY_PARAMS);
-
 				token_next();
-
 				if (token.type != IDENTIFIER || token.code < reserved_words)
 					compile_error (MSG_INVALID_IDENTIFIER);
-
 				defines[defines_count].param_id[i++] = token.code;
 				defines[defines_count].param_count++;
-
 				while (ISSPACE(*source_ptr)) source_ptr++;
 				if (*source_ptr == ',') source_ptr++;
 			}
@@ -371,25 +338,17 @@ void preprocessor ()
 
 		while (ISSPACE(*source_ptr) && *source_ptr != '\n')
 			source_ptr++;
-
 		ptr = source_ptr;
-
 		while (*ptr && *ptr != '\n')
 			ptr++;
-
 		while (ptr > source_ptr && (!*ptr || ISSPACE(*ptr)))
 			ptr--;
-
 		defines[defines_count].text = (char *)malloc(ptr-source_ptr+2);
 		strncpy (defines[defines_count].text, source_ptr, ptr-source_ptr+1);
 		defines[defines_count].text[ptr-source_ptr+1] = 0;
-
 		defines_count++;
-
 		source_ptr = ptr+1;
-
 		disable_defines = 0;
-
 		return;
 	}
 
@@ -405,7 +364,7 @@ void preprocessor ()
 		{
 			if (defines[i].code == token.code)
 			{
-				if (ifdef)
+				if (ifdef) 
 				{
 					disable_defines = 0;
 					return;
@@ -430,23 +389,14 @@ void preprocessor ()
 	{
 		expresion_result res;
 		ptr = source_ptr;
-
 		while (*ptr && *ptr != '\n') ptr++;
-		if (*ptr) {
-		    ptr++;
-		    line_count++;
-	    }
-
-        actual_line_count=line_count;
+		if (*ptr) ptr++;
 
 		disable_defines = 0;
 		identifiers_as_strings = 1;
 	    res = compile_expresion(0,0,TYPE_DWORD);
 		identifiers_as_strings = 0;
 		source_ptr = ptr;
-
-		line_count=actual_line_count;
-
 		use_saved = 0;
 		if (!res.constant)
 			compile_error (MSG_CONSTANT_EXP);
@@ -487,7 +437,6 @@ void token_init (const char * source, int file)
 
 	if (sources == MAX_SOURCES)
 		compile_error (MSG_TOO_MANY_INCLUDES) ;
-
 	if (!source)
 	{
 		fprintf (stdout, "token_init: no source\n") ;
@@ -523,7 +472,7 @@ void token_init (const char * source, int file)
 
 	/* Use the new source */
 
-	line_count = 0;
+	line_count = 1;
 	source_ptr = clean_source;
 	source_start = clean_source;
 	use_saved = 0;
@@ -585,16 +534,15 @@ void token_next ()
 
 	while (1)
 	{
-		while (ISSPACE(*source_ptr))
+		while (ISSPACE(*source_ptr)) 
 		{
-			if (*source_ptr == '\n')
+			if (*source_ptr == '\n') 
 			{
 				line_count++ ;
 				for (source_ptr++ ; ISSPACE(*source_ptr) ; source_ptr++)
 				{
-					if (*source_ptr == '\n') {
+					if (*source_ptr == '\n') 
 						line_count++ ;
-			        }
 				}
 				if (*source_ptr != '#')
 					break;
@@ -618,7 +566,7 @@ void token_next ()
 					return ;
 				}
 				token_endfile() ;
-				if (!source_ptr)
+				if (!source_ptr) 
 				{
 					token.type = NOTOKEN;
 					return;
@@ -626,16 +574,14 @@ void token_next ()
 			}
 			continue;
 		}
-
+		
 		/* Ignora comentarios */
 
 		if (*source_ptr == '/' && *(source_ptr+1) == '*')
 		{
 			while (*source_ptr != '*' || source_ptr[1] != '/')
 			{
-				if (*source_ptr == '\n') {
-				    line_count++ ;
-    			}
+				if (*source_ptr == '\n') line_count++ ;
 				if (!*source_ptr)
 				{
 					token.type = NOTOKEN ;
@@ -651,17 +597,16 @@ void token_next ()
 		{
 			while (*source_ptr != '\n' && *source_ptr)
 				source_ptr++ ;
+			if (*source_ptr) source_ptr++ ;
+			line_count++ ;
+			continue ;
+		}
 
-			if (*source_ptr)
-			{
+		if (*source_ptr == '/' && *(source_ptr+1) == '*')
+		{
+			while (*source_ptr != '*' && *(source_ptr+1) != '/' && *source_ptr)
 				source_ptr++ ;
-				line_count++ ;
-				if (*source_ptr == '#')
-				{
-					source_ptr++;
-					preprocessor();
-				}
-			}
+			if (*source_ptr) source_ptr += 2 ;
 			continue ;
 		}
 
@@ -682,7 +627,7 @@ void token_next ()
 		{
 			if (source_ptr[1] == '<')
 			{
-				if (source_ptr[2] == '=') len = 3 ;
+				if (source_ptr[2] == '=') len = 3 ; 
 				else                      len = 2 ;
 			}
 			else if (source_ptr[1] == '>')	  len = 2 ;
@@ -693,7 +638,7 @@ void token_next ()
 		{
 			if (source_ptr[1] == '>')
 			{
-				if (source_ptr[2] == '=') len = 3 ;
+				if (source_ptr[2] == '=') len = 3 ; 
 				else                      len = 2 ;
 			}
 			else if (source_ptr[1] == '=')	  len = 2 ;
@@ -704,10 +649,10 @@ void token_next ()
 		{
 			if (source_ptr[1] == '|')
 			{
-				if (source_ptr[2] == '=') len = 3 ;
+				if (source_ptr[2] == '=') len = 3 ; 
 				else                      len = 2 ;
 			}
-			else if (source_ptr[1] == '=')    len = 2 ;
+			else if (source_ptr[1] == '=')    len = 2 ; 
 			else                              len = 1 ;
 		}
 		else if (*source_ptr == '=')
@@ -725,21 +670,21 @@ void token_next ()
 		else if (strchr("!&^%*+-/", *source_ptr))
 		{
 			if (source_ptr[1] == '=')	  len = 2 ;
-			else if (strchr("+-&^", *source_ptr) &&
+			else if (strchr("+-&", *source_ptr) && 
 			    source_ptr[1] == *source_ptr) len = 2 ;
 			else                              len = 1 ;
 		}
 
 		if (len)
 		{
-			strncpy (buffer, source_ptr, len) ;
+			strncpy (buffer, source_ptr, len) ; 
 			buffer[len] = 0 ;
 			source_ptr += len ;
 			token.code = identifier_search_or_add(buffer) ;
 			token.type = IDENTIFIER ;
 			return ;
 		}
-
+		
 		/* Numbers */
 
 		if (ISNUM(*source_ptr))
@@ -758,9 +703,9 @@ void token_next ()
 			{
 				ptr = source_ptr ;
 				while (ISALNUM(*ptr)) ptr++ ;
-				if (*ptr == 'h' || *ptr == 'H')
+				if (*ptr == 'h' || *ptr == 'H') 
 					base = 16 ;
-				if (*ptr == 'o' || *ptr == 'O')
+				if (*ptr == 'o' || *ptr == 'O') 
 					base = 8 ;
 			}
 
@@ -775,11 +720,9 @@ void token_next ()
 				if (*source_ptr >= 'A' && *source_ptr <= 'F' && base > 10)
 					num = num * base + (*source_ptr++ - 'A' + 10) ;
 			}
+
 			token.type = NUMBER ;
-			if (base==16)
-			    token.code = (unsigned int)num ;
-			else
-			    token.code = (int)num ;
+			token.code = (int)num ;
 			token.value = (float)num ;
 
 			/* We have the integer part now - convert to int/float */
@@ -856,7 +799,7 @@ void token_next ()
 				token.code = string_new(buffer);
 				return;
 			}
-
+			
 			/* Include */
 
 			if (token.code == identifier_include && !use_saved)

@@ -1,6 +1,6 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
  *  Last stable release   :
  *  Project documentation : http://fenix.divsite.net
  *
@@ -36,26 +36,15 @@
  *  VERSION
  */
 
-#define FXI_VERSION "FXI " VERSION " " __DATE__ " " __TIME__
+#define VERSION "FXI 0.83 " __DATE__ " " __TIME__
 
 /*
  *  HEADER FILES
  */
 
-#ifdef TARGET_MAC
-#include <SDL/SDL.h>
-#else
 #include <SDL.h>
-#endif
-
-#include <SDL_keysym.h>
-#include <SDL_thread.h>
-#include <SDL_syswm.h>
-
 #include "files.h"
 #include "xctype.h"
-
-#include "fmath.h"
 
 /*
  *  CONSTANTS
@@ -74,43 +63,40 @@
 #define TYPE_FLOAT  4
 #define TYPE_POINTER 19
 #endif
-
+	
 /*
  *  ENDIANESS TRICKS
  */
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-    #define ARRANGE_DWORD(x)
-    #define ARRANGE_WORD(x)
-
-    #define ARRANGE_DWORDS(x,c)
-    #define ARRANGE_WORDS(x,c)
+#define ARRANGE_DWORD(x)
+#define ARRANGE_WORD(x)
 #else
-    static __inline__ void DO_Swap16(Uint16 * D) {
-    	*D = ((*D<<8)|(*D>>8));
-    }
 
-    static __inline__ void DO_Swap32(Uint32 * D) {
-    	*D = ((*D<<24)|((*D<<8)&0x00FF0000)|((*D>>8)&0x0000FF00)|(*D>>24));
-    }
+static __inline__ void DO_Swap16(Uint16 * D) {
+	*D = ((*D<<8)|(*D>>8));
+}
 
-    #define ARRANGE_DWORD(x)	DO_Swap32(x)
-    #define ARRANGE_WORD(x)		DO_Swap16(x)
+static __inline__ void DO_Swap32(Uint32 * D) {
+	*D = ((*D<<24)|((*D<<8)&0x00FF0000)|((*D>>8)&0x0000FF00)|(*D>>24));
+}
 
-    #define ARRANGE_DWORDS(x,c) {				\
-    	int __n;								\
-    	Uint32 * __p = (Uint32 *)(x);			\
-    	for (__n = 0 ; __n < (int)(c) ; __n++)	\
-    		ARRANGE_DWORD(&__p[__n]);			\
-    	}
-    #define ARRANGE_WORDS(x,c) {				\
-    	int __n;								\
-    	Uint16 * __p = (Uint16 *)(x);			\
-    	for (__n = 0 ; __n < (int)(c) ; __n++)	\
-    		ARRANGE_WORD(&__p[__n]);			\
-    	}
-
+#define ARRANGE_DWORD(x)	DO_Swap32(x)
+#define ARRANGE_WORD(x)		DO_Swap16(x)
 #endif
+
+#define ARRANGE_DWORDS(x,c) {			\
+	int __n;							\
+	Uint16 * __p = (Uint32 *)(x);		\
+	for (__n = 0 ; __n < (c) ; __n++)	\
+		ARRANGE_DWORD(&__p[__n]);		\
+	}
+#define ARRANGE_WORDS(x,c) {			\
+	int __n;							\
+	Uint16 * __p = (Uint16 *)(x);		\
+	for (__n = 0 ; __n < (c) ; __n++)	\
+		ARRANGE_WORD(&__p[__n]);		\
+	}
 
 #ifndef WIN32
 #define _snprintf snprintf
@@ -121,13 +107,8 @@
  *  GLOBAL VARIABLES
  */
 
-extern int debug ;              /* 1 = Activate debug options       */
+extern int debug ;              /* 1 = Actovate debug options       */
 extern int fxi ;                /* 1 = EXE module is FXI.EXE        */
-
-#ifdef TARGET_MAC
-    extern int current_file ;
-    extern char files[][256] ;
-#endif
 
 /*
  *  DEBUG FLAGS
@@ -146,15 +127,8 @@ extern int report_graphics ;
 #include "sound.h"
 #include "flic.h"
 
-extern void   do_exit       (int n) ;
+extern void   do_exit       () ;
 extern int    dcb_load      (const char * filename) ;
-extern int    dcb_load_from (file * fp, int offset) ;
-extern void * vm_malloc     (size_t n) ;
-extern void   vm_arena_init (void) ;
-extern void * vm_ptr        (INSTANCE * my, int p32) ;
-extern int    vm_in_arena   (const void * p) ;
-extern size_t vm_alloc_size (const void * p) ;
-extern int    stack[16384] ;
 extern char * getid         (unsigned int code) ;
 extern int    path_find     (GRAPH * bitmap, int sx, int sy, int dx, int dy, int options) ;
 extern int    path_get      (int * x, int * y) ;
@@ -174,6 +148,3 @@ extern void   fnc_show_information();
 
 extern int savetypes (file * file, void * data, DCB_TYPEDEF * var, int nvars);
 extern int loadtypes (file * file, void * data, DCB_TYPEDEF * var, int nvars);
-extern int copytypes (void * dst,  void * src,  DCB_TYPEDEF * var, int nvars, int reps);
-
-#include "fpl.h"

@@ -1,33 +1,25 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+ 
 #include "fxc.h"
 #include "messages.c"
 
@@ -48,11 +40,11 @@ int         sysproc_maxid = 0;
  *
  *  PARAMS:
  *		name			Name of the process
- *		paramtypes		String representation of the parameter
+ *		paramtypes		String representation of the parameter 
  *		type			Type of the returning value
  *		func			Pointer to the function itself or a stub
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Identifier code allocated for the function
  */
 
@@ -76,7 +68,8 @@ int sysproc_add (char * name, char * paramtypes, int type, void * func)
 	last[1].next = NULL ;
 	last++ ;
 	sysproc_count++ ;
-	if (sysproc_count == MAX_SYSPROCS) compile_error (MSG_TOO_MANY_SYSPROCS) ;
+	if (sysproc_count == MAX_SYSPROCS)
+		compile_error (MSG_TOO_MANY_SYSPROCS) ;
 
 	/* If the fast-access list is already filled, free it to fill it again
 	 * in sysproc_get. We should add the new process to the list, but this
@@ -101,7 +94,7 @@ int sysproc_add (char * name, char * paramtypes, int type, void * func)
  *  PARAMS:
  *		id			Unique code of the identifier of the name
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Pointer to the SYSPROC object or NULL if none exists
  */
 
@@ -122,8 +115,10 @@ SYSPROC * sysproc_get (int id)
 
 		for (s = sysprocs ; s->name ; s++)
 		{
-			if (s->id == 0) s->id = identifier_search_or_add(s->name) ;
-			if (s->id > sysproc_maxid) sysproc_maxid = s->id;
+			if (s->id == 0) 
+				s->id = identifier_search_or_add(s->name) ;
+			if (s->id > sysproc_maxid)
+				sysproc_maxid = s->id;
 
 			s->next = NULL;
 		}
@@ -132,7 +127,8 @@ SYSPROC * sysproc_get (int id)
 
 		sysproc_maxid = ((sysproc_maxid+1) & ~31) + 32;
 		sysproc_list  = (SYSPROC * *) calloc (sysproc_maxid, sizeof(SYSPROC*));
-		if (sysproc_list == NULL) abort();
+		if (sysproc_list == NULL)
+			abort();
 
 		/* Fill it */
 
@@ -161,18 +157,19 @@ SYSPROC * sysproc_get (int id)
  *  PARAMS:
  *		id			Unique code of the identifier of the name
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Pointer to a new SYSPROC table allocated with malloc()
  *      NULL if no process with this id exists
  */
 
-SYSPROC ** sysproc_getall (int id)
+SYSPROC * * sysproc_getall (int id)
 {
 	SYSPROC * s = sysproc_get(id) ;
-	SYSPROC ** table;
+	SYSPROC * * table;
 	int found = 0 ;
 
-	if (s == NULL) return NULL;
+	if (s == NULL)
+		return NULL;
 
 	table = malloc(sizeof(SYSPROC *) * 32) ;
 	do
@@ -193,7 +190,7 @@ SYSPROC ** sysproc_getall (int id)
  *  PARAMS:
  *		code		Internal code of the function
  *
- *  RETURN VALUE:
+ *  RETURN VALUE: 
  *      Pointer to the name or NULL if it was not found
  */
 

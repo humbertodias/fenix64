@@ -1,7 +1,7 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
+ *  Last stable release   : 
  *  Project documentation : http://fenix.divsite.net
  *
  *
@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright © 1999 José Luis Cebrián Pagüe
@@ -42,14 +42,14 @@
 static int global_count = 0;
 static int global_notfound = 0;
 
-typedef struct _symbol
+typedef struct _symbol 
 {
     const char * name;
     void       * addr;
 	int          count;
 
 	struct _symbol  * next;
-}
+} 
 symbol;
 
 /* The following struct includes all the symbols exported by default */
@@ -65,8 +65,6 @@ static symbol default_symbols[] = {
     { "file_write"                      , file_write                  },
     { "file_gets"                       , file_gets                   },
     { "file_puts"                       , file_puts                   },
-    { "file_qgets"                      , file_qgets                  },
-    { "file_qputs"                      , file_qputs                  },
     { "file_size"                       , file_size                   },
     { "file_pos"                        , file_pos                    },
     { "file_seek"                       , file_seek                   },
@@ -135,7 +133,10 @@ static symbol default_symbols[] = {
     { "syslib"                          , &syslib                     },
     { "icono"                           , &icono                      },
     { "last_frame_ms"                   , &last_frame_ms              },
-	{ "apptitle"                        , &apptitle                   },
+/*  { "joy_x"                           , &joy_x                      },
+    { "joy_y"                           , &joy_y                      },
+    { "joy_b"                           , &joy_b                      },
+*/  { "apptitle"                        , &apptitle                   },
     { "key_table"                       , &key_table                  },
     { "keystate"                        , &keystate                   },
     { "keytab_initialized"              , &keytab_initialized         },
@@ -164,7 +165,7 @@ static symbol default_symbols[] = {
     { "palette_loaded"                  , &palette_loaded             },
     { "palette_changed"                 , &palette_changed            },
     { "fade_on"                         , &fade_on                    },
-/*    { "fade_step"                       , &fade_step                  },*/
+    { "fade_step"                       , &fade_step                  },
     { "gr_read_pal"                     , gr_read_pal                 },
     { "gr_refresh_palette"              , gr_refresh_palette          },
     { "gr_fade_init"                    , gr_fade_init                },
@@ -192,6 +193,8 @@ static symbol default_symbols[] = {
     { "gr_load_fpg"                     , gr_load_fpg                 },
     { "gr_load_pal"                     , gr_load_pal                 },
     { "gr_save_pal"                     , gr_save_pal                 },
+	{ "gr_save_map"						, gr_save_map				  },
+	{ "gr_save_fpg"						, gr_save_fpg				  },
 	{ "gr_save_png"						, gr_save_png				  },
     { "grlib_new"                       , grlib_new                   },
     { "grlib_destroy"                   , grlib_destroy               },
@@ -213,7 +216,7 @@ static symbol default_symbols[] = {
     { "draw_instance_at"                , draw_instance_at            },
     { "draw_instance"                   , draw_instance               },
     { "instance_update_bbox"            , instance_update_bbox        },
-    { "instance_graph"                  , instance_graph              },
+    { "instance_graph"                       , instance_graph                   },
     { "scroll_region"                   , scroll_region               },
     { "gr_font_get"                     , gr_font_get                 },
     { "gr_font_load"                    , gr_font_load                },
@@ -224,7 +227,6 @@ static symbol default_symbols[] = {
     { "gr_font_systemfont"              , gr_font_systemfont          },
     { "gr_font_destroy"                 , gr_font_destroy             },
 	{ "gr_text_setcolor"                , gr_text_setcolor            },
-	{ "gr_text_getcolor"                , gr_text_getcolor            },
     { "gr_text_new"                     , gr_text_new                 },
     { "gr_text_new_var"                 , gr_text_new_var             },
     { "gr_text_move"                    , gr_text_move                },
@@ -300,8 +302,6 @@ static symbol default_symbols[] = {
     { "instance_dump_all"               , instance_dump_all           },
     { "instance_go"                     , instance_go                 },
     { "instance_go_all"                 , instance_go_all             },
-	{ "instance_posupdate"              , instance_posupdate          },
-	{ "instance_poschanged"             , instance_poschanged         },
 	{ "sound_active"					, &sound_active				  },
     { "sound_init"                      , sound_init                  },
     { "sound_close"                     , sound_close                 },
@@ -321,8 +321,10 @@ static symbol default_symbols[] = {
     { "resume_wav"                      , resume_wav                  },
     { "is_playing_wav"                  , is_playing_wav              },
     { "set_wav_volume"                  , set_wav_volume              },
-	{ "set_channel_volume"              , set_channel_volume          },
-	{ "reserve_channels"                , reserve_channels            },
+    { "ini_musiccd"                     , ini_musiccd                 },
+    { "cd_play"                         , cd_play                     },
+    { "cd_stop"                         , cd_stop                     },
+    { "cd_playing"                      , cd_playing                  },
     { "screen"                          , &screen                     },
     { "fnc_export"                      , fnc_export                  },
     { "gr_new_object"                   , gr_new_object               },
@@ -349,7 +351,7 @@ static symbol default_symbols[] = {
 	/* Low-level conversion/alpha */
 	FNC( gr_alpha16 ),
 	FNC( gr_alpha8 ),
-
+	
 	/* Profiler */
 	FNC(gprof_init),
 	FNC(gprof_begin),
@@ -373,13 +375,6 @@ static symbol default_symbols[] = {
 	FNC(gr_mark_rect),
 	FNC(gr_mark_instance),
 
-	/* WM related */
-	DAT(grab_input) ,
-	DAT(exit_status) ,
-	DAT(window_status) ,
-	DAT(focus_status) ,
-	DAT(mouse_status) ,
-
     { NULL                              , NULL                        }
 } ;
 #undef FNC
@@ -387,7 +382,7 @@ static symbol default_symbols[] = {
 
 /* Scatter array for hash calculations */
 
-#define HASH_MAX 1023
+#define HASH_MAX 1023 
 
 static int scatter[HASH_MAX+1] =
 {
@@ -530,10 +525,10 @@ symbol * hash_table[HASH_MAX+1];
  *
  *  Calculate a hash value for a given symbol. This should be fast.
  *
- *  PARAMS :
+ *  PARAMS : 
  *		name		ASCIIZ string with the symbol name
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      Integer hash value from 0 to HASH_MAX
  *
  */
@@ -542,8 +537,8 @@ static int symbol_hash (const char * name)
 {
 	int result = 0;
 
-	while (*name)
-		result ^= scatter[(int)*name++];
+	while (*name) 
+		result ^= scatter[*name++];
 
 	return result;
 }
@@ -553,11 +548,11 @@ static int symbol_hash (const char * name)
  *
  *  Add a new symbol to the symbol tables
  *
- *  PARAMS :
+ *  PARAMS : 
  *		name		Name of the symbol to search
  *		addr		Symbol address (to be returned by fnc_import)
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -583,15 +578,15 @@ void fnc_export (const char * name, void * addr)
  *  Search for a symbol in the symbol table and return its address
  *  This search is case sensitive and all characters are meaningful
  *
- *  PARAMS :
+ *  PARAMS : 
  *		name		Name of the symbol to search
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      The symbol pointer or NULL if the symbol was not found
  *
  */
 
-void * fnc_import (const char * name)
+void * fnc_import (const char * name) 
 {
     symbol * ptr = hash_table[symbol_hash(name)] ;
 
@@ -618,10 +613,10 @@ void * fnc_import (const char * name)
  *  Initialize the exported symbol table with all the default
  *  symbols. This function must be called before any call to fnc_export
  *
- *  PARAMS :
+ *  PARAMS : 
  *		None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -651,10 +646,10 @@ void fnc_init()
  *  show in the console any debug information that could be
  *  useful about non-found symbols and symbols not used by the DLLs
  *
- *  PARAMS :
+ *  PARAMS : 
  *		None
  *
- *  RETURN VALUE :
+ *  RETURN VALUE : 
  *      None
  *
  */
@@ -686,7 +681,7 @@ void fnc_show_information()
 		{
 			if (ptr->count == 0)
 				gr_con_printf ("[FXI] Warning: '%s' not imported!", ptr->name);
-
+			
 			bucket_use[n]++;
 			if (max_use < bucket_use[n])
 				max_use = bucket_use[n];
@@ -716,4 +711,3 @@ void fnc_show_information()
 	if (global_notfound)
 		gr_con_printf ("[FXI] %4d symbols not found", global_notfound);
 }
-

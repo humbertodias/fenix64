@@ -1,6 +1,6 @@
 /*
  *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
+ *  Current release       : FENIX - PROJECT 1.0 - R 0.82
  *  Last stable release   :
  *  Project documentation : http://fenix.divsite.net
  *
@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
- *  Copyright Â© 2002 Fenix Team
+ *  Copyright © 1999 José Luis Cebrián Pagüe
+ *  Copyright © 2002 Fenix Team
  *
  */
 
@@ -37,16 +37,16 @@
 #endif
 
 #ifdef TARGET_MAC
-#include <SDL/SDL.h>
+#include <SDL/SDL_types.h>
 #else
-#include <SDL.h>
+#include <SDL_types.h>
 #endif
 
 #include "files.h"
 #include "xctype.h"
 
 /* ---------------------------------------------------------------------- */
-/* MÃ³dulos generales de mantenimiento de datos                            */
+/* Módulos generales de mantenimiento de datos                            */
 /* ---------------------------------------------------------------------- */
 
 #include "typedef.h"
@@ -59,37 +59,34 @@
 /* ---------------------------------------------------------------------- */
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-    #define ARRANGE_DWORD(x)
-    #define ARRANGE_WORD(x)
-
-    #define ARRANGE_DWORDS(x,c)
-    #define ARRANGE_WORDS(x,c)
+#define ARRANGE_DWORD(x)
+#define ARRANGE_WORD(x)
 #else
-    static __inline__ void DO_Swap16(Uint16 * D) {
-    	*D = ((*D<<8)|(*D>>8));
-    }
 
-    static __inline__ void DO_Swap32(Uint32 * D) {
-    	*D = ((*D<<24)|((*D<<8)&0x00FF0000)|((*D>>8)&0x0000FF00)|(*D>>24));
-    }
+static __inline__ void DO_Swap16(Uint16 * D) {
+	*D = ((*D<<8)|(*D>>8));
+}
 
-    #define ARRANGE_DWORD(x)	DO_Swap32(x)
-    #define ARRANGE_WORD(x)		DO_Swap16(x)
+static __inline__ void DO_Swap32(Uint32 * D) {
+	*D = ((*D<<24)|((*D<<8)&0x00FF0000)|((*D>>8)&0x0000FF00)|(*D>>24));
+}
 
-    #define ARRANGE_DWORDS(x,c) {				\
-    	int __n;								\
-    	Uint32 * __p = (Uint32 *)(x);			\
-    	for (__n = 0 ; __n < (int)(c) ; __n++)	\
-    		ARRANGE_DWORD(&__p[__n]);			\
-    	}
-    #define ARRANGE_WORDS(x,c) {				\
-    	int __n;								\
-    	Uint16 * __p = (Uint16 *)(x);			\
-    	for (__n = 0 ; __n < (int)(c) ; __n++)	\
-    		ARRANGE_WORD(&__p[__n]);			\
-    	}
-
+#define ARRANGE_DWORD(x)	DO_Swap32(x)
+#define ARRANGE_WORD(x)		DO_Swap16(x)
 #endif
+
+#define ARRANGE_DWORDS(x,c) {			\
+	int __n;							\
+	Uint32 * __p = (Uint32 *)(x);		\
+	for (__n = 0 ; __n < (c) ; __n++)	\
+		ARRANGE_DWORD(&__p[__n]);		\
+	}
+#define ARRANGE_WORDS(x,c) {			\
+	int __n;							\
+	Uint16 * __p = (Uint16 *)(x);		\
+	for (__n = 0 ; __n < (c) ; __n++)	\
+		ARRANGE_WORD(&__p[__n]);		\
+	}
 
 /* ---------------------------------------------------------------------- */
 /* Compilador                                                             */
@@ -102,18 +99,16 @@
 #include "procdef.h"
 #include "compiler.h"
 
-extern int autoinclude ;	/* Incluye ficheros en el DCB automÃ¡ticamente */
-extern int imports[] ;		/* CÃ³digos de cadena con nombres de imports */
-extern int nimports ;		/* NÃºmero de imports */
-
-extern char langinfo[64] ;	/* language setting */
+extern int autoinclude ;	/* Incluye ficheros en el DCB automáticamente */
+extern int imports[] ;		/* Códigos de cadena con nombres de imports */
+extern int nimports ;		/* Número de imports */
 
 /* Funciones para guardar y cargar un fichero DCB */
 
 #include "dcb.h"
 
 extern void dcb_add_file (const char * filename) ;
-extern int  dcb_save (const char * filename, int options, const char * stubname) ;
+extern int  dcb_save (const char * filename, int options) ;
 extern void dcb_settype (DCB_TYPEDEF * d, TYPEDEF * t) ;
 
 /* Funciones del sistema (no definidas) */
@@ -136,6 +131,11 @@ extern int         sysproc_add    (char * name, char * paramtypes, int type, voi
 extern SYSPROC *   sysproc_get    (int id) ;
 extern SYSPROC * * sysproc_getall (int id) ;
 extern char    *   sysproc_name   (int code) ;
+
+/* Compilador de expresiones fijas */
+
+extern int compile_fixed_expresion() ;
+extern TYPEDEF fixed_expression_type;
 
 /* Constantes DIV */
 

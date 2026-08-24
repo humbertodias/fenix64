@@ -1,33 +1,25 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/intérprete de videojuegos
+ * Copyright (C) 1999 José Luis Cebrián Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright Â© 1999 JosÃ© Luis CebriÃ¡n PagÃ¼e
- *  Copyright Â© 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #ifndef __PROCDEF_H
 #define __PROCDEF_H
 
-/* Procesos (un "PROCDEF" es, en realidad, simplemente su definiciÃ³n) */
+/* Procesos (un "PROCDEF" es, en realidad, simplemente su definición) */
 
 #ifndef __SEGMENT_H
 #include "segment.h"
@@ -47,11 +39,6 @@
 
 #define MAX_PARAMS 16
 
-#define PROC_USES_FRAME 	0x01
-#define PROC_USES_LOCALS	0x02
-#define PROC_FUNCTION		0x04
-#define PROC_USES_PUBLICS   0x08
-
 typedef struct _sentence
 {
 	int file ;
@@ -66,24 +53,15 @@ typedef struct _procdef
 	VARSPACE * privars ;
 	segment  * pridata ;
 
-    /* (2006/11/19 23:15 GMT-03:00, Splinter - jj_arg@yahoo.com) */
-	VARSPACE * pubvars ;
-	segment  * pubdata ;
-	/* (2006/11/19 23:15 GMT-03:00, Splinter - jj_arg@yahoo.com) */
-
 	int typeid ;
 	int identifier ;
 	int params ;
 	int defined ;
-	int declared ;
-	int flags ;
 
 	BASETYPE   paramtype[MAX_PARAMS] ;
 	BASETYPE   type ;
 
 	CODEBLOCK  code ;
-
-    int        exitcode;
 
 	SENTENCE   * sentences ;
 	int          sentence_count ;
@@ -91,7 +69,6 @@ typedef struct _procdef
 PROCDEF ;
 
 extern int procdef_count ;
-extern int procdef_maxid ;
 
 extern int       procdef_getid() ;
 extern PROCDEF * procdef_new (int typeid, int identifier) ;

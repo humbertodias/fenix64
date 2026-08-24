@@ -1,27 +1,19 @@
-/*
- *  Fenix - Videogame compiler/interpreter
- *  Current release       : FENIX - PROJECT 1.0 - R 0.84
- *  Last stable release   :
- *  Project documentation : http://fenix.divsite.net
+/* Fenix - Compilador/interprete de videojuegos
+ * Copyright (C) 1999 Jose Luis Cebrian Pagüe
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *  Copyright © 1999 José Luis Cebrián Pagüe
- *  Copyright © 2002 Fenix Team
- *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #ifdef ENGLISH
@@ -34,10 +26,8 @@
 #define MSG_USING               "Use: %s [options] filename\n\n"
 #define MSG_OPTION_D            "   -d       Debugging mode\n"
 #define MSG_OPTIONS             "   -i dir   Adds the directory to the PATH\n" \
-                                "   -a       Automaticaly adds all files to the DCB\n"  \
-                                "   -f file  Adds a single file to the DCB\n"  \
-								"   -l lang  Specify locale settings\n"  \
-								"   -s stub  Generate a stubbed executable from the given stub\n"  \
+                                "   -a       Automaticaly adds files to the DCB\n"  \
+                                "   -f file  Adds a file to the DCB\n"  \
                                 "   -g       Stores debugging information at the DCB\n"  \
                                 "   -c       File uses the MS-DOS character set\n\n"  \
                                 "This program is free software. You can distribute and/or modify it\n" \
@@ -53,7 +43,7 @@
 #define MSG_INVALID_PARAM       "Parameter name invalid"
 #define MSG_INVALID_PARAMT      "Parameter type invalid"
 #define MSG_TOO_MANY_PARAMS     "Too many parameters in a definition"
-#define MSG_INCORRECT_PARAMC    "Incorrect number of parameters. Function: %s MinParams: %d."
+#define MSG_INCORRECT_PARAMC    "Incorrect number of parameters"
 #define MSG_NO_BEGIN            "BEGIN expected"
 #define MSG_NO_END              "END expected"
 #define MSG_ELSE_WOUT_IF        "ELSE without IF"
@@ -61,7 +51,6 @@
 #define MSG_PROCESS_NAME_EXP    "Procedure name expected"
 #define MSG_INVALID_TYPE        "Invalid data type"
 #define MSG_UNEXPECTED_TOKEN    "Unexpected token (too many ENDs?)"
-#define MSG_UNEXPECTED_TOKEN_GENERIC    "Unexpected token"
 #define MSG_NO_MAIN             "Main procedure was not defined"
 #define MSG_INTEGER_REQUIRED    "Integer type required"
 #define MSG_NUMBER_REQUIRED     "Numeric type required"
@@ -76,7 +65,7 @@
 #define MSG_VARIABLE_REQUIRED   "Variable required"
 #define MSG_STRUCT_REQUIRED     "Struct required"
 #define MSG_DIVIDE_BY_ZERO      "Division by zero"
-#define MSG_TYPES_NOT_THE_SAME  "Values are of incompatible type"
+#define MSG_TYPES_NOT_THE_SAME  "Pointers are of incompatible type" 
 #define MSG_CONSTANT_EXP        "Constant value expected"
 #define MSG_STRING_EXP          "String expected"
 #define MSG_NO_LOOP             "Out of loop"
@@ -100,12 +89,6 @@
 #define MSG_MULTIPLE_PROCS_FOUND "Various conflicting versions of %s found"
 #define MSG_QUESTION_INC		"Incompatible types at the sides of ? operator"
 #define MSG_UNKNOWN_PREP		"Unknown preprocessor directive"
-#define MSG_PTR_CONVERSION		"Invalid conversion of non-pointer to pointer"
-#define MSG_CONVERSION			"Unsupported data type cast"
-#define MSG_PROC_ALREADY_DEFINED "Process already defined"
-#define MSG_FRAME_REQUIRES_INT  "FRAME requires an INT return value type"
-#define MSG_VARIABLE_ERROR      "Variable already defined as process, expected type or variable name"
-#define MSG_PROTO_ERROR         "Conflict with previous declaration"
 
 #else
 
@@ -118,10 +101,8 @@
 #define MSG_USING               "Uso: %s [opciones] fichero\n\n"
 #define MSG_OPTION_D            "   -d       Activar modo de depuracion\n"
 #define MSG_OPTIONS             "   -i dir   Anade ese directorio al PATH\n" \
-                                "   -a       Autoincluye todos los ficheros en el DCB\n"  \
+                                "   -a       Autoincluye ficheros en el DCB\n"  \
                                 "   -f file  Incluye un fichero en el DCB\n"  \
-								"   -s stub  Genera un ejecutable basado en el stub indicado\n"  \
-								"   -l lang  Especificar locale\n"  \
                                 "   -g       Guarda informacion de depurado\n"  \
                                 "   -c       Usar caracteres MS-DOS\n\n"  \
                                 "Este programa es software libre. Se permite distribuirlo y/o modificarlo\n" \
@@ -137,7 +118,7 @@
 #define MSG_INVALID_PARAM       "Nombre de parametro incorrecto"
 #define MSG_INVALID_PARAMT      "Tipo de parametro incorrecto"
 #define MSG_TOO_MANY_PARAMS     "Demasiados parametros en definicion de proceso"
-#define MSG_INCORRECT_PARAMC    "El numero de parametros es incorrecto. Funcion: %s Parametros Minimos: %d"
+#define MSG_INCORRECT_PARAMC    "El numero de parametros es incorrecto"
 #define MSG_NO_BEGIN            "Se esperaba BEGIN"
 #define MSG_NO_END              "Se esperaba END"
 #define MSG_ELSE_WOUT_IF        "ELSE sin IF"
@@ -145,7 +126,6 @@
 #define MSG_PROCESS_NAME_EXP    "Se esperaba nombre del programa"
 #define MSG_INVALID_TYPE        "Tipo de dato invalido"
 #define MSG_UNEXPECTED_TOKEN    "Simbolo o instruccion inesperada aqui (¿demasiados END?)"
-#define MSG_UNEXPECTED_TOKEN_GENERIC    "Simbolo o instruccion inesperada aqui"
 #define MSG_NO_MAIN             "Proceso principal no definido"
 #define MSG_INTEGER_REQUIRED    "Se requiere un dato entero"
 #define MSG_NUMBER_REQUIRED     "Se requiere un dato numerico"
@@ -160,7 +140,7 @@
 #define MSG_VARIABLE_REQUIRED   "Se requiere una variable"
 #define MSG_STRUCT_REQUIRED     "Se requiere una estructura"
 #define MSG_DIVIDE_BY_ZERO      "Division por cero"
-#define MSG_TYPES_NOT_THE_SAME  "Los datos no son del mismo tipo"
+#define MSG_TYPES_NOT_THE_SAME  "Los punteros no son del mismo tipo" 
 #define MSG_CONSTANT_EXP        "Se esperaba un valor constante"
 #define MSG_STRING_EXP          "Se esperaba una cadena"
 #define MSG_NO_LOOP             "Fuera de bucle"
@@ -184,11 +164,4 @@
 #define MSG_MULTIPLE_PROCS_FOUND "Hay disponibles varias versiones de %s en conflicto"
 #define MSG_QUESTION_INC		"Tipos incompatibles a los lados del operador ?"
 #define MSG_UNKNOWN_PREP		"Directiva de preprocesador desconocida"
-#define MSG_PTR_CONVERSION		"Conversión inválida de no puntero a puntero"
-#define MSG_CONVERSION			"Conversión de tipo de dato no soportada"
-#define MSG_PROC_ALREADY_DEFINED "Proceso ya definido"
-#define MSG_FRAME_REQUIRES_INT  "FRAME requiere que el proceso devuelva un tipo INT"
-#define MSG_VARIABLE_ERROR      "Variable definida como proceso, se espera tipo o nombre de variable"
-#define MSG_PROTO_ERROR         "Conflicto con declaracion previa"
-
 #endif
