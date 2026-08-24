@@ -16,7 +16,7 @@ SOURCE_FILES = main.c dcbr.c instance.c strings.c \
 		      ../../common/dirs.c ../../common/regex.c \
 		      ../../common/files.c ../../common/xctype.c \
 		      g_profiler.c i_saveload.c \
-		      mmx_main.c mmx_hspan.c
+		      mmx_main.c mmx_hspan.c mmx_scale2x.c
 
 #hacer un if con mmx para activarlo o no
 noinst_HEADERS = ../inc/fxi.h    ../../include/files.h ../../include/xctype.h \

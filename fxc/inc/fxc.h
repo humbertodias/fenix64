@@ -99,6 +99,7 @@ static __inline__ void DO_Swap32(Uint32 * D) {
 #include "procdef.h"
 #include "compiler.h"
 
+extern int debug ;		/* 1 when fxc was invoked with -d */
 extern char langinfo[64] ;	/* language setting */
 extern int autoinclude ;	/* Incluye ficheros en el DCB automáticamente */
 extern int imports[] ;		/* Códigos de cadena con nombres de imports */

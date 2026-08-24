@@ -112,7 +112,7 @@ am__fxi_SOURCES_DIST = main.c dcbr.c instance.c strings.c i_main.c \
 	g_conversion.c g_font.c g_fpg.c g_blendop.c \
 	../../common/dirs.c ../../common/regex.c ../../common/files.c \
 	../../common/xctype.c g_profiler.c i_saveload.c \
-	mmx_main.c mmx_hspan.c fxi.rc
+	mmx_main.c mmx_hspan.c mmx_scale2x.c fxi.rc
 am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
 	strings.$(OBJEXT) i_main.$(OBJEXT) i_debug.$(OBJEXT) \
 	i_func.$(OBJEXT) g_main.$(OBJEXT) g_maps.$(OBJEXT) \
@@ -125,7 +125,7 @@ am__objects_1 = main.$(OBJEXT) dcbr.$(OBJEXT) instance.$(OBJEXT) \
 	g_blendop.$(OBJEXT) dirs.$(OBJEXT) \
 	regex.$(OBJEXT) files.$(OBJEXT) xctype.$(OBJEXT) \
 	g_profiler.$(OBJEXT) i_saveload.$(OBJEXT) \
-	mmx_main.$(OBJEXT) mmx_hspan.$(OBJEXT)
+	mmx_main.$(OBJEXT) mmx_hspan.$(OBJEXT) mmx_scale2x.$(OBJEXT)
 @HAVE_WINDRES_FALSE@am_fxi_OBJECTS = $(am__objects_1)
 @HAVE_WINDRES_TRUE@am_fxi_OBJECTS = $(am__objects_1) FXI.$(OBJEXT)
 fxi_OBJECTS = $(am_fxi_OBJECTS)
@@ -161,7 +161,7 @@ am__depfiles_remade = ./$(DEPDIR)/dcbr.Po ./$(DEPDIR)/dirs.Po \ \ \ ./$(DEPDIR)/
 	./$(DEPDIR)/i_saveload.Po ./$(DEPDIR)/img_pcx.Po \
 	./$(DEPDIR)/img_png.Po ./$(DEPDIR)/instance.Po \
 	./$(DEPDIR)/main.Po ./$(DEPDIR)/mmx_hspan.Po \
-	./$(DEPDIR)/mmx_main.Po ./$(DEPDIR)/pathfind.Po \
+	./$(DEPDIR)/mmx_main.Po ./$(DEPDIR)/mmx_scale2x.Po ./$(DEPDIR)/pathfind.Po \
 	./$(DEPDIR)/regex.Po \ \ ./$(DEPDIR)/sound.Po \
 	./$(DEPDIR)/strings.Po ./$(DEPDIR)/xctype.Po
 am__mv = mv -f
@@ -339,7 +339,7 @@ SOURCE_FILES = main.c dcbr.c instance.c strings.c \
 		      ../../common/dirs.c ../../common/regex.c \
 		      ../../common/files.c ../../common/xctype.c \
 		      g_profiler.c i_saveload.c \
-		      mmx_main.c mmx_hspan.c
+		      mmx_main.c mmx_hspan.c mmx_scale2x.c
 
 
 #hacer un if con mmx para activarlo o no
@@ -464,6 +464,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmx_hspan.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmx_main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmx_scale2x.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pathfind.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regex.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sound.Po@am__quote@ # am--include-marker
@@ -711,6 +712,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/main.Po
 	-rm -f ./$(DEPDIR)/mmx_hspan.Po
 	-rm -f ./$(DEPDIR)/mmx_main.Po
+	-rm -f ./$(DEPDIR)/mmx_scale2x.Po
 	-rm -f ./$(DEPDIR)/pathfind.Po
 	-rm -f ./$(DEPDIR)/regex.Po
 	-rm -f
@@ -803,6 +805,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/main.Po
 	-rm -f ./$(DEPDIR)/mmx_hspan.Po
 	-rm -f ./$(DEPDIR)/mmx_main.Po
+	-rm -f ./$(DEPDIR)/mmx_scale2x.Po
 	-rm -f ./$(DEPDIR)/pathfind.Po
 	-rm -f ./$(DEPDIR)/regex.Po
 	-rm -f

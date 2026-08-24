@@ -132,12 +132,6 @@ int identifier_import ;
 
 int reserved_words ;
 
-#ifdef TARGET_MAC
-static int debug ;
-#else
-int debug;
-#endif
-
 void compile_init ()
 {
 	/* Initialize reserved words */

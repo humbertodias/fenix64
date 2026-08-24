@@ -5327,9 +5327,10 @@ else
 fi
 # 0.84 is C89: empty () means unspecified args. C23 treats () as (void).
 CFLAGS="-std=gnu89 $CFLAGS"
-# Clang 16+ errors on 0.84 function-pointer casts. GCC does not know this flag
-# and, if any other diagnostic is emitted, treats it as a failure.
-if $CC -std=gnu89 -Werror -Wno-incompatible-function-pointer-types -c -x c /dev/null -o /dev/null >/dev/null 2>&1; then
+# Clang 16+ errors on 0.84 function-pointer casts. Do not pass this to GCC:
+# unknown -Wno-* is ignored until another diagnostic appears, then GCC
+# reports it and can fail the compile.
+if echo | $CC -dM -E -x c - 2>/dev/null | grep -q __clang__; then
 	CFLAGS="-Wno-incompatible-function-pointer-types $CFLAGS"
 fi
 

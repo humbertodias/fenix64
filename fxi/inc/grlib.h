@@ -319,7 +319,9 @@ extern void gprof_toggle();
 /* -------------------------------------------------- */
 
 #ifdef WIN32
+#ifndef __GNUC__
 #define MMX_FUNCTIONS
+#endif
 
 extern int  MMX_available;
 

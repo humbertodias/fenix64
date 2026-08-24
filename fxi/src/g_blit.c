@@ -105,7 +105,7 @@ Uint8   * ghost8;
 */
 ADDITIVE_BLEND *ablend;
 int bt;
-#ifdef WIN32
+#ifdef MMX_FUNCTIONS
 Uint16 MMX_additive_blend(Uint16 A, Uint16 B){
 	Uint8 m[4], n[4];
 	if (!enable_16bits){
@@ -135,6 +135,18 @@ Uint16 MMX_additive_blend(Uint16 A, Uint16 B){
 	}
 
 	if(!bt){
+#ifdef __GNUC__
+		__asm__ __volatile__(
+			"movd %0, %%mm0\n"
+			"movd %1, %%mm1\n"
+			"paddusb %%mm1, %%mm0\n"
+			"movd %%mm0, %0\n"
+			"emms\n"
+			:
+			: "m" (m), "m" (n)
+			: "mm0", "mm1", "cc"
+		);
+#else
 		_asm{
 			movd mm0,m
 			movd mm1,n
@@ -142,7 +154,20 @@ Uint16 MMX_additive_blend(Uint16 A, Uint16 B){
 			movd m,mm0
 			emms
 		}
+#endif
 	}else{
+#ifdef __GNUC__
+		__asm__ __volatile__(
+			"movd %0, %%mm0\n"
+			"movd %1, %%mm1\n"
+			"psubusb %%mm1, %%mm0\n"
+			"movd %%mm0, %0\n"
+			"emms\n"
+			:
+			: "m" (m), "m" (n)
+			: "mm0", "mm1", "cc"
+		);
+#else
 		_asm{
 			movd mm0,m
 			movd mm1,n
@@ -150,6 +175,7 @@ Uint16 MMX_additive_blend(Uint16 A, Uint16 B){
 			movd m,mm0
 			emms
 		}
+#endif
 	}
 	if(enable_16bits)
 		return gr_rgb(m[0],m[1],m[2]);

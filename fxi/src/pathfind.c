@@ -38,8 +38,8 @@ node ;
 static int  * path_result = NULL ;
 static int  * path_result_pointer = NULL ;
 
-static node * open = NULL ;
-static node * closed = NULL ;
+static node * pf_open = NULL ;
+static node * pf_closed = NULL ;
 static node * found = NULL ;
 
 static int destination_x, destination_y ;
@@ -74,7 +74,7 @@ int path_set_wall (int n)
 
 /* ---------------------------------------------------------------- */
 
-/* Uso: open = add(open, this) ; */
+/* Uso: pf_open = add(pf_open, this) ; */
 /* La lista permanecerá ordenada */
 node * node_add (node * list, node * this)
 {
@@ -108,7 +108,7 @@ node * node_add (node * list, node * this)
 	}
 }
 
-/* Uso: open = remove(open, this) ; */
+/* Uso: pf_open = remove(pf_open, this) ; */
 node * node_remove (node * list, node * this)
 {
 	node * curr = list ;
@@ -174,14 +174,14 @@ void node_push_succesor (node * parent, int ix, int iy, int cost)
 	curr = node_new (parent, parent->x+ix, parent->y+iy, cost) ;
 	if (curr->h > 131072) { free(curr); return ; }
 
-	f_cl = node_find (closed, curr->x, curr->y) ;
+	f_cl = node_find (pf_closed, curr->x, curr->y) ;
 	if (f_cl) { free(curr); return ; }
-	f_op = node_find (open, curr->x, curr->y) ;
+	f_op = node_find (pf_open, curr->x, curr->y) ;
 	if (f_op && f_op->f <= curr->f) { free(curr); return ; }
 
-	if (f_op) open = node_remove (open, f_op) ;
-	if (f_cl) closed = node_remove (closed, f_cl) ;
-	open = node_add (open, curr) ;
+	if (f_op) pf_open = node_remove (pf_open, f_op) ;
+	if (f_cl) pf_closed = node_remove (pf_closed, f_cl) ;
+	pf_open = node_add (pf_open, curr) ;
 }
 
 void node_push_succesors (node * parent, int options)
@@ -228,17 +228,17 @@ int path_find (GRAPH * bitmap, int sx, int sy, int dx, int dy, int options)
 	destination_x = dx ;
 	destination_y = dy ;
 
-	open = node_reset (open) ;
-	closed = node_reset (closed) ;
+	pf_open = node_reset (pf_open) ;
+	pf_closed = node_reset (pf_closed) ;
 
 	curr = node_new (NULL, startup_x, startup_y, 0) ;
 	curr->f = curr->h = 1 ;
-	open = node_add (open, curr) ;
+	pf_open = node_add (pf_open, curr) ;
 
-	while (open)
+	while (pf_open)
 	{
-		curr = open ;
-		open = node_remove (open, curr) ;
+		curr = pf_open ;
+		pf_open = node_remove (pf_open, curr) ;
 
 		if (curr->x == (unsigned)destination_x && curr->y == (unsigned)destination_y)
 		{
@@ -280,7 +280,7 @@ int path_find (GRAPH * bitmap, int sx, int sy, int dx, int dy, int options)
 
 		node_push_succesors (curr, options) ;
 
-		closed = node_add (closed, curr) ;
+		pf_closed = node_add (pf_closed, curr) ;
 	}
 
 	return 0 ;

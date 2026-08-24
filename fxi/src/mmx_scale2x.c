@@ -43,7 +43,9 @@
  * - derivative works of the program are allowed.
  */
 
+#if defined(_MSC_VER) && defined(_M_IX86)
 #define MMX
+#endif
 
 #ifdef MMX
 extern int MMX_available;
